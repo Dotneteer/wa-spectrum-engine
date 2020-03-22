@@ -1,15 +1,28 @@
-import "mocha";
+import { before } from "mocha";
 import * as expect from "expect";
-import * as mod from "../main";
-import { Api } from "../src/shared/api";
-import { Z80CpuEngine } from "../src/shared/Z80CpuEngine";
+import * as fs from "fs";
+import * as path from "path";
 
-const wasm = mod as Api;
+import { Api } from "../src/shared/api";
+import { AsBind } from "as-bind";
+import { Z80Cpu } from "../src/assembly/Z80Cpu";
+import * as loader from "@assemblyscript/loader";
+
+
+const wasmBin = fs.readFileSync(
+  path.join(__dirname, "../build/optimized.wasm")
+);
+const module = loader.instantiateSync(wasmBin, { /* imports */ }) as Api;
+let wasm: Api;
 
 describe("CPU pool", () => {
+  before(async () => {
+    const asBindInstance = await AsBind.instantiate(wasmBin);
+    wasm = asBindInstance.exports as Api;
+  });
   beforeEach(() => {
     wasm.resetCpuPool();
-  })
+  });
 
   it("Creates the first CPU", () => {
     const z80 = wasm.createCpu();
@@ -67,8 +80,10 @@ describe("CPU pool", () => {
   });
 
   it("Gets CPU", () => {
-    const z80 = wasm.createCpu();
-    const cpu = (mod as any).Z80CpuEngine.wrap((mod as any).getCpu(z80)) as Z80CpuEngine;
+    const z80 = module.createCpu();
+    const cpu = (module as any).Z80Cpu.wrap(
+      (module as any).getCpu(z80)
+    ) as Z80Cpu;
 
     expect(cpu.a).toBe(0xff);
   });
@@ -79,6 +94,4 @@ describe("CPU pool", () => {
     wasm.longOp(z80);
     console.log(`Time: ${new Date().valueOf() - start}ms`);
   });
-
-
 });
