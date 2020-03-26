@@ -16,19 +16,15 @@ export interface Api {
   longOp(handle: number): number;
 
   // ==========================================================================
-  // Test machine pool handling
-  getTestMachinePoolMaxSize(): number;
-  resetTestMachinePool(): void;
-  createTestMachine(): number;
-  releaseTestMachine(handle: number): boolean;
-  getTestMachine(handle: number): WaTestZ80Machine | 0;
-
-  // ==========================================================================
   // Test machine operations
-  getTestMachineState(handle: number): TestZ80MachineState | 0;
-  updateTestMachineState(handle: number, state: TestZ80MachineState): boolean;
-  getTestMachineMemory(handle: number): number;
-  updateTestMachineMemory(handle: number, mem: number[]): boolean;
-  initTestMachineCode(handle: number, runMode: RunMode, ptr: number): boolean;
-  runTestMachine(handle: number): boolean;
+  initTestMachine(): void;
+  getTestMachineState(): TestZ80MachineState;
+  updateTestMachineState(state: TestZ80MachineState): void;
+  getTestMachineMemory(): number; // PTR
+  updateTestMachineMemory(mem: Uint8Array): void;
+  initTestMachineCode(runMode: RunMode, code: Uint8Array): void;
+  initTestMachineInput(input: Uint8Array): void;
+  runTestMachine(): TestZ80MachineState;
+  getTestMachineIoAccessLog(): number; // PTR
+  getTestMachineMemoryAccessLog(): number; // PTR
 }

@@ -1,4 +1,5 @@
 import { MemoryStatusArray } from "./MemoryStatusArray";
+import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 
 export class Z80Cpu {
   // ==========================================================================
@@ -87,6 +88,139 @@ export class Z80Cpu {
    */
   constructor(public allowExtendedInstructionSet: bool = false) {
     this.executeReset();
+    this.memoryReader = (_addr: u16) => 0xff;
+    this.memoryWriter = (_addr: u16, _value: u8) => {};
+    this.portReader = (_addr: u16) => 0xff;
+    this.portWriter = (_addr: u16, _value: u8) => {};
+  }
+
+  /**
+   * Sets the state after turning on the power
+   */
+  turnOn(): void {
+    this._af = 0xffff;
+    this._bc = 0xffff;
+    this._de = 0xffff;
+    this._hl = 0xffff;
+    this._af_sec = 0xffff;
+    this._bc_sec = 0xffff;
+    this._de_sec = 0xffff;
+    this._hl_sec = 0xffff;
+    this._i = 0xff;
+    this._r = 0xff;
+    this._pc = 0xffff;
+    this._sp = 0xffff;
+    this._ix = 0xff;
+    this._iy = 0xff;
+    this._wz = 0xff;
+  }
+
+  // ==========================================================================
+  // Memory and port handling
+  memoryReader: (addr: u16) => u8;
+  memoryWriter: (addr: u16, value: u8) => void;
+  portReader: (addr: u16) => u8;
+  portWriter: (addr: u16, value: u8) => void;
+
+  // ==========================================================================
+  // CPU State information
+
+  /**
+   * Gets a clone of the current CPU state
+   */
+  getCpuState(): TestZ80MachineState {
+    const s = new TestZ80MachineState();
+    s.a = this.a;
+    s.f = this.f;
+    s.af = this.af;
+    s.af_sec = this._af_;
+    s.b = this.b;
+    s.c = this.c;
+    s.bc = this.bc;
+    s.bc_sec = this._bc_;
+    s.d = this.d;
+    s.e = this.e;
+    s.de = this.de;
+    s.de_sec = this._de_;
+    s.h = this.h;
+    s.l = this.l;
+    s.hl = this.hl;
+    s.hl_sec = this._hl_;
+    s.i = this.i;
+    s.iff1 = this.iff1;
+    s.iff2 = this.iff2;
+    s.indexMode = this.indexMode;
+    s.interruptMode = this.interruptMode;
+    s.isInOpExecution = this.isInOpExecution;
+    s.isInterruptBlocked = this.isInterruptBlocked;
+    s.xh = this.xh;
+    s.xl = this.xl;
+    s.ix = this.ix;
+    s.yh = this.yh;
+    s.yl = this.yl;
+    s.iy = this.iy;
+    s.maskableInterruptModeEntered = this.maskableInterruptModeEntered;
+    s.opCode = this.opCode;
+    s.pc = this.pc;
+    s.prefixMode = this.prefixMode;
+    s.r = this.r;
+    s.sp = this.sp;
+    s.stateFlags = this.stateFlags;
+    s.tactsH = <u32>(this.tacts >> 32);
+    s.tactsL = <u32>this.tacts;
+    s.useGateArrayContention = this.useGateArrayContention;
+    s.wh = this.wh;
+    s.wl = this.wl;
+    s.wz = this.wz;
+    return s;
+  }
+
+  /**
+   *
+   * @param s Updates the CPU state (use it for tesing only)
+   */
+  updateCpuState(s: TestZ80MachineState): void {
+    this.a = s.a;
+    this.f = s.f;
+    this.af = s.af;
+    this._af_ = s.af_sec;
+    this.b = s.b;
+    this.c = s.c;
+    this.bc = s.bc;
+    this._bc_ = s.bc_sec;
+    this.d = this.d;
+    this.e = s.e;
+    this.de = s.de;
+    this._de_ = s.de_sec;
+    this.h = s.h;
+    this.l = s.l;
+    this.hl = s.hl;
+    this._hl_ = s.hl_sec;
+    this.i = s.i;
+    this.iff1 = s.iff1;
+    this.iff2 = s.iff2;
+    this.indexMode = s.indexMode;
+    this.interruptMode = s.interruptMode;
+    this.isInOpExecution = s.isInterruptBlocked;
+    this.isInterruptBlocked = s.isInterruptBlocked;
+    this.xh = s.xh;
+    this.xl = s.xl;
+    this.ix = s.ix;
+    this.yh = s.yh;
+    this.yl = s.yl;
+    this.iy = s.iy;
+    this.maskableInterruptModeEntered = s.maskableInterruptModeEntered;
+    this.opCode = s.opCode;
+    this.pc = s.pc;
+    this.prefixMode = s.prefixMode;
+    this.r = s.r;
+    this.sp = s.sp;
+    this.stateFlags = s.stateFlags;
+    this.tacts = (<u64>(s.tactsH << 32)) | s.tactsL;
+    this.useGateArrayContention = s.useGateArrayContention;
+    this.wh = s.wh;
+    this.wl = s.wl;
+    this.wz = s.wz;
   }
 
   // ==========================================================================
@@ -96,7 +230,7 @@ export class Z80Cpu {
     return <u8>(this._af >> 8);
   }
   set a(v: u8) {
-    this._af = <u16>((v << 8) | <u8>this._af);
+    this._af = <u16>((v << 8) | (<u8>this._af));
   }
   get f(): u8 {
     return <u8>this.af;
@@ -115,7 +249,7 @@ export class Z80Cpu {
     return <u8>(this._bc >> 8);
   }
   set b(v: u8) {
-    this._bc = <u16>((v << 8) | <u8>this._bc);
+    this._bc = <u16>((v << 8) | (<u8>this._bc));
   }
   get c(): u8 {
     return <u8>this._bc;
@@ -134,7 +268,7 @@ export class Z80Cpu {
     return <u8>(this._de >> 8);
   }
   set d(v: u8) {
-    this._de = <u16>((v << 8) | <u8>this._de);
+    this._de = <u16>((v << 8) | (<u8>this._de));
   }
   get e(): u8 {
     return <u8>this._de;
@@ -153,7 +287,7 @@ export class Z80Cpu {
     return <u8>(this._hl >> 8);
   }
   set h(v: u8) {
-    this._hl = <u16>((v << 8) | <u8>this._hl);
+    this._hl = <u16>((v << 8) | (<u8>this._hl));
   }
   get l(): u8 {
     return <u8>this._hl;
@@ -223,7 +357,7 @@ export class Z80Cpu {
     return <u8>(this._ix >> 8);
   }
   set xh(v: u8) {
-    this._ix = <u16>((v << 8) | <u8>this._ix);
+    this._ix = <u16>((v << 8) | (<u8>this._ix));
   }
   get xl(): u8 {
     return <u8>this._ix;
@@ -242,7 +376,7 @@ export class Z80Cpu {
     return <u8>(this._iy >> 8);
   }
   set yh(v: u8) {
-    this._iy = <u16>((v << 8) | <u8>this._iy);
+    this._iy = <u16>((v << 8) | (<u8>this._iy));
   }
   get yl(): u8 {
     return <u8>this._iy;
@@ -261,7 +395,7 @@ export class Z80Cpu {
     return <u8>(this._wz >> 8);
   }
   set wh(v: u8) {
-    this._wz = <u16>((v << 8) | <u8>this._wz);
+    this._wz = <u16>((v << 8) | (<u8>this._wz));
   }
   get wl(): u8 {
     return <u8>this._wz;
@@ -293,7 +427,7 @@ export class Z80Cpu {
       case 4:
         return <u8>(this._hl >> 8);
       case 5:
-        return <u8>(this._hl);
+        return <u8>this._hl;
       case 7:
         return <u8>(this._af >> 8);
       default:
@@ -377,28 +511,28 @@ export class Z80Cpu {
   // Flags access
 
   get sFlag(): bool {
-    return (<u8>this._af & FlagsSetMask.S) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.S) !== 0;
   }
   get zFlag(): bool {
-    return (<u8>this._af & FlagsSetMask.Z) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.Z) !== 0;
   }
   get r5Flag(): bool {
-    return (<u8>this._af & FlagsSetMask.R5) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.R5) !== 0;
   }
   get hFlag(): bool {
-    return (<u8>this._af & FlagsSetMask.H) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.H) !== 0;
   }
   get r3Flag(): bool {
-    return (<u8>this._af & FlagsSetMask.R3) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.R3) !== 0;
   }
   get pvFlag(): bool {
-    return (<u8>this._af & FlagsSetMask.PV) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.PV) !== 0;
   }
   get nFlag(): bool {
-    return (<u8>this._af & FlagsSetMask.N) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.N) !== 0;
   }
   get cFlag(): bool {
-    return (<u8>this._af & FlagsSetMask.C) !== 0;
+    return ((<u8>this._af) & FlagsSetMask.C) !== 0;
   }
 
   // ==========================================================================
@@ -409,7 +543,7 @@ export class Z80Cpu {
    * @param address Memory address
    */
   readMemory(address: u16): u8 {
-    return 0xff;
+    return this.memoryReader(address);
   }
 
   /**
@@ -417,14 +551,16 @@ export class Z80Cpu {
    * @param address Memory address
    * @param value Datat to write
    */
-  writeMemory(address: u16, value: u8): void {}
+  writeMemory(address: u16, value: u8): void {
+    this.memoryWriter(address, value);
+  }
 
   /**
    * Reads the specified I/O port
    * @param address Memory address
    */
   readPort(address: u16): u8 {
-    return 0xff;
+    return this.portReader(address);
   }
 
   /**
@@ -432,7 +568,9 @@ export class Z80Cpu {
    * @param address Memory address
    * @param value Datat to write
    */
-  writePort(address: u16, value: u8): void {}
+  writePort(address: u16, value: u8): void {
+    this.portWriter(address, value);
+  }
 
   // ==========================================================================
   // Public operations
@@ -465,11 +603,12 @@ export class Z80Cpu {
 
     // --- Get operation code and refresh the memory
     let opCode = this.readCodeMemory();
+    this.writeMemory(80, 100);
     this.tacts += 3;
     this._pc++;
     this.refreshMemory();
     return;
-    
+
     if (this.prefixMode === OpPrefixMode.None) {
       // -- The CPU is about to execute a standard operation
       switch (opCode) {
@@ -505,7 +644,7 @@ export class Z80Cpu {
           // --- Normal (8-bit) operation code received
           this.isInterruptBlocked = false;
           this.opCode = opCode;
-          this.processStandardOrIndexedOperations();
+          //this.processStandardOrIndexedOperations();
           this.prefixMode = OpPrefixMode.None;
           this.indexMode = OpIndexMode.None;
           this.isInOpExecution = false;
@@ -749,8 +888,8 @@ export class Z80Cpu {
     const opMethod =
       this.indexMode === OpIndexMode.None
         ? standardOperations[this.opCode]
-        : indexedOperations[this.opCode];
-    if (opMethod !== null) {
+        : standardOperations[this.opCode];
+    if (opMethod) {
       opMethod(this);
     }
   }

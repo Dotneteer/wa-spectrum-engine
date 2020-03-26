@@ -1,11 +1,9 @@
 import { ObjectPool } from "./ObjectPool";
 import { Z80Cpu } from "./Z80Cpu";
-import { WaTestZ80Machine } from "./test-machine/WaTestZ80Machine";
 import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 import { RunMode } from "../shared/RunMode";
 
 export { Z80Cpu } from "./Z80Cpu";
-export { WaTestZ80Machine } from "./test-machine/WaTestZ80Machine";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 
 // ============================================================================
@@ -15,13 +13,8 @@ export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
  * Maximum CPU pool size
  */
 const CPU_POOL = 100;
-const TEST_MACHINE_POOL_SIZE = 10;
 
 const cpuPool = new ObjectPool<Z80Cpu>(CPU_POOL, () => new Z80Cpu());
-const testMachinePool = new ObjectPool<WaTestZ80Machine>(
-  TEST_MACHINE_POOL_SIZE,
-  () => new WaTestZ80Machine()
-);
 
 export const UINT8ARRAY_ID = idof<Uint8Array>()
 
@@ -78,113 +71,83 @@ export function longOp(handle: i32): i32 {
 // ============================================================================
 // Z80TestMachine API
 
-/**
- * Gets the maximum size of the test machine pool
- */
-export function getTestMachinePoolMaxSize(): i32 {
-  return testMachinePool.capacity;
+export function initTestMachine(): void {
+  // TODO: Implement this method
 }
-
 /**
- * Resets the test machine pool
+ * Gets the state of the test machine
+ * @returns Test machine state
  */
-export function resetTestMachinePool(): void {
-  testMachinePool.reset();
-}
-
-/**
- * Creates a new test machine
- * @returns Handle to the test machine, if can allocated; otherwise, -1.
- */
-export function createTestMachine(): i32 {
-  return testMachinePool.create();
-}
-
-/**
- * Releases the specified test machine.
- * @param handle Test machine handle
- * @returns True, if the test machine has been successfully released; otherwise, false.
- */
-export function releaseTestMachine(handle: i32): bool {
-  return testMachinePool.release(handle);
-}
-
-/**
- * Gets the specified test machine.
- * @param handle Test machine handle
- * @returns The test machine, if it can be found in the pool; otherwise, null.
- */
-export function getTestMachine(handle: i32): WaTestZ80Machine | null {
-  return testMachinePool.get(handle);
-}
-
-/**
- * Gets the state of the specified test machine
- * @param handle Test machine handle
- * @returns Test machine state, if machine found; otherwise, null
- */
-export function getTestMachineState(handle: i32): TestZ80MachineState | null {
-  const machine = testMachinePool.get(handle);
-  return machine === null ? null : machine.machineState;
+export function getTestMachineState(): TestZ80MachineState {
+  // TODO: Implement this method
+  throw new Error();
 }
 
 /**
  * Updates the state of the test machine
- * @param handle Test machine handle
  * @param state New machine state
- * @returns True, if state update is successful; otherwise, false
  */
-export function updateTestMachineState(handle: i32, state: TestZ80MachineState): bool {
-  const machine = testMachinePool.get(handle);
-  if (machine === null) return false;
-  machine.machineState = state;
-  return true;
+export function updateTestMachineState(state: TestZ80MachineState): void {
+  // TODO: Implement this method
 }
 
 /**
  * Gets the memory contents of the test machine
- * @param handle Test machine handle
- * @returns Test machine memory, if machine found; otherwise, null
+ * @returns Test machine memory contents
  */
-export function getTestMachineMemory(handle: i32): u8[] | null {
-  const machine = testMachinePool.get(handle);
-  return machine === null ? null : machine.memory;
+export function getTestMachineMemory(): u8[] {
+  // TODO: Implement this method
+  throw new Error();
 }
 
 /**
  * Updates the state of the test machine
  * @param handle Test machine handle
  * @param mem Memory contents
- * @returns True, if state update is successful; otherwise, false
  */
-export function updateTestMachineMemory(handle: i32, mem: u8[]): bool {
-  const machine = testMachinePool.get(handle);
-  if (machine === null) return false;
-  machine.memory = mem;
-  return true;
+export function updateTestMachineMemory(mem: Uint8Array): void {
+  // TODO: Implement this method
 }
 
 /**
  * Initializes the machine with the code to run
- * @param handle Test machine handle
- * @param code Initial code
  * @param runMode Run mode of the machine
+ * @param code Initial code
  */
-export function initTestMachineCode(handle: i32, runMode: RunMode, code: Uint8Array): bool {
-  const machine = testMachinePool.get(handle);
-  if (machine === null) return false;
-  machine.runMode = runMode;
-  machine.initCode(code);
-  return true;
+export function initTestMachineCode(runMode: RunMode, code: Uint8Array): void {
+  // TODO: Implement this method
 }
 
 /**
- * Reuns the test machine with the specified code
- * @param handle Test machine handle
+ * Initializes the I/O input for the test machine run
+ * @param input Input bytes to read
  */
-export function runTestMachine(handle: i32): bool {
-  const machine = testMachinePool.get(handle);
-  if (machine === null) return false;
-  machine.run();
-  return true;
+export function initTestMachineInput(input: Uint8Array): void {
+  // TODO: Implement this method
 }
+
+/**
+ * Runs the test machine with the specified code
+ * @param handle Test machine state after run
+ */
+export function runTestMachine(): TestZ80MachineState {
+  // TODO: Implement this method
+  throw new Error();
+}
+
+/**
+ * Gets the I/O access log of the test machine
+ */
+export function getTestMachineIoAccessLog(): u32[] {
+  // TODO: Implement this method
+  throw new Error();
+}
+
+/**
+ * Gets the memory access log of the test machine
+ */
+export function getTestMachineMemoryAccessLog(): u32[] {
+  // TODO: Implement this method
+  throw new Error();
+}
+

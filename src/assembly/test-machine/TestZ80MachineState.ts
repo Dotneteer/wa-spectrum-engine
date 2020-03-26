@@ -1,4 +1,5 @@
 import { Z80StateFlags, OpPrefixMode, OpIndexMode } from "../Z80Cpu";
+import { RunMode } from "../../shared/RunMode";
 
 /**
  * Represents the internal state of the Z80CPU
