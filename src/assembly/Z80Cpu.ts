@@ -3,20 +3,9 @@ import { MemoryStatusArray } from "./MemoryStatusArray";
 export class Z80Cpu {
   // ==========================================================================
   // Registers
-  private _a: u8 = 0xff;
-  private _f: u8 = 0xff;
   private _af: u16 = 0xffff;
-
-  private _b: u8 = 0xff;
-  private _c: u8 = 0xff;
   private _bc: u16 = 0xffff;
-
-  private _d: u8 = 0xff;
-  private _e: u8 = 0xff;
   private _de: u16 = 0xffff;
-
-  private _h: u8 = 0xff;
-  private _l: u8 = 0xff;
   private _hl: u16 = 0xffff;
 
   private _af_sec: u16 = 0xffff;
@@ -30,16 +19,8 @@ export class Z80Cpu {
   private _pc: u16 = 0xffff;
   private _sp: u16 = 0xffff;
 
-  private _xh: u8 = 0xff;
-  private _xl: u8 = 0xff;
   private _ix: u16 = 0xff;
-
-  private _yh: u8 = 0xff;
-  private _yl: u8 = 0xff;
   private _iy: u16 = 0xff;
-
-  private _wh: u8 = 0xff;
-  private _wl: u8 = 0xff;
   private _wz: u16 = 0xff;
 
   // ==========================================================================
@@ -112,108 +93,104 @@ export class Z80Cpu {
   // Registers access
 
   get a(): u8 {
-    return this._a;
+    return <u8>(this._af >> 8);
   }
   set a(v: u8) {
-    this._a = v;
-    this._af = (this._a << 8) | this._f;
+    this._af = <u16>((v << 8) | <u8>this._af);
   }
   get f(): u8 {
-    return this._f;
+    return <u8>this.af;
   }
   set f(v: u8) {
-    this._f = v;
-    this._af = (this._a << 8) | this._f;
+    this._af = <u16>((this._af & 0xff00) | v);
   }
   get af(): u16 {
     return this._af;
   }
   set af(v: u16) {
     this._af = v;
-    this._a = <u8>(v >> 8);
-    this._f = <u8>v;
   }
 
   get b(): u8 {
-    return this._b;
+    return <u8>(this._bc >> 8);
   }
   set b(v: u8) {
-    this._b = v;
-    this._bc = (this._b << 8) | this._c;
+    this._bc = <u16>((v << 8) | <u8>this._bc);
   }
   get c(): u8 {
-    return this._c;
+    return <u8>this._bc;
   }
   set c(v: u8) {
-    this._c = v;
-    this._bc = (this._b << 8) | this._b;
+    this._bc = <u16>((this._bc & 0xff00) | v);
   }
   get bc(): u16 {
     return this._bc;
   }
   set bc(v: u16) {
     this._bc = v;
-    this._b = <u8>(v >> 8);
-    this._c = <u8>v;
   }
 
   get d(): u8 {
-    return this._d;
+    return <u8>(this._de >> 8);
   }
   set d(v: u8) {
-    this._d = v;
-    this._de = (this._d << 8) | this._e;
+    this._de = <u16>((v << 8) | <u8>this._de);
   }
   get e(): u8 {
-    return this._e;
+    return <u8>this._de;
   }
   set e(v: u8) {
-    this._e = v;
-    this._de = (this._d << 8) | this._e;
+    this._de = <u16>((this._de & 0xff00) | v);
   }
   get de(): u16 {
     return this._de;
   }
   set de(v: u16) {
     this._de = v;
-    this._d = <u8>(v >> 8);
-    this._e = <u8>v;
   }
 
   get h(): u8 {
-    return this._h;
+    return <u8>(this._hl >> 8);
   }
   set h(v: u8) {
-    this._h = v;
-    this._hl = (this._h << 8) | this._l;
+    this._hl = <u16>((v << 8) | <u8>this._hl);
   }
   get l(): u8 {
-    return this._l;
+    return <u8>this._hl;
   }
   set l(v: u8) {
-    this._l = v;
-    this._hl = (this._h << 8) | this._l;
+    this._hl = <u16>((this._hl & 0xff00) | v);
   }
   get hl(): u16 {
     return this._hl;
   }
   set hl(v: u16) {
     this._hl = v;
-    this._h = <u8>(v >> 8);
-    this._l = <u8>v;
   }
 
   get _af_(): u16 {
     return this._af_sec;
   }
+  set _af_(v: u16) {
+    this._af_sec = v;
+  }
   get _bc_(): u16 {
     return this._bc_sec;
+  }
+  set _bc_(v: u16) {
+    this._bc_sec = v;
   }
   get _de_(): u16 {
     return this._de_sec;
   }
+  set _de_(v: u16) {
+    this._de_sec = v;
+  }
   get _hl_(): u16 {
     return this._hl_sec;
+  }
+  set _hl_(v: u16) {
+    this._hl_sec = v;
   }
 
   get i(): u8 {
@@ -243,72 +220,60 @@ export class Z80Cpu {
   }
 
   get xh(): u8 {
-    return this._xh;
+    return <u8>(this._ix >> 8);
   }
   set xh(v: u8) {
-    this._xh = v;
-    this._ix = (this._xh << 8) | this._xl;
+    this._ix = <u16>((v << 8) | <u8>this._ix);
   }
   get xl(): u8 {
-    return this._xl;
+    return <u8>this._ix;
   }
   set xl(v: u8) {
-    this._xl = v;
-    this._ix = (this._xh << 8) | this._xl;
+    this._ix = <u16>((this._ix & 0xff00) | v);
   }
   get ix(): u16 {
     return this._ix;
   }
   set ix(v: u16) {
     this._ix = v;
-    this._xh = <u8>(v >> 8);
-    this._xl = <u8>v;
   }
 
   get yh(): u8 {
-    return this._yh;
+    return <u8>(this._iy >> 8);
   }
   set yh(v: u8) {
-    this._yh = v;
-    this._iy = (this._yh << 8) | this._yl;
+    this._iy = <u16>((v << 8) | <u8>this._iy);
   }
   get yl(): u8 {
-    return this._yl;
+    return <u8>this._iy;
   }
   set yl(v: u8) {
-    this._yl = v;
-    this._iy = (this._yh << 8) | this._yl;
+    this._iy = <u16>((this._iy & 0xffff) | v);
   }
   get iy(): u16 {
     return this._iy;
   }
   set iy(v: u16) {
     this._iy = v;
-    this._yh = <u8>(v >> 8);
-    this._yl = <u8>v;
   }
 
   get wh(): u8 {
-    return this._wh;
+    return <u8>(this._wz >> 8);
   }
   set wh(v: u8) {
-    this._wh = v;
-    this._wz = (this._wh << 8) | this._wl;
+    this._wz = <u16>((v << 8) | <u8>this._wz);
   }
   get wl(): u8 {
-    return this._wl;
+    return <u8>this._wz;
   }
   set wl(v: u8) {
-    this._wl = v;
-    this._wh = (this._wh << 8) | this._wl;
+    this._wz = <u16>((this._wz & 0xff00) | v);
   }
   get wz(): u16 {
     return this._wz;
   }
   set wz(v: u16) {
     this._wz = v;
-    this._wh = <u8>(v >> 8);
-    this._wl = <u8>v;
   }
 
   /**
@@ -318,19 +283,19 @@ export class Z80Cpu {
   getReg8(index: u8): u8 {
     switch (index) {
       case 0:
-        return this._b;
+        return <u8>(this._bc >> 8);
       case 1:
-        return this._c;
+        return <u8>this._bc;
       case 2:
-        return this.d;
+        return <u8>(this._de >> 8);
       case 3:
-        return this.e;
+        return <u8>this._de;
       case 4:
-        return this.h;
+        return <u8>(this._hl >> 8);
       case 5:
-        return this.l;
+        return <u8>(this._hl);
       case 7:
-        return this._a;
+        return <u8>(this._af >> 8);
       default:
         return 0xff;
     }
@@ -412,28 +377,28 @@ export class Z80Cpu {
   // Flags access
 
   get sFlag(): bool {
-    return (this._f & FlagsSetMask.S) !== 0;
+    return (<u8>this._af & FlagsSetMask.S) !== 0;
   }
   get zFlag(): bool {
-    return (this._f & FlagsSetMask.Z) !== 0;
+    return (<u8>this._af & FlagsSetMask.Z) !== 0;
   }
   get r5Flag(): bool {
-    return (this._f & FlagsSetMask.R5) !== 0;
+    return (<u8>this._af & FlagsSetMask.R5) !== 0;
   }
   get hFlag(): bool {
-    return (this._f & FlagsSetMask.H) !== 0;
+    return (<u8>this._af & FlagsSetMask.H) !== 0;
   }
   get r3Flag(): bool {
-    return (this._f & FlagsSetMask.R3) !== 0;
+    return (<u8>this._af & FlagsSetMask.R3) !== 0;
   }
   get pvFlag(): bool {
-    return (this._f & FlagsSetMask.PV) !== 0;
+    return (<u8>this._af & FlagsSetMask.PV) !== 0;
   }
   get nFlag(): bool {
-    return (this._f & FlagsSetMask.N) !== 0;
+    return (<u8>this._af & FlagsSetMask.N) !== 0;
   }
   get cFlag(): bool {
-    return (this._f & FlagsSetMask.C) !== 0;
+    return (<u8>this._af & FlagsSetMask.C) !== 0;
   }
 
   // ==========================================================================
@@ -473,6 +438,13 @@ export class Z80Cpu {
   // Public operations
 
   /**
+   * Applies the RESET signal
+   */
+  reset(): void {
+    this.executeReset();
+  }
+
+  /**
    * Increases the clock with the specified amount of ticks.
    * @param ticks Clock ticks
    */
@@ -496,6 +468,8 @@ export class Z80Cpu {
     this.tacts += 3;
     this._pc++;
     this.refreshMemory();
+    return;
+    
     if (this.prefixMode === OpPrefixMode.None) {
       // -- The CPU is about to execute a standard operation
       switch (opCode) {
@@ -807,7 +781,7 @@ export class Z80Cpu {
     this.tacts++;
     this.opCode = this.readCodeMemory();
     this.tacts += 3;
-    this.pc++
+    this.pc++;
     const opMethod = indexedBitOperations[this.opCode];
     if (opMethod !== null) {
       opMethod(this, this.wz);
@@ -1285,7 +1259,7 @@ for (let b = 0; b < 0x100; b++) {
 // ========================================================================
 // Alu operations
 
-type AluAlgorithm = (cpu: Z80Cpu, value: u8, carry: bool) => void
+type AluAlgorithm = (cpu: Z80Cpu, value: u8, carry: bool) => void;
 const aluAlgorithms: AluAlgorithm[] = [
   AluADD,
   AluADC,
@@ -1297,7 +1271,7 @@ const aluAlgorithms: AluAlgorithm[] = [
   AluCP
 ];
 
-// 
+//
 /**
  * Executes the ADD operation.
  */
@@ -1311,23 +1285,24 @@ function AluADD(cpu: Z80Cpu, right: u8, cf: bool): void {
 function AluADC(cpu: Z80Cpu, right: u8, cf: bool): void {
   const c = cf ? 1 : 0;
   const result = cpu.a + right + c;
-  const signed = <i8>(cpu.a) + <i8>(right) + c;
-  const lNibble = ((cpu.a & 0x0F) + (right & 0x0F) + c) & 0x10;
+  const signed = <i8>cpu.a + <i8>right + c;
+  const lNibble = ((cpu.a & 0x0f) + (right & 0x0f) + c) & 0x10;
 
-  var flags = (result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3)) & 0xFF;
-  if ((result & 0xFF) === 0) {
-      flags |= FlagsSetMask.Z;
+  var flags =
+    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3) & 0xff;
+  if ((result & 0xff) === 0) {
+    flags |= FlagsSetMask.Z;
   }
   if (result >= 0x100) {
-      flags |= FlagsSetMask.C;
+    flags |= FlagsSetMask.C;
   }
   if (lNibble !== 0) {
-      flags |= FlagsSetMask.H;
+    flags |= FlagsSetMask.H;
   }
   if (signed >= 0x80 || signed <= -0x81) {
-      flags |= FlagsSetMask.PV;
+    flags |= FlagsSetMask.PV;
   }
-  cpu.af = <u16>((result << 8) | <u8>flags);
+  cpu.af = <u16>((result << 8) | (<u8>flags));
 }
 
 /**
@@ -1344,23 +1319,24 @@ function AluSBC(cpu: Z80Cpu, right: u8, cf: bool): void {
   const c = cf ? 1 : 0;
   const result = cpu.a - right - c;
   const signed = <i8>cpu.a - <i8>right - c;
-  const lNibble = ((cpu.a & 0x0F) - (right & 0x0F) - c) & 0x10;
+  const lNibble = ((cpu.a & 0x0f) - (right & 0x0f) - c) & 0x10;
 
-  var flags = (result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3)) & 0x0F;
+  var flags =
+    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3) & 0x0f;
   flags |= FlagsSetMask.N;
-  if ((result & 0xFF) === 0) {
-      flags |= FlagsSetMask.Z;
+  if ((result & 0xff) === 0) {
+    flags |= FlagsSetMask.Z;
   }
   if ((result & 0x10000) !== 0) {
-      flags |= FlagsSetMask.C;
+    flags |= FlagsSetMask.C;
   }
   if (lNibble !== 0) {
-      flags |= FlagsSetMask.H;
+    flags |= FlagsSetMask.H;
   }
   if (signed >= 0x80 || signed <= -0x81) {
-      flags |= FlagsSetMask.PV;
+    flags |= FlagsSetMask.PV;
   }
-  cpu.af = <u16>((result << 8) | <u8>flags);
+  cpu.af = <u16>((result << 8) | (<u8>flags));
 }
 
 /**
@@ -1393,20 +1369,21 @@ function AluOR(cpu: Z80Cpu, right: u8, cf: bool): void {
 function AluCP(cpu: Z80Cpu, right: u8, cf: bool): void {
   const result = cpu.a - right;
   const signed = <i8>cpu.a - <i8>right;
-  const lNibble = ((cpu.a & 0x0F) - (right & 0x0F)) & 0x10;
-  var flags = (result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3)) & 0xFF;
+  const lNibble = ((cpu.a & 0x0f) - (right & 0x0f)) & 0x10;
+  var flags =
+    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3) & 0xff;
   flags |= FlagsSetMask.N;
-  if ((result & 0xFF) === 0) {
-      flags |= FlagsSetMask.Z;
+  if ((result & 0xff) === 0) {
+    flags |= FlagsSetMask.Z;
   }
   if ((result & 0x10000) !== 0) {
-      flags |= FlagsSetMask.C;
+    flags |= FlagsSetMask.C;
   }
   if (lNibble !== 0) {
-      flags |= FlagsSetMask.H;
+    flags |= FlagsSetMask.H;
   }
   if (signed >= 0x80 || signed <= -0x81) {
-      flags |= FlagsSetMask.PV;
+    flags |= FlagsSetMask.PV;
   }
   cpu.f = <u8>flags;
 }

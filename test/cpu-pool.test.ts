@@ -4,7 +4,6 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { Api } from "../src/shared/api";
-import { AsBind } from "as-bind";
 import { Z80Cpu } from "../src/assembly/Z80Cpu";
 import * as loader from "@assemblyscript/loader";
 
@@ -13,13 +12,9 @@ const wasmBin = fs.readFileSync(
   path.join(__dirname, "../build/optimized.wasm")
 );
 const module = loader.instantiateSync(wasmBin, { /* imports */ }) as Api;
-let wasm: Api;
+let wasm: Api = module as Api;
 
 describe("CPU pool", () => {
-  before(async () => {
-    const asBindInstance = await AsBind.instantiate(wasmBin);
-    wasm = asBindInstance.exports as Api;
-  });
   beforeEach(() => {
     wasm.resetCpuPool();
   });
@@ -85,6 +80,7 @@ describe("CPU pool", () => {
       (module as any).getCpu(z80)
     ) as Z80Cpu;
 
+    console.log(cpu);
     expect(cpu.a).toBe(0xff);
   });
 

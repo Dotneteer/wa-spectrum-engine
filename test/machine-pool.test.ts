@@ -4,16 +4,21 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { Api } from "../src/shared/api";
-import { AsBind }  from "as-bind";
+import * as loader from "@assemblyscript/loader";
+import { TestZ80MachineState } from "../src/assembly";
+import { TestMachine } from "../src/shared/test-machine"
+import { RunMode } from "../src/shared/RunMode";
 
-const wasmBin = fs.readFileSync(path.join(__dirname, "../build/optimized.wasm"));
+const wasmBin = fs.readFileSync(
+  path.join(__dirname, "../build/optimized.wasm")
+);
+const module = loader.instantiateSync(wasmBin, { /* imports */ });
 let wasm: Api;
 
-describe("test machine pool", () => {
+describe("Test machine pool", () => {
   before(async () => {
-    const asBindInstance = await AsBind.instantiate(wasmBin);
-    wasm = asBindInstance.exports as Api;
-  })
+    wasm = module as unknown as Api;
+  });
   beforeEach(() => {
     wasm.resetTestMachinePool();
   });
@@ -75,6 +80,32 @@ describe("test machine pool", () => {
 
   it("Gets test machine", async () => {
     const machine = wasm.createTestMachine();
-    const memory = wasm.getMemory(machine);
+    const state = (module as any).TestZ80MachineState.wrap(
+      (module as unknown as Api).getTestMachineState(machine)
+    ) as TestZ80MachineState;
+    expect(state.sp).toBe(0xffff);
   });
+
+  it("Gets test machine memory", async () => {
+    const machine = wasm.createTestMachine();
+    const memptr = wasm.getTestMachineMemory(machine) as number;
+    const memory = module.__getArray(memptr);
+    console.log(memory);
+  });
+
+  it("Initializes code", async () => {
+    const machine = new TestMachine(module);
+    machine.initCode(RunMode.UntilEnd,
+      [
+        0x00,
+        0x01,
+        0x02,
+        0x03
+      ]);
+    const memory = machine.memory;
+    console.log(memory);
+    machine.run();
+    machine.release();
+  });
+
 });
