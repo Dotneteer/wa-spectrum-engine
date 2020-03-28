@@ -69,7 +69,7 @@ export class MemoryOp {
 // ============================================================================
 // I/O device used for testing
 
-let fakeInput: u8[] = [];
+let fakeInput: Uint8Array = new Uint8Array(0);
 let inputIndex = -1;
 
 /**
@@ -88,7 +88,7 @@ export function clearIoAccessLog(): void {
  * Sets the I/O input to use in the test machine
  * @param input Array of input bytes to use
  */
-export function setTestInput(input: u8[]): void {
+export function setTestInput(input: Uint8Array): void {
   if (input.length > 0) {
     fakeInput = input;
     inputIndex = 0;
@@ -114,8 +114,8 @@ export function writeSimpleIo(address: u16, value: u8): void {
  */
 export function readSimpleIo(address: u16): u8 {
   const value = inputIndex < 0 || inputIndex >= fakeInput.length
-    ? 0xff
-    : fakeInput[inputIndex++];
+    ? <u8>0xff
+    : <u8>fakeInput[inputIndex++];
   ioAccessLog.push({
     address,
     value,

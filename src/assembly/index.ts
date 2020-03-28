@@ -1,7 +1,6 @@
-import { ObjectPool } from "./ObjectPool";
-import { Z80Cpu } from "./Z80Cpu";
 import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 import { RunMode } from "../shared/RunMode";
+import { waTestZ80Machine } from "./test-machine/WaTestZ80Machine";
 
 export { Z80Cpu } from "./Z80Cpu";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
@@ -9,78 +8,22 @@ export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 // ============================================================================
 // Module initialization
 
-/**
- * Maximum CPU pool size
- */
-const CPU_POOL = 100;
-
-const cpuPool = new ObjectPool<Z80Cpu>(CPU_POOL, () => new Z80Cpu());
-
 export const UINT8ARRAY_ID = idof<Uint8Array>()
-
-// ============================================================================
-// CPU API
-
-/**
- * Gets the maximum size of the CPU pool
- */
-export function getCpuPoolMaxSize(): i32 {
-  return cpuPool.capacity;
-}
-
-/**
- * Resets the CPU pool by releasing all CPUs
- */
-export function resetCpuPool(): void {
-  cpuPool.reset();
-}
-
-/**
- * Creates a CPU
- * @returns Handle to the CPU, if can allocated; otherwise, -1.
- */
-export function createCpu(): i32 {
-  return cpuPool.create();
-}
-
-/**
- * Releases the specified CPU.
- * @param handle CPU handle
- * @returns True, if the CPU has been successfully released; otherwise, false.
- */
-export function releaseCpu(handle: i32): bool {
-  return cpuPool.release(handle);
-}
-
-/**
- * Gets the specified CPU.
- * @param handle CPU handle
- * @returns The CPU, if it can be found in the pool; otherwise, null.
- */
-export function getCpu(handle: i32): Z80Cpu | null {
-  return cpuPool.get(handle);
-}
-
-export function longOp(handle: i32): i32 {
-  const cpu = getCpu(handle);
-  if (!cpu) return -1;
-  cpu.longOp();
-  return cpu.af;
-}
+export const UINT32ARRAY_ID = idof<Uint32Array>()
 
 // ============================================================================
 // Z80TestMachine API
 
 export function initTestMachine(): void {
-  // TODO: Implement this method
+  waTestZ80Machine.reset();
 }
+
 /**
  * Gets the state of the test machine
  * @returns Test machine state
  */
 export function getTestMachineState(): TestZ80MachineState {
-  // TODO: Implement this method
-  throw new Error();
+  return waTestZ80Machine.machineState;
 }
 
 /**
@@ -88,16 +31,15 @@ export function getTestMachineState(): TestZ80MachineState {
  * @param state New machine state
  */
 export function updateTestMachineState(state: TestZ80MachineState): void {
-  // TODO: Implement this method
+  waTestZ80Machine.machineState = state;
 }
 
 /**
  * Gets the memory contents of the test machine
  * @returns Test machine memory contents
  */
-export function getTestMachineMemory(): u8[] {
-  // TODO: Implement this method
-  throw new Error();
+export function getTestMachineMemory(): Uint8Array {
+  return waTestZ80Machine.memory;
 }
 
 /**
@@ -106,7 +48,7 @@ export function getTestMachineMemory(): u8[] {
  * @param mem Memory contents
  */
 export function updateTestMachineMemory(mem: Uint8Array): void {
-  // TODO: Implement this method
+  waTestZ80Machine.memory = mem;
 }
 
 /**
@@ -115,7 +57,8 @@ export function updateTestMachineMemory(mem: Uint8Array): void {
  * @param code Initial code
  */
 export function initTestMachineCode(runMode: RunMode, code: Uint8Array): void {
-  // TODO: Implement this method
+  waTestZ80Machine.runMode = runMode;
+  waTestZ80Machine.initCode(code);
 }
 
 /**
@@ -123,31 +66,27 @@ export function initTestMachineCode(runMode: RunMode, code: Uint8Array): void {
  * @param input Input bytes to read
  */
 export function initTestMachineInput(input: Uint8Array): void {
-  // TODO: Implement this method
+  waTestZ80Machine.initInput(input);
 }
 
 /**
  * Runs the test machine with the specified code
  * @param handle Test machine state after run
  */
-export function runTestMachine(): TestZ80MachineState {
-  // TODO: Implement this method
-  throw new Error();
+export function runTestMachine(): void {
+  waTestZ80Machine.run();
 }
 
 /**
  * Gets the I/O access log of the test machine
  */
-export function getTestMachineIoAccessLog(): u32[] {
-  // TODO: Implement this method
-  throw new Error();
+export function getTestMachineIoAccessLog(): Uint32Array {
+  return waTestZ80Machine.memoryAccessLog;
 }
 
 /**
  * Gets the memory access log of the test machine
  */
-export function getTestMachineMemoryAccessLog(): u32[] {
-  // TODO: Implement this method
-  throw new Error();
+export function getTestMachineMemoryAccessLog(): Uint32Array {
+  return waTestZ80Machine.ioAccessLog;
 }
-

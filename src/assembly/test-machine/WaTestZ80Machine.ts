@@ -1,7 +1,8 @@
 import { TestZ80MachineState } from "./TestZ80MachineState";
-import { Z80StateFlags, Z80Cpu } from "../Z80Cpu";
+import { Z80Cpu } from "../Z80Cpu";
 import { RunMode } from "../../shared/RunMode"
-import { readSimpleMemory, writeSimpleMemory, MemoryOp, memoryAccessLog, IoOp, ioAccessLog, simpleMemory, resetMemory } from "./test-devices";
+import { readSimpleMemory, writeSimpleMemory, MemoryOp, memoryAccessLog, IoOp, ioAccessLog, simpleMemory, resetMemory, readSimpleIo, writeSimpleIo, setTestInput } from "./test-devices";
+import { Z80StateFlags } from "../../shared/cpu-enums";
 
 /**
  * This class represents a simple Z80 machine that can run code, access
@@ -9,56 +10,69 @@ import { readSimpleMemory, writeSimpleMemory, MemoryOp, memoryAccessLog, IoOp, i
  */
 class WaTestZ80Machine {
   readonly cpu: Z80Cpu;
-  codeEndsAt: u16 = 0;
-  runMode: RunMode = RunMode.UntilEnd;
+  codeEndsAt: u16;
+  runMode: RunMode;
 
   constructor() {
     this.cpu = new Z80Cpu();
+    this.reset();
     this.cpu.memoryReader = readSimpleMemory;
     this.cpu.memoryWriter = writeSimpleMemory;
+    this.cpu.portWriter = writeSimpleIo;
+    this.cpu.portReader = readSimpleIo;
   }
 
   /**
    * Resets the test machine
    */
   reset(): void {
+    this.codeEndsAt = 0;
+    this.runMode = RunMode.UntilEnd;
+    this.cpu.turnOn();
     resetMemory();
-    this.cpu.reset();
   }
+
   /**
    * Gets the access log of the memory
    */
-  get memoryAccessLog(): MemoryOp[] {
-    return memoryAccessLog;
+  get memoryAccessLog(): Uint32Array {
+    const log = new Uint32Array(memoryAccessLog.length);
+    for (let i = 0; i < memoryAccessLog.length; i++) {
+      const l = memoryAccessLog[i];
+      log[i] = (<u32>l.address << 16) | (<u16>l.value << 8) | (l.isWrite ? 1 : 0);
+    }
+    return log;
   }
 
   /**
    * Gets the acces log of I/O operations
    */
-  get ioAccessLog(): IoOp[] {
-    return ioAccessLog;
+  get ioAccessLog(): Uint32Array {
+    const log = new Uint32Array(ioAccessLog.length);
+    for (let i = 0; i < ioAccessLog.length; i++) {
+      const l = ioAccessLog[i];
+      log[i] = (<u32>l.address << 16) | (<u16>l.value << 8) | (l.isOutput ? 1 : 0);
+    }
+    return log;
   }
 
-  // /**
-  //  * Gets or sets the memory contents
-  //  */
-  // get memory(): u8[] {
-  //   return simpleMemory
-  // }
-  // set memory(mem: u8[]) {
-  //   this.memoryDevice.memory = mem;
-  // }
-
-  // get memoryLength(): i32 {
-  //   return this.memoryDevice.memory.length;
-  // }
+  /**
+   * Gets or sets the memory contents
+   */
+  get memory(): Uint8Array {
+    return simpleMemory;
+  }
+  set memory(mem: Uint8Array) {
+    for (let i = 0; i < simpleMemory.length; i++) {
+      simpleMemory[i] = mem[i];
+    }
+  }
 
   /**
    * Gets or sets the current state of the test machine
    */
   get machineState(): TestZ80MachineState {
     const state = this.cpu.getCpuState();
-    state.runMode = this.runMode;
     return state;
   }
   set machineState(state: TestZ80MachineState) {
@@ -89,6 +103,10 @@ class WaTestZ80Machine {
     // --- Init code execution
     this.cpu.reset();
     this.cpu.pc = startAt;
+  }
+
+  public initInput(input: Uint8Array): void {
+    setTestInput(input);
   }
 
   /**

@@ -1,58 +1,64 @@
-import { before } from "mocha";
+import "mocha";
 import * as expect from "expect";
 import * as fs from "fs";
 import * as path from "path";
 
 import { Api } from "../src/shared/api";
 import * as loader from "@assemblyscript/loader";
-import { TestZ80MachineState } from "../src/assembly";
-import { TestMachine } from "../src/shared/test-machine"
+import { TestMachine } from "../src/shared/test-machine";
 import { RunMode } from "../src/shared/RunMode";
 
 const wasmBin = fs.readFileSync(
   path.join(__dirname, "../build/optimized.wasm")
 );
-const module = loader.instantiateSync(wasmBin, { /* imports */ });
-let wasm: Api;
+const module = loader.instantiateSync(wasmBin, {
+  /* imports */
+}) as (loader.ASUtil  & Api);
+const testMachine = new TestMachine(module);
 
-describe("Test machine pool", () => {
-  before(async () => {
-    wasm = module as unknown as Api;
-  });
-  beforeEach(() => {
-    // wasm.resetTestMachinePool();
-  });
+describe("Test machine", () => {
 
-  it("Gets test machine", async () => {
-    // const machine = wasm.createTestMachine();
-    // const state = (module as any).TestZ80MachineState.wrap(
-    //   (module as unknown as Api).getTestMachineState(machine)
-    // ) as TestZ80MachineState;
-    // expect(state.sp).toBe(0xffff);
+  it("Init test machine", async () => {
+    const state = testMachine.reset();
+    expect(state.sp).toBe(0xffff);
+    expect(state.af).toBe(0xffff);
   });
 
-  it("Gets test machine memory", async () => {
-    // const machine = wasm.createTestMachine();
-    // const memptr = wasm.getTestMachineMemory(machine) as number;
-    // const memory = module.__getArray(memptr);
-    // console.log(memory);
+  it("Update test machine state works with A", async () => {
+    let state = testMachine.cpuState;
+    state.a = 0x12;
+    state.bc = 0x34ac;
+    testMachine.cpuState = state;
+    let state1 = testMachine.cpuState;
+    expect(state1.a).toBe(0x12);
+    expect(state1.bc).toBe(0x34ac);
+    const memory = testMachine.memory;
+    console.log(memory);
+    memory[2] = 100;
+    testMachine.memory = memory;
+    console.log(testMachine.memory);
   });
 
   it("Initializes code", async () => {
-    // const machine = new TestMachine(module);
-    // machine.initCode(RunMode.UntilEnd,
-    //   [
-    //     0x00,
-    //     0x01,
-    //     0x02,
-    //     0x03
-    //   ]);
-    // let memory = machine.memory;
-    // console.log(memory);
-    // const state = machine.run();
-    // memory = machine.memory;
-    // console.log(memory);
-    // machine.release();
+    testMachine.initCode(
+      [
+        0x00,
+        0x01,
+        0x02,
+        0x03
+      ]);
+    let memory = testMachine.memory;
+    const state = testMachine.run();
+    console.log(memory)
   });
+
+  it("creates jump table", () => {
+    let str = "";
+    for (let i = 0; i < 0x100; i++) {
+      str += `  /* 0x${i < 16 ? "0" : ""}${i.toString(16)} */ null,\r\n`;
+    }
+    console.log(str);
+  });
+
 
 });

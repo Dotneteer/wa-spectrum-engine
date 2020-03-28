@@ -1,57 +1,63 @@
 import { MemoryStatusArray } from "./MemoryStatusArray";
 import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
+import {
+  Z80StateFlags,
+  OpPrefixMode,
+  OpIndexMode,
+  FlagsSetMask
+} from "../shared/cpu-enums";
 
 export class Z80Cpu {
   // ==========================================================================
   // Registers
-  private _af: u16 = 0xffff;
-  private _bc: u16 = 0xffff;
-  private _de: u16 = 0xffff;
-  private _hl: u16 = 0xffff;
+  private _af: u16;
+  private _bc: u16;
+  private _de: u16;
+  private _hl: u16;
 
-  private _af_sec: u16 = 0xffff;
-  private _bc_sec: u16 = 0xffff;
-  private _de_sec: u16 = 0xffff;
-  private _hl_sec: u16 = 0xffff;
+  private _af_sec: u16;
+  private _bc_sec: u16;
+  private _de_sec: u16;
+  private _hl_sec: u16;
 
-  private _i: u8 = 0xff;
-  private _r: u8 = 0xff;
+  private _i: u8;
+  private _r: u8;
 
-  private _pc: u16 = 0xffff;
-  private _sp: u16 = 0xffff;
+  private _pc: u16;
+  private _sp: u16;
 
-  private _ix: u16 = 0xff;
-  private _iy: u16 = 0xff;
-  private _wz: u16 = 0xff;
+  private _ix: u16;
+  private _iy: u16;
+  private _wz: u16;
 
   // ==========================================================================
   // CPU state variables
   // Gets the current tact of the device -- the clock cycles since
   // the device was reset
-  tacts: u64 = 0;
+  tacts: u64;
 
   // CPU signals and HW flags
-  stateFlags: Z80StateFlags = Z80StateFlags.None;
+  stateFlags: Z80StateFlags;
 
   // Specifies the contention mode that affects the CPU.
   // False: ULA contention mode;
   // True: Gate array contention mode;
-  useGateArrayContention: bool = false;
+  useGateArrayContention: bool;
 
   // Interrupt Enable Flip-Flop #1
-  iff1: bool = false;
+  iff1: bool;
 
   // Interrupt Enable Flip-Flop #2
-  iff2: bool = false;
+  iff2: bool;
 
   // The current Interrupt mode
-  interruptMode: u8 = 0;
+  interruptMode: u8;
 
   // The interrupt is blocked
-  isInterruptBlocked: bool = false;
+  isInterruptBlocked: bool;
 
   // Is currently in opcode execution?
-  isInOpExecution: bool = false;
+  isInOpExecution: bool;
 
   // Gets the current execution flow status
   readonly executionFlowStatus: MemoryStatusArray = new MemoryStatusArray();
@@ -63,19 +69,17 @@ export class Z80Cpu {
   readonly memoryWriteStatus: MemoryStatusArray = new MemoryStatusArray();
 
   // The current Operation Prefix Mode
-  prefixMode: OpPrefixMode = OpPrefixMode.None;
+  prefixMode: OpPrefixMode;
 
   // The current Operation Index Mode
-  indexMode: OpIndexMode = OpIndexMode.None;
+  indexMode: OpIndexMode;
 
   // This flag indicates if the CPU entered into a maskable
   // interrupt method as a result of an INT signal
-  maskableInterruptModeEntered: bool = false;
+  maskableInterruptModeEntered: bool;
 
-  /**
-   * The last read operation code
-   */
-  opCode: u8 = 0xff;
+  // The last read operation code
+  opCode: u8;
 
   // ==========================================================================
   // Instantiation
@@ -87,7 +91,7 @@ export class Z80Cpu {
    * executed instead of these extended operations.
    */
   constructor(public allowExtendedInstructionSet: bool = false) {
-    this.executeReset();
+    this.turnOn();
     this.memoryReader = (_addr: u16) => 0xff;
     this.memoryWriter = (_addr: u16, _value: u8) => {};
     this.portReader = (_addr: u16) => 0xff;
@@ -110,13 +114,30 @@ export class Z80Cpu {
     this._r = 0xff;
     this._pc = 0xffff;
     this._sp = 0xffff;
-    this._ix = 0xff;
-    this._iy = 0xff;
-    this._wz = 0xff;
+    this._ix = 0xffff;
+    this._iy = 0xffff;
+    this._wz = 0xffff;
+
+    this.tacts = 0;
+    this.stateFlags = Z80StateFlags.None;
+    this.useGateArrayContention = false;
+    this.iff1 = false;
+    this.iff2 = false;
+    this.interruptMode = 0;
+    this.isInterruptBlocked = false;
+    this.isInOpExecution = false;
+    this.executionFlowStatus.clearAll();
+    this.memoryReadStatus.clearAll();
+    this.memoryWriteStatus.clearAll();
+    this.prefixMode = OpPrefixMode.None;
+    this.indexMode = OpIndexMode.None;
+    this.maskableInterruptModeEntered = false;
+    this.opCode = 0xff;
   }
 
   // ==========================================================================
   // Memory and port handling
+
   memoryReader: (addr: u16) => u8;
   memoryWriter: (addr: u16, value: u8) => void;
   portReader: (addr: u16) => u8;
@@ -133,19 +154,19 @@ export class Z80Cpu {
     s.a = this.a;
     s.f = this.f;
     s.af = this.af;
-    s.af_sec = this._af_;
+    s._af_ = this._af_;
     s.b = this.b;
     s.c = this.c;
     s.bc = this.bc;
-    s.bc_sec = this._bc_;
+    s._bc_ = this._bc_;
     s.d = this.d;
     s.e = this.e;
     s.de = this.de;
-    s.de_sec = this._de_;
+    s._de_ = this._de_;
     s.h = this.h;
     s.l = this.l;
     s.hl = this.hl;
-    s.hl_sec = this._hl_;
+    s._hl_ = this._hl_;
     s.i = this.i;
     s.iff1 = this.iff1;
     s.iff2 = this.iff2;
@@ -183,19 +204,19 @@ export class Z80Cpu {
     this.a = s.a;
     this.f = s.f;
     this.af = s.af;
-    this._af_ = s.af_sec;
+    this._af_ = s._af_;
     this.b = s.b;
     this.c = s.c;
     this.bc = s.bc;
-    this._bc_ = s.bc_sec;
+    this._bc_ = s._bc_;
     this.d = this.d;
     this.e = s.e;
     this.de = s.de;
-    this._de_ = s.de_sec;
+    this._de_ = s._de_;
     this.h = s.h;
     this.l = s.l;
     this.hl = s.hl;
-    this._hl_ = s.hl_sec;
+    this._hl_ = s._hl_;
     this.i = s.i;
     this.iff1 = s.iff1;
     this.iff2 = s.iff2;
@@ -230,7 +251,7 @@ export class Z80Cpu {
     return <u8>(this._af >> 8);
   }
   set a(v: u8) {
-    this._af = <u16>((v << 8) | (<u8>this._af));
+    this._af = ((<u16>v) << 8) | (<u8>this._af);
   }
   get f(): u8 {
     return <u8>this.af;
@@ -249,7 +270,7 @@ export class Z80Cpu {
     return <u8>(this._bc >> 8);
   }
   set b(v: u8) {
-    this._bc = <u16>((v << 8) | (<u8>this._bc));
+    this._bc = ((<u16>v) << 8) | (<u8>this._bc);
   }
   get c(): u8 {
     return <u8>this._bc;
@@ -268,7 +289,7 @@ export class Z80Cpu {
     return <u8>(this._de >> 8);
   }
   set d(v: u8) {
-    this._de = <u16>((v << 8) | (<u8>this._de));
+    this._de = ((<u16>v) << 8) | (<u8>this._de);
   }
   get e(): u8 {
     return <u8>this._de;
@@ -287,7 +308,7 @@ export class Z80Cpu {
     return <u8>(this._hl >> 8);
   }
   set h(v: u8) {
-    this._hl = <u16>((v << 8) | (<u8>this._hl));
+    this._hl = ((<u16>v) << 8) | (<u8>this._hl);
   }
   get l(): u8 {
     return <u8>this._hl;
@@ -357,7 +378,7 @@ export class Z80Cpu {
     return <u8>(this._ix >> 8);
   }
   set xh(v: u8) {
-    this._ix = <u16>((v << 8) | (<u8>this._ix));
+    this._ix = ((<u16>v) << 8) | (<u8>this._ix);
   }
   get xl(): u8 {
     return <u8>this._ix;
@@ -376,13 +397,13 @@ export class Z80Cpu {
     return <u8>(this._iy >> 8);
   }
   set yh(v: u8) {
-    this._iy = <u16>((v << 8) | (<u8>this._iy));
+    this._iy = ((<u16>v) << 8) | (<u8>this._iy);
   }
   get yl(): u8 {
     return <u8>this._iy;
   }
   set yl(v: u8) {
-    this._iy = <u16>((this._iy & 0xffff) | v);
+    this._iy = <u16>((this._iy & 0xff00) | v);
   }
   get iy(): u16 {
     return this._iy;
@@ -395,7 +416,7 @@ export class Z80Cpu {
     return <u8>(this._wz >> 8);
   }
   set wh(v: u8) {
-    this._wz = <u16>((v << 8) | (<u8>this._wz));
+    this._wz = ((<u16>v) << 8) | (<u8>this._wz);
   }
   get wl(): u8 {
     return <u8>this._wz;
@@ -603,11 +624,9 @@ export class Z80Cpu {
 
     // --- Get operation code and refresh the memory
     let opCode = this.readCodeMemory();
-    this.writeMemory(80, 100);
     this.tacts += 3;
     this._pc++;
     this.refreshMemory();
-    return;
 
     if (this.prefixMode === OpPrefixMode.None) {
       // -- The CPU is about to execute a standard operation
@@ -939,71 +958,6 @@ export class Z80Cpu {
 
 // ==========================================================================
 // Helper types
-
-export enum Z80StateFlags {
-  // No signal is set
-  None = 0,
-
-  // Indicates if an interrupt signal arrived
-  Int = 0x01,
-
-  // Indicates if a Non-Maskable Interrupt signal arrived
-  Nmi = 0x02,
-
-  // Indicates if a RESET signal arrived
-  Reset = 0x04,
-
-  // Is the CPU in HALTED state?
-  Halted = 0x08,
-
-  // Reset mask of INT
-  InvInt = 0xff - Int,
-
-  // Reset mask for NMI
-  InvNmi = 0xff - Nmi,
-
-  // Reset mask for RESET
-  InvReset = 0xff - Reset,
-
-  // Reset mask for HALT
-  InvHalted = 0xff - Halted
-}
-
-export enum OpPrefixMode {
-  // No operation prefix
-  None = 0,
-
-  // Extended mode (0xED prefix)
-  Extended,
-
-  // Bit operations mode (0xCB prefix)
-  Bit
-}
-
-export enum OpIndexMode {
-  // Indexed address mode is not used</summary>
-  None = 0,
-
-  // <summary>Indexed address with IX register</summary>
-  IX,
-
-  // <summary>Indexed address with IY register</summary>
-  IY
-}
-
-export enum FlagsSetMask {
-  S = 0x80,
-  Z = 0x40,
-  R5 = 0x20,
-  H = 0x10,
-  R3 = 0x08,
-  PV = 0x04,
-  N = 0x02,
-  C = 0x01,
-  SZPV = S | Z | PV,
-  NH = N | H,
-  R3R5 = R3 | R5
-}
 
 // ==========================================================================
 // ALU Helpers
@@ -1539,27 +1493,1312 @@ type IndexedCpuOp = (cpu: Z80Cpu, addr: u16) => void;
 /**
  * Standard operations without prefix
  */
-const standardOperations: (CpuOp | null)[] = [null, LdBcNN];
+const standardOperations: (CpuOp | null)[] = [
+  /* 0x00 */ null,
+  /* 0x01 */ LdBcNN,
+  /* 0x02 */ null,
+  /* 0x03 */ null,
+  /* 0x04 */ null,
+  /* 0x05 */ null,
+  /* 0x06 */ null,
+  /* 0x07 */ null,
+  /* 0x08 */ null,
+  /* 0x09 */ null,
+  /* 0x0a */ null,
+  /* 0x0b */ null,
+  /* 0x0c */ null,
+  /* 0x0d */ null,
+  /* 0x0e */ null,
+  /* 0x0f */ null,
+  /* 0x10 */ null,
+  /* 0x11 */ null,
+  /* 0x12 */ null,
+  /* 0x13 */ null,
+  /* 0x14 */ null,
+  /* 0x15 */ null,
+  /* 0x16 */ null,
+  /* 0x17 */ null,
+  /* 0x18 */ null,
+  /* 0x19 */ null,
+  /* 0x1a */ null,
+  /* 0x1b */ null,
+  /* 0x1c */ null,
+  /* 0x1d */ null,
+  /* 0x1e */ null,
+  /* 0x1f */ null,
+  /* 0x20 */ null,
+  /* 0x21 */ null,
+  /* 0x22 */ null,
+  /* 0x23 */ null,
+  /* 0x24 */ null,
+  /* 0x25 */ null,
+  /* 0x26 */ null,
+  /* 0x27 */ null,
+  /* 0x28 */ null,
+  /* 0x29 */ null,
+  /* 0x2a */ null,
+  /* 0x2b */ null,
+  /* 0x2c */ null,
+  /* 0x2d */ null,
+  /* 0x2e */ null,
+  /* 0x2f */ null,
+  /* 0x30 */ null,
+  /* 0x31 */ null,
+  /* 0x32 */ null,
+  /* 0x33 */ null,
+  /* 0x34 */ null,
+  /* 0x35 */ null,
+  /* 0x36 */ null,
+  /* 0x37 */ null,
+  /* 0x38 */ null,
+  /* 0x39 */ null,
+  /* 0x3a */ null,
+  /* 0x3b */ null,
+  /* 0x3c */ null,
+  /* 0x3d */ null,
+  /* 0x3e */ null,
+  /* 0x3f */ null,
+  /* 0x40 */ null,
+  /* 0x41 */ null,
+  /* 0x42 */ null,
+  /* 0x43 */ null,
+  /* 0x44 */ null,
+  /* 0x45 */ null,
+  /* 0x46 */ null,
+  /* 0x47 */ null,
+  /* 0x48 */ null,
+  /* 0x49 */ null,
+  /* 0x4a */ null,
+  /* 0x4b */ null,
+  /* 0x4c */ null,
+  /* 0x4d */ null,
+  /* 0x4e */ null,
+  /* 0x4f */ null,
+  /* 0x50 */ null,
+  /* 0x51 */ null,
+  /* 0x52 */ null,
+  /* 0x53 */ null,
+  /* 0x54 */ null,
+  /* 0x55 */ null,
+  /* 0x56 */ null,
+  /* 0x57 */ null,
+  /* 0x58 */ null,
+  /* 0x59 */ null,
+  /* 0x5a */ null,
+  /* 0x5b */ null,
+  /* 0x5c */ null,
+  /* 0x5d */ null,
+  /* 0x5e */ null,
+  /* 0x5f */ null,
+  /* 0x60 */ null,
+  /* 0x61 */ null,
+  /* 0x62 */ null,
+  /* 0x63 */ null,
+  /* 0x64 */ null,
+  /* 0x65 */ null,
+  /* 0x66 */ null,
+  /* 0x67 */ null,
+  /* 0x68 */ null,
+  /* 0x69 */ null,
+  /* 0x6a */ null,
+  /* 0x6b */ null,
+  /* 0x6c */ null,
+  /* 0x6d */ null,
+  /* 0x6e */ null,
+  /* 0x6f */ null,
+  /* 0x70 */ null,
+  /* 0x71 */ null,
+  /* 0x72 */ null,
+  /* 0x73 */ null,
+  /* 0x74 */ null,
+  /* 0x75 */ null,
+  /* 0x76 */ null,
+  /* 0x77 */ null,
+  /* 0x78 */ null,
+  /* 0x79 */ null,
+  /* 0x7a */ null,
+  /* 0x7b */ null,
+  /* 0x7c */ null,
+  /* 0x7d */ null,
+  /* 0x7e */ null,
+  /* 0x7f */ null,
+  /* 0x80 */ null,
+  /* 0x81 */ null,
+  /* 0x82 */ null,
+  /* 0x83 */ null,
+  /* 0x84 */ null,
+  /* 0x85 */ null,
+  /* 0x86 */ null,
+  /* 0x87 */ null,
+  /* 0x88 */ null,
+  /* 0x89 */ null,
+  /* 0x8a */ null,
+  /* 0x8b */ null,
+  /* 0x8c */ null,
+  /* 0x8d */ null,
+  /* 0x8e */ null,
+  /* 0x8f */ null,
+  /* 0x90 */ null,
+  /* 0x91 */ null,
+  /* 0x92 */ null,
+  /* 0x93 */ null,
+  /* 0x94 */ null,
+  /* 0x95 */ null,
+  /* 0x96 */ null,
+  /* 0x97 */ null,
+  /* 0x98 */ null,
+  /* 0x99 */ null,
+  /* 0x9a */ null,
+  /* 0x9b */ null,
+  /* 0x9c */ null,
+  /* 0x9d */ null,
+  /* 0x9e */ null,
+  /* 0x9f */ null,
+  /* 0xa0 */ null,
+  /* 0xa1 */ null,
+  /* 0xa2 */ null,
+  /* 0xa3 */ null,
+  /* 0xa4 */ null,
+  /* 0xa5 */ null,
+  /* 0xa6 */ null,
+  /* 0xa7 */ null,
+  /* 0xa8 */ null,
+  /* 0xa9 */ null,
+  /* 0xaa */ null,
+  /* 0xab */ null,
+  /* 0xac */ null,
+  /* 0xad */ null,
+  /* 0xae */ null,
+  /* 0xaf */ null,
+  /* 0xb0 */ null,
+  /* 0xb1 */ null,
+  /* 0xb2 */ null,
+  /* 0xb3 */ null,
+  /* 0xb4 */ null,
+  /* 0xb5 */ null,
+  /* 0xb6 */ null,
+  /* 0xb7 */ null,
+  /* 0xb8 */ null,
+  /* 0xb9 */ null,
+  /* 0xba */ null,
+  /* 0xbb */ null,
+  /* 0xbc */ null,
+  /* 0xbd */ null,
+  /* 0xbe */ null,
+  /* 0xbf */ null,
+  /* 0xc0 */ null,
+  /* 0xc1 */ null,
+  /* 0xc2 */ null,
+  /* 0xc3 */ null,
+  /* 0xc4 */ null,
+  /* 0xc5 */ null,
+  /* 0xc6 */ null,
+  /* 0xc7 */ null,
+  /* 0xc8 */ null,
+  /* 0xc9 */ null,
+  /* 0xca */ null,
+  /* 0xcb */ null,
+  /* 0xcc */ null,
+  /* 0xcd */ null,
+  /* 0xce */ null,
+  /* 0xcf */ null,
+  /* 0xd0 */ null,
+  /* 0xd1 */ null,
+  /* 0xd2 */ null,
+  /* 0xd3 */ null,
+  /* 0xd4 */ null,
+  /* 0xd5 */ null,
+  /* 0xd6 */ null,
+  /* 0xd7 */ null,
+  /* 0xd8 */ null,
+  /* 0xd9 */ null,
+  /* 0xda */ null,
+  /* 0xdb */ null,
+  /* 0xdc */ null,
+  /* 0xdd */ null,
+  /* 0xde */ null,
+  /* 0xdf */ null,
+  /* 0xe0 */ null,
+  /* 0xe1 */ null,
+  /* 0xe2 */ null,
+  /* 0xe3 */ null,
+  /* 0xe4 */ null,
+  /* 0xe5 */ null,
+  /* 0xe6 */ null,
+  /* 0xe7 */ null,
+  /* 0xe8 */ null,
+  /* 0xe9 */ null,
+  /* 0xea */ null,
+  /* 0xeb */ null,
+  /* 0xec */ null,
+  /* 0xed */ null,
+  /* 0xee */ null,
+  /* 0xef */ null,
+  /* 0xf0 */ null,
+  /* 0xf1 */ null,
+  /* 0xf2 */ null,
+  /* 0xf3 */ null,
+  /* 0xf4 */ null,
+  /* 0xf5 */ null,
+  /* 0xf6 */ null,
+  /* 0xf7 */ null,
+  /* 0xf8 */ null,
+  /* 0xf9 */ null,
+  /* 0xfa */ null,
+  /* 0xfb */ null,
+  /* 0xfc */ null,
+  /* 0xfd */ null,
+  /* 0xfe */ null,
+  /* 0xff */ null
+];
 
 /**
  * Extended operations with 0xED prefix
  */
-const extendedOperations: (CpuOp | null)[] = [null, LdBcNN];
+const extendedOperations: (CpuOp | null)[] = [
+  /* 0x00 */ null,
+  /* 0x01 */ LdBcNN,
+  /* 0x02 */ null,
+  /* 0x03 */ null,
+  /* 0x04 */ null,
+  /* 0x05 */ null,
+  /* 0x06 */ null,
+  /* 0x07 */ null,
+  /* 0x08 */ null,
+  /* 0x09 */ null,
+  /* 0x0a */ null,
+  /* 0x0b */ null,
+  /* 0x0c */ null,
+  /* 0x0d */ null,
+  /* 0x0e */ null,
+  /* 0x0f */ null,
+  /* 0x10 */ null,
+  /* 0x11 */ null,
+  /* 0x12 */ null,
+  /* 0x13 */ null,
+  /* 0x14 */ null,
+  /* 0x15 */ null,
+  /* 0x16 */ null,
+  /* 0x17 */ null,
+  /* 0x18 */ null,
+  /* 0x19 */ null,
+  /* 0x1a */ null,
+  /* 0x1b */ null,
+  /* 0x1c */ null,
+  /* 0x1d */ null,
+  /* 0x1e */ null,
+  /* 0x1f */ null,
+  /* 0x20 */ null,
+  /* 0x21 */ null,
+  /* 0x22 */ null,
+  /* 0x23 */ null,
+  /* 0x24 */ null,
+  /* 0x25 */ null,
+  /* 0x26 */ null,
+  /* 0x27 */ null,
+  /* 0x28 */ null,
+  /* 0x29 */ null,
+  /* 0x2a */ null,
+  /* 0x2b */ null,
+  /* 0x2c */ null,
+  /* 0x2d */ null,
+  /* 0x2e */ null,
+  /* 0x2f */ null,
+  /* 0x30 */ null,
+  /* 0x31 */ null,
+  /* 0x32 */ null,
+  /* 0x33 */ null,
+  /* 0x34 */ null,
+  /* 0x35 */ null,
+  /* 0x36 */ null,
+  /* 0x37 */ null,
+  /* 0x38 */ null,
+  /* 0x39 */ null,
+  /* 0x3a */ null,
+  /* 0x3b */ null,
+  /* 0x3c */ null,
+  /* 0x3d */ null,
+  /* 0x3e */ null,
+  /* 0x3f */ null,
+  /* 0x40 */ null,
+  /* 0x41 */ null,
+  /* 0x42 */ null,
+  /* 0x43 */ null,
+  /* 0x44 */ null,
+  /* 0x45 */ null,
+  /* 0x46 */ null,
+  /* 0x47 */ null,
+  /* 0x48 */ null,
+  /* 0x49 */ null,
+  /* 0x4a */ null,
+  /* 0x4b */ null,
+  /* 0x4c */ null,
+  /* 0x4d */ null,
+  /* 0x4e */ null,
+  /* 0x4f */ null,
+  /* 0x50 */ null,
+  /* 0x51 */ null,
+  /* 0x52 */ null,
+  /* 0x53 */ null,
+  /* 0x54 */ null,
+  /* 0x55 */ null,
+  /* 0x56 */ null,
+  /* 0x57 */ null,
+  /* 0x58 */ null,
+  /* 0x59 */ null,
+  /* 0x5a */ null,
+  /* 0x5b */ null,
+  /* 0x5c */ null,
+  /* 0x5d */ null,
+  /* 0x5e */ null,
+  /* 0x5f */ null,
+  /* 0x60 */ null,
+  /* 0x61 */ null,
+  /* 0x62 */ null,
+  /* 0x63 */ null,
+  /* 0x64 */ null,
+  /* 0x65 */ null,
+  /* 0x66 */ null,
+  /* 0x67 */ null,
+  /* 0x68 */ null,
+  /* 0x69 */ null,
+  /* 0x6a */ null,
+  /* 0x6b */ null,
+  /* 0x6c */ null,
+  /* 0x6d */ null,
+  /* 0x6e */ null,
+  /* 0x6f */ null,
+  /* 0x70 */ null,
+  /* 0x71 */ null,
+  /* 0x72 */ null,
+  /* 0x73 */ null,
+  /* 0x74 */ null,
+  /* 0x75 */ null,
+  /* 0x76 */ null,
+  /* 0x77 */ null,
+  /* 0x78 */ null,
+  /* 0x79 */ null,
+  /* 0x7a */ null,
+  /* 0x7b */ null,
+  /* 0x7c */ null,
+  /* 0x7d */ null,
+  /* 0x7e */ null,
+  /* 0x7f */ null,
+  /* 0x80 */ null,
+  /* 0x81 */ null,
+  /* 0x82 */ null,
+  /* 0x83 */ null,
+  /* 0x84 */ null,
+  /* 0x85 */ null,
+  /* 0x86 */ null,
+  /* 0x87 */ null,
+  /* 0x88 */ null,
+  /* 0x89 */ null,
+  /* 0x8a */ null,
+  /* 0x8b */ null,
+  /* 0x8c */ null,
+  /* 0x8d */ null,
+  /* 0x8e */ null,
+  /* 0x8f */ null,
+  /* 0x90 */ null,
+  /* 0x91 */ null,
+  /* 0x92 */ null,
+  /* 0x93 */ null,
+  /* 0x94 */ null,
+  /* 0x95 */ null,
+  /* 0x96 */ null,
+  /* 0x97 */ null,
+  /* 0x98 */ null,
+  /* 0x99 */ null,
+  /* 0x9a */ null,
+  /* 0x9b */ null,
+  /* 0x9c */ null,
+  /* 0x9d */ null,
+  /* 0x9e */ null,
+  /* 0x9f */ null,
+  /* 0xa0 */ null,
+  /* 0xa1 */ null,
+  /* 0xa2 */ null,
+  /* 0xa3 */ null,
+  /* 0xa4 */ null,
+  /* 0xa5 */ null,
+  /* 0xa6 */ null,
+  /* 0xa7 */ null,
+  /* 0xa8 */ null,
+  /* 0xa9 */ null,
+  /* 0xaa */ null,
+  /* 0xab */ null,
+  /* 0xac */ null,
+  /* 0xad */ null,
+  /* 0xae */ null,
+  /* 0xaf */ null,
+  /* 0xb0 */ null,
+  /* 0xb1 */ null,
+  /* 0xb2 */ null,
+  /* 0xb3 */ null,
+  /* 0xb4 */ null,
+  /* 0xb5 */ null,
+  /* 0xb6 */ null,
+  /* 0xb7 */ null,
+  /* 0xb8 */ null,
+  /* 0xb9 */ null,
+  /* 0xba */ null,
+  /* 0xbb */ null,
+  /* 0xbc */ null,
+  /* 0xbd */ null,
+  /* 0xbe */ null,
+  /* 0xbf */ null,
+  /* 0xc0 */ null,
+  /* 0xc1 */ null,
+  /* 0xc2 */ null,
+  /* 0xc3 */ null,
+  /* 0xc4 */ null,
+  /* 0xc5 */ null,
+  /* 0xc6 */ null,
+  /* 0xc7 */ null,
+  /* 0xc8 */ null,
+  /* 0xc9 */ null,
+  /* 0xca */ null,
+  /* 0xcb */ null,
+  /* 0xcc */ null,
+  /* 0xcd */ null,
+  /* 0xce */ null,
+  /* 0xcf */ null,
+  /* 0xd0 */ null,
+  /* 0xd1 */ null,
+  /* 0xd2 */ null,
+  /* 0xd3 */ null,
+  /* 0xd4 */ null,
+  /* 0xd5 */ null,
+  /* 0xd6 */ null,
+  /* 0xd7 */ null,
+  /* 0xd8 */ null,
+  /* 0xd9 */ null,
+  /* 0xda */ null,
+  /* 0xdb */ null,
+  /* 0xdc */ null,
+  /* 0xdd */ null,
+  /* 0xde */ null,
+  /* 0xdf */ null,
+  /* 0xe0 */ null,
+  /* 0xe1 */ null,
+  /* 0xe2 */ null,
+  /* 0xe3 */ null,
+  /* 0xe4 */ null,
+  /* 0xe5 */ null,
+  /* 0xe6 */ null,
+  /* 0xe7 */ null,
+  /* 0xe8 */ null,
+  /* 0xe9 */ null,
+  /* 0xea */ null,
+  /* 0xeb */ null,
+  /* 0xec */ null,
+  /* 0xed */ null,
+  /* 0xee */ null,
+  /* 0xef */ null,
+  /* 0xf0 */ null,
+  /* 0xf1 */ null,
+  /* 0xf2 */ null,
+  /* 0xf3 */ null,
+  /* 0xf4 */ null,
+  /* 0xf5 */ null,
+  /* 0xf6 */ null,
+  /* 0xf7 */ null,
+  /* 0xf8 */ null,
+  /* 0xf9 */ null,
+  /* 0xfa */ null,
+  /* 0xfb */ null,
+  /* 0xfc */ null,
+  /* 0xfd */ null,
+  /* 0xfe */ null,
+  /* 0xff */ null
+];
 
 /**
  * Bit operations with 0xCB prefix
  */
-const bitOperations: (CpuOp | null)[] = [null, LdBcNN];
+const bitOperations: (CpuOp | null)[] = [
+  /* 0x00 */ null,
+  /* 0x01 */ null,
+  /* 0x02 */ null,
+  /* 0x03 */ null,
+  /* 0x04 */ null,
+  /* 0x05 */ null,
+  /* 0x06 */ null,
+  /* 0x07 */ null,
+  /* 0x08 */ null,
+  /* 0x09 */ null,
+  /* 0x0a */ null,
+  /* 0x0b */ null,
+  /* 0x0c */ null,
+  /* 0x0d */ null,
+  /* 0x0e */ null,
+  /* 0x0f */ null,
+  /* 0x10 */ null,
+  /* 0x11 */ null,
+  /* 0x12 */ null,
+  /* 0x13 */ null,
+  /* 0x14 */ null,
+  /* 0x15 */ null,
+  /* 0x16 */ null,
+  /* 0x17 */ null,
+  /* 0x18 */ null,
+  /* 0x19 */ null,
+  /* 0x1a */ null,
+  /* 0x1b */ null,
+  /* 0x1c */ null,
+  /* 0x1d */ null,
+  /* 0x1e */ null,
+  /* 0x1f */ null,
+  /* 0x20 */ null,
+  /* 0x21 */ null,
+  /* 0x22 */ null,
+  /* 0x23 */ null,
+  /* 0x24 */ null,
+  /* 0x25 */ null,
+  /* 0x26 */ null,
+  /* 0x27 */ null,
+  /* 0x28 */ null,
+  /* 0x29 */ null,
+  /* 0x2a */ null,
+  /* 0x2b */ null,
+  /* 0x2c */ null,
+  /* 0x2d */ null,
+  /* 0x2e */ null,
+  /* 0x2f */ null,
+  /* 0x30 */ null,
+  /* 0x31 */ null,
+  /* 0x32 */ null,
+  /* 0x33 */ null,
+  /* 0x34 */ null,
+  /* 0x35 */ null,
+  /* 0x36 */ null,
+  /* 0x37 */ null,
+  /* 0x38 */ null,
+  /* 0x39 */ null,
+  /* 0x3a */ null,
+  /* 0x3b */ null,
+  /* 0x3c */ null,
+  /* 0x3d */ null,
+  /* 0x3e */ null,
+  /* 0x3f */ null,
+  /* 0x40 */ null,
+  /* 0x41 */ null,
+  /* 0x42 */ null,
+  /* 0x43 */ null,
+  /* 0x44 */ null,
+  /* 0x45 */ null,
+  /* 0x46 */ null,
+  /* 0x47 */ null,
+  /* 0x48 */ null,
+  /* 0x49 */ null,
+  /* 0x4a */ null,
+  /* 0x4b */ null,
+  /* 0x4c */ null,
+  /* 0x4d */ null,
+  /* 0x4e */ null,
+  /* 0x4f */ null,
+  /* 0x50 */ null,
+  /* 0x51 */ null,
+  /* 0x52 */ null,
+  /* 0x53 */ null,
+  /* 0x54 */ null,
+  /* 0x55 */ null,
+  /* 0x56 */ null,
+  /* 0x57 */ null,
+  /* 0x58 */ null,
+  /* 0x59 */ null,
+  /* 0x5a */ null,
+  /* 0x5b */ null,
+  /* 0x5c */ null,
+  /* 0x5d */ null,
+  /* 0x5e */ null,
+  /* 0x5f */ null,
+  /* 0x60 */ null,
+  /* 0x61 */ null,
+  /* 0x62 */ null,
+  /* 0x63 */ null,
+  /* 0x64 */ null,
+  /* 0x65 */ null,
+  /* 0x66 */ null,
+  /* 0x67 */ null,
+  /* 0x68 */ null,
+  /* 0x69 */ null,
+  /* 0x6a */ null,
+  /* 0x6b */ null,
+  /* 0x6c */ null,
+  /* 0x6d */ null,
+  /* 0x6e */ null,
+  /* 0x6f */ null,
+  /* 0x70 */ null,
+  /* 0x71 */ null,
+  /* 0x72 */ null,
+  /* 0x73 */ null,
+  /* 0x74 */ null,
+  /* 0x75 */ null,
+  /* 0x76 */ null,
+  /* 0x77 */ null,
+  /* 0x78 */ null,
+  /* 0x79 */ null,
+  /* 0x7a */ null,
+  /* 0x7b */ null,
+  /* 0x7c */ null,
+  /* 0x7d */ null,
+  /* 0x7e */ null,
+  /* 0x7f */ null,
+  /* 0x80 */ null,
+  /* 0x81 */ null,
+  /* 0x82 */ null,
+  /* 0x83 */ null,
+  /* 0x84 */ null,
+  /* 0x85 */ null,
+  /* 0x86 */ null,
+  /* 0x87 */ null,
+  /* 0x88 */ null,
+  /* 0x89 */ null,
+  /* 0x8a */ null,
+  /* 0x8b */ null,
+  /* 0x8c */ null,
+  /* 0x8d */ null,
+  /* 0x8e */ null,
+  /* 0x8f */ null,
+  /* 0x90 */ null,
+  /* 0x91 */ null,
+  /* 0x92 */ null,
+  /* 0x93 */ null,
+  /* 0x94 */ null,
+  /* 0x95 */ null,
+  /* 0x96 */ null,
+  /* 0x97 */ null,
+  /* 0x98 */ null,
+  /* 0x99 */ null,
+  /* 0x9a */ null,
+  /* 0x9b */ null,
+  /* 0x9c */ null,
+  /* 0x9d */ null,
+  /* 0x9e */ null,
+  /* 0x9f */ null,
+  /* 0xa0 */ null,
+  /* 0xa1 */ null,
+  /* 0xa2 */ null,
+  /* 0xa3 */ null,
+  /* 0xa4 */ null,
+  /* 0xa5 */ null,
+  /* 0xa6 */ null,
+  /* 0xa7 */ null,
+  /* 0xa8 */ null,
+  /* 0xa9 */ null,
+  /* 0xaa */ null,
+  /* 0xab */ null,
+  /* 0xac */ null,
+  /* 0xad */ null,
+  /* 0xae */ null,
+  /* 0xaf */ null,
+  /* 0xb0 */ null,
+  /* 0xb1 */ null,
+  /* 0xb2 */ null,
+  /* 0xb3 */ null,
+  /* 0xb4 */ null,
+  /* 0xb5 */ null,
+  /* 0xb6 */ null,
+  /* 0xb7 */ null,
+  /* 0xb8 */ null,
+  /* 0xb9 */ null,
+  /* 0xba */ null,
+  /* 0xbb */ null,
+  /* 0xbc */ null,
+  /* 0xbd */ null,
+  /* 0xbe */ null,
+  /* 0xbf */ null,
+  /* 0xc0 */ null,
+  /* 0xc1 */ null,
+  /* 0xc2 */ null,
+  /* 0xc3 */ null,
+  /* 0xc4 */ null,
+  /* 0xc5 */ null,
+  /* 0xc6 */ null,
+  /* 0xc7 */ null,
+  /* 0xc8 */ null,
+  /* 0xc9 */ null,
+  /* 0xca */ null,
+  /* 0xcb */ null,
+  /* 0xcc */ null,
+  /* 0xcd */ null,
+  /* 0xce */ null,
+  /* 0xcf */ null,
+  /* 0xd0 */ null,
+  /* 0xd1 */ null,
+  /* 0xd2 */ null,
+  /* 0xd3 */ null,
+  /* 0xd4 */ null,
+  /* 0xd5 */ null,
+  /* 0xd6 */ null,
+  /* 0xd7 */ null,
+  /* 0xd8 */ null,
+  /* 0xd9 */ null,
+  /* 0xda */ null,
+  /* 0xdb */ null,
+  /* 0xdc */ null,
+  /* 0xdd */ null,
+  /* 0xde */ null,
+  /* 0xdf */ null,
+  /* 0xe0 */ null,
+  /* 0xe1 */ null,
+  /* 0xe2 */ null,
+  /* 0xe3 */ null,
+  /* 0xe4 */ null,
+  /* 0xe5 */ null,
+  /* 0xe6 */ null,
+  /* 0xe7 */ null,
+  /* 0xe8 */ null,
+  /* 0xe9 */ null,
+  /* 0xea */ null,
+  /* 0xeb */ null,
+  /* 0xec */ null,
+  /* 0xed */ null,
+  /* 0xee */ null,
+  /* 0xef */ null,
+  /* 0xf0 */ null,
+  /* 0xf1 */ null,
+  /* 0xf2 */ null,
+  /* 0xf3 */ null,
+  /* 0xf4 */ null,
+  /* 0xf5 */ null,
+  /* 0xf6 */ null,
+  /* 0xf7 */ null,
+  /* 0xf8 */ null,
+  /* 0xf9 */ null,
+  /* 0xfa */ null,
+  /* 0xfb */ null,
+  /* 0xfc */ null,
+  /* 0xfd */ null,
+  /* 0xfe */ null,
+  /* 0xff */ null
+];
 
 /**
  * Indexed operations with 0xDD/0xFD prefix
  */
-const indexedOperations: (CpuOp | null)[] = [null, LdBcNN];
+const indexedOperations: (CpuOp | null)[] = [
+  /* 0x00 */ null,
+  /* 0x01 */ null,
+  /* 0x02 */ null,
+  /* 0x03 */ null,
+  /* 0x04 */ null,
+  /* 0x05 */ null,
+  /* 0x06 */ null,
+  /* 0x07 */ null,
+  /* 0x08 */ null,
+  /* 0x09 */ null,
+  /* 0x0a */ null,
+  /* 0x0b */ null,
+  /* 0x0c */ null,
+  /* 0x0d */ null,
+  /* 0x0e */ null,
+  /* 0x0f */ null,
+  /* 0x10 */ null,
+  /* 0x11 */ null,
+  /* 0x12 */ null,
+  /* 0x13 */ null,
+  /* 0x14 */ null,
+  /* 0x15 */ null,
+  /* 0x16 */ null,
+  /* 0x17 */ null,
+  /* 0x18 */ null,
+  /* 0x19 */ null,
+  /* 0x1a */ null,
+  /* 0x1b */ null,
+  /* 0x1c */ null,
+  /* 0x1d */ null,
+  /* 0x1e */ null,
+  /* 0x1f */ null,
+  /* 0x20 */ null,
+  /* 0x21 */ null,
+  /* 0x22 */ null,
+  /* 0x23 */ null,
+  /* 0x24 */ null,
+  /* 0x25 */ null,
+  /* 0x26 */ null,
+  /* 0x27 */ null,
+  /* 0x28 */ null,
+  /* 0x29 */ null,
+  /* 0x2a */ null,
+  /* 0x2b */ null,
+  /* 0x2c */ null,
+  /* 0x2d */ null,
+  /* 0x2e */ null,
+  /* 0x2f */ null,
+  /* 0x30 */ null,
+  /* 0x31 */ null,
+  /* 0x32 */ null,
+  /* 0x33 */ null,
+  /* 0x34 */ null,
+  /* 0x35 */ null,
+  /* 0x36 */ null,
+  /* 0x37 */ null,
+  /* 0x38 */ null,
+  /* 0x39 */ null,
+  /* 0x3a */ null,
+  /* 0x3b */ null,
+  /* 0x3c */ null,
+  /* 0x3d */ null,
+  /* 0x3e */ null,
+  /* 0x3f */ null,
+  /* 0x40 */ null,
+  /* 0x41 */ null,
+  /* 0x42 */ null,
+  /* 0x43 */ null,
+  /* 0x44 */ null,
+  /* 0x45 */ null,
+  /* 0x46 */ null,
+  /* 0x47 */ null,
+  /* 0x48 */ null,
+  /* 0x49 */ null,
+  /* 0x4a */ null,
+  /* 0x4b */ null,
+  /* 0x4c */ null,
+  /* 0x4d */ null,
+  /* 0x4e */ null,
+  /* 0x4f */ null,
+  /* 0x50 */ null,
+  /* 0x51 */ null,
+  /* 0x52 */ null,
+  /* 0x53 */ null,
+  /* 0x54 */ null,
+  /* 0x55 */ null,
+  /* 0x56 */ null,
+  /* 0x57 */ null,
+  /* 0x58 */ null,
+  /* 0x59 */ null,
+  /* 0x5a */ null,
+  /* 0x5b */ null,
+  /* 0x5c */ null,
+  /* 0x5d */ null,
+  /* 0x5e */ null,
+  /* 0x5f */ null,
+  /* 0x60 */ null,
+  /* 0x61 */ null,
+  /* 0x62 */ null,
+  /* 0x63 */ null,
+  /* 0x64 */ null,
+  /* 0x65 */ null,
+  /* 0x66 */ null,
+  /* 0x67 */ null,
+  /* 0x68 */ null,
+  /* 0x69 */ null,
+  /* 0x6a */ null,
+  /* 0x6b */ null,
+  /* 0x6c */ null,
+  /* 0x6d */ null,
+  /* 0x6e */ null,
+  /* 0x6f */ null,
+  /* 0x70 */ null,
+  /* 0x71 */ null,
+  /* 0x72 */ null,
+  /* 0x73 */ null,
+  /* 0x74 */ null,
+  /* 0x75 */ null,
+  /* 0x76 */ null,
+  /* 0x77 */ null,
+  /* 0x78 */ null,
+  /* 0x79 */ null,
+  /* 0x7a */ null,
+  /* 0x7b */ null,
+  /* 0x7c */ null,
+  /* 0x7d */ null,
+  /* 0x7e */ null,
+  /* 0x7f */ null,
+  /* 0x80 */ null,
+  /* 0x81 */ null,
+  /* 0x82 */ null,
+  /* 0x83 */ null,
+  /* 0x84 */ null,
+  /* 0x85 */ null,
+  /* 0x86 */ null,
+  /* 0x87 */ null,
+  /* 0x88 */ null,
+  /* 0x89 */ null,
+  /* 0x8a */ null,
+  /* 0x8b */ null,
+  /* 0x8c */ null,
+  /* 0x8d */ null,
+  /* 0x8e */ null,
+  /* 0x8f */ null,
+  /* 0x90 */ null,
+  /* 0x91 */ null,
+  /* 0x92 */ null,
+  /* 0x93 */ null,
+  /* 0x94 */ null,
+  /* 0x95 */ null,
+  /* 0x96 */ null,
+  /* 0x97 */ null,
+  /* 0x98 */ null,
+  /* 0x99 */ null,
+  /* 0x9a */ null,
+  /* 0x9b */ null,
+  /* 0x9c */ null,
+  /* 0x9d */ null,
+  /* 0x9e */ null,
+  /* 0x9f */ null,
+  /* 0xa0 */ null,
+  /* 0xa1 */ null,
+  /* 0xa2 */ null,
+  /* 0xa3 */ null,
+  /* 0xa4 */ null,
+  /* 0xa5 */ null,
+  /* 0xa6 */ null,
+  /* 0xa7 */ null,
+  /* 0xa8 */ null,
+  /* 0xa9 */ null,
+  /* 0xaa */ null,
+  /* 0xab */ null,
+  /* 0xac */ null,
+  /* 0xad */ null,
+  /* 0xae */ null,
+  /* 0xaf */ null,
+  /* 0xb0 */ null,
+  /* 0xb1 */ null,
+  /* 0xb2 */ null,
+  /* 0xb3 */ null,
+  /* 0xb4 */ null,
+  /* 0xb5 */ null,
+  /* 0xb6 */ null,
+  /* 0xb7 */ null,
+  /* 0xb8 */ null,
+  /* 0xb9 */ null,
+  /* 0xba */ null,
+  /* 0xbb */ null,
+  /* 0xbc */ null,
+  /* 0xbd */ null,
+  /* 0xbe */ null,
+  /* 0xbf */ null,
+  /* 0xc0 */ null,
+  /* 0xc1 */ null,
+  /* 0xc2 */ null,
+  /* 0xc3 */ null,
+  /* 0xc4 */ null,
+  /* 0xc5 */ null,
+  /* 0xc6 */ null,
+  /* 0xc7 */ null,
+  /* 0xc8 */ null,
+  /* 0xc9 */ null,
+  /* 0xca */ null,
+  /* 0xcb */ null,
+  /* 0xcc */ null,
+  /* 0xcd */ null,
+  /* 0xce */ null,
+  /* 0xcf */ null,
+  /* 0xd0 */ null,
+  /* 0xd1 */ null,
+  /* 0xd2 */ null,
+  /* 0xd3 */ null,
+  /* 0xd4 */ null,
+  /* 0xd5 */ null,
+  /* 0xd6 */ null,
+  /* 0xd7 */ null,
+  /* 0xd8 */ null,
+  /* 0xd9 */ null,
+  /* 0xda */ null,
+  /* 0xdb */ null,
+  /* 0xdc */ null,
+  /* 0xdd */ null,
+  /* 0xde */ null,
+  /* 0xdf */ null,
+  /* 0xe0 */ null,
+  /* 0xe1 */ null,
+  /* 0xe2 */ null,
+  /* 0xe3 */ null,
+  /* 0xe4 */ null,
+  /* 0xe5 */ null,
+  /* 0xe6 */ null,
+  /* 0xe7 */ null,
+  /* 0xe8 */ null,
+  /* 0xe9 */ null,
+  /* 0xea */ null,
+  /* 0xeb */ null,
+  /* 0xec */ null,
+  /* 0xed */ null,
+  /* 0xee */ null,
+  /* 0xef */ null,
+  /* 0xf0 */ null,
+  /* 0xf1 */ null,
+  /* 0xf2 */ null,
+  /* 0xf3 */ null,
+  /* 0xf4 */ null,
+  /* 0xf5 */ null,
+  /* 0xf6 */ null,
+  /* 0xf7 */ null,
+  /* 0xf8 */ null,
+  /* 0xf9 */ null,
+  /* 0xfa */ null,
+  /* 0xfb */ null,
+  /* 0xfc */ null,
+  /* 0xfd */ null,
+  /* 0xfe */ null,
+  /* 0xff */ null
+];
 
 /**
  * Indexed bit operations with 0xCDB, 0xDD/0xFD prefix
  */
-const indexedBitOperations: (IndexedCpuOp | null)[] = [null, LdBcNNIdx];
+const indexedBitOperations: (IndexedCpuOp | null)[] = [
+  /* 0x00 */ null,
+  /* 0x01 */ LdBcNNIdx,
+  /* 0x02 */ null,
+  /* 0x03 */ null,
+  /* 0x04 */ null,
+  /* 0x05 */ null,
+  /* 0x06 */ null,
+  /* 0x07 */ null,
+  /* 0x08 */ null,
+  /* 0x09 */ null,
+  /* 0x0a */ null,
+  /* 0x0b */ null,
+  /* 0x0c */ null,
+  /* 0x0d */ null,
+  /* 0x0e */ null,
+  /* 0x0f */ null,
+  /* 0x10 */ null,
+  /* 0x11 */ null,
+  /* 0x12 */ null,
+  /* 0x13 */ null,
+  /* 0x14 */ null,
+  /* 0x15 */ null,
+  /* 0x16 */ null,
+  /* 0x17 */ null,
+  /* 0x18 */ null,
+  /* 0x19 */ null,
+  /* 0x1a */ null,
+  /* 0x1b */ null,
+  /* 0x1c */ null,
+  /* 0x1d */ null,
+  /* 0x1e */ null,
+  /* 0x1f */ null,
+  /* 0x20 */ null,
+  /* 0x21 */ null,
+  /* 0x22 */ null,
+  /* 0x23 */ null,
+  /* 0x24 */ null,
+  /* 0x25 */ null,
+  /* 0x26 */ null,
+  /* 0x27 */ null,
+  /* 0x28 */ null,
+  /* 0x29 */ null,
+  /* 0x2a */ null,
+  /* 0x2b */ null,
+  /* 0x2c */ null,
+  /* 0x2d */ null,
+  /* 0x2e */ null,
+  /* 0x2f */ null,
+  /* 0x30 */ null,
+  /* 0x31 */ null,
+  /* 0x32 */ null,
+  /* 0x33 */ null,
+  /* 0x34 */ null,
+  /* 0x35 */ null,
+  /* 0x36 */ null,
+  /* 0x37 */ null,
+  /* 0x38 */ null,
+  /* 0x39 */ null,
+  /* 0x3a */ null,
+  /* 0x3b */ null,
+  /* 0x3c */ null,
+  /* 0x3d */ null,
+  /* 0x3e */ null,
+  /* 0x3f */ null,
+  /* 0x40 */ null,
+  /* 0x41 */ null,
+  /* 0x42 */ null,
+  /* 0x43 */ null,
+  /* 0x44 */ null,
+  /* 0x45 */ null,
+  /* 0x46 */ null,
+  /* 0x47 */ null,
+  /* 0x48 */ null,
+  /* 0x49 */ null,
+  /* 0x4a */ null,
+  /* 0x4b */ null,
+  /* 0x4c */ null,
+  /* 0x4d */ null,
+  /* 0x4e */ null,
+  /* 0x4f */ null,
+  /* 0x50 */ null,
+  /* 0x51 */ null,
+  /* 0x52 */ null,
+  /* 0x53 */ null,
+  /* 0x54 */ null,
+  /* 0x55 */ null,
+  /* 0x56 */ null,
+  /* 0x57 */ null,
+  /* 0x58 */ null,
+  /* 0x59 */ null,
+  /* 0x5a */ null,
+  /* 0x5b */ null,
+  /* 0x5c */ null,
+  /* 0x5d */ null,
+  /* 0x5e */ null,
+  /* 0x5f */ null,
+  /* 0x60 */ null,
+  /* 0x61 */ null,
+  /* 0x62 */ null,
+  /* 0x63 */ null,
+  /* 0x64 */ null,
+  /* 0x65 */ null,
+  /* 0x66 */ null,
+  /* 0x67 */ null,
+  /* 0x68 */ null,
+  /* 0x69 */ null,
+  /* 0x6a */ null,
+  /* 0x6b */ null,
+  /* 0x6c */ null,
+  /* 0x6d */ null,
+  /* 0x6e */ null,
+  /* 0x6f */ null,
+  /* 0x70 */ null,
+  /* 0x71 */ null,
+  /* 0x72 */ null,
+  /* 0x73 */ null,
+  /* 0x74 */ null,
+  /* 0x75 */ null,
+  /* 0x76 */ null,
+  /* 0x77 */ null,
+  /* 0x78 */ null,
+  /* 0x79 */ null,
+  /* 0x7a */ null,
+  /* 0x7b */ null,
+  /* 0x7c */ null,
+  /* 0x7d */ null,
+  /* 0x7e */ null,
+  /* 0x7f */ null,
+  /* 0x80 */ null,
+  /* 0x81 */ null,
+  /* 0x82 */ null,
+  /* 0x83 */ null,
+  /* 0x84 */ null,
+  /* 0x85 */ null,
+  /* 0x86 */ null,
+  /* 0x87 */ null,
+  /* 0x88 */ null,
+  /* 0x89 */ null,
+  /* 0x8a */ null,
+  /* 0x8b */ null,
+  /* 0x8c */ null,
+  /* 0x8d */ null,
+  /* 0x8e */ null,
+  /* 0x8f */ null,
+  /* 0x90 */ null,
+  /* 0x91 */ null,
+  /* 0x92 */ null,
+  /* 0x93 */ null,
+  /* 0x94 */ null,
+  /* 0x95 */ null,
+  /* 0x96 */ null,
+  /* 0x97 */ null,
+  /* 0x98 */ null,
+  /* 0x99 */ null,
+  /* 0x9a */ null,
+  /* 0x9b */ null,
+  /* 0x9c */ null,
+  /* 0x9d */ null,
+  /* 0x9e */ null,
+  /* 0x9f */ null,
+  /* 0xa0 */ null,
+  /* 0xa1 */ null,
+  /* 0xa2 */ null,
+  /* 0xa3 */ null,
+  /* 0xa4 */ null,
+  /* 0xa5 */ null,
+  /* 0xa6 */ null,
+  /* 0xa7 */ null,
+  /* 0xa8 */ null,
+  /* 0xa9 */ null,
+  /* 0xaa */ null,
+  /* 0xab */ null,
+  /* 0xac */ null,
+  /* 0xad */ null,
+  /* 0xae */ null,
+  /* 0xaf */ null,
+  /* 0xb0 */ null,
+  /* 0xb1 */ null,
+  /* 0xb2 */ null,
+  /* 0xb3 */ null,
+  /* 0xb4 */ null,
+  /* 0xb5 */ null,
+  /* 0xb6 */ null,
+  /* 0xb7 */ null,
+  /* 0xb8 */ null,
+  /* 0xb9 */ null,
+  /* 0xba */ null,
+  /* 0xbb */ null,
+  /* 0xbc */ null,
+  /* 0xbd */ null,
+  /* 0xbe */ null,
+  /* 0xbf */ null,
+  /* 0xc0 */ null,
+  /* 0xc1 */ null,
+  /* 0xc2 */ null,
+  /* 0xc3 */ null,
+  /* 0xc4 */ null,
+  /* 0xc5 */ null,
+  /* 0xc6 */ null,
+  /* 0xc7 */ null,
+  /* 0xc8 */ null,
+  /* 0xc9 */ null,
+  /* 0xca */ null,
+  /* 0xcb */ null,
+  /* 0xcc */ null,
+  /* 0xcd */ null,
+  /* 0xce */ null,
+  /* 0xcf */ null,
+  /* 0xd0 */ null,
+  /* 0xd1 */ null,
+  /* 0xd2 */ null,
+  /* 0xd3 */ null,
+  /* 0xd4 */ null,
+  /* 0xd5 */ null,
+  /* 0xd6 */ null,
+  /* 0xd7 */ null,
+  /* 0xd8 */ null,
+  /* 0xd9 */ null,
+  /* 0xda */ null,
+  /* 0xdb */ null,
+  /* 0xdc */ null,
+  /* 0xdd */ null,
+  /* 0xde */ null,
+  /* 0xdf */ null,
+  /* 0xe0 */ null,
+  /* 0xe1 */ null,
+  /* 0xe2 */ null,
+  /* 0xe3 */ null,
+  /* 0xe4 */ null,
+  /* 0xe5 */ null,
+  /* 0xe6 */ null,
+  /* 0xe7 */ null,
+  /* 0xe8 */ null,
+  /* 0xe9 */ null,
+  /* 0xea */ null,
+  /* 0xeb */ null,
+  /* 0xec */ null,
+  /* 0xed */ null,
+  /* 0xee */ null,
+  /* 0xef */ null,
+  /* 0xf0 */ null,
+  /* 0xf1 */ null,
+  /* 0xf2 */ null,
+  /* 0xf3 */ null,
+  /* 0xf4 */ null,
+  /* 0xf5 */ null,
+  /* 0xf6 */ null,
+  /* 0xf7 */ null,
+  /* 0xf8 */ null,
+  /* 0xf9 */ null,
+  /* 0xfa */ null,
+  /* 0xfb */ null,
+  /* 0xfc */ null,
+  /* 0xfd */ null,
+  /* 0xfe */ null,
+  /* 0xff */ null
+];
 
 // ==========================================================================
 // Standard operations
