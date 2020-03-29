@@ -57,7 +57,10 @@ export class TestMachine {
   /**
    * Runs the injected code in test machine
    */
-  run(): TestZ80MachineState {
+  run(state: TestZ80MachineState | null = null): TestZ80MachineState {
+    if (state !== null) {
+      this.cpuState = state;
+    }
     this._cpuStateBeforeRun = this.cpuState;
     this._memoryBeforeRun = new Uint8Array(this.memory);
     this.moduleApi.runTestMachine();

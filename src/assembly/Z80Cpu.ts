@@ -511,7 +511,7 @@ export class Z80Cpu {
    * @param index Register index
    * @param value Register value
    */
-  setReg16(index: u8, value: u8): void {
+  setReg16(index: u8, value: u16): void {
     switch (index) {
       case 0:
         this.bc = value;
@@ -663,7 +663,7 @@ export class Z80Cpu {
           // --- Normal (8-bit) operation code received
           this.isInterruptBlocked = false;
           this.opCode = opCode;
-          //this.processStandardOrIndexedOperations();
+          this.processStandardOrIndexedOperations();
           this.prefixMode = OpPrefixMode.None;
           this.indexMode = OpIndexMode.None;
           this.isInOpExecution = false;
@@ -946,13 +946,59 @@ export class Z80Cpu {
     }
   }
 
-  // ==========================================================================
-  // Temporary test API
+  // ========================================================================
+  // ALU Helper functions
 
-  longOp(): void {
-    for (let i = 0; i < 100000000; i++) {
-      this._af = <u16>i;
+  // 
+  /**
+   * Adds the `regHL` value and `regOther` value/ according to the rule of 
+   * ADD HL,QQ operation
+   * @param regHL 
+   * @param regOther 
+   */
+  aluAddHL(regHL: u16, regOther: u16): u16 {
+    // --- Keep unaffected flags
+    this.f = <u8>(
+      (this.f &
+        ~(
+          FlagsSetMask.N |
+          FlagsSetMask.C |
+          FlagsSetMask.R5 |
+          FlagsSetMask.R3 |
+          FlagsSetMask.H
+        ))
+    );
+
+    // --- Calculate Carry from bit 11
+    this.f |= <u8>((((regHL & 0x0fff) + (regOther & 0x0fff)) >> 8) & FlagsSetMask.H);
+    let res = <u32>regHL + <u32>regOther;
+
+    // --- Calculate Carry
+    if ((res & 0x10000) !== 0) {
+      this.f |= <u8>FlagsSetMask.C;
     }
+
+    // --- Set R5 and R3 according to the low 8-bit of result
+    this.f |= <u8>((res >> 8) & 0xff & (FlagsSetMask.R5 | FlagsSetMask.R3));
+    return <u16>res;
+  }
+
+  /**
+   * Increments the specified value and sets F according to INC ALU logic
+   */
+  aluIncByte(value: u8): u8 {
+    this.f = incOpFlags[value] | <u8>(this.f & FlagsSetMask.C);
+    value++;
+    return value;
+  }
+
+  /**
+   * Increments the specified value and sets F according to INC ALU logic
+   */
+  aluDecByte(val: u8): u8 {
+    this.f = decOpFlags[val] | <u8>(this.f & FlagsSetMask.C);
+    val--;
+    return val;
   }
 }
 
@@ -1495,68 +1541,68 @@ type IndexedCpuOp = (cpu: Z80Cpu, addr: u16) => void;
  */
 const standardOperations: (CpuOp | null)[] = [
   /* 0x00 */ null,
-  /* 0x01 */ LdBcNN,
-  /* 0x02 */ null,
-  /* 0x03 */ null,
-  /* 0x04 */ null,
-  /* 0x05 */ null,
-  /* 0x06 */ null,
-  /* 0x07 */ null,
-  /* 0x08 */ null,
-  /* 0x09 */ null,
+  /* 0x01 */ LdQQNN,
+  /* 0x02 */ LdBCiA,
+  /* 0x03 */ IncQQ,
+  /* 0x04 */ IncQ,
+  /* 0x05 */ DecQ,
+  /* 0x06 */ LdQN,
+  /* 0x07 */ Rlca,
+  /* 0x08 */ ExAf,
+  /* 0x09 */ AddHlQQ,
   /* 0x0a */ null,
   /* 0x0b */ null,
-  /* 0x0c */ null,
-  /* 0x0d */ null,
-  /* 0x0e */ null,
+  /* 0x0c */ IncQ,
+  /* 0x0d */ DecQ,
+  /* 0x0e */ LdQN,
   /* 0x0f */ null,
   /* 0x10 */ null,
-  /* 0x11 */ null,
-  /* 0x12 */ null,
-  /* 0x13 */ null,
-  /* 0x14 */ null,
-  /* 0x15 */ null,
-  /* 0x16 */ null,
+  /* 0x11 */ LdQQNN,
+  /* 0x12 */ LdDEiA,
+  /* 0x13 */ IncQQ,
+  /* 0x14 */ IncQ,
+  /* 0x15 */ DecQ,
+  /* 0x16 */ LdQN,
   /* 0x17 */ null,
   /* 0x18 */ null,
-  /* 0x19 */ null,
+  /* 0x19 */ AddHlQQ,
   /* 0x1a */ null,
   /* 0x1b */ null,
-  /* 0x1c */ null,
-  /* 0x1d */ null,
-  /* 0x1e */ null,
+  /* 0x1c */ IncQ,
+  /* 0x1d */ DecQ,
+  /* 0x1e */ LdQN,
   /* 0x1f */ null,
   /* 0x20 */ null,
-  /* 0x21 */ null,
+  /* 0x21 */ LdQQNN,
   /* 0x22 */ null,
-  /* 0x23 */ null,
-  /* 0x24 */ null,
-  /* 0x25 */ null,
-  /* 0x26 */ null,
+  /* 0x23 */ IncQQ,
+  /* 0x24 */ IncQ,
+  /* 0x25 */ DecQ,
+  /* 0x26 */ LdQN,
   /* 0x27 */ null,
   /* 0x28 */ null,
-  /* 0x29 */ null,
+  /* 0x29 */ AddHlQQ,
   /* 0x2a */ null,
   /* 0x2b */ null,
-  /* 0x2c */ null,
-  /* 0x2d */ null,
-  /* 0x2e */ null,
+  /* 0x2c */ IncQ,
+  /* 0x2d */ DecQ,
+  /* 0x2e */ LdQN,
   /* 0x2f */ null,
   /* 0x30 */ null,
-  /* 0x31 */ null,
+  /* 0x31 */ LdQQNN,
   /* 0x32 */ null,
-  /* 0x33 */ null,
+  /* 0x33 */ IncQQ,
   /* 0x34 */ null,
   /* 0x35 */ null,
   /* 0x36 */ null,
   /* 0x37 */ null,
   /* 0x38 */ null,
-  /* 0x39 */ null,
+  /* 0x39 */ AddHlQQ,
   /* 0x3a */ null,
   /* 0x3b */ null,
-  /* 0x3c */ null,
-  /* 0x3d */ null,
-  /* 0x3e */ null,
+  /* 0x3c */ IncQ,
+  /* 0x3d */ DecQ,
+  /* 0x3e */ LdQN,
   /* 0x3f */ null,
   /* 0x40 */ null,
   /* 0x41 */ null,
@@ -1757,7 +1803,7 @@ const standardOperations: (CpuOp | null)[] = [
  */
 const extendedOperations: (CpuOp | null)[] = [
   /* 0x00 */ null,
-  /* 0x01 */ LdBcNN,
+  /* 0x01 */ LdQQNN,
   /* 0x02 */ null,
   /* 0x03 */ null,
   /* 0x04 */ null,
@@ -2803,6 +2849,197 @@ const indexedBitOperations: (IndexedCpuOp | null)[] = [
 // ==========================================================================
 // Standard operations
 
-function LdBcNN(cpu: Z80Cpu): void {}
+// ld QQ,NN
+//
+// The 16-bit integer value is loaded to the QQ register pair.
+// QQ: BC, DE, HL, SP
+// =================================
+// | 0 | 0 | Q | Q | 0 | 0 | 0 | 1 | 0x01, 0x11, 0x21, 0x31
+// =================================
+// |             N Low             |
+// =================================
+// |             N High            |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+/// </remarks>
+function LdQQNN(cpu: Z80Cpu): void {
+  const qq = (cpu.opCode & 0x30) >> 4;
+
+  // pc+1:3
+  const low = cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // pc+2:3
+  const high = cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.setReg16(qq, ((<u16>high) << 8) | low);
+  cpu.tacts += 3;
+}
+
+// ld (bc),a
+//
+// The contents of the A are loaded to the memory location
+// specified by the contents of the BC register pair.
+// =================================
+// | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,bc:3
+function LdBCiA(cpu: Z80Cpu): void {
+  cpu.writeMemory(cpu.bc, cpu.a);
+  cpu.tacts += 3;
+}
+
+// inc QQ
+//
+// The contents of register pair QQ are incremented.
+// =================================
+// | 0 | 0 | Q | Q | 0 | 0 | 1 | 1 | 0x03, 0x13, 0x23, 0x33
+// =================================
+// T-States: 4, 2 (6)
+// Contention breakdown: pc:6
+function IncQQ(cpu: Z80Cpu): void {
+  const qq = (cpu.opCode & 0x30) >> 4;
+  const value = cpu.getReg16(qq);
+  cpu.setReg16(qq, value + 1);
+  cpu.tacts += 2;
+}
+
+// inc Q
+//
+// Register Q is incremented.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if r was 7Fh before operation; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+// =================================
+// | 0 | 0 | Q | Q | Q | 1 | 0 | 0 | 0x04, 0x0c, 0x14, 0x1c, 0x24, 0x2c, 0x3c
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function IncQ(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  const value = cpu.getReg8(q);
+  cpu.setReg8(q, value + 1);
+  cpu.f = incOpFlags[value] | (<u8>(cpu.f & FlagsSetMask.C));
+}
+
+// dec Q
+//
+// Register Q is decremented.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4, otherwise, it is reset.
+// P/V is set if m was 80h before operation; otherwise, it is reset.
+// N is set.
+// C is not affected.
+// =================================
+// | 0 | 0 | Q | Q | Q | 1 | 0 | 1 | 0x05, 0x0d, 0x15, 0x1d, 0x25, 0x2d, 0x3d
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function DecQ(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  const value = cpu.getReg8(q);
+  cpu.setReg8(q, value - 1);
+  cpu.f = decOpFlags[value] | (<u8>(cpu.f & FlagsSetMask.C));
+}
+
+// ld Q,N
+//
+// The 8-bit integer N is loaded to Q.
+// Q: B, C, D, E, H, L, A
+// =================================
+// | 0 | 0 | Q | Q | Q | 1 | 1 | 0 | 0x06, 0x0e, 0x16, 0x1e, 0x26, 0x2e, 0x3e
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,pc+1:3
+function LdQN(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  cpu.setReg8(q, cpu.readCodeMemory());
+  cpu.pc++;
+  cpu.tacts += 3;
+}
+
+// rlca
+//
+// The contents of  A are rotated left 1 bit position. The
+// sign bit (bit 7) is copied to the Carry flag and also
+// to bit 0.
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of A.
+// =================================
+// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0x07
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Rlca(cpu: Z80Cpu): void {
+  let rlcaVal = <u16>cpu.a;
+  rlcaVal <<= 1;
+  let cf = ((rlcaVal & 0x100) !== 0 ? FlagsSetMask.C : 0) & 0xff;
+  if (cf !== 0) {
+    rlcaVal = rlcaVal | 0x01;
+  }
+  cpu.a = <u8>rlcaVal;
+  cpu.f = <u8>(cf | (cpu.f & FlagsSetMask.SZPV));
+}
+
+// ex af,af'
+//
+// The 2-byte contents of the register pairs AF and AF' are exchanged.
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0x08
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function ExAf(cpu: Z80Cpu): void {
+  const tmp = cpu._af_;
+  cpu._af_ = cpu.af;
+  cpu.af = tmp;
+}
+
+// add hl,QQ
+//
+// The contents of QQ are added to the contents of HL and
+// the result is stored in HL.
+// QQ: BC, DE, HL, SP
+// S, Z, P/V are not affected.
+// H is set if carry from bit 11; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 15; otherwise, it is reset.
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0x09
+// =================================
+// T-States: 4, 4, 3 (11)
+// Contention breakdown: pc:11
+function AddHlQQ(cpu: Z80Cpu): void {
+  const qq = (cpu.opCode & 0x30) >> 4;
+  cpu.wz = cpu.hl + 1;
+  cpu.hl = cpu.aluAddHL(cpu.hl, cpu.getReg16(qq));
+  cpu.tacts += 7;
+}
+
+// ld (de),a
+//
+// The contents of the A are loaded to the memory location
+// specified by the contents of the DE register pair.
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0x12
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,bc:3
+function LdDEiA(cpu: Z80Cpu): void {
+  cpu.writeMemory(cpu.de, cpu.a);
+  cpu.tacts += 3;
+}
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
