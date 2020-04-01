@@ -949,12 +949,12 @@ export class Z80Cpu {
   // ========================================================================
   // ALU Helper functions
 
-  // 
+  //
   /**
-   * Adds the `regHL` value and `regOther` value/ according to the rule of 
+   * Adds the `regHL` value and `regOther` value/ according to the rule of
    * ADD HL,QQ operation
-   * @param regHL 
-   * @param regOther 
+   * @param regHL
+   * @param regOther
    */
   aluAddHL(regHL: u16, regOther: u16): u16 {
     // --- Keep unaffected flags
@@ -970,7 +970,9 @@ export class Z80Cpu {
     );
 
     // --- Calculate Carry from bit 11
-    this.f |= <u8>((((regHL & 0x0fff) + (regOther & 0x0fff)) >> 8) & FlagsSetMask.H);
+    this.f |= <u8>(
+      ((((regHL & 0x0fff) + (regOther & 0x0fff)) >> 8) & FlagsSetMask.H)
+    );
     let res = <u32>regHL + <u32>regOther;
 
     // --- Calculate Carry
@@ -987,7 +989,7 @@ export class Z80Cpu {
    * Increments the specified value and sets F according to INC ALU logic
    */
   aluIncByte(value: u8): u8 {
-    this.f = incOpFlags[value] | <u8>(this.f & FlagsSetMask.C);
+    this.f = incOpFlags[value] | (<u8>(this.f & FlagsSetMask.C));
     value++;
     return value;
   }
@@ -996,7 +998,7 @@ export class Z80Cpu {
    * Increments the specified value and sets F according to INC ALU logic
    */
   aluDecByte(val: u8): u8 {
-    this.f = decOpFlags[val] | <u8>(this.f & FlagsSetMask.C);
+    this.f = decOpFlags[val] | (<u8>(this.f & FlagsSetMask.C));
     val--;
     return val;
   }
@@ -1046,7 +1048,7 @@ for (let b = 0; b < 0x100; b++) {
 /**
  * DAA flags table
  */
-const daaResults: u8[] = [];
+const daaResults: u16[] = [];
 for (let b = 0; b < 0x100; b++) {
   const hNibble = b >> 4;
   const lNibble = b & 0x0f;
@@ -1139,7 +1141,7 @@ for (let b = 0; b < 0x100; b++) {
         let result = ((A << 8) | (fAfter & 0xff)) & 0xffff;
         let fBefore = (H * 4 + N * 2 + C) & 0xff;
         let idx = (fBefore << 8) + b;
-        daaResults[idx] = <u8>result;
+        daaResults[idx] = <u16>result;
       }
     }
   }
@@ -1550,60 +1552,60 @@ const standardOperations: (CpuOp | null)[] = [
   /* 0x07 */ Rlca,
   /* 0x08 */ ExAf,
   /* 0x09 */ AddHlQQ,
-  /* 0x0a */ null,
-  /* 0x0b */ null,
+  /* 0x0a */ LdABci,
+  /* 0x0b */ DecQQ,
   /* 0x0c */ IncQ,
   /* 0x0d */ DecQ,
   /* 0x0e */ LdQN,
-  /* 0x0f */ null,
-  /* 0x10 */ null,
+  /* 0x0f */ Rrca,
+  /* 0x10 */ Djnz,
   /* 0x11 */ LdQQNN,
   /* 0x12 */ LdDEiA,
   /* 0x13 */ IncQQ,
   /* 0x14 */ IncQ,
   /* 0x15 */ DecQ,
   /* 0x16 */ LdQN,
-  /* 0x17 */ null,
-  /* 0x18 */ null,
+  /* 0x17 */ Rla,
+  /* 0x18 */ JrE,
   /* 0x19 */ AddHlQQ,
-  /* 0x1a */ null,
-  /* 0x1b */ null,
+  /* 0x1a */ LdADei,
+  /* 0x1b */ DecQQ,
   /* 0x1c */ IncQ,
   /* 0x1d */ DecQ,
   /* 0x1e */ LdQN,
-  /* 0x1f */ null,
-  /* 0x20 */ null,
+  /* 0x1f */ Rra,
+  /* 0x20 */ JrNz,
   /* 0x21 */ LdQQNN,
-  /* 0x22 */ null,
+  /* 0x22 */ LdNNiHl,
   /* 0x23 */ IncQQ,
   /* 0x24 */ IncQ,
   /* 0x25 */ DecQ,
   /* 0x26 */ LdQN,
-  /* 0x27 */ null,
-  /* 0x28 */ null,
+  /* 0x27 */ Daa,
+  /* 0x28 */ JrZ,
   /* 0x29 */ AddHlQQ,
-  /* 0x2a */ null,
-  /* 0x2b */ null,
+  /* 0x2a */ LdHlNNi,
+  /* 0x2b */ DecQQ,
   /* 0x2c */ IncQ,
   /* 0x2d */ DecQ,
   /* 0x2e */ LdQN,
-  /* 0x2f */ null,
-  /* 0x30 */ null,
+  /* 0x2f */ Cpl,
+  /* 0x30 */ JrNc,
   /* 0x31 */ LdQQNN,
-  /* 0x32 */ null,
+  /* 0x32 */ LdNNiA,
   /* 0x33 */ IncQQ,
-  /* 0x34 */ null,
-  /* 0x35 */ null,
-  /* 0x36 */ null,
-  /* 0x37 */ null,
-  /* 0x38 */ null,
+  /* 0x34 */ IncHli,
+  /* 0x35 */ DecHli,
+  /* 0x36 */ LdHliN,
+  /* 0x37 */ Scf,
+  /* 0x38 */ JrC,
   /* 0x39 */ AddHlQQ,
-  /* 0x3a */ null,
-  /* 0x3b */ null,
+  /* 0x3a */ LdANNi,
+  /* 0x3b */ DecQQ,
   /* 0x3c */ IncQ,
   /* 0x3d */ DecQ,
   /* 0x3e */ LdQN,
-  /* 0x3f */ null,
+  /* 0x3f */ Ccf,
   /* 0x40 */ null,
   /* 0x41 */ null,
   /* 0x42 */ null,
@@ -3028,6 +3030,108 @@ function AddHlQQ(cpu: Z80Cpu): void {
   cpu.tacts += 7;
 }
 
+// ld a,(bc)
+//
+// The contents of the memory location specified by BC are loaded to A.
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0x0a
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,bc:3
+function LdABci(cpu: Z80Cpu): void {
+  cpu.wz = cpu.bc + 1;
+  cpu.a = cpu.readMemory(cpu.bc);
+  cpu.tacts += 3;
+}
+
+// dec QQ
+//
+// The contents of register pair QQ are decremented.
+// QQ: BC, DE, HL, SP
+// =================================
+// | 0 | 0 | Q | Q | 1 | 0 | 1 | 1 | 0x0b, 0x1b, 0x2b, 0x3b
+// =================================
+// T-States: 4, 2 (6)
+// Contention breakdown: pc:6
+function DecQQ(cpu: Z80Cpu): void {
+  const qq = (cpu.opCode & 0x30) >> 4;
+  const value = cpu.getReg16(qq);
+  cpu.setReg16(qq, value - 1);
+  cpu.tacts += 2;
+}
+
+// rrca
+//
+// The contents of A are rotated right 1 bit position. Bit 0 is
+// copied to the Carry flag and also to bit 7.
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 0 of A.
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0x0F
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Rrca(cpu: Z80Cpu): void {
+  let rrcaVal = cpu.a;
+  const cf = <u8>((rrcaVal & 0x01) !== 0 ? FlagsSetMask.C : 0);
+  if (cf) {
+    rrcaVal = (rrcaVal >> 1) | 0x80;
+  } else {
+    rrcaVal >>= 1;
+  }
+  cpu.a = rrcaVal;
+  cpu.f = <u8>(cf | (cpu.f & FlagsSetMask.SZPV));
+}
+
+// djnz E
+//
+// This instruction is similar to the conditional jump
+// instructions except that value of B is used to determine
+// branching. B is decremented, and if a nonzero value remains,
+// the value of displacement E is added to PC. The next
+// instruction is fetched from the location designated by
+// the new contents of the PC. The jump is measured from the
+// address of the instruction op code and contains a range of
+// –126 to +129 bytes. The assembler automatically adjusts for
+// the twice incremented PC. If the result of decrementing leaves
+// B with a zero value, the next instruction executed is taken
+// from the location following this instruction.
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10
+// =================================
+// |             E-2               |
+// =================================
+// T-States: B!=0: 5, 3, 5 (13)
+// B=0:  5, 3 (8)
+// Contention breakdown: pc:5,pc+1:3,[pc+1:1 x 5]
+// Gate array contention breakdown: pc:5,pc+1:3,[5]
+function Djnz(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  const e = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  if (--cpu.b === 0) {
+    return;
+  }
+
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc = cpu.pc + <i8>e;
+}
+
 // ld (de),a
 //
 // The contents of the A are loaded to the memory location
@@ -3040,6 +3144,580 @@ function AddHlQQ(cpu: Z80Cpu): void {
 function LdDEiA(cpu: Z80Cpu): void {
   cpu.writeMemory(cpu.de, cpu.a);
   cpu.tacts += 3;
+}
+
+// rla
+//
+// The contents of A are rotated left 1 bit position through the
+// Carry flag. The previous contents of the Carry flag are copied
+// to bit 0.
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of A.
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x17
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Rla(cpu: Z80Cpu): void {
+  let rlaVal = cpu.a;
+  const newCF = (rlaVal & 0x80) !== 0 ? FlagsSetMask.C : 0;
+  rlaVal <<= 1;
+  if (cpu.cFlag) {
+    rlaVal |= 0x01;
+  }
+  cpu.a = rlaVal;
+  cpu.f = <u8>(newCF | (cpu.f & FlagsSetMask.SZPV));
+}
+
+// jr E
+//
+// This instruction provides for unconditional branching
+// to other segments of a program. The value of displacement E is
+// added to PC and the next instruction is fetched from the location
+// designated by the new contents of the PC. This jump is measured
+// from the address of the instruction op code and contains a range
+// of –126 to +129 bytes. The assembler automatically adjusts for
+// the twice incremented PC.
+// =================================
+// | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x18
+// =================================
+// |             E-2               |
+// =================================
+// T-States: 4, 3, 5 (12)
+// Contention breakdown: pc:4,pc+1:3
+function JrE(cpu: Z80Cpu): void {
+  const e = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz = cpu.pc = cpu.pc + <i8>e;
+  cpu.tacts += 5;
+}
+
+// ld a,(de)
+//
+// The contents of the memory location specified by DE are loaded to A.
+// =================================
+// | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0x1a
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,bc:3
+function LdADei(cpu: Z80Cpu): void {
+  cpu.wz = cpu.de + 1;
+  cpu.a = cpu.readMemory(cpu.de);
+  cpu.tacts += 3;
+}
+
+// rra
+//
+// The contents of A are rotated right 1 bit position through the
+// Carry flag. The previous contents of the Carry flag are copied
+// to bit 7.
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 0 of A.
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0x1F
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Rra(cpu: Z80Cpu): void {
+  let rlcaVal = cpu.a;
+  const newCF = (rlcaVal & 0x01) !== 0 ? FlagsSetMask.C : 0;
+  rlcaVal >>= 1;
+  if (cpu.cFlag) {
+    rlcaVal |= 0x80;
+  }
+  cpu.a = rlcaVal;
+  cpu.f = <u8>(newCF | (cpu.f & FlagsSetMask.SZPV));
+}
+
+// jr nz,e
+//
+// This instruction provides for conditional branching to
+// other segments of a program depending on the results of a test
+// (Z flag is not set). If the test evaluates to *true*, the value of displacement
+// E is added to PC and the next instruction is fetched from the
+// location designated by the new contents of the PC. The jump is
+// measured from the address of the instruction op code and contains
+// a range of –126 to +129 bytes. The assembler automatically adjusts
+// for the twice incremented PC.
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0x20
+// =================================
+// |             E-2               |
+// =================================
+// T-States: Condition is met: 4, 3, 5 (12)
+// Condition is not met: 4, 3 (7)
+// Contention breakdown: pc:4,pc+1:3,[pc+1:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:3,[5]
+function JrNz(cpu: Z80Cpu): void {
+  const e = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.Z) !== 0) {
+    return;
+  }
+
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc = cpu.pc + <i8>e;
+}
+
+// ld (NN),hl
+//
+// The contents of the low-order portion of HL (L) are loaded to memory
+// address (NN), and the contents of the high-order portion of HL (H)
+// are loaded to the next highest memory address(NN + 1).
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0x22
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3, 3, 3 (16)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3,nn+1:3
+function LdNNiHl(cpu: Z80Cpu): void {
+  // pc+1:3
+  const l = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+
+  // pc+2:3
+  const addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
+  cpu.tacts += 3;
+  cpu.pc++;
+
+  // nn:3
+  cpu.wz = addr + 1;
+  cpu.writeMemory(addr, cpu.l);
+  cpu.tacts += 3;
+
+  // nn+1:3
+  cpu.writeMemory(cpu.wz, cpu.h);
+  cpu.tacts += 3;
+}
+
+// daa
+//
+// This instruction conditionally adjusts A for BCD addition
+// and subtraction operations. For addition(ADD, ADC, INC) or
+// subtraction(SUB, SBC, DEC, NEG), the following table indicates
+// the operation being performed:
+// ====================================================
+// |Oper.|C before|Upper|H before|Lower|Number|C after|
+// |     |DAA     |Digit|Daa     |Digit|Added |Daa    |
+// ====================================================
+// | ADD |   0    | 9-0 |   0    | 0-9 |  00  |   0   |
+// |     |   0    | 0-8 |   0    | A-F |  06  |   0   |
+// |     |   0    | 0-9 |   1    | 0-3 |  06  |   0   |
+// |     |   0    | A-F |   0    | 0-9 |  60  |   1   |
+// ----------------------------------------------------
+// | ADC |   0    | 9-F |   0    | A-F |  66  |   1   |
+// ----------------------------------------------------
+// | INC |   0    | A-F |   1    | 0-3 |  66  |   1   |
+// |     |   1    | 0-2 |   0    | 0-9 |  60  |   1   |
+// |     |   1    | 0-2 |   0    | A-F |  66  |   1   |
+// |     |   1    | 0-3 |   1    | 0-3 |  66  |   1   |
+// ----------------------------------------------------
+// | SUB |   0    | 0-9 |   0    | 0-9 |  00  |   0   |
+// ----------------------------------------------------
+// | SBC |   0    | 0-8 |   1    | 6-F |  FA  |   0   |
+// ----------------------------------------------------
+// | DEC |   1    | 7-F |   0    | 0-9 |  A0  |   1   |
+// ----------------------------------------------------
+// | NEG |   1    | 6-7 |   1    | 6-F |  9A  |   1   |
+// ====================================================
+// S is set if most-significant bit of the A is 1 after an
+// operation; otherwise, it is reset.
+// Z is set if A is 0 after an operation; otherwise, it is reset.
+// H: see the DAA instruction table.
+// P/V is set if A is at even parity after an operation;
+// otherwise, it is reset.
+// N is not affected.
+// C: see the DAA instruction table.
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0x27
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Daa(cpu: Z80Cpu): void {
+  const daaIndex = <u32>(
+    (cpu.a + ((<u16>((cpu.f & 3) + ((cpu.f >> 2) & 4))) << 8))
+  );
+  cpu.af = daaResults[daaIndex];
+}
+
+// jr z,e
+//
+// This instruction provides for conditional branching to
+// other segments of a program depending on the results of a test
+// (Z flag is set). If the test evaluates to *true*, the value of displacement
+// E is added to PC and the next instruction is fetched from the
+// location designated by the new contents of the PC. The jump is
+// measured from the address of the instruction op code and contains
+// a range of –126 to +129 bytes. The assembler automatically adjusts
+// for the twice incremented PC.
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0x28
+// =================================
+// |             E-2               |
+// =================================
+// T-States: Condition is met: 4, 3, 5 (12)
+// Condition is not met: 4, 3 (7)
+// Contention breakdown: pc:4,pc+1:3,[pc+1:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:3,[5]
+function JrZ(cpu: Z80Cpu): void {
+  const e = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.Z) === 0) {
+    return;
+  }
+
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc = cpu.pc + <i8>e;
+}
+
+// ld hl,(NN)
+//
+// The contents of memory address (NN) are loaded to the
+// low-order portion of HL (L), and the contents of the next
+// highest memory address (NN + 1) are loaded to the high-order
+// portion of HL (H).
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0x2a
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3, 3, 3 (16)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3,nn+1:3
+function LdHlNNi(cpu: Z80Cpu): void {
+  // pc+1:3
+  let addr = <u16>cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // pc+2:3
+  addr += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // nn:3
+  cpu.wz = addr + 1;
+  let val = <u16>cpu.readMemory(addr);
+  cpu.tacts += 3;
+
+  // nn+1:3
+  val += (<u16>cpu.readMemory(cpu.wz)) << 8;
+  cpu.tacts += 3;
+  cpu.hl = val;
+}
+
+// cpl
+//
+// The contents of A are inverted (one's complement).
+// S, Z, P/V, C are not affected.
+// H and N are set.
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0x2F
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Cpl(cpu: Z80Cpu): void {
+  cpu.a ^= 0xff;
+  cpu.f = <u8>(
+    ((cpu.f & ~FlagsSetMask.R3R5) |
+      FlagsSetMask.NH |
+      FlagsSetMask.H |
+      (cpu.a & FlagsSetMask.R3R5))
+  );
+}
+
+// jr nc,E
+//
+// This instruction provides for conditional branching to
+// other segments of a program depending on the results of a test
+// (C flag is not set). If the test evaluates to *true*, the value of displacement
+// E is added to PC and the next instruction is fetched from the
+// location designated by the new contents of the PC. The jump is
+// measured from the address of the instruction op code and contains
+// a range of –126 to +129 bytes. The assembler automatically adjusts
+// for the twice incremented PC.
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0x30
+// =================================
+// |             E-2               |
+// =================================
+// T-States: Condition is met: 4, 3, 5 (12)
+// Condition is not met: 4, 3 (7)
+// Contention breakdown: pc:4,pc+1:3,[pc+1:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:3,[5]
+function JrNc(cpu: Z80Cpu): void {
+  const e = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.C) !== 0) {
+    return;
+  }
+
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc = cpu.pc + <i8>e;
+}
+
+// ld (NN),a
+//
+// The contents of A are loaded to the memory address specified by
+// the operand NN
+// =================================
+// | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x32
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3, 3 (13)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3
+
+function LdNNiA(cpu: Z80Cpu): void {
+  // pc+1:3
+  const l = cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // pc+2:3
+  let addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // nn:3
+  cpu.wz = <u8>(addr + 1) + ((<u16>cpu.a) << 8);
+  cpu.writeMemory(addr, cpu.a);
+  cpu.wh = cpu.a;
+  cpu.tacts += 3;
+}
+
+// jr c,E
+//
+// This instruction provides for conditional branching to
+// other segments of a program depending on the results of a test
+// (C flag is set). If the test evaluates to *true*, the value of displacement
+// E is added to PC and the next instruction is fetched from the
+// location designated by the new contents of the PC. The jump is
+// measured from the address of the instruction op code and contains
+// a range of –126 to +129 bytes. The assembler automatically adjusts
+// for the twice incremented PC.
+// =================================
+// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0x38
+// =================================
+// |             E-2               |
+// =================================
+// T-States: Condition is met: 4, 3, 5 (12)
+// Condition is not met: 4, 3 (7)
+// Contention breakdown: pc:4,pc+1:3,[pc+1:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:3,[5]
+function JrC(cpu: Z80Cpu): void {
+  const e = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.C) === 0) {
+    return;
+  }
+
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc = cpu.pc + <i8>e;
+}
+
+// inc (hl)
+//
+// The byte contained in the address specified by the contents HL
+// is incremented.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if (HL) was 0x7F before operation; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x34
+// =================================
+// T-States: 4, 4, 3 (11)
+// Contention breakdown: pc:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,hl:4,hl(write):3
+function IncHli(cpu: Z80Cpu): void {
+  let value = cpu.readMemory(cpu.hl);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  value = cpu.aluIncByte(value);
+  cpu.writeMemory(cpu.hl, value);
+  cpu.tacts += 3;
+}
+
+// dec (hl)
+//
+// The byte contained in the address specified by the contents HL
+// is decremented.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if (HL) was 0x80 before operation; otherwise, it is reset.
+// N is set.
+// C is not affected.
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0x35
+// =================================
+// T-States: 4, 4, 3 (11)
+// Contention breakdown: pc:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,hl:4,hl(write):3
+function DecHli(cpu: Z80Cpu): void {
+  let value = cpu.readMemory(cpu.hl);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  value = cpu.aluDecByte(value);
+  cpu.writeMemory(cpu.hl, value);
+  cpu.tacts += 3;
+}
+
+// ld (hl),N
+//
+// The N 8-bit value is loaded to the memory address specified by HL.
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0x36
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,hl:3
+function LdHliN(cpu: Z80Cpu): void {
+  // pc+1: 3
+  const val = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.writeMemory(cpu.hl, val);
+  cpu.tacts += 3;
+}
+
+// scf
+//
+// The Carry flag in F is set.
+// Other flags are not affected.
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 0x37
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Scf(cpu: Z80Cpu): void {
+  cpu.f = <u8>(
+    ((cpu.f & FlagsSetMask.SZPV) |
+      (cpu.a & (FlagsSetMask.R5 | FlagsSetMask.R3)) |
+      FlagsSetMask.C)
+  );
+}
+
+// ld a,(NN)
+//
+// The contents of the memory location specified by the operands
+// NN are loaded to A.
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0x3A
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3, 3 (13)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3
+function LdANNi(cpu: Z80Cpu): void {
+  let addr = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  addr += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz = addr + 1;
+  cpu.a = cpu.readMemory(addr);
+  cpu.tacts += 3;
+}
+
+// ccf
+//
+// The Carry flag in F is inverted.
+// Other flags are not affected.
+// =================================
+// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 0x3f
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Ccf(cpu: Z80Cpu): void {
+  cpu.f = <u8>(
+    ((cpu.f & FlagsSetMask.SZPV) |
+      (cpu.a & (FlagsSetMask.R5 | FlagsSetMask.R3)) |
+      ((cpu.f & FlagsSetMask.C) !== 0 ? FlagsSetMask.H : FlagsSetMask.C))
+  );
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
