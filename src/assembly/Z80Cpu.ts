@@ -1607,68 +1607,68 @@ const standardOperations: (CpuOp | null)[] = [
   /* 0x3e */ LdQN,
   /* 0x3f */ Ccf,
   /* 0x40 */ null,
-  /* 0x41 */ null,
-  /* 0x42 */ null,
-  /* 0x43 */ null,
-  /* 0x44 */ null,
-  /* 0x45 */ null,
-  /* 0x46 */ null,
-  /* 0x47 */ null,
-  /* 0x48 */ null,
+  /* 0x41 */ LdQW,
+  /* 0x42 */ LdQW,
+  /* 0x43 */ LdQW,
+  /* 0x44 */ LdQW,
+  /* 0x45 */ LdQW,
+  /* 0x46 */ LdQHli,
+  /* 0x47 */ LdQW,
+  /* 0x48 */ LdQW,
   /* 0x49 */ null,
-  /* 0x4a */ null,
-  /* 0x4b */ null,
-  /* 0x4c */ null,
-  /* 0x4d */ null,
-  /* 0x4e */ null,
-  /* 0x4f */ null,
-  /* 0x50 */ null,
-  /* 0x51 */ null,
+  /* 0x4a */ LdQW,
+  /* 0x4b */ LdQW,
+  /* 0x4c */ LdQW,
+  /* 0x4d */ LdQW,
+  /* 0x4e */ LdQHli,
+  /* 0x4f */ LdQW,
+  /* 0x50 */ LdQW,
+  /* 0x51 */ LdQW,
   /* 0x52 */ null,
-  /* 0x53 */ null,
-  /* 0x54 */ null,
-  /* 0x55 */ null,
-  /* 0x56 */ null,
-  /* 0x57 */ null,
-  /* 0x58 */ null,
-  /* 0x59 */ null,
-  /* 0x5a */ null,
+  /* 0x53 */ LdQW,
+  /* 0x54 */ LdQW,
+  /* 0x55 */ LdQW,
+  /* 0x56 */ LdQHli,
+  /* 0x57 */ LdQW,
+  /* 0x58 */ LdQW,
+  /* 0x59 */ LdQW,
+  /* 0x5a */ LdQW,
   /* 0x5b */ null,
-  /* 0x5c */ null,
-  /* 0x5d */ null,
-  /* 0x5e */ null,
-  /* 0x5f */ null,
-  /* 0x60 */ null,
-  /* 0x61 */ null,
-  /* 0x62 */ null,
-  /* 0x63 */ null,
+  /* 0x5c */ LdQW,
+  /* 0x5d */ LdQW,
+  /* 0x5e */ LdQHli,
+  /* 0x5f */ LdQW,
+  /* 0x60 */ LdQW,
+  /* 0x61 */ LdQW,
+  /* 0x62 */ LdQW,
+  /* 0x63 */ LdQW,
   /* 0x64 */ null,
-  /* 0x65 */ null,
-  /* 0x66 */ null,
-  /* 0x67 */ null,
-  /* 0x68 */ null,
-  /* 0x69 */ null,
-  /* 0x6a */ null,
-  /* 0x6b */ null,
-  /* 0x6c */ null,
+  /* 0x65 */ LdQW,
+  /* 0x66 */ LdQHli,
+  /* 0x67 */ LdQW,
+  /* 0x68 */ LdQW,
+  /* 0x69 */ LdQW,
+  /* 0x6a */ LdQW,
+  /* 0x6b */ LdQW,
+  /* 0x6c */ LdQW,
   /* 0x6d */ null,
-  /* 0x6e */ null,
-  /* 0x6f */ null,
-  /* 0x70 */ null,
-  /* 0x71 */ null,
-  /* 0x72 */ null,
-  /* 0x73 */ null,
-  /* 0x74 */ null,
-  /* 0x75 */ null,
-  /* 0x76 */ null,
-  /* 0x77 */ null,
-  /* 0x78 */ null,
-  /* 0x79 */ null,
-  /* 0x7a */ null,
-  /* 0x7b */ null,
-  /* 0x7c */ null,
-  /* 0x7d */ null,
-  /* 0x7e */ null,
+  /* 0x6e */ LdQHli,
+  /* 0x6f */ LdQW,
+  /* 0x70 */ LdHliQ,
+  /* 0x71 */ LdHliQ,
+  /* 0x72 */ LdHliQ,
+  /* 0x73 */ LdHliQ,
+  /* 0x74 */ LdHliQ,
+  /* 0x75 */ LdHliQ,
+  /* 0x76 */ Halt,
+  /* 0x77 */ LdHliQ,
+  /* 0x78 */ LdQW,
+  /* 0x79 */ LdQW,
+  /* 0x7a */ LdQW,
+  /* 0x7b */ LdQW,
+  /* 0x7c */ LdQW,
+  /* 0x7d */ LdQW,
+  /* 0x7e */ LdQHli,
   /* 0x7f */ null,
   /* 0x80 */ null,
   /* 0x81 */ null,
@@ -3718,6 +3718,65 @@ function Ccf(cpu: Z80Cpu): void {
       (cpu.a & (FlagsSetMask.R5 | FlagsSetMask.R3)) |
       ((cpu.f & FlagsSetMask.C) !== 0 ? FlagsSetMask.H : FlagsSetMask.C))
   );
+}
+
+/// ld Q,W
+//
+// The contents of W are loaded to Q.
+// Q, W: B, C, D, E, H, L, A
+// =================================
+// | 0 | 1 | Q | Q | Q | W | W | W | 0x40-0x7f
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function LdQW(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  const w = cpu.opCode & 0x07;
+  cpu.setReg8(q, cpu.getReg8(w));
+}
+
+// ld Q,(hl)
+//
+// The 8-bit contents of memory location (HL) are loaded to Q.
+// =================================
+// | 0 | 1 | Q | Q | Q | 1 | 1 | 0 | 0x46, ...
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function LdQHli(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  cpu.setReg8(q, cpu.readMemory(cpu.hl));
+  cpu.tacts += 3;
+}
+
+// ld (hl),Q
+//
+// The contents of B are loaded to the memory location specified
+// by the contents of HL.
+// =================================
+// | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x70
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function LdHliQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  cpu.writeMemory(cpu.hl, cpu.getReg8(q));
+  cpu.tacts += 3;
+}
+
+// halt
+//
+// The HALT instruction suspends CPU operation until a subsequent
+// interrupt or reset is received.While in the HALT state,
+// the processor executes NOPs to maintain memory refresh logic.
+// =================================
+// | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0x76
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Halt(cpu: Z80Cpu): void {
+  cpu.stateFlags |= Z80StateFlags.Halted;
+  cpu.pc--;
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
