@@ -4,7 +4,7 @@ import {
   Z80StateFlags,
   OpPrefixMode,
   OpIndexMode,
-  FlagsSetMask
+  FlagsSetMask,
 } from "../shared/cpu-enums";
 
 export class Z80Cpu {
@@ -1166,7 +1166,7 @@ for (let C = 0; C < 2; C++) {
       if ((((X & 0x0f) + (Y & 0x0f) + C) & 0x10) !== 0) {
         flags |= FlagsSetMask.H;
       }
-      let ri = <i8>X + <i8>Y + C;
+      let ri = <i16>(<i16>(<i8>X) + <i16>(<i8>Y) + C);
       if (ri >= 0x80 || ri <= -0x81) {
         flags |= FlagsSetMask.PV;
       }
@@ -1190,7 +1190,7 @@ for (let C = 0; C < 2; C++) {
       if ((res & 0x10000) !== 0) {
         flags |= FlagsSetMask.C;
       }
-      let ri = <i8>X - <i8>Y - C;
+      let ri = <i16>(<i16>(<i8>X) - <i16>(<i8>Y) - C);
       if (ri >= 0x80 || ri < -0x80) {
         flags |= FlagsSetMask.PV;
       }
@@ -1409,7 +1409,7 @@ const aluAlgorithms: AluAlgorithm[] = [
   AluAND,
   AluXOR,
   AluOR,
-  AluCP
+  AluCP,
 ];
 
 //
@@ -1670,70 +1670,70 @@ const standardOperations: (CpuOp | null)[] = [
   /* 0x7d */ LdQW,
   /* 0x7e */ LdQHli,
   /* 0x7f */ null,
-  /* 0x80 */ null,
-  /* 0x81 */ null,
-  /* 0x82 */ null,
-  /* 0x83 */ null,
-  /* 0x84 */ null,
-  /* 0x85 */ null,
-  /* 0x86 */ null,
-  /* 0x87 */ null,
-  /* 0x88 */ null,
-  /* 0x89 */ null,
-  /* 0x8a */ null,
-  /* 0x8b */ null,
-  /* 0x8c */ null,
-  /* 0x8d */ null,
-  /* 0x8e */ null,
-  /* 0x8f */ null,
-  /* 0x90 */ null,
-  /* 0x91 */ null,
-  /* 0x92 */ null,
-  /* 0x93 */ null,
-  /* 0x94 */ null,
-  /* 0x95 */ null,
-  /* 0x96 */ null,
-  /* 0x97 */ null,
-  /* 0x98 */ null,
-  /* 0x99 */ null,
-  /* 0x9a */ null,
-  /* 0x9b */ null,
-  /* 0x9c */ null,
-  /* 0x9d */ null,
-  /* 0x9e */ null,
-  /* 0x9f */ null,
-  /* 0xa0 */ null,
-  /* 0xa1 */ null,
-  /* 0xa2 */ null,
-  /* 0xa3 */ null,
-  /* 0xa4 */ null,
-  /* 0xa5 */ null,
-  /* 0xa6 */ null,
-  /* 0xa7 */ null,
-  /* 0xa8 */ null,
-  /* 0xa9 */ null,
-  /* 0xaa */ null,
-  /* 0xab */ null,
-  /* 0xac */ null,
-  /* 0xad */ null,
-  /* 0xae */ null,
-  /* 0xaf */ null,
-  /* 0xb0 */ null,
-  /* 0xb1 */ null,
-  /* 0xb2 */ null,
-  /* 0xb3 */ null,
-  /* 0xb4 */ null,
-  /* 0xb5 */ null,
-  /* 0xb6 */ null,
-  /* 0xb7 */ null,
-  /* 0xb8 */ null,
-  /* 0xb9 */ null,
-  /* 0xba */ null,
-  /* 0xbb */ null,
-  /* 0xbc */ null,
-  /* 0xbd */ null,
-  /* 0xbe */ null,
-  /* 0xbf */ null,
+  /* 0x80 */ AddAQ,
+  /* 0x81 */ AddAQ,
+  /* 0x82 */ AddAQ,
+  /* 0x83 */ AddAQ,
+  /* 0x84 */ AddAQ,
+  /* 0x85 */ AddAQ,
+  /* 0x86 */ AddAHli,
+  /* 0x87 */ AddAQ,
+  /* 0x88 */ AdcAQ,
+  /* 0x89 */ AdcAQ,
+  /* 0x8a */ AdcAQ,
+  /* 0x8b */ AdcAQ,
+  /* 0x8c */ AdcAQ,
+  /* 0x8d */ AdcAQ,
+  /* 0x8e */ AdcAHli,
+  /* 0x8f */ AdcAQ,
+  /* 0x90 */ SubAQ,
+  /* 0x91 */ SubAQ,
+  /* 0x92 */ SubAQ,
+  /* 0x93 */ SubAQ,
+  /* 0x94 */ SubAQ,
+  /* 0x95 */ SubAQ,
+  /* 0x96 */ SubAHli,
+  /* 0x97 */ SubAQ,
+  /* 0x98 */ SbcAQ,
+  /* 0x99 */ SbcAQ,
+  /* 0x9a */ SbcAQ,
+  /* 0x9b */ SbcAQ,
+  /* 0x9c */ SbcAQ,
+  /* 0x9d */ SbcAQ,
+  /* 0x9e */ SbcAHli,
+  /* 0x9f */ SbcAQ,
+  /* 0xa0 */ AndAQ,
+  /* 0xa1 */ AndAQ,
+  /* 0xa2 */ AndAQ,
+  /* 0xa3 */ AndAQ,
+  /* 0xa4 */ AndAQ,
+  /* 0xa5 */ AndAQ,
+  /* 0xa6 */ AndAHli,
+  /* 0xa7 */ AndAQ,
+  /* 0xa8 */ XorAQ,
+  /* 0xa9 */ XorAQ,
+  /* 0xaa */ XorAQ,
+  /* 0xab */ XorAQ,
+  /* 0xac */ XorAQ,
+  /* 0xad */ XorAQ,
+  /* 0xae */ XorAHli,
+  /* 0xaf */ XorAQ,
+  /* 0xb0 */ OrAQ,
+  /* 0xb1 */ OrAQ,
+  /* 0xb2 */ OrAQ,
+  /* 0xb3 */ OrAQ,
+  /* 0xb4 */ OrAQ,
+  /* 0xb5 */ OrAQ,
+  /* 0xb6 */ OrAHli,
+  /* 0xb7 */ OrAQ,
+  /* 0xb8 */ CpAQ,
+  /* 0xb9 */ CpAQ,
+  /* 0xba */ CpAQ,
+  /* 0xbb */ CpAQ,
+  /* 0xbc */ CpAQ,
+  /* 0xbd */ CpAQ,
+  /* 0xbe */ CpAHli,
+  /* 0xbf */ CpAQ,
   /* 0xc0 */ null,
   /* 0xc1 */ null,
   /* 0xc2 */ null,
@@ -1797,7 +1797,7 @@ const standardOperations: (CpuOp | null)[] = [
   /* 0xfc */ null,
   /* 0xfd */ null,
   /* 0xfe */ null,
-  /* 0xff */ null
+  /* 0xff */ null,
 ];
 
 /**
@@ -2059,7 +2059,7 @@ const extendedOperations: (CpuOp | null)[] = [
   /* 0xfc */ null,
   /* 0xfd */ null,
   /* 0xfe */ null,
-  /* 0xff */ null
+  /* 0xff */ null,
 ];
 
 /**
@@ -2321,7 +2321,7 @@ const bitOperations: (CpuOp | null)[] = [
   /* 0xfc */ null,
   /* 0xfd */ null,
   /* 0xfe */ null,
-  /* 0xff */ null
+  /* 0xff */ null,
 ];
 
 /**
@@ -2583,7 +2583,7 @@ const indexedOperations: (CpuOp | null)[] = [
   /* 0xfc */ null,
   /* 0xfd */ null,
   /* 0xfe */ null,
-  /* 0xff */ null
+  /* 0xff */ null,
 ];
 
 /**
@@ -2845,7 +2845,7 @@ const indexedBitOperations: (IndexedCpuOp | null)[] = [
   /* 0xfc */ null,
   /* 0xfd */ null,
   /* 0xfe */ null,
-  /* 0xff */ null
+  /* 0xff */ null,
 ];
 
 // ==========================================================================
@@ -3738,6 +3738,7 @@ function LdQW(cpu: Z80Cpu): void {
 // ld Q,(hl)
 //
 // The 8-bit contents of memory location (HL) are loaded to Q.
+// Q: B, C, D, E, H, L, A
 // =================================
 // | 0 | 1 | Q | Q | Q | 1 | 1 | 0 | 0x46, ...
 // =================================
@@ -3753,6 +3754,7 @@ function LdQHli(cpu: Z80Cpu): void {
 //
 // The contents of B are loaded to the memory location specified
 // by the contents of HL.
+// Q: B, C, D, E, H, L, A
 // =================================
 // | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0x70
 // =================================
@@ -3777,6 +3779,384 @@ function LdHliQ(cpu: Z80Cpu): void {
 function Halt(cpu: Z80Cpu): void {
   cpu.stateFlags |= Z80StateFlags.Halted;
   cpu.pc--;
+}
+
+// add a,Q
+//
+// The contents of Q are added to the contents of A, and the result is
+// stored in A.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 7; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 0 | 0 | Q | Q | Q | 0x80
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function AddAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  cpu.f = adcFlags[((<u16>cpu.a) << 8) + src];
+  cpu.a += src;
+}
+
+// add a,(hl)
+//
+// The byte at the memory address specified by the contents of HL
+// is added to the contents of A, and the result is stored in A.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 7; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x86
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function AddAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  cpu.f = adcFlags[((<u16>cpu.a) << 8) + src];
+  cpu.a += src;
+}
+
+// adc a,Q
+//
+// The contents of L and the C flag are added to the contents of A,
+// and the result is stored in A.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 7; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 0 | 1 | Q | Q | Q | 0x88,...
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function AdcAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  const carry = (cpu.f & FlagsSetMask.C) === 0 ? 0 : 1;
+  cpu.f = adcFlags[((<u32>carry) << 16) + ((<u16>cpu.a) << 8) + src];
+  cpu.a += <u8>(src + carry);
+}
+
+// add a,(hl)
+//
+// The byte at the memory address specified by the contents of HL
+// is added to the contents of A, and the result is stored in A.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 7; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x86
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function AdcAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  const carry = (cpu.f & FlagsSetMask.C) === 0 ? 0 : 1;
+  cpu.f = adcFlags[((<u32>carry) << 16) + ((<u16>cpu.a) << 8) + src];
+  cpu.a += <u8>(src + carry);
+}
+
+//  sub Q
+//
+// The contents of Q are subtracted from the contents of A, and the result is
+// stored in A.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is set.
+// C is set if borrow; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x90
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function SubAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  cpu.f = sbcFlags[((<u16>cpu.a) << 8) + src];
+  cpu.a -= src;
+}
+
+// add a,(hl)
+//
+// The byte at the memory address specified by the contents of HL
+// is added to the contents of A, and the result is stored in A.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 7; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x86
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function SubAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  cpu.f = sbcFlags[((<u16>cpu.a) << 8) + src];
+  cpu.a -= src;
+}
+
+// sbc a,Q
+//
+// The contents of Q and the C flag are subtracted from the contents of A,
+// and the result is stored in A.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is set.
+// C is set if borrow; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0x98, ...
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function SbcAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  const carry = (cpu.f & FlagsSetMask.C) === 0 ? 0 : 1;
+  cpu.f = sbcFlags[((<u32>carry) << 16) + ((<u16>cpu.a) << 8) + src];
+  cpu.a -= <u8>(src + carry);
+}
+
+// sbc a,(hl)
+//
+// The byte at the memory address specified by the contents of HL
+// and the C flag is subtracted from the contents of A, and the
+// result is stored in A.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is set.
+// C is set if borrow; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x9E
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function SbcAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  const carry = (cpu.f & FlagsSetMask.C) === 0 ? 0 : 1;
+  cpu.f = sbcFlags[((<u32>carry) << 16) + ((<u16>cpu.a) << 8) + src];
+  cpu.a -= <u8>(src + carry);
+}
+
+//  and Q
+//
+// A logical AND operation is performed between Q and the byte contained in A;
+// the result is stored in the Accumulator.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set.
+// P/V is reset if overflow; otherwise, it is reset.
+// N is reset.
+// C is reset.
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0xA0, ...
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function AndAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  cpu.a &= src;
+  cpu.f = <u8>(aluLogOpFlags[cpu.a] | FlagsSetMask.H);
+}
+
+// and (hl)
+//
+// A logical AND operation is performed between the byte at the
+// memory address specified by the contents of HL and the byte
+// contained in A; the result is stored in the Accumulator.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set.
+// P/V is reset if overflow; otherwise, it is reset.
+// N is reset.
+// C is reset.
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0xA6
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function AndAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  cpu.a &= src;
+  cpu.f = <u8>(aluLogOpFlags[cpu.a] | FlagsSetMask.H);
+}
+
+// xor Q
+//
+// A logical XOR operation is performed between Q and the byte contained in A;
+// the result is stored in the Accumulator.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is reset.
+// P/V is reset if overflow; otherwise, it is reset.
+// N is reset.
+// C is reset.
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0xA8
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function XorAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  cpu.a ^= src;
+  cpu.f = aluLogOpFlags[cpu.a];
+}
+
+// xor (hl)
+//
+// A logical XOR operation is performed between the byte at the
+// memory address specified by the contents of HL and the byte
+// contained in A; the result is stored in the Accumulator.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is reset.
+// P/V is reset if overflow; otherwise, it is reset.
+// N is reset.
+// C is reset.
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0xAE
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function XorAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  cpu.a ^= src;
+  cpu.f = aluLogOpFlags[cpu.a];
+}
+
+// or Q
+//
+// A logical OR operation is performed between Q and the byte contained in A;
+// the result is stored in the Accumulator.
+// Q: B, C, D, E, H, L, A
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is reset.
+// P/V is reset if overflow; otherwise, it is reset.
+// N is reset.
+// C is reset.
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0xB0, ...
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+/// </remarks>
+function OrAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  cpu.a |= src;
+  cpu.f = aluLogOpFlags[cpu.a];
+}
+
+// or (hl)
+//
+// A logical OR operation is performed between the byte at the
+// memory address specified by the contents of HL and the byte
+// contained in A; the result is stored in the Accumulator.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is reset.
+// P/V is reset if overflow; otherwise, it is reset.
+// N is reset.
+// C is reset.
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0xB6
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function OrAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  cpu.a |= src;
+  cpu.f = aluLogOpFlags[cpu.a];
+}
+
+// cp Q
+//
+// The contents of B are compared with the contents of A.
+// If there is a true compare, the Z flag is set. The execution of
+// Q: B, C, D, E, H, L, A
+// this instruction does not affect A.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is set.
+// C is set if borrow; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0xB8
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function CpAQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const src = cpu.getReg8(q);
+  const res = (<u16>cpu.a << 8) + src;
+  cpu.f = <u8>(
+    ((sbcFlags[res] & ~FlagsSetMask.R3 & ~FlagsSetMask.R5) |
+      (res & FlagsSetMask.R3R5))
+  );
+}
+
+// cp (hl)
+//
+// The contents of the byte at the memory address specified by
+// the contents of HL are compared with the contents of A.
+// If there is a true compare, the Z flag is set. The execution of
+// this instruction does not affect A.
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is set.
+// C is set if borrow; otherwise, it is reset.
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0xBE
+// =================================
+// T-States: 4, 3 (7)
+// Contention breakdown: pc:4,hl:3
+function CpAHli(cpu: Z80Cpu): void {
+  const src = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  const res = (<u16>cpu.a << 8) + src;
+  cpu.f = <u8>(
+    ((sbcFlags[res] & ~FlagsSetMask.R3 & ~FlagsSetMask.R5) |
+      (res & FlagsSetMask.R3R5))
+  );
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}

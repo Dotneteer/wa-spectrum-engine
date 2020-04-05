@@ -20,17 +20,6 @@ describe("Standard ops 40-7f", () => {
     testMachine.reset();
   });
 
-  it("generate", () => {
-    let str = "";
-    for (let q = 0; q < 8; q++) {
-      for (let w = 0; w < 8; w++) {
-        const opCode = 0x40 + 8 * q + w;
-        const func = q === 6 || w === 6 ? "null" : "LdQQ";
-        str += `  /* 0x${opCode.toString(16)} */ ${func},\r\n`;
-      }
-    }
-    console.log(str);
-  });
 
   const reg8 = ["b", "c", "d", "e", "h", "l", "(hl)", "a"];
   for (let q = 0; q < 8; q++) {
