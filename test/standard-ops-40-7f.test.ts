@@ -12,8 +12,8 @@ import { Z80StateFlags } from "../src/shared/cpu-enums";
 const wasmBin = fs.readFileSync(
   path.join(__dirname, "../build/optimized.wasm")
 );
-const module = loader.instantiateSync(wasmBin, {}) as loader.ASUtil & Api;
-const testMachine = new TestMachine(module);
+const moduleInst = loader.instantiateSync(wasmBin, {}) as loader.ASUtil & Api;
+const testMachine = new TestMachine(moduleInst);
 
 describe("Standard ops 40-7f", () => {
   beforeEach(() => {

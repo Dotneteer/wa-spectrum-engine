@@ -1,7 +1,7 @@
 import { TestZ80MachineState } from "./TestZ80MachineState";
 import { Z80Cpu } from "../Z80Cpu";
 import { RunMode } from "../../shared/RunMode"
-import { readSimpleMemory, writeSimpleMemory, MemoryOp, memoryAccessLog, IoOp, ioAccessLog, simpleMemory, resetMemory, readSimpleIo, writeSimpleIo, setTestInput } from "./test-devices";
+import { readSimpleMemory, writeSimpleMemory, MemoryOp, memoryAccessLog, IoOp, ioAccessLog, simpleMemory, resetMemory, readSimpleIo, writeSimpleIo, setTestInput, setHostCpu } from "./test-devices";
 import { Z80StateFlags } from "../../shared/cpu-enums";
 
 /**
@@ -20,6 +20,7 @@ class WaTestZ80Machine {
     this.cpu.memoryWriter = writeSimpleMemory;
     this.cpu.portWriter = writeSimpleIo;
     this.cpu.portReader = readSimpleIo;
+    setHostCpu(this.cpu);
   }
 
   /**

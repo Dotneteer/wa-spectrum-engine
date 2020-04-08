@@ -1,6 +1,8 @@
 // ============================================================================
 // Memory device used for testing
 
+import { Z80Cpu } from "../Z80Cpu";
+
 /**
  * The 64K memory addressed by Z80 CPU
  */
@@ -21,6 +23,16 @@ export function resetMemory(): void {
   clearMemoryAccessLog();
 }
 
+let cpu: Z80Cpu;
+
+/**
+ * Sets the host CPU
+ * @param hostCpu Host CPU instance
+ */
+export function setHostCpu(hostCpu: Z80Cpu): void {
+  cpu = hostCpu;
+}
+
 /**
  * Clears the memory access log.
  */
@@ -38,7 +50,7 @@ export function writeSimpleMemory(address: u16, value: u8): void {
   memoryAccessLog.push({
     address,
     value,
-    isWrite: true
+    isWrite: true,
   });
 }
 
@@ -52,7 +64,7 @@ export function readSimpleMemory(address: u16): u8 {
   memoryAccessLog.push({
     address,
     value,
-    isWrite: false
+    isWrite: false,
   });
   return value;
 }
@@ -104,8 +116,9 @@ export function writeSimpleIo(address: u16, value: u8): void {
   ioAccessLog.push({
     address,
     value,
-    isOutput: true
+    isOutput: true,
   });
+  cpu.delay(4);
 }
 
 /**
@@ -113,14 +126,16 @@ export function writeSimpleIo(address: u16, value: u8): void {
  * @param address I/O address
  */
 export function readSimpleIo(address: u16): u8 {
-  const value = inputIndex < 0 || inputIndex >= fakeInput.length
-    ? <u8>0xff
-    : <u8>fakeInput[inputIndex++];
+  const value =
+    inputIndex < 0 || inputIndex >= fakeInput.length
+      ? <u8>0xff
+      : <u8>fakeInput[inputIndex++];
+  cpu.delay(4);
   ioAccessLog.push({
     address,
     value,
-    isOutput: false
-  })
+    isOutput: false,
+  });
   return value;
 }
 

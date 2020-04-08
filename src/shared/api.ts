@@ -18,6 +18,8 @@ export interface Api {
   initTestMachineCode(runMode: RunMode, code: number /* PTR */): void;
   initTestMachineInput(input: number /* PTR */): void;
   runTestMachine(): void;
+  resetMemoryAccessLog(): void;
+  resetIoAccessLog(): void;
   getTestMachineIoAccessLog(): number; // PTR
   getTestMachineMemoryAccessLog(): number; // PTR
 }

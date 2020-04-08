@@ -11,10 +11,10 @@ import { RunMode } from "../src/shared/RunMode";
 const wasmBin = fs.readFileSync(
   path.join(__dirname, "../build/optimized.wasm")
 );
-const module = loader.instantiateSync(wasmBin, {
+const moduleInst = loader.instantiateSync(wasmBin, {
   /* imports */
 }) as (loader.ASUtil  & Api);
-const testMachine = new TestMachine(module);
+const testMachine = new TestMachine(moduleInst);
 
 describe("Test machine", () => {
 

@@ -2,7 +2,7 @@ import { Api } from "./api";
 import { TestZ80MachineState } from "../assembly/test-machine/TestZ80MachineState";
 import { RunMode } from "./RunMode";
 import { ASUtil } from "@assemblyscript/loader";
-import { MemoryOp, IoOp } from "../assembly/test-machine/test-devices";
+import { MemoryOp, IoOp, clearIoAccessLog, clearMemoryAccessLog } from "../assembly/test-machine/test-devices";
 import { FlagsSetMask } from "./cpu-enums";
 
 /**
@@ -66,6 +66,8 @@ export class TestMachine {
     }
     this._cpuStateBeforeRun = this.cpuState;
     this._memoryBeforeRun = new Uint8Array(this.memory);
+    this.moduleApi.resetMemoryAccessLog();
+    this.moduleApi.resetIoAccessLog();
     this.moduleApi.runTestMachine();
     return this.cpuState;
   }

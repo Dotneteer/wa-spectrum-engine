@@ -1734,70 +1734,70 @@ const standardOperations: (CpuOp | null)[] = [
   /* 0xbd */ CpAQ,
   /* 0xbe */ CpAHli,
   /* 0xbf */ CpAQ,
-  /* 0xc0 */ null,
-  /* 0xc1 */ null,
-  /* 0xc2 */ null,
-  /* 0xc3 */ null,
-  /* 0xc4 */ null,
-  /* 0xc5 */ null,
-  /* 0xc6 */ null,
-  /* 0xc7 */ null,
-  /* 0xc8 */ null,
-  /* 0xc9 */ null,
-  /* 0xca */ null,
-  /* 0xcb */ null,
-  /* 0xcc */ null,
-  /* 0xcd */ null,
-  /* 0xce */ null,
-  /* 0xcf */ null,
-  /* 0xd0 */ null,
-  /* 0xd1 */ null,
-  /* 0xd2 */ null,
-  /* 0xd3 */ null,
-  /* 0xd4 */ null,
-  /* 0xd5 */ null,
-  /* 0xd6 */ null,
-  /* 0xd7 */ null,
-  /* 0xd8 */ null,
-  /* 0xd9 */ null,
-  /* 0xda */ null,
-  /* 0xdb */ null,
-  /* 0xdc */ null,
-  /* 0xdd */ null,
-  /* 0xde */ null,
-  /* 0xdf */ null,
-  /* 0xe0 */ null,
-  /* 0xe1 */ null,
-  /* 0xe2 */ null,
-  /* 0xe3 */ null,
-  /* 0xe4 */ null,
-  /* 0xe5 */ null,
-  /* 0xe6 */ null,
-  /* 0xe7 */ null,
-  /* 0xe8 */ null,
-  /* 0xe9 */ null,
-  /* 0xea */ null,
-  /* 0xeb */ null,
-  /* 0xec */ null,
-  /* 0xed */ null,
-  /* 0xee */ null,
-  /* 0xef */ null,
-  /* 0xf0 */ null,
-  /* 0xf1 */ null,
-  /* 0xf2 */ null,
-  /* 0xf3 */ null,
-  /* 0xf4 */ null,
-  /* 0xf5 */ null,
-  /* 0xf6 */ null,
-  /* 0xf7 */ null,
-  /* 0xf8 */ null,
-  /* 0xf9 */ null,
-  /* 0xfa */ null,
-  /* 0xfb */ null,
-  /* 0xfc */ null,
-  /* 0xfd */ null,
-  /* 0xfe */ null,
-  /* 0xff */ null,
+  /* 0xc0 */ RetNz,
+  /* 0xc1 */ PopBc,
+  /* 0xc2 */ JpNz,
+  /* 0xc3 */ Jp,
+  /* 0xc4 */ CallNz,
+  /* 0xc5 */ PushBc,
+  /* 0xc6 */ AluAN,
+  /* 0xc7 */ RstN,
+  /* 0xc8 */ RetZ,
+  /* 0xc9 */ Ret,
+  /* 0xca */ JpZ,
+  /* 0xcb */ null, // CB prefix
+  /* 0xcc */ CallZ,
+  /* 0xcd */ Call,
+  /* 0xce */ AluAN,
+  /* 0xcf */ RstN,
+  /* 0xd0 */ RetNc,
+  /* 0xd1 */ PopDe,
+  /* 0xd2 */ JpNc,
+  /* 0xd3 */ OutNA,
+  /* 0xd4 */ CallNc,
+  /* 0xd5 */ PushDe,
+  /* 0xd6 */ AluAN,
+  /* 0xd7 */ RstN,
+  /* 0xd8 */ RetC,
+  /* 0xd9 */ Exx,
+  /* 0xda */ JpC,
+  /* 0xdb */ InAN,
+  /* 0xdc */ CallC,
+  /* 0xdd */ null, // DD prefix
+  /* 0xde */ AluAN,
+  /* 0xdf */ RstN,
+  /* 0xe0 */ RetPo,
+  /* 0xe1 */ PopHl,
+  /* 0xe2 */ JpPo,
+  /* 0xe3 */ ExSpiHl,
+  /* 0xe4 */ CallPo,
+  /* 0xe5 */ PushHl,
+  /* 0xe6 */ AluAN,
+  /* 0xe7 */ RstN,
+  /* 0xe8 */ RetPe,
+  /* 0xe9 */ JpHli,
+  /* 0xea */ JpPe,
+  /* 0xeb */ ExDeHl,
+  /* 0xec */ CallPe,
+  /* 0xed */ null, // ED prefix
+  /* 0xee */ AluAN,
+  /* 0xef */ RstN,
+  /* 0xf0 */ RetP,
+  /* 0xf1 */ PopAf,
+  /* 0xf2 */ JpP,
+  /* 0xf3 */ Di,
+  /* 0xf4 */ CallP,
+  /* 0xf5 */ PushAf,
+  /* 0xf6 */ AluAN,
+  /* 0xf7 */ RstN,
+  /* 0xf8 */ RetM,
+  /* 0xf9 */ LdSpHl,
+  /* 0xfa */ JpM,
+  /* 0xfb */ Ei,
+  /* 0xfc */ CallM,
+  /* 0xfd */ null, // FD prefix
+  /* 0xfe */ AluAN,
+  /* 0xff */ RstN,
 ];
 
 /**
@@ -4125,7 +4125,7 @@ function OrAHli(cpu: Z80Cpu): void {
 function CpAQ(cpu: Z80Cpu): void {
   const q = cpu.opCode & 0x07;
   const src = cpu.getReg8(q);
-  const res = (<u16>cpu.a << 8) + src;
+  const res = ((<u16>cpu.a) << 8) + src;
   cpu.f = <u8>(
     ((sbcFlags[res] & ~FlagsSetMask.R3 & ~FlagsSetMask.R5) |
       (res & FlagsSetMask.R3R5))
@@ -4152,11 +4152,1411 @@ function CpAQ(cpu: Z80Cpu): void {
 function CpAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
   cpu.tacts += 3;
-  const res = (<u16>cpu.a << 8) + src;
+  const res = ((<u16>cpu.a) << 8) + src;
   cpu.f = <u8>(
     ((sbcFlags[res] & ~FlagsSetMask.R3 & ~FlagsSetMask.R5) |
       (res & FlagsSetMask.R3R5))
   );
+}
+
+// ret nz
+//
+// If Z flag is not set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0xC0
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetNz(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.Z) !== 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+/// pop bc
+//
+// The top two bytes of the external memory last-in, first-out (LIFO)
+// stack are popped to register pair QQ. SP holds the 16-bit address
+// of the current top of the stack. This instruction first loads to
+// the low-order portion of RR, the byte at the memory location
+// corresponding to the contents of SP; then SP is incremented and
+// the contents of the corresponding adjacent memory location are
+// loaded to the high-order portion of RR and the SP is now incremented
+// again.
+// =================================
+// | 1 | 1 | Q| Q | 0 | 0 | 0 | 1 | 0xc1, 0xd1, 0xe1, 0xf1
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,sp:3,sp+1:3
+function PopBc(cpu: Z80Cpu): void {
+  const val = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.bc = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
+  cpu.tacts += 3;
+  cpu.sp++;
+}
+
+// jp nz,NN
+//
+// If Z flag is not set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0 | 0xC2
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpNz(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.Z) !== 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// jp NN
+//
+// Operand NN is loaded to PC. The next instruction is fetched
+// from the location designated by the new contents of the PC.
+// =================================
+// | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 1 | 0xC3
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function Jp(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.pc = cpu.wz;
+}
+
+// call nz,NN
+//
+// If flag Z is not set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0xC4
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallNz(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.Z) !== 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// push bc
+//
+// The contents of the register pair BC are pushed to the external
+// memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+// address of the current top of the Stack. This instruction first
+// decrements SP and loads the high-order byte of register pair RR
+// to the memory address specified by SP. Then SP is decremented again
+// and loads the low-order byte of RR to the memory location
+// corresponding to this new address in SP.
+// =================================
+// | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0xC5
+// =================================
+// T-States: 5, 3, 3 (10)
+// Contention breakdown: pc:5,sp-1:3,sp-2:3
+function PushBc(cpu: Z80Cpu): void {
+  const val = cpu.bc;
+  cpu.sp--;
+  cpu.tacts++;
+  cpu.writeMemory(cpu.sp, <u8>(val >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>val);
+  cpu.tacts += 3;
+}
+
+// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
+// operation for A and the 8-bit value specified in N.
+//
+// The flags are set according to the ALU operation rules.
+// =================================
+// | 0 | 1 | A | A | A | 1 | 1 | 0 |
+// =================================
+// |            8-bit              |
+// =================================
+// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+// 100=AND, 101=XOR, 110=OR, 111=CP
+// T-States: 4, 3 (7)
+function AluAN(cpu: Z80Cpu): void {
+  const val = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  const alg = aluAlgorithms[(cpu.opCode & 0x38) >> 3];
+  alg(cpu, val, cpu.cFlag);
+}
+
+//  ret z
+//
+// If Z flag is set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 0xC8
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetZ(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.Z) === 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// ret
+//
+// The byte at the memory location specified by the contents of SP
+// is moved to the low-order eight bits of PC. SP is now incremented
+// and the byte at the memory location specified by the new contents
+// of this instruction is fetched from the memory location specified
+// by PC.
+// This instruction is normally used to return to the main line
+// program at the completion of a routine entered by a CALL
+// instruction.
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0xC9
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,sp:3,sp+1:3
+function Ret(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// jp z,NN
+//
+// If Z flag is set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 0xCA
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpZ(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.Z) === 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// call z,NN
+//
+// If flag Z is set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0xCC
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallZ(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.Z) === 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// call NN
+//
+// The current contents of PC are pushed onto the top of the
+// external memory stack. The operands NN are then loaded to PC to
+// point to the address in memory at which the first op code of a
+// subroutine is to be fetched. At the end of the subroutine, a RET
+// instruction can be used to return to the original program flow by
+// popping the top of the stack back to PC. The push is accomplished
+// by first decrementing the current contents of SP, loading the
+// high-order byte of the PC contents to the memory address now pointed
+// to by SP; then decrementing SP again, and loading the low-order
+// byte of the PC contents to the top of stack.
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 1 | 0xCD
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 4, 3, 3 (17)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,pc+2:1,sp-1:3,sp-2:3
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,1,sp-1:3,sp-2:3
+function Call(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// ret nc
+//
+// If C flag is not set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0xD0
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetNc(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.C) !== 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// pop de
+//
+// The top two bytes of the external memory last-in, first-out (LIFO)
+// stack are popped to register pair DE. SP holds the 16-bit address
+// of the current top of the stack. This instruction first loads to
+// the low-order portion of RR, the byte at the memory location
+// corresponding to the contents of SP; then SP is incremented and
+// the contents of the corresponding adjacent memory location are
+// loaded to the high-order portion of RR and the SP is now incremented
+// again.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0xD1
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,sp:3,sp+1:3
+function PopDe(cpu: Z80Cpu): void {
+  const val = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.de = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
+  cpu.tacts += 3;
+  cpu.sp++;
+}
+
+// jp nc,NN
+//
+// If C flag is not set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xD2
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpNc(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.C) !== 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// out (N),a
+//
+// The operand N is placed on the bottom half (A0 through A7) of
+// the address bus to select the I/O device at one of 256 possible
+// ports. The contents of A also appear on the top half(A8 through
+// A15) of the address bus at this time. Then the byte contained
+// in A is placed on the data bus and written to the selected
+// peripheral device.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xD3
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 3, 4 (11)
+// Contention breakdown: pc:4,pc+1:3,I/O
+function OutNA(cpu: Z80Cpu): void {
+  let port = <u16>cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // I/O
+  cpu.wz = port + 1 + ((<u16>cpu.a) << 8);
+  port += (<u16>cpu.a) << 8;
+  cpu.writePort(port, cpu.a);
+}
+
+// call nc,NN
+//
+// If flag C is not set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xD4
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallNc(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.C) !== 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// push de
+//
+// The contents of the register pair DE are pushed to the external
+// memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+// address of the current top of the Stack. This instruction first
+// decrements SP and loads the high-order byte of register pair RR
+// to the memory address specified by SP. Then SP is decremented again
+// and loads the low-order byte of RR to the memory location
+// corresponding to this new address in SP.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0xD5
+// =================================
+// T-States: 5, 3, 3 (10)
+// Contention breakdown: pc:5,sp-1:3,sp-2:3
+function PushDe(cpu: Z80Cpu): void {
+  const val = cpu.de;
+  cpu.sp--;
+  cpu.tacts++;
+  cpu.writeMemory(cpu.sp, <u8>(val >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>val);
+  cpu.tacts += 3;
+}
+
+// ret c
+//
+// If C flag is set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0xD8
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetC(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.C) === 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// exx
+//
+// Each 2-byte value in register pairs BC, DE, and HL is exchanged
+// with the 2-byte value in BC', DE', and HL', respectively.
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0xD9
+// =================================
+// T-States: 4, (4)
+// Contention breakdown: pc:4
+function Exx(cpu: Z80Cpu): void {
+  let tmp = cpu.bc;
+  cpu.bc = cpu._bc_;
+  cpu._bc_ = tmp;
+  tmp = cpu.de;
+  cpu.de = cpu._de_;
+  cpu._de_ = tmp;
+  tmp = cpu.hl;
+  cpu.hl = cpu._hl_;
+  cpu._hl_ = tmp;
+}
+
+// jp c,NN
+//
+// If C flag is not set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0xDA
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpC(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.C) === 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// in a,(N)
+//
+// The operand N is placed on the bottom half (A0 through A7) of
+// the address bus to select the I/O device at one of 256 possible
+// ports. The contents of A also appear on the top half (A8 through
+// A15) of the address bus at this time. Then one byte from the
+// selected port is placed on the data bus and written to A
+// in the CPU.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 1 | 0xDB
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 3, 4 (11)
+// Contention breakdown: pc:4,pc+1:3,I/O
+function InAN(cpu: Z80Cpu): void {
+  // pc+1:3
+  let port = <u16>cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // I/O
+  port += (<u16>cpu.a) << 8;
+  cpu.wz = ((<u16>cpu.a) << 8) + port + 1;
+  cpu.a = cpu.readPort(port);
+}
+
+// call c,NN
+//
+// If flag C is set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0xDC
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10) / 4, 3, 4, 3, 3 (17)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallC(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.C) === 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// ret po
+//
+// If PV flag is not set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0xE0
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetPo(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.PV) !== 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// pop hl
+//
+// The top two bytes of the external memory last-in, first-out (LIFO)
+// stack are popped to register pair HL. SP holds the 16-bit address
+// of the current top of the stack. This instruction first loads to
+// the low-order portion of RR, the byte at the memory location
+// corresponding to the contents of SP; then SP is incremented and
+// the contents of the corresponding adjacent memory location are
+// loaded to the high-order portion of RR and the SP is now incremented
+// again.
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 | 0xE1
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,sp:3,sp+1:3
+function PopHl(cpu: Z80Cpu): void {
+  const val = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.hl = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
+  cpu.tacts += 3;
+  cpu.sp++;
+}
+
+// jp po,NN
+//
+// If PV flag is not set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xE2
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpPo(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.PV) !== 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// ex (sp),hl
+//
+// The low-order byte contained in HL is exchanged with the contents
+// of the memory address specified by the contents of SP, and the
+// high-order byte of HL is exchanged with the next highest memory
+// address (SP+1).
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 | 0xE3
+// =================================
+// T-States: 4, 3, 4, 3, 5 (19)
+// Contention breakdown: pc:4,sp:3,sp+1:3,sp+1:1,sp+1(write):3,sp(write):3,sp(write):1 ×2
+// Gate array contention breakdown: pc:4,sp:3,sp+1:4,sp+1(write):3,sp(write):5
+function ExSpiHl(cpu: Z80Cpu): void {
+  let tmpSp = cpu.sp;
+  cpu.wz = cpu.readMemory(tmpSp);
+  cpu.tacts += 3;
+  tmpSp++;
+  cpu.wz += (<u16>cpu.readMemory(tmpSp)) << 8;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(tmpSp);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(tmpSp, cpu.h);
+  tmpSp--;
+  cpu.tacts += 3;
+  cpu.writeMemory(tmpSp, cpu.l);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.tacts += 3;
+    cpu.writeMemory(tmpSp, cpu.l);
+    cpu.tacts++;
+    cpu.writeMemory(tmpSp, cpu.l);
+    cpu.tacts++;
+  }
+  cpu.hl = cpu.wz;
+}
+
+// call po,NN
+//
+// If flag PV is not set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0 | 0xE4
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallPo(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.PV) !== 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// push hl
+//
+// The contents of the register pair HL are pushed to the external
+// memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+// address of the current top of the Stack. This instruction first
+// decrements SP and loads the high-order byte of register pair RR
+// to the memory address specified by SP. Then SP is decremented again
+// and loads the low-order byte of RR to the memory location
+// corresponding to this new address in SP.
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 0xE5
+// =================================
+// T-States: 5, 3, 3 (10)
+// Contention breakdown: pc:5,sp-1:3,sp-2:3
+function PushHl(cpu: Z80Cpu): void {
+  const val = cpu.hl;
+  cpu.sp--;
+  cpu.tacts++;
+  cpu.writeMemory(cpu.sp, <u8>(val >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>val);
+  cpu.tacts += 3;
+}
+
+// ret pe
+//
+// If PV flag is not set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0xE8
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetPe(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.PV) === 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// jp (hl)
+//
+// PC is loaded with the contents of HL. The next instruction is
+// fetched from the location designated by the new contents of PC.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 | 0xE9
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function JpHli(cpu: Z80Cpu): void {
+  cpu.pc = cpu.hl;
+}
+
+// jp pe,NN
+//
+// If PV flag is set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 0xEA
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpPe(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.PV) === 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// ex de,hl
+//
+// The 2-byte contents of register pairs DE and HL are exchanged.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 1 | 0xEB
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function ExDeHl(cpu: Z80Cpu): void {
+  const tmp = cpu.de;
+  cpu.de = cpu.hl;
+  cpu.hl = tmp;
+}
+
+// call pe,NN
+//
+// If flag PV is set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 0xEC
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallPe(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.PV) === 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// ret p
+//
+// If S flag is not set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 0xF0
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetP(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.S) !== 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// pop af
+//
+// The top two bytes of the external memory last-in, first-out (LIFO)
+// stack are popped to register pair AF. SP holds the 16-bit address
+// of the current top of the stack. This instruction first loads to
+// the low-order portion of RR, the byte at the memory location
+// corresponding to the contents of SP; then SP is incremented and
+// the contents of the corresponding adjacent memory location are
+// loaded to the high-order portion of RR and the SP is now incremented
+// again.
+// =================================
+// | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 0xF1
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,sp:3,sp+1:3
+function PopAf(cpu: Z80Cpu): void {
+  const val = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.af = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
+  cpu.tacts += 3;
+  cpu.sp++;
+}
+
+// jp p,NN
+//
+// If S flag is not set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 0xF2
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpP(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.S) !== 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// di
+//
+// Disables the maskable interrupt by resetting the interrupt
+// enable flip-flops (IFF1 and IFF2).
+// =================================
+// | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 1 | 0xF3
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Di(cpu: Z80Cpu): void {
+  cpu.iff2 = cpu.iff1 = false;
+}
+
+// call p,NN
+//
+// If flag S is not set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 0xF4
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallP(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.S) !== 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// push af
+//
+// The contents of the register pair BC are pushed to the external
+// memory last-in, first-out (LIFO) stack. SP holds the 16-bit
+// address of the current top of the Stack. This instruction first
+// decrements SP and loads the high-order byte of register pair RR
+// to the memory address specified by SP. Then SP is decremented again
+// and loads the low-order byte of RR to the memory location
+// corresponding to this new address in SP.
+// =================================
+// | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 1 | 0xF5
+// =================================
+// T-States: 5, 3, 3 (10)
+// Contention breakdown: pc:5,sp-1:3,sp-2:3
+function PushAf(cpu: Z80Cpu): void {
+  const val = cpu.af;
+  cpu.sp--;
+  cpu.tacts++;
+  cpu.writeMemory(cpu.sp, <u8>(val >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>val);
+  cpu.tacts += 3;
+}
+
+// ret m
+//
+// If S flag is set, the byte at the memory location specified
+// by the contents of SP is moved to the low-order 8 bits of PC.
+// SP is incremented and the byte at the memory location specified by
+// the new contents of the SP are moved to the high-order eight bits of
+// PC.The SP is incremented again. The next op code following this
+// instruction is fetched from the memory location specified by the PC.
+// This instruction is normally used to return to the main line program at
+// the completion of a routine entered by a CALL instruction.
+// If condition X is false, PC is simply incremented as usual, and the
+// program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0 | 0xF8
+// =================================
+// T-States: If X is true: 5, 3, 3 (11)
+// If X is false: 5 (5)
+// Contention breakdown: pc:5,[sp:3,sp+1:3]
+function RetM(cpu: Z80Cpu): void {
+  cpu.tacts++;
+  if ((cpu.f & FlagsSetMask.S) === 0) {
+    return;
+  }
+  cpu.wz = cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = cpu.wz;
+}
+
+// ld sp,hl
+//
+// The contents of HL are loaded to SP.
+// =================================
+// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 | 0xF9
+// =================================
+// T-States: 4 (6)
+// Contention breakdown: pc:6
+function LdSpHl(cpu: Z80Cpu): void {
+  cpu.sp = cpu.hl;
+  cpu.tacts += 2;
+}
+
+// jp m,NN
+//
+// If S flag is set, the instruction loads operand NN
+// to PC, and the program continues with the instruction
+// beginning at address NN.
+// If condition X is false, PC is incremented as usual, and
+// the program continues with the next sequential instruction.
+// =================================
+// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 0 | 0xFA
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3
+function JpM(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.S) === 0) {
+    return;
+  }
+  cpu.pc = cpu.wz;
+}
+
+// ei
+//
+// Sets both interrupt enable flip flops (IFFI and IFF2) to a
+// logic 1 value, allowing recognition of any maskable interrupt.
+// =================================
+// | 1 | 1 | 1 | 1 | 1 | 0 | 1 | 1 | 0xFB
+// =================================
+// T-States: 4 (4)
+// Contention breakdown: pc:4
+function Ei(cpu: Z80Cpu): void {
+  cpu.iff2 = cpu.iff1 = cpu.isInterruptBlocked = true;
+}
+
+// call m,NN
+//
+// If flag S is set, this instruction pushes the current
+// contents of PC onto the top of the external memory stack, then
+// loads the operands NN to PC to point to the address in memory
+// at which the first op code of a subroutine is to be fetched.
+// At the end of the subroutine, a RET instruction can be used to
+// return to the original program flow by popping the top of the
+// stack back to PC. If condition X is false, PC is incremented as
+// usual, and the program continues with the next sequential
+// instruction. The stack push is accomplished by first decrementing
+// the current contents of SP, loading the high-order byte of the PC
+// contents to the memory address now pointed to by SP; then
+// decrementing SP again, and loading the low-order byte of the PC
+// contents to the top of the stack.
+// =================================
+// | 1 | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 0xFC
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 3, 3 (10)
+// Contention breakdown: pc:4,pc+1:3,pc+2:3,[pc+2:1,sp-1:3,sp-2:3]
+// Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
+function CallM(cpu: Z80Cpu): void {
+  cpu.wz = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  if ((cpu.f & FlagsSetMask.S) === 0) {
+    return;
+  }
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(cpu.pc);
+  }
+  cpu.tacts++;
+
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+  cpu.pc = cpu.wz;
+}
+
+// rst N
+//
+// The current PC contents are pushed onto the external memory stack,
+// and the Page 0 memory location assigned by operand N is loaded to
+// PC. Program execution then begins with the op code in the address
+// now pointed to by PC. The push is performed by first decrementing
+// the contents of SP, loading the high-order byte of PC to the
+// memory address now pointed to by SP, decrementing SP again, and
+// loading the low-order byte of PC to the address now pointed to by
+// SP. The Restart instruction allows for a jump to address N.
+// Because all addresses are stored in Page 0 of memory, the high-order
+// byte of PC is loaded with 0x00.
+// N: 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38,
+// =================================
+// | 1 | 1 | N | N | N | 1 | 1 | 1 | 0xC7
+// =================================
+// T-States: 5, 3, 3 (11)
+// Contention breakdown: pc:5,sp-1:3,sp-2:3
+function RstN(cpu: Z80Cpu): void {
+  cpu.sp--;
+  cpu.tacts++;
+
+  cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>cpu.pc);
+  cpu.tacts += 3;
+
+  cpu.wz = cpu.opCode & 0x38;
+  cpu.pc = cpu.wz;
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}

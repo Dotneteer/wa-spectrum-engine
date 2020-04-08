@@ -1,6 +1,7 @@
 import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 import { RunMode } from "../shared/RunMode";
 import { waTestZ80Machine } from "./test-machine/WaTestZ80Machine";
+import { clearMemoryAccessLog, clearIoAccessLog } from "./test-machine/test-devices";
 
 export { Z80Cpu } from "./Z80Cpu";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
@@ -78,15 +79,29 @@ export function runTestMachine(): void {
 }
 
 /**
+ * Clears the memory access log
+ */
+export function resetMemoryAccessLog(): void {
+  clearMemoryAccessLog();
+}
+
+/**
+ * Clears the I/O access log
+ */
+export function resetIoAccessLog(): void {
+  clearIoAccessLog();
+}
+
+/**
  * Gets the I/O access log of the test machine
  */
 export function getTestMachineIoAccessLog(): Uint32Array {
-  return waTestZ80Machine.memoryAccessLog;
+  return waTestZ80Machine.ioAccessLog;
 }
 
 /**
  * Gets the memory access log of the test machine
  */
 export function getTestMachineMemoryAccessLog(): Uint32Array {
-  return waTestZ80Machine.ioAccessLog;
+  return waTestZ80Machine.memoryAccessLog;
 }
