@@ -247,18 +247,23 @@ export class Z80Cpu {
   // ==========================================================================
   // Registers access
 
+  @inline
   get a(): u8 {
     return <u8>(this._af >> 8);
   }
   set a(v: u8) {
     this._af = ((<u16>v) << 8) | (<u8>this._af);
   }
+
+  @inline
   get f(): u8 {
     return <u8>this.af;
   }
   set f(v: u8) {
     this._af = <u16>((this._af & 0xff00) | v);
   }
+
+  @inline
   get af(): u16 {
     return this._af;
   }
@@ -266,18 +271,23 @@ export class Z80Cpu {
     this._af = v;
   }
 
+  @inline
   get b(): u8 {
     return <u8>(this._bc >> 8);
   }
   set b(v: u8) {
     this._bc = ((<u16>v) << 8) | (<u8>this._bc);
   }
+
+  @inline
   get c(): u8 {
     return <u8>this._bc;
   }
   set c(v: u8) {
     this._bc = <u16>((this._bc & 0xff00) | v);
   }
+
+  @inline
   get bc(): u16 {
     return this._bc;
   }
@@ -285,18 +295,23 @@ export class Z80Cpu {
     this._bc = v;
   }
 
+  @inline
   get d(): u8 {
     return <u8>(this._de >> 8);
   }
   set d(v: u8) {
     this._de = ((<u16>v) << 8) | (<u8>this._de);
   }
+
+  @inline
   get e(): u8 {
     return <u8>this._de;
   }
   set e(v: u8) {
     this._de = <u16>((this._de & 0xff00) | v);
   }
+
+  @inline
   get de(): u16 {
     return this._de;
   }
@@ -304,18 +319,23 @@ export class Z80Cpu {
     this._de = v;
   }
 
+  @inline
   get h(): u8 {
     return <u8>(this._hl >> 8);
   }
   set h(v: u8) {
     this._hl = ((<u16>v) << 8) | (<u8>this._hl);
   }
+
+  @inline
   get l(): u8 {
     return <u8>this._hl;
   }
   set l(v: u8) {
     this._hl = <u16>((this._hl & 0xff00) | v);
   }
+
+  @inline
   get hl(): u16 {
     return this._hl;
   }
@@ -348,12 +368,15 @@ export class Z80Cpu {
     this._hl_sec = v;
   }
 
+  @inline
   get i(): u8 {
     return this._i;
   }
   set i(v: u8) {
     this._i = v;
   }
+
+  @inline
   get r(): u8 {
     return this._r;
   }
@@ -361,12 +384,15 @@ export class Z80Cpu {
     this._r = v;
   }
 
+  @inline
   get pc(): u16 {
     return this._pc;
   }
   set pc(v: u16) {
     this._pc = v;
   }
+
+  @inline
   get sp(): u16 {
     return this._sp;
   }
@@ -374,18 +400,23 @@ export class Z80Cpu {
     this._sp = v;
   }
 
+  @inline
   get xh(): u8 {
     return <u8>(this._ix >> 8);
   }
   set xh(v: u8) {
     this._ix = ((<u16>v) << 8) | (<u8>this._ix);
   }
+
+  @inline
   get xl(): u8 {
     return <u8>this._ix;
   }
   set xl(v: u8) {
     this._ix = <u16>((this._ix & 0xff00) | v);
   }
+
+  @inline
   get ix(): u16 {
     return this._ix;
   }
@@ -393,18 +424,23 @@ export class Z80Cpu {
     this._ix = v;
   }
 
+  @inline
   get yh(): u8 {
     return <u8>(this._iy >> 8);
   }
   set yh(v: u8) {
     this._iy = ((<u16>v) << 8) | (<u8>this._iy);
   }
+
+  @inline
   get yl(): u8 {
     return <u8>this._iy;
   }
   set yl(v: u8) {
     this._iy = <u16>((this._iy & 0xff00) | v);
   }
+
+  @inline
   get iy(): u16 {
     return this._iy;
   }
@@ -412,18 +448,23 @@ export class Z80Cpu {
     this._iy = v;
   }
 
+  @inline
   get wh(): u8 {
     return <u8>(this._wz >> 8);
   }
   set wh(v: u8) {
     this._wz = ((<u16>v) << 8) | (<u8>this._wz);
   }
+
+  @inline
   get wl(): u8 {
     return <u8>this._wz;
   }
   set wl(v: u8) {
     this._wz = <u16>((this._wz & 0xff00) | v);
   }
+
+  @inline
   get wz(): u16 {
     return this._wz;
   }
@@ -525,6 +566,27 @@ export class Z80Cpu {
       case 3:
         this.sp = value;
         break;
+    }
+  }
+
+  /**
+   * Gets the value of the current index register
+   */
+  @inline
+  getIndexReg(): u16 {
+    return this.indexMode === OpIndexMode.IY ? this.iy : this.ix;
+  }
+
+  /**
+   * Sets the value of the current index register
+   * @param value Value to set
+   */
+  @inline
+  setIndexReg(value: u16): void {
+    if (this.indexMode === OpIndexMode.IY) {
+      this.iy = value;
+    } else {
+      this.ix = value;
     }
   }
 
@@ -907,7 +969,7 @@ export class Z80Cpu {
     const opMethod =
       this.indexMode === OpIndexMode.None
         ? standardOperations[this.opCode]
-        : standardOperations[this.opCode];
+        : indexedOperations[this.opCode];
     if (opMethod) {
       opMethod(this);
     }
@@ -2329,69 +2391,69 @@ const bitOperations: (CpuOp | null)[] = [
  */
 const indexedOperations: (CpuOp | null)[] = [
   /* 0x00 */ null,
-  /* 0x01 */ null,
-  /* 0x02 */ null,
-  /* 0x03 */ null,
-  /* 0x04 */ null,
-  /* 0x05 */ null,
-  /* 0x06 */ null,
-  /* 0x07 */ null,
-  /* 0x08 */ null,
-  /* 0x09 */ null,
-  /* 0x0a */ null,
-  /* 0x0b */ null,
-  /* 0x0c */ null,
-  /* 0x0d */ null,
-  /* 0x0e */ null,
-  /* 0x0f */ null,
-  /* 0x10 */ null,
-  /* 0x11 */ null,
-  /* 0x12 */ null,
-  /* 0x13 */ null,
-  /* 0x14 */ null,
-  /* 0x15 */ null,
-  /* 0x16 */ null,
-  /* 0x17 */ null,
-  /* 0x18 */ null,
-  /* 0x19 */ null,
-  /* 0x1a */ null,
-  /* 0x1b */ null,
-  /* 0x1c */ null,
-  /* 0x1d */ null,
-  /* 0x1e */ null,
-  /* 0x1f */ null,
-  /* 0x20 */ null,
-  /* 0x21 */ null,
-  /* 0x22 */ null,
-  /* 0x23 */ null,
-  /* 0x24 */ null,
-  /* 0x25 */ null,
-  /* 0x26 */ null,
-  /* 0x27 */ null,
-  /* 0x28 */ null,
-  /* 0x29 */ null,
-  /* 0x2a */ null,
-  /* 0x2b */ null,
-  /* 0x2c */ null,
-  /* 0x2d */ null,
-  /* 0x2e */ null,
-  /* 0x2f */ null,
-  /* 0x30 */ null,
-  /* 0x31 */ null,
-  /* 0x32 */ null,
-  /* 0x33 */ null,
-  /* 0x34 */ null,
-  /* 0x35 */ null,
-  /* 0x36 */ null,
-  /* 0x37 */ null,
-  /* 0x38 */ null,
-  /* 0x39 */ null,
-  /* 0x3a */ null,
-  /* 0x3b */ null,
-  /* 0x3c */ null,
-  /* 0x3d */ null,
-  /* 0x3e */ null,
-  /* 0x3f */ null,
+  /* 0x01 */ LdQQNN,
+  /* 0x02 */ LdBCiA,
+  /* 0x03 */ IncQQ,
+  /* 0x04 */ IncQ,
+  /* 0x05 */ DecQ,
+  /* 0x06 */ LdQN,
+  /* 0x07 */ Rlca,
+  /* 0x08 */ ExAf,
+  /* 0x09 */ AddIxQQ,
+  /* 0x0a */ LdABci,
+  /* 0x0b */ DecQQ,
+  /* 0x0c */ IncQ,
+  /* 0x0d */ DecQ,
+  /* 0x0e */ LdQN,
+  /* 0x0f */ Rrca,
+  /* 0x10 */ Djnz,
+  /* 0x11 */ LdQQNN,
+  /* 0x12 */ LdDEiA,
+  /* 0x13 */ IncQQ,
+  /* 0x14 */ IncQ,
+  /* 0x15 */ DecQ,
+  /* 0x16 */ LdQN,
+  /* 0x17 */ Rla,
+  /* 0x18 */ JrE,
+  /* 0x19 */ AddIxQQ,
+  /* 0x1a */ LdADei,
+  /* 0x1b */ DecQQ,
+  /* 0x1c */ IncQ,
+  /* 0x1d */ DecQ,
+  /* 0x1e */ LdQN,
+  /* 0x1f */ Rra,
+  /* 0x20 */ JrNz,
+  /* 0x21 */ LdQQNN,
+  /* 0x22 */ LdNNiHl,
+  /* 0x23 */ IncQQ,
+  /* 0x24 */ IncQ,
+  /* 0x25 */ DecQ,
+  /* 0x26 */ LdQN,
+  /* 0x27 */ Daa,
+  /* 0x28 */ JrZ,
+  /* 0x29 */ AddIxQQ,
+  /* 0x2a */ LdHlNNi,
+  /* 0x2b */ DecQQ,
+  /* 0x2c */ IncQ,
+  /* 0x2d */ DecQ,
+  /* 0x2e */ LdQN,
+  /* 0x2f */ Cpl,
+  /* 0x30 */ JrNc,
+  /* 0x31 */ LdQQNN,
+  /* 0x32 */ LdNNiA,
+  /* 0x33 */ IncQQ,
+  /* 0x34 */ IncHli,
+  /* 0x35 */ DecHli,
+  /* 0x36 */ LdHliN,
+  /* 0x37 */ Scf,
+  /* 0x38 */ JrC,
+  /* 0x39 */ AddIxQQ,
+  /* 0x3a */ LdANNi,
+  /* 0x3b */ DecQQ,
+  /* 0x3c */ IncQ,
+  /* 0x3d */ DecQ,
+  /* 0x3e */ LdQN,
+  /* 0x3f */ Ccf,
   /* 0x40 */ null,
   /* 0x41 */ null,
   /* 0x42 */ null,
@@ -5557,6 +5619,36 @@ function RstN(cpu: Z80Cpu): void {
 
   cpu.wz = cpu.opCode & 0x38;
   cpu.pc = cpu.wz;
+}
+
+// ============================================================================
+// Indexed instrcutions
+
+// add ix,QQ
+//
+// The contents of QQ register pair are added to the contents of IX,
+// and the results are stored in IX.
+//
+// S, Z, P/V is not affected.
+// H is set if carry from bit 11; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 15; otherwise, it is reset.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
+// =================================
+// | 0 | 0 | Q | Q | 1 | 0 | 0 | 1 | 0x09, ...
+// =================================
+// QQ: 00=BC, 01=DE, 10=IX, 11=SP
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:11
+function AddIxQQ(cpu: Z80Cpu): void {
+  let qq = (cpu.opCode & 0x30) >> 4;
+  const ixVal = cpu.getIndexReg();
+  const qqVal = qq === 2 ? ixVal : cpu.getReg16(qq);
+  cpu.wz = ixVal + 1;
+  cpu.setIndexReg(cpu.aluAddHL(ixVal, qqVal));
+  cpu.tacts += 7;
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
