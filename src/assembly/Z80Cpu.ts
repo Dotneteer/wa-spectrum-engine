@@ -23,9 +23,6 @@ export class Z80Cpu {
   private _i: u8;
   private _r: u8;
 
-  private _pc: u16;
-  private _sp: u16;
-
   private _ix: u16;
   private _iy: u16;
   private _wz: u16;
@@ -112,8 +109,8 @@ export class Z80Cpu {
     this._hl_sec = 0xffff;
     this._i = 0xff;
     this._r = 0xff;
-    this._pc = 0xffff;
-    this._sp = 0xffff;
+    this.pc = 0xffff;
+    this.sp = 0xffff;
     this._ix = 0xffff;
     this._iy = 0xffff;
     this._wz = 0xffff;
@@ -384,21 +381,8 @@ export class Z80Cpu {
     this._r = v;
   }
 
-  @inline
-  get pc(): u16 {
-    return this._pc;
-  }
-  set pc(v: u16) {
-    this._pc = v;
-  }
-
-  @inline
-  get sp(): u16 {
-    return this._sp;
-  }
-  set sp(v: u16) {
-    this._sp = v;
-  }
+  pc: u16;
+  sp: u16;
 
   @inline
   get xh(): u8 {
@@ -541,7 +525,7 @@ export class Z80Cpu {
       case 2:
         return this._hl;
       case 3:
-        return this._sp;
+        return this.sp;
       default:
         return 0xffff;
     }
@@ -687,7 +671,7 @@ export class Z80Cpu {
     // --- Get operation code and refresh the memory
     let opCode = this.readCodeMemory();
     this.tacts += 3;
-    this._pc++;
+    this.pc++;
     this.refreshMemory();
 
     if (this.prefixMode === OpPrefixMode.None) {
@@ -860,7 +844,7 @@ export class Z80Cpu {
   private executeInterrupt(): void {
     if ((this.stateFlags & Z80StateFlags.Halted) !== 0) {
       // --- We emulate stepping over the HALT instruction
-      this._pc++;
+      this.pc++;
       this.stateFlags &= Z80StateFlags.InvHalted;
     }
     this.iff1 = false;
@@ -947,7 +931,7 @@ export class Z80Cpu {
   private executeNmi(): void {
     if ((this.stateFlags & Z80StateFlags.Halted) !== 0) {
       // --- We emulate stepping over the HALT instruction
-      this._pc++;
+      this.pc++;
       this.stateFlags &= Z80StateFlags.InvHalted;
     }
     this.iff2 = this.iff1;
@@ -2423,28 +2407,28 @@ const indexedOperations: (CpuOp | null)[] = [
   /* 0x1e */ LdQN,
   /* 0x1f */ Rra,
   /* 0x20 */ JrNz,
-  /* 0x21 */ LdQQNN,
-  /* 0x22 */ LdNNiHl,
-  /* 0x23 */ IncQQ,
-  /* 0x24 */ IncQ,
-  /* 0x25 */ DecQ,
-  /* 0x26 */ LdQN,
+  /* 0x21 */ LdIxNN,
+  /* 0x22 */ LdNNiIx,
+  /* 0x23 */ IncIx,
+  /* 0x24 */ IncXh,
+  /* 0x25 */ DecXh,
+  /* 0x26 */ LdXhN,
   /* 0x27 */ Daa,
   /* 0x28 */ JrZ,
   /* 0x29 */ AddIxQQ,
-  /* 0x2a */ LdHlNNi,
-  /* 0x2b */ DecQQ,
-  /* 0x2c */ IncQ,
-  /* 0x2d */ DecQ,
-  /* 0x2e */ LdQN,
+  /* 0x2a */ LdIxNNi,
+  /* 0x2b */ DecIx,
+  /* 0x2c */ IncXl,
+  /* 0x2d */ DecXl,
+  /* 0x2e */ LdXlN,
   /* 0x2f */ Cpl,
   /* 0x30 */ JrNc,
   /* 0x31 */ LdQQNN,
   /* 0x32 */ LdNNiA,
   /* 0x33 */ IncQQ,
-  /* 0x34 */ IncHli,
-  /* 0x35 */ DecHli,
-  /* 0x36 */ LdHliN,
+  /* 0x34 */ IncIxi,
+  /* 0x35 */ DecIxi,
+  /* 0x36 */ LdIxiN,
   /* 0x37 */ Scf,
   /* 0x38 */ JrC,
   /* 0x39 */ AddIxQQ,
@@ -2455,68 +2439,68 @@ const indexedOperations: (CpuOp | null)[] = [
   /* 0x3e */ LdQN,
   /* 0x3f */ Ccf,
   /* 0x40 */ null,
-  /* 0x41 */ null,
-  /* 0x42 */ null,
-  /* 0x43 */ null,
-  /* 0x44 */ null,
-  /* 0x45 */ null,
-  /* 0x46 */ null,
-  /* 0x47 */ null,
-  /* 0x48 */ null,
+  /* 0x41 */ LdQW,
+  /* 0x42 */ LdQW,
+  /* 0x43 */ LdQW,
+  /* 0x44 */ LdQXh,
+  /* 0x45 */ LdQXl,
+  /* 0x46 */ LdQIxi,
+  /* 0x47 */ LdQW,
+  /* 0x48 */ LdQW,
   /* 0x49 */ null,
-  /* 0x4a */ null,
-  /* 0x4b */ null,
-  /* 0x4c */ null,
-  /* 0x4d */ null,
-  /* 0x4e */ null,
-  /* 0x4f */ null,
-  /* 0x50 */ null,
-  /* 0x51 */ null,
+  /* 0x4a */ LdQW,
+  /* 0x4b */ LdQW,
+  /* 0x4c */ LdQXh,
+  /* 0x4d */ LdQXl,
+  /* 0x4e */ LdQIxi,
+  /* 0x4f */ LdQW,
+  /* 0x50 */ LdQW,
+  /* 0x51 */ LdQW,
   /* 0x52 */ null,
-  /* 0x53 */ null,
-  /* 0x54 */ null,
-  /* 0x55 */ null,
-  /* 0x56 */ null,
-  /* 0x57 */ null,
-  /* 0x58 */ null,
-  /* 0x59 */ null,
-  /* 0x5a */ null,
+  /* 0x53 */ LdQW,
+  /* 0x54 */ LdQXh,
+  /* 0x55 */ LdQXl,
+  /* 0x56 */ LdQIxi,
+  /* 0x57 */ LdQW,
+  /* 0x58 */ LdQW,
+  /* 0x59 */ LdQW,
+  /* 0x5a */ LdQW,
   /* 0x5b */ null,
-  /* 0x5c */ null,
-  /* 0x5d */ null,
-  /* 0x5e */ null,
-  /* 0x5f */ null,
-  /* 0x60 */ null,
-  /* 0x61 */ null,
-  /* 0x62 */ null,
-  /* 0x63 */ null,
+  /* 0x5c */ LdQXh,
+  /* 0x5d */ LdQXl,
+  /* 0x5e */ LdQIxi,
+  /* 0x5f */ LdQW,
+  /* 0x60 */ LdQW,
+  /* 0x61 */ LdQW,
+  /* 0x62 */ LdQW,
+  /* 0x63 */ LdQW,
   /* 0x64 */ null,
-  /* 0x65 */ null,
-  /* 0x66 */ null,
-  /* 0x67 */ null,
-  /* 0x68 */ null,
-  /* 0x69 */ null,
-  /* 0x6a */ null,
-  /* 0x6b */ null,
-  /* 0x6c */ null,
+  /* 0x65 */ LdQW,
+  /* 0x66 */ LdQIxi,
+  /* 0x67 */ LdQW,
+  /* 0x68 */ LdQW,
+  /* 0x69 */ LdQW,
+  /* 0x6a */ LdQW,
+  /* 0x6b */ LdQW,
+  /* 0x6c */ LdQXh,
   /* 0x6d */ null,
-  /* 0x6e */ null,
-  /* 0x6f */ null,
-  /* 0x70 */ null,
-  /* 0x71 */ null,
-  /* 0x72 */ null,
-  /* 0x73 */ null,
-  /* 0x74 */ null,
-  /* 0x75 */ null,
-  /* 0x76 */ null,
-  /* 0x77 */ null,
-  /* 0x78 */ null,
-  /* 0x79 */ null,
-  /* 0x7a */ null,
-  /* 0x7b */ null,
-  /* 0x7c */ null,
-  /* 0x7d */ null,
-  /* 0x7e */ null,
+  /* 0x6e */ LdQIxi,
+  /* 0x6f */ LdQW,
+  /* 0x70 */ LdIxiQ,
+  /* 0x71 */ LdIxiQ,
+  /* 0x72 */ LdIxiQ,
+  /* 0x73 */ LdIxiQ,
+  /* 0x74 */ LdIxiQ,
+  /* 0x75 */ LdIxiQ,
+  /* 0x76 */ Halt,
+  /* 0x77 */ LdIxiQ,
+  /* 0x78 */ LdQW,
+  /* 0x79 */ LdQW,
+  /* 0x7a */ LdQW,
+  /* 0x7b */ LdQW,
+  /* 0x7c */ LdQXh,
+  /* 0x7d */ LdQXl,
+  /* 0x7e */ LdQIxi,
   /* 0x7f */ null,
   /* 0x80 */ null,
   /* 0x81 */ null,
@@ -5635,7 +5619,7 @@ function RstN(cpu: Z80Cpu): void {
 // C is set if carry from bit 15; otherwise, it is reset.
 //
 // =================================
-// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
 // =================================
 // | 0 | 0 | Q | Q | 1 | 0 | 0 | 1 | 0x09, ...
 // =================================
@@ -5649,6 +5633,510 @@ function AddIxQQ(cpu: Z80Cpu): void {
   cpu.wz = ixVal + 1;
   cpu.setIndexReg(cpu.aluAddHL(ixVal, qqVal));
   cpu.tacts += 7;
+}
+
+// ld ix,NN
+//
+// The 16-bit integer is loaded to IX.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 4, 3, 3 (14)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+2:3
+function LdIxNN(cpu: Z80Cpu): void {
+  // pc+1:3
+  const low = cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.tacts += 3;
+
+  // pc+2:3
+  const high = cpu.readCodeMemory();
+  cpu.pc++;
+  cpu.setIndexReg(((<u16>high) << 8) | low);
+  cpu.tacts += 3;
+}
+
+// ld(NN),ix
+///
+// The low-order byte in IX is loaded to memory address (NN);
+// the upper order byte is loaded to the next highest address
+// (NN + 1).
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// T-States: 4, 4, 3, 3, 3, 3 (20)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
+function LdNNiIx(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+
+  // pc+1:3
+  const l = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+
+  // pc+2:3
+  const addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
+  cpu.tacts += 3;
+  cpu.pc++;
+
+  // nn:3
+  cpu.wz = addr + 1;
+  cpu.writeMemory(addr, <u8>ixVal);
+  cpu.tacts += 3;
+
+  // nn+1:3
+  cpu.writeMemory(cpu.wz, <u8>(ixVal >> 8));
+  cpu.tacts += 3;
+}
+
+// inc ix
+//
+// The contents of IX are incremented.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 6 (10)
+// Contention breakdown: pc:4,pc+1:6
+function IncIx(cpu: Z80Cpu): void {
+  const value = cpu.getIndexReg();
+  cpu.setIndexReg(value + 1);
+  cpu.tacts += 2;
+}
+
+// inc xh
+//
+// The contents of XH are incremented.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function IncXh(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const hVal = cpu.aluIncByte(<u8>(ixVal >> 8));
+  cpu.setIndexReg(((<u16>hVal) << 8) | (<u8>ixVal));
+}
+
+// dec xh
+//
+// The contents of XH are decremented.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function DecXh(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const hVal = cpu.aluDecByte(<u8>(ixVal >> 8));
+  cpu.setIndexReg(((<u16>hVal) << 8) | (<u8>ixVal));
+}
+
+// ld xh,N
+//
+// The 8-bit integer N is loaded to XH
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 |
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 4, 3, (11)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3
+function LdXhN(cpu: Z80Cpu): void {
+  const val = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.setIndexReg(((<u16>val) << 8) | (<u8>cpu.getIndexReg()));
+}
+
+// ld ix,(NN)
+//
+// The contents of the address (NN) are loaded to the low-order
+// portion of IX, and the contents of the next highest memory address
+// (NN + 1) are loaded to the high-orderp ortion of IX.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+// =================================
+// |            8-bit L            |
+// =================================
+// |            8-bit H            |
+// =================================
+// T-States: 4, 4, 3, 3, 3, 3 (20)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
+function LdIxNNi(cpu: Z80Cpu): void {
+  const l = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  const addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz = addr + 1;
+  let val = <u16>cpu.readMemory(addr);
+  cpu.tacts += 3;
+  val += (<u16>cpu.readMemory(cpu.wz)) << 8;
+  cpu.tacts += 3;
+  cpu.setIndexReg(val);
+}
+
+// dec ix
+//
+// The contents of IX are decremented.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 6 (10)
+// Contention breakdown: pc:4,pc+1:6
+function DecIx(cpu: Z80Cpu): void {
+  cpu.setIndexReg(cpu.getIndexReg() - 1);
+  cpu.tacts += 2;
+}
+
+// inc xl
+//
+// The contents of XL are incremented.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function IncXl(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const lVal = cpu.aluIncByte(<u8>ixVal);
+  cpu.setIndexReg((ixVal & 0xff00) | lVal);
+}
+
+// dec xl
+//
+// The contents of XL are decremented.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 1 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function DecXl(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const lVal = cpu.aluDecByte(<u8>ixVal);
+  cpu.setIndexReg((ixVal & 0xff00) | lVal);
+}
+
+// ld xl,N
+//
+// The 8-bit integer N is loaded to XL
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 |
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 4, 3, (11)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3
+function LdXlN(cpu: Z80Cpu): void {
+  const val = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.setIndexReg((cpu.getIndexReg() & 0xff00) | val);
+}
+
+// inc (ix+D)
+//
+// The contents of IX are added to the two's-complement displacement
+// integer, D, to point to an address in memory. The contents of this
+// address are then incremented.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 3; otherwise, it is reset.
+// P/V is set if (IX+D) was 0x7F before operation; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 |
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+2:1 ×5,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:8,ii+n:4,ii+n(write):3
+function IncIxi(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const offset = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.pc++;
+  const addr = ixVal + <u16>(<i8>offset);
+  let memVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  memVal = cpu.aluIncByte(memVal);
+  cpu.tacts++;
+  cpu.writeMemory(addr, memVal);
+  cpu.tacts += 3;
+}
+
+// dec (ix+D)
+//
+// The contents of IX are added to the two's-complement displacement
+// integer, D, to point to an address in memory. The contents of this
+// address are then decremented.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4, otherwise, it is reset.
+// P/V is set if (IX+D) was 0x80 before operation; otherwise, it is reset.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 1 |
+// =================================
+// |            8-bit              |
+// =================================
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+2:1 ×5,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:8,ii+n:4,ii+n(write):3
+function DecIxi(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const offset = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.pc++;
+  const addr = ixVal + <u16>(<i8>offset);
+  let memVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  memVal = cpu.aluDecByte(memVal);
+  cpu.tacts++;
+  cpu.writeMemory(addr, memVal);
+  cpu.tacts += 3;
+}
+
+// ld (ix+D),N
+//
+// The n operand is loaded to the memory address specified by the sum
+// of IX and the two's complement displacement operand D.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 |
+// =================================
+// |            8-bit D            |
+// =================================
+// |            8-bit N            |
+// =================================
+// T-States: 4, 4, 3, 5, 3 (19)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 ×2,ii+n:3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:3
+function LdIxiN(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const offset = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  const val = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 2;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.pc++;
+  const addr = ixVal + <u16>(<i8>offset);
+  cpu.writeMemory(addr, val);
+  cpu.tacts += 3;
+}
+
+// ld Q,xh
+//
+// The contents of XH are moved to register specified by Q
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 1 | Q | Q | Q | 1 | 0 | 0 |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function LdQXh(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  const ixVal = cpu.getIndexReg();
+  cpu.setReg8(q, <u8>(ixVal >> 8));
+}
+
+// ld Q,xl
+//
+// The contents of XL are moved to register specified by Q
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 1 | Q | Q | Q | 1 | 0 | 0 |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=N/A, 101=N/A, 110=N/A, 111=A
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function LdQXl(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  const ixVal = cpu.getIndexReg();
+  cpu.setReg8(q, <u8>ixVal);
+}
+
+// ld Q,(ix+D)
+//
+// The contents of IX summed with two's-complement displacement D
+// is loaded to Q
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | Q | Q | Q | 1 | 1 | 0 |
+// =================================
+// |            8-bit D            |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=N/A, 101=N/A, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 3 (19)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+2:1 ×5,ii+n:3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:8,ii+n:3
+function LdQIxi(cpu: Z80Cpu): void {
+  const q = (cpu.opCode & 0x38) >> 3;
+  const ixVal = cpu.getIndexReg();
+  const offset = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.pc++;
+  const addr = ixVal + <u16>(<i8>offset);
+  cpu.setReg8(q, cpu.readMemory(addr));
+  cpu.tacts += 3;
+}
+
+// ld (ix+D),Q
+//
+// The contents of Q are loaded to the memory address specified
+// by the contents of IX summed with D, a two's-complement displacement
+// integer.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | Q | Q | Q |
+// =================================
+// |            8-bit D            |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=N/A, 101=N/A, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 3 (19)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+2:1 ×5,ii+n:3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:8,ii+n:3
+function LdIxiQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const ixVal = cpu.getIndexReg();
+  const offset = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.pc++;
+  const addr = ixVal + <u16>(<i8>offset);
+  cpu.writeMemory(addr, cpu.getReg8(q));
+  cpu.tacts += 3;
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
