@@ -1555,8 +1555,7 @@ function AluCP(cpu: Z80Cpu, right: u8, cf: bool): void {
   const result = <u16>cpu.a - <u16>right;
   const signed = <i16>(<i16>(<i8>cpu.a) - <i16>(<i8>right));
   const lNibble = ((cpu.a & 0x0f) - (right & 0x0f)) & 0x10;
-  var flags =
-    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3);
+  var flags = result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3);
   flags |= FlagsSetMask.N;
   if (<u8>result === 0) {
     flags |= FlagsSetMask.Z;
@@ -2564,70 +2563,70 @@ const indexedOperations: (CpuOp | null)[] = [
   /* 0xbd */ AluAXl,
   /* 0xbe */ AluAIxi,
   /* 0xbf */ CpAQ,
-  /* 0xc0 */ null,
-  /* 0xc1 */ null,
-  /* 0xc2 */ null,
-  /* 0xc3 */ null,
-  /* 0xc4 */ null,
-  /* 0xc5 */ null,
-  /* 0xc6 */ null,
-  /* 0xc7 */ null,
-  /* 0xc8 */ null,
-  /* 0xc9 */ null,
-  /* 0xca */ null,
-  /* 0xcb */ null,
-  /* 0xcc */ null,
-  /* 0xcd */ null,
-  /* 0xce */ null,
-  /* 0xcf */ null,
-  /* 0xd0 */ null,
-  /* 0xd1 */ null,
-  /* 0xd2 */ null,
-  /* 0xd3 */ null,
-  /* 0xd4 */ null,
-  /* 0xd5 */ null,
-  /* 0xd6 */ null,
-  /* 0xd7 */ null,
-  /* 0xd8 */ null,
-  /* 0xd9 */ null,
-  /* 0xda */ null,
-  /* 0xdb */ null,
-  /* 0xdc */ null,
-  /* 0xdd */ null,
-  /* 0xde */ null,
-  /* 0xdf */ null,
-  /* 0xe0 */ null,
-  /* 0xe1 */ null,
-  /* 0xe2 */ null,
-  /* 0xe3 */ null,
-  /* 0xe4 */ null,
-  /* 0xe5 */ null,
-  /* 0xe6 */ null,
-  /* 0xe7 */ null,
-  /* 0xe8 */ null,
-  /* 0xe9 */ null,
-  /* 0xea */ null,
-  /* 0xeb */ null,
-  /* 0xec */ null,
-  /* 0xed */ null,
-  /* 0xee */ null,
-  /* 0xef */ null,
-  /* 0xf0 */ null,
-  /* 0xf1 */ null,
-  /* 0xf2 */ null,
-  /* 0xf3 */ null,
-  /* 0xf4 */ null,
-  /* 0xf5 */ null,
-  /* 0xf6 */ null,
-  /* 0xf7 */ null,
-  /* 0xf8 */ null,
-  /* 0xf9 */ null,
-  /* 0xfa */ null,
-  /* 0xfb */ null,
-  /* 0xfc */ null,
-  /* 0xfd */ null,
-  /* 0xfe */ null,
-  /* 0xff */ null,
+  /* 0xc0 */ RetNz,
+  /* 0xc1 */ PopBc,
+  /* 0xc2 */ JpNz,
+  /* 0xc3 */ Jp,
+  /* 0xc4 */ CallNz,
+  /* 0xc5 */ PushBc,
+  /* 0xc6 */ AluAN,
+  /* 0xc7 */ RstN,
+  /* 0xc8 */ RetZ,
+  /* 0xc9 */ Ret,
+  /* 0xca */ JpZ,
+  /* 0xcb */ null, // CB prefix
+  /* 0xcc */ CallZ,
+  /* 0xcd */ Call,
+  /* 0xce */ AluAN,
+  /* 0xcf */ RstN,
+  /* 0xd0 */ RetNc,
+  /* 0xd1 */ PopDe,
+  /* 0xd2 */ JpNc,
+  /* 0xd3 */ OutNA,
+  /* 0xd4 */ CallNc,
+  /* 0xd5 */ PushDe,
+  /* 0xd6 */ AluAN,
+  /* 0xd7 */ RstN,
+  /* 0xd8 */ RetC,
+  /* 0xd9 */ Exx,
+  /* 0xda */ JpC,
+  /* 0xdb */ InAN,
+  /* 0xdc */ CallC,
+  /* 0xdd */ null, // DD prefix
+  /* 0xde */ AluAN,
+  /* 0xdf */ RstN,
+  /* 0xe0 */ RetPo,
+  /* 0xe1 */ PopIx,
+  /* 0xe2 */ JpPo,
+  /* 0xe3 */ ExSpiIx,
+  /* 0xe4 */ CallPo,
+  /* 0xe5 */ PushIx,
+  /* 0xe6 */ AluAN,
+  /* 0xe7 */ RstN,
+  /* 0xe8 */ RetPe,
+  /* 0xe9 */ JpIxi,
+  /* 0xea */ JpPe,
+  /* 0xeb */ ExDeHl,
+  /* 0xec */ CallPe,
+  /* 0xed */ null, // ED prefix
+  /* 0xee */ AluAN,
+  /* 0xef */ RstN,
+  /* 0xf0 */ RetP,
+  /* 0xf1 */ PopAf,
+  /* 0xf2 */ JpP,
+  /* 0xf3 */ Di,
+  /* 0xf4 */ CallP,
+  /* 0xf5 */ PushAf,
+  /* 0xf6 */ AluAN,
+  /* 0xf7 */ RstN,
+  /* 0xf8 */ RetM,
+  /* 0xf9 */ LdSpIx,
+  /* 0xfa */ JpM,
+  /* 0xfb */ Ei,
+  /* 0xfc */ CallM,
+  /* 0xfd */ null, // FD prefix
+  /* 0xfe */ AluAN,
+  /* 0xff */ RstN,
 ];
 
 /**
@@ -6218,6 +6217,137 @@ function AluAIxi(cpu: Z80Cpu): void {
   const alg = aluAlgorithms[op];
   alg(cpu, cpu.readMemory(addr), cpu.cFlag);
   cpu.tacts += 3;
+}
+
+// pop ix
+//
+// The top two bytes of the external memory last-in, first-out (LIFO)
+// stack are popped to IX. SP holds the 16-bit address of the current
+// top of the Stack. This instruction first loads to the low-order
+// portion of IX the byte at the memory location corresponding to the
+// contents of SP; then SP is incremented and the contents of the
+// corresponding adjacent memory location are loaded to the high-order
+// portion of IX. SP is incremented again.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4, 3, 3 (14)
+// Contention breakdown: pc:4,pc+1:4,sp:3,sp+1:3
+function PopIx(cpu: Z80Cpu): void {
+  let val = <u16>cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  val += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.setIndexReg(val);
+}
+
+// ex (sp),ix
+//
+// The low-order byte in IX is exchanged with the contents of the
+// memory address specified by the contents of SP, and the
+// high-order byte of IX is exchanged with the next highest memory
+// address (SP+1).
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 4, 3, 4, 3, 5 (23)
+// Contention breakdown: pc:4,pc+1:4,sp:3,sp+1:3,sp+1:1,sp+1(write):3,sp(write):3,sp(write):1 ×2
+// Gate array contention breakdown: pc:4,pc+1:4,sp:3,sp+1:4,sp+1(write):3,sp(write):5
+function ExSpiIx(cpu: Z80Cpu): void {
+  let spOld = cpu.sp;
+  const ix = cpu.getIndexReg();
+  const l = cpu.readMemory(spOld);
+  cpu.tacts += 3;
+  const h = cpu.readMemory(++spOld);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(spOld);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(spOld, <u8>(ix >> 8));
+  cpu.tacts += 3;
+  cpu.writeMemory(--spOld, <u8>ix);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(spOld);
+    cpu.tacts++;
+    cpu.readMemory(spOld);
+    cpu.tacts++;
+  }
+  cpu.wz = ((<u16>h) << 8) | l;
+  cpu.setIndexReg(cpu.wz);
+}
+
+// push ix
+//
+// The contents of IX are pushed to the external memory last-in,
+// first-out (LIFO) stack. SP holds the 16-bit address of the
+// current top of the Stack. This instruction first decrements SP
+// and loads the high-order byte of IX to the memory address
+// specified by SP; then decrements SP again and loads the low-order
+// byte to the memory location corresponding to this new address
+// in SP.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 1 | 1 | 0 | 0 | 1 | 0 | 1 |
+// =================================
+// T-States: 4, 5, 3, 3 (15)
+// Contention breakdown: pc:4,pc+1:5,sp-1:3,sp-2:3
+function PushIx(cpu: Z80Cpu): void {
+  const ix = cpu.getIndexReg();
+  cpu.sp--;
+  cpu.tacts++;
+  cpu.writeMemory(cpu.sp, <u8>(ix >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>ix);
+  cpu.tacts += 3;
+}
+
+// jp (ix)
+//
+// The PC is loaded with the contents of IX. The next instruction
+// is fetched from the location designated by the new contents of PC.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function JpIxi(cpu: Z80Cpu): void {
+  cpu.pc = cpu.getIndexReg();
+}
+
+// ld sp,ix
+//
+// The 2-byte contents of IX are loaded to SP.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 1 | 1 | 1 | 1 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 6 (10)
+// Contention breakdown: pc:4,pc+1:6
+function LdSpIx(cpu: Z80Cpu): void {
+  cpu.sp = cpu.getIndexReg();
+  cpu.tacts += 2;
 }
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
