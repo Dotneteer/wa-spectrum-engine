@@ -1471,13 +1471,12 @@ function AluADD(cpu: Z80Cpu, right: u8, cf: bool): void {
  */
 function AluADC(cpu: Z80Cpu, right: u8, cf: bool): void {
   const c = cf ? 1 : 0;
-  const result = cpu.a + right + c;
-  const signed = <i8>cpu.a + <i8>right + c;
+  const result = <u16>cpu.a + <u16>right + <u16>c;
+  const signed = <i16>(<i16>(<i8>cpu.a) + <i16>(<i8>right) + c);
   const lNibble = ((cpu.a & 0x0f) + (right & 0x0f) + c) & 0x10;
 
-  var flags =
-    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3) & 0xff;
-  if ((result & 0xff) === 0) {
+  var flags = result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3);
+  if (<u8>result === 0) {
     flags |= FlagsSetMask.Z;
   }
   if (result >= 0x100) {
@@ -1504,17 +1503,16 @@ function AluSUB(cpu: Z80Cpu, right: u8, cf: bool): void {
  */
 function AluSBC(cpu: Z80Cpu, right: u8, cf: bool): void {
   const c = cf ? 1 : 0;
-  const result = cpu.a - right - c;
-  const signed = <i8>cpu.a - <i8>right - c;
+  const result = <u16>cpu.a - <u16>right - <u16>c;
+  const signed = <i16>(<i16>(<i8>cpu.a) - <i16>(<i8>right) - c);
   const lNibble = ((cpu.a & 0x0f) - (right & 0x0f) - c) & 0x10;
 
-  var flags =
-    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3) & 0x0f;
+  var flags = result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3);
   flags |= FlagsSetMask.N;
-  if ((result & 0xff) === 0) {
+  if (<u8>result === 0) {
     flags |= FlagsSetMask.Z;
   }
-  if ((result & 0x10000) !== 0) {
+  if (result >= 0x100) {
     flags |= FlagsSetMask.C;
   }
   if (lNibble !== 0) {
@@ -1554,16 +1552,16 @@ function AluOR(cpu: Z80Cpu, right: u8, cf: bool): void {
  * Executes the CP operation.
  */
 function AluCP(cpu: Z80Cpu, right: u8, cf: bool): void {
-  const result = cpu.a - right;
-  const signed = <i8>cpu.a - <i8>right;
+  const result = <u16>cpu.a - <u16>right;
+  const signed = <i16>(<i16>(<i8>cpu.a) - <i16>(<i8>right));
   const lNibble = ((cpu.a & 0x0f) - (right & 0x0f)) & 0x10;
   var flags =
-    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3) & 0xff;
+    result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3);
   flags |= FlagsSetMask.N;
-  if ((result & 0xff) === 0) {
+  if (<u8>result === 0) {
     flags |= FlagsSetMask.Z;
   }
-  if ((result & 0x10000) !== 0) {
+  if (result >= 0x100) {
     flags |= FlagsSetMask.C;
   }
   if (lNibble !== 0) {
@@ -2502,70 +2500,70 @@ const indexedOperations: (CpuOp | null)[] = [
   /* 0x7d */ LdQXl,
   /* 0x7e */ LdQIxi,
   /* 0x7f */ null,
-  /* 0x80 */ null,
-  /* 0x81 */ null,
-  /* 0x82 */ null,
-  /* 0x83 */ null,
-  /* 0x84 */ null,
-  /* 0x85 */ null,
-  /* 0x86 */ null,
-  /* 0x87 */ null,
-  /* 0x88 */ null,
-  /* 0x89 */ null,
-  /* 0x8a */ null,
-  /* 0x8b */ null,
-  /* 0x8c */ null,
-  /* 0x8d */ null,
-  /* 0x8e */ null,
-  /* 0x8f */ null,
-  /* 0x90 */ null,
-  /* 0x91 */ null,
-  /* 0x92 */ null,
-  /* 0x93 */ null,
-  /* 0x94 */ null,
-  /* 0x95 */ null,
-  /* 0x96 */ null,
-  /* 0x97 */ null,
-  /* 0x98 */ null,
-  /* 0x99 */ null,
-  /* 0x9a */ null,
-  /* 0x9b */ null,
-  /* 0x9c */ null,
-  /* 0x9d */ null,
-  /* 0x9e */ null,
-  /* 0x9f */ null,
-  /* 0xa0 */ null,
-  /* 0xa1 */ null,
-  /* 0xa2 */ null,
-  /* 0xa3 */ null,
-  /* 0xa4 */ null,
-  /* 0xa5 */ null,
-  /* 0xa6 */ null,
-  /* 0xa7 */ null,
-  /* 0xa8 */ null,
-  /* 0xa9 */ null,
-  /* 0xaa */ null,
-  /* 0xab */ null,
-  /* 0xac */ null,
-  /* 0xad */ null,
-  /* 0xae */ null,
-  /* 0xaf */ null,
-  /* 0xb0 */ null,
-  /* 0xb1 */ null,
-  /* 0xb2 */ null,
-  /* 0xb3 */ null,
-  /* 0xb4 */ null,
-  /* 0xb5 */ null,
-  /* 0xb6 */ null,
-  /* 0xb7 */ null,
-  /* 0xb8 */ null,
-  /* 0xb9 */ null,
-  /* 0xba */ null,
-  /* 0xbb */ null,
-  /* 0xbc */ null,
-  /* 0xbd */ null,
-  /* 0xbe */ null,
-  /* 0xbf */ null,
+  /* 0x80 */ AddAQ,
+  /* 0x81 */ AddAQ,
+  /* 0x82 */ AddAQ,
+  /* 0x83 */ AddAQ,
+  /* 0x84 */ AluAXh,
+  /* 0x85 */ AluAXl,
+  /* 0x86 */ AluAIxi,
+  /* 0x87 */ AddAQ,
+  /* 0x88 */ AdcAQ,
+  /* 0x89 */ AdcAQ,
+  /* 0x8a */ AdcAQ,
+  /* 0x8b */ AdcAQ,
+  /* 0x8c */ AluAXh,
+  /* 0x8d */ AluAXl,
+  /* 0x8e */ AluAIxi,
+  /* 0x8f */ AdcAQ,
+  /* 0x90 */ SubAQ,
+  /* 0x91 */ SubAQ,
+  /* 0x92 */ SubAQ,
+  /* 0x93 */ SubAQ,
+  /* 0x94 */ AluAXh,
+  /* 0x95 */ AluAXl,
+  /* 0x96 */ AluAIxi,
+  /* 0x97 */ SubAQ,
+  /* 0x98 */ SbcAQ,
+  /* 0x99 */ SbcAQ,
+  /* 0x9a */ SbcAQ,
+  /* 0x9b */ SbcAQ,
+  /* 0x9c */ AluAXh,
+  /* 0x9d */ AluAXl,
+  /* 0x9e */ AluAIxi,
+  /* 0x9f */ SbcAQ,
+  /* 0xa0 */ AndAQ,
+  /* 0xa1 */ AndAQ,
+  /* 0xa2 */ AndAQ,
+  /* 0xa3 */ AndAQ,
+  /* 0xa4 */ AluAXh,
+  /* 0xa5 */ AluAXl,
+  /* 0xa6 */ AluAIxi,
+  /* 0xa7 */ AndAQ,
+  /* 0xa8 */ XorAQ,
+  /* 0xa9 */ XorAQ,
+  /* 0xaa */ XorAQ,
+  /* 0xab */ XorAQ,
+  /* 0xac */ AluAXh,
+  /* 0xad */ AluAXl,
+  /* 0xae */ AluAIxi,
+  /* 0xaf */ XorAQ,
+  /* 0xb0 */ OrAQ,
+  /* 0xb1 */ OrAQ,
+  /* 0xb2 */ OrAQ,
+  /* 0xb3 */ OrAQ,
+  /* 0xb4 */ AluAXh,
+  /* 0xb5 */ AluAXl,
+  /* 0xb6 */ AluAIxi,
+  /* 0xb7 */ OrAQ,
+  /* 0xb8 */ CpAQ,
+  /* 0xb9 */ CpAQ,
+  /* 0xba */ CpAQ,
+  /* 0xbb */ CpAQ,
+  /* 0xbc */ AluAXh,
+  /* 0xbd */ AluAXl,
+  /* 0xbe */ AluAIxi,
+  /* 0xbf */ CpAQ,
   /* 0xc0 */ null,
   /* 0xc1 */ null,
   /* 0xc2 */ null,
@@ -6136,6 +6134,89 @@ function LdIxiQ(cpu: Z80Cpu): void {
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   cpu.writeMemory(addr, cpu.getReg8(q));
+  cpu.tacts += 3;
+}
+
+// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
+// operation for A and XH.
+//
+// The flags are set according to the ALU operation rules.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 0 | A | A | A | 1 | 0 | 0 |
+// =================================
+// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+//    100=AND, 101=XOR, 110=OR, 111=CP
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function AluAXh(cpu: Z80Cpu): void {
+  const ix = cpu.getIndexReg();
+  const op = (cpu.opCode & 0x38) >> 3;
+  const alg = aluAlgorithms[op];
+  alg(cpu, <u8>(ix >> 8), cpu.cFlag);
+}
+
+// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
+// operation for A and XL.
+//
+// The flags are set according to the ALU operation rules.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 0 | A | A | A | 1 | 0 | 0 |
+// =================================
+// A: 000=ADD, 001=ADC, 010=SUB, 011=SBC,
+//    100=AND, 101=XOR, 110=OR, 111=CP
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function AluAXl(cpu: Z80Cpu): void {
+  const ix = cpu.getIndexReg();
+  const op = (cpu.opCode & 0x38) >> 3;
+  const alg = aluAlgorithms[op];
+  alg(cpu, <u8>ix, cpu.cFlag);
+}
+
+// Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
+// operation for A and the 8/bit value at the (IX+D) address
+//
+// The flags are set according to the ALU operation rules.
+//
+// =================================
+// | 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
+// =================================
+// | 1 | 0 | A | A | A | 1 | 1 | 0 |
+// =================================
+// |            8-bit D            |
+// =================================
+// T-States: 4, 4, 3, 5, 3 (19)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+2:1 ×5,ii+n:3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:8,ii+n:3
+function AluAIxi(cpu: Z80Cpu): void {
+  const ixVal = cpu.getIndexReg();
+  const offset = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+    cpu.readMemory(cpu.pc);
+    cpu.tacts++;
+  }
+  cpu.pc++;
+  const addr = ixVal + <u16>(<i8>offset);
+  const op = (cpu.opCode & 0x38) >> 3;
+  const alg = aluAlgorithms[op];
+  alg(cpu, cpu.readMemory(addr), cpu.cFlag);
   cpu.tacts += 3;
 }
 
