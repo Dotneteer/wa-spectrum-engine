@@ -34,6 +34,16 @@ class WaTestZ80Machine {
   }
 
   /**
+   * Gets or sets the extended instruction set flag
+   */
+  get allowExtendedInstructionSet(): bool {
+    return this.cpu.allowExtendedInstructionSet;
+  }
+  set allowExtendedInstructionSet(flag: bool) {
+    this.cpu.allowExtendedInstructionSet = flag;
+  }
+
+  /**
    * Gets the access log of the memory
    */
   get memoryAccessLog(): Uint32Array {

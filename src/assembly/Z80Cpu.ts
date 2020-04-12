@@ -1848,7 +1848,7 @@ const standardOperations: (CpuOp | null)[] = [
  */
 const extendedOperations: (CpuOp | null)[] = [
   /* 0x00 */ null,
-  /* 0x01 */ LdQQNN,
+  /* 0x01 */ null,
   /* 0x02 */ null,
   /* 0x03 */ null,
   /* 0x04 */ null,
@@ -1882,26 +1882,26 @@ const extendedOperations: (CpuOp | null)[] = [
   /* 0x20 */ null,
   /* 0x21 */ null,
   /* 0x22 */ null,
-  /* 0x23 */ null,
-  /* 0x24 */ null,
+  /* 0x23 */ Swapnib,
+  /* 0x24 */ Mirror,
   /* 0x25 */ null,
   /* 0x26 */ null,
-  /* 0x27 */ null,
-  /* 0x28 */ null,
-  /* 0x29 */ null,
-  /* 0x2a */ null,
-  /* 0x2b */ null,
-  /* 0x2c */ null,
+  /* 0x27 */ TestN,
+  /* 0x28 */ BslaDeB,
+  /* 0x29 */ BsraDeB,
+  /* 0x2a */ BsrlDeB,
+  /* 0x2b */ BsrfDeB,
+  /* 0x2c */ BrlcDeB,
   /* 0x2d */ null,
   /* 0x2e */ null,
   /* 0x2f */ null,
-  /* 0x30 */ null,
-  /* 0x31 */ null,
-  /* 0x32 */ null,
-  /* 0x33 */ null,
-  /* 0x34 */ null,
-  /* 0x35 */ null,
-  /* 0x36 */ null,
+  /* 0x30 */ Mul,
+  /* 0x31 */ AddHlA,
+  /* 0x32 */ AddDeA,
+  /* 0x33 */ AddBcA,
+  /* 0x34 */ AddHlNN,
+  /* 0x35 */ AddDeNN,
+  /* 0x36 */ AddBcNN,
   /* 0x37 */ null,
   /* 0x38 */ null,
   /* 0x39 */ null,
@@ -1999,7 +1999,7 @@ const extendedOperations: (CpuOp | null)[] = [
   /* 0x95 */ null,
   /* 0x96 */ null,
   /* 0x97 */ null,
-  /* 0x98 */ null,
+  /* 0x98 */ JpInC,
   /* 0x99 */ null,
   /* 0x9a */ null,
   /* 0x9b */ null,
@@ -5603,7 +5603,7 @@ function RstN(cpu: Z80Cpu): void {
 }
 
 // ============================================================================
-// Indexed instrcutions
+// Indexed instructions
 
 // add ix,QQ
 //
@@ -6349,5 +6349,341 @@ function LdSpIx(cpu: Z80Cpu): void {
   cpu.sp = cpu.getIndexReg();
   cpu.tacts += 2;
 }
+
+// ============================================================================
+// Extended instructions
+
+// swapnib
+//
+// Swaps the high and low nibbles of the Accummulator
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 23
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function Swapnib(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.a = (cpu.a >> 4) | (cpu.a << 4);
+}
+
+// mirror
+//
+// Mirrors (reverses the order) of bits in the accumulator.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 24
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function Mirror(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let newA: u8 = 0;
+  let oldA = cpu.a;
+  for (let i = 0; i < 8; i++) {
+    newA <<= 1;
+    newA |= oldA & 0x01;
+    oldA >>= 1;
+  }
+  cpu.a = newA;
+}
+
+// test N
+//
+// Similar to CP, but performs an AND instead of a subtraction.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 27
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 |
+// =================================
+// |               N               |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4,pc+1:3
+function TestN(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  const value = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  const result = cpu.a & value;
+  cpu.f = <u8>(aluLogOpFlags[result] | FlagsSetMask.H);
+}
+
+// bsla de,b
+//
+// Shifts DE left by the number of bits determined by bit 0..3 of B.
+// No flags are modified.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 28
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function BslaDeB(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de = cpu.de << (cpu.b & 0x0f);
+}
+
+// bsra de,b
+//
+// Shifts DE right by the number of bits determined by bit 0..3 of B.
+// Bit 15 of DE remains unchanged.
+// No flags are modified.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 29
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function BsraDeB(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de = (cpu.de >> (cpu.b & 0x0f)) | (cpu.de & 0x8000);
+}
+
+// bsrl de,b
+//
+// Shifts DE right by the number of bits determined by bit 0..3 of B.
+// Bit 15 of DE gets 0.
+// No flags are modified.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 2a
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function BsrlDeB(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de = cpu.de >> (cpu.b & 0x0f);
+}
+
+// bsrf de,b
+//
+// Shifts DE right by the number of bits determined by bit 0..3 of B.
+// Shifts in 1s from the left
+// No flags are modified.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 2a
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function BsrfDeB(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de = ~(~cpu.de >> (cpu.b & 0x0f));
+}
+
+// brlc de,b
+//
+// Rotates DE left by the number of bits determined by bit 0..3 of B.
+// Shifts in 1s from the left
+// No flags are modified.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 2a
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function BrlcDeB(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de = (cpu.de << (cpu.b & 0x0f)) | (cpu.de >> (16 - (cpu.b & 0x0f)));
+}
+
+// mul
+//
+// Multiplies D by E, storing 16 bit result into DE. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 30
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function Mul(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de = <u16>cpu.d * cpu.e;
+}
+
+// add hl,a
+//
+// Adds the unsigned A register to register pair HL. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 31
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function AddHlA(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.hl += cpu.a;
+}
+
+// add de,a
+//
+// Adds the unsigned A register to register pair DE. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 32
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function AddDeA(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.de += cpu.a;
+}
+
+// add bc,a
+//
+// Adds the unsigned A register to register pair BC. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 33
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4
+function AddBcA(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.bc += cpu.a;
+}
+
+// add hl,NN
+//
+// Adds the 16-bit NN value to register pair HL. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 34
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4,3,3,2
+function AddHlNN(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let value = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;  
+  cpu.pc++;
+  value += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.pc++;
+  cpu.hl += value;
+  cpu.tacts += 5;  
+}
+
+// add de,NN
+//
+// Adds the 16-bit NN value to register pair DE. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 35
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 1 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4,3,3,2
+function AddDeNN(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let value = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;  
+  cpu.pc++;
+  value += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.pc++;
+  cpu.de += value;
+  cpu.tacts += 5;  
+}
+
+// add bc,NN
+//
+// Adds the 16-bit NN value to register pair BC. Does not alter any flags.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 36
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4,3,3,2
+function AddBcNN(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let value = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;  
+  cpu.pc++;
+  value += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.pc++;
+  cpu.bc += value;
+  cpu.tacts += 5;  
+}
+
+
+// ============================================================================
+// JpInC
+
+// jp (c)
+//
+// Sets bottom 14 bits of current PC to value read from I/O port: 
+// PC[13:0] = (IN (C) << 6) (can be used to execute code block read from a disk 
+// stream). "current PC" is address of next instruction after JP (C), as 
+// the PC is advanced by fetching op code from memory and is already advanced 
+// when execution happens - if the JP instruction resides at the very end of 
+// 16k memory block (..FE or ..FF address), then newly composed PC value will 
+// land into following 16k block.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 98
+// =================================
+// | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 |
+// =================================
+// T-States: 4, 4, (8)
+// Contention breakdown: pc:4,pc+1:4,3,2
+function JpInC(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.wz = cpu.bc + 1;
+  const pval = cpu.readPort(cpu.bc);
+  cpu.pc = (cpu.pc & 0xc000) + ((<u16>pval) << 6)
+  cpu.tacts++;
+}
+
+// ============================================================================
+// Bit instructions
+
+// ============================================================================
+// Indexed bit instructions
 
 function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}

@@ -22,4 +22,5 @@ export interface Api {
   resetIoAccessLog(): void;
   getTestMachineIoAccessLog(): number; // PTR
   getTestMachineMemoryAccessLog(): number; // PTR
+  enableExtendedInstructions(allow: boolean): void;
 }

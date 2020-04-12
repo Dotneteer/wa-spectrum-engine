@@ -25,7 +25,15 @@ export class TestMachine {
    */
   reset(): TestZ80MachineState {
     this.moduleApi.initTestMachine();
+    this.moduleApi.enableExtendedInstructions(false);
     return this.cpuState;
+  }
+
+  /**
+   * Enables extended instruction set
+   */
+  enableExtendedInstructions(): void {
+    this.moduleApi.enableExtendedInstructions(true);
   }
 
   /**

@@ -105,3 +105,11 @@ export function getTestMachineIoAccessLog(): Uint32Array {
 export function getTestMachineMemoryAccessLog(): Uint32Array {
   return waTestZ80Machine.memoryAccessLog;
 }
+
+/**
+ * Enables/disables extended instruction set.
+ * @param allow True, if extended instruction set should be allowed.
+ */
+export function enableExtendedInstructions(allow: bool): void {
+  waTestZ80Machine.allowExtendedInstructionSet = allow;
+}
