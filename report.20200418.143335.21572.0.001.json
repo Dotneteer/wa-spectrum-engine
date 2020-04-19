@@ -1,0 +1,523 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20200418.143335.21572.0.001.json",
+    "dumpEventTime": "2020-04-18T14:33:35Z",
+    "dumpEventTimeStamp": "1587213215449",
+    "processId": 21572,
+    "cwd": "c:\\Users\\dotne\\source\\repos\\as-spectrum-engine",
+    "commandLine": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "c:\\Users\\dotne\\.vscode\\extensions\\hbenl.vscode-mocha-test-adapter-2.3.0\\out\\worker\\bundle.js"
+    ],
+    "nodejsVersion": "v12.14.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.14.1",
+      "v8": "7.7.299.13-node.16",
+      "uv": "1.33.1",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.40.0",
+      "napi": "5",
+      "llhttp": "2.0.1",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.14.1/node-v12.14.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.14.1/node-v12.14.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.14.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "10.0.19041",
+    "osVersion": "Windows 10 Pro",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 980265,
+        "nice": 0,
+        "sys": 782468,
+        "idle": 21494015,
+        "irq": 119421
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 540781,
+        "nice": 0,
+        "sys": 415781,
+        "idle": 22300187,
+        "irq": 4984
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 1942937,
+        "nice": 0,
+        "sys": 884843,
+        "idle": 20428843,
+        "irq": 6062
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 452078,
+        "nice": 0,
+        "sys": 215937,
+        "idle": 22588609,
+        "irq": 2984
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 1212218,
+        "nice": 0,
+        "sys": 481609,
+        "idle": 21562796,
+        "irq": 5109
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 482328,
+        "nice": 0,
+        "sys": 370078,
+        "idle": 22404218,
+        "irq": 4046
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 1103437,
+        "nice": 0,
+        "sys": 439156,
+        "idle": 21714031,
+        "irq": 4671
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 1071562,
+        "nice": 0,
+        "sys": 243609,
+        "idle": 21941453,
+        "irq": 2859
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 1072375,
+        "nice": 0,
+        "sys": 491984,
+        "idle": 21692250,
+        "irq": 3484
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 514171,
+        "nice": 0,
+        "sys": 201578,
+        "idle": 22540875,
+        "irq": 1890
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 2614968,
+        "nice": 0,
+        "sys": 721296,
+        "idle": 19920343,
+        "irq": 3421
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 447343,
+        "nice": 0,
+        "sys": 363250,
+        "idle": 22446015,
+        "irq": 2359
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 1135625,
+        "nice": 0,
+        "sys": 510468,
+        "idle": 21610515,
+        "irq": 7640
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 339890,
+        "nice": 0,
+        "sys": 278343,
+        "idle": 22638390,
+        "irq": 2453
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 990140,
+        "nice": 0,
+        "sys": 461000,
+        "idle": 21805484,
+        "irq": 5640
+      },
+      {
+        "model": "AMD Ryzen 7 2700 Eight-Core Processor          ",
+        "speed": 3194,
+        "user": 575375,
+        "nice": 0,
+        "sys": 368703,
+        "idle": 22312546,
+        "irq": 59921
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "Ethernet",
+        "internal": false,
+        "mac": "b4:2e:99:8a:7f:73",
+        "address": "2001:4c4c:24c2:6500::4",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Ethernet",
+        "internal": false,
+        "mac": "b4:2e:99:8a:7f:73",
+        "address": "2001:4c4c:24c2:6500:315e:e674:9ecd:f748",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Ethernet",
+        "internal": false,
+        "mac": "b4:2e:99:8a:7f:73",
+        "address": "2001:4c4c:24c2:6500:5084:6eef:5e5d:4290",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Ethernet",
+        "internal": false,
+        "mac": "b4:2e:99:8a:7f:73",
+        "address": "2001:4c4c:24c2:6500:8943:8f2f:f15a:d93e",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Ethernet",
+        "internal": false,
+        "mac": "b4:2e:99:8a:7f:73",
+        "address": "fe80::315e:e674:9ecd:f748",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 4
+      },
+      {
+        "name": "Ethernet",
+        "internal": false,
+        "mac": "b4:2e:99:8a:7f:73",
+        "address": "192.168.0.33",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      }
+    ],
+    "host": "INOVAKDESKTOP"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x00007ff716741759",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+10873"
+    },
+    {
+      "pc": "0x00007ff716745b7c",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+28316"
+    },
+    {
+      "pc": "0x00007ff716744b38",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+24152"
+    },
+    {
+      "pc": "0x00007ff71683433b",
+      "symbol": "v8::base::CPU::has_sse+37723"
+    },
+    {
+      "pc": "0x00007ff717038c5e",
+      "symbol": "v8::Isolate::ReportExternalAllocationLimitReached+94"
+    },
+    {
+      "pc": "0x00007ff717020ca1",
+      "symbol": "v8::SharedArrayBuffer::Externalize+833"
+    },
+    {
+      "pc": "0x00007ff716eee56c",
+      "symbol": "v8::internal::Heap::EphemeronKeyWriteBarrierFromCode+1436"
+    },
+    {
+      "pc": "0x00007ff716ef9910",
+      "symbol": "v8::internal::Heap::ProtectUnprotectedMemoryChunks+1312"
+    },
+    {
+      "pc": "0x00007ff716ef6444",
+      "symbol": "v8::internal::Heap::PageFlagsAreConsistent+3204"
+    },
+    {
+      "pc": "0x00007ff716eebcd3",
+      "symbol": "v8::internal::Heap::CollectGarbage+1283"
+    },
+    {
+      "pc": "0x00007ff716eea4a4",
+      "symbol": "v8::internal::Heap::AddRetainedMap+2356"
+    },
+    {
+      "pc": "0x00007ff716f0b775",
+      "symbol": "v8::internal::Factory::NewFillerObject+53"
+    },
+    {
+      "pc": "0x00007ff716c77a49",
+      "symbol": "v8::internal::interpreter::JumpTableTargetOffsets::iterator::operator=+4057"
+    },
+    {
+      "pc": "0x00007ff71746463d",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+567949"
+    },
+    {
+      "pc": "0x000002aeff6ba260",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 2167005184,
+    "totalCommittedMemory": 2167005184,
+    "usedMemory": 2005965400,
+    "availableMemory": 64629480,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 262144,
+        "capacity": 261872,
+        "used": 32296,
+        "available": 229576
+      },
+      "new_space": {
+        "memorySize": 33554432,
+        "committedMemory": 33554432,
+        "capacity": 16759808,
+        "used": 102048,
+        "available": 16657760
+      },
+      "old_space": {
+        "memorySize": 2058203136,
+        "committedMemory": 2058203136,
+        "capacity": 1931858120,
+        "used": 1931685896,
+        "available": 172224
+      },
+      "code_space": {
+        "memorySize": 950272,
+        "committedMemory": 950272,
+        "capacity": 746496,
+        "used": 746496,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 1314816,
+        "committedMemory": 1314816,
+        "capacity": 751680,
+        "used": 751680,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 72671232,
+        "committedMemory": 72671232,
+        "capacity": 72643432,
+        "used": 72643432,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 49152,
+        "committedMemory": 49152,
+        "capacity": 3552,
+        "used": 3552,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 16759808,
+        "used": 0,
+        "available": 16759808
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 1486.86,
+    "kernelCpuSeconds": 48.984,
+    "cpuConsumptionPercent": 123.361,
+    "maxRss": 2310770688,
+    "pageFaults": {
+      "IORequired": 1381586,
+      "IONotRequired": 0
+    },
+    "fsActivity": {
+      "reads": 468,
+      "writes": 112
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "=C:": "c:\\Users\\dotne\\source\\repos\\as-spectrum-engine",
+    "ALLUSERSPROFILE": "C:\\ProgramData",
+    "AMD_ENTRYPOINT": "vs/workbench/services/extensions/node/extensionHostProcess",
+    "APPDATA": "C:\\Users\\dotne\\AppData\\Roaming",
+    "APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL": "true",
+    "CommonProgramFiles": "C:\\Program Files\\Common Files",
+    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+    "COMPUTERNAME": "INOVAKDESKTOP",
+    "ComSpec": "C:\\WINDOWS\\system32\\cmd.exe",
+    "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+    "ELECTRON_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_15104_UIQCDMZCCAQGCJKB",
+    "ELECTRON_HOME": "C:\\Users\\dotne\\source\\repos\\spectnetide-svelte\\node_modules\\electron-prebuilt-win\\dist",
+    "ELECTRON_RUN_AS_NODE": "1",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\dotne",
+    "LOCALAPPDATA": "C:\\Users\\dotne\\AppData\\Local",
+    "LOGONSERVER": "\\\\INOVAKDESKTOP",
+    "NODE_ENV": "development",
+    "NUMBER_OF_PROCESSORS": "16",
+    "OneDrive": "C:\\Users\\dotne\\OneDrive",
+    "OneDriveConsumer": "C:\\Users\\dotne\\OneDrive",
+    "OS": "Windows_NT",
+    "Path": "C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\dotnet\\;C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\nodejs\\;C:\\Ruby26-x64\\bin;C:\\Users\\dotne\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\dotne\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\dotne\\AppData\\Roaming\\npm;C:\\Users\\dotne\\.dotnet\\tools;C:\\Users\\dotne\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Program Files\\nodejs;C:\\Users\\dotne\\source\\repos\\spectnetide-svelte\\node_modules\\electron-prebuilt-win\\dist;C:\\Program Files\\Java\\jdk-13.0.2\\bin;;C:\\Users\\dotne\\AppData\\Local\\Programs\\Fiddler",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.RB;.RBW",
+    "PIPE_LOGGING": "true",
+    "PJSD_LICENSE": "PJSDdevLICENSE",
+    "PJSD_TELEMETRY_OPT_OUT": "1",
+    "PROCESSOR_ARCHITECTURE": "AMD64",
+    "PROCESSOR_IDENTIFIER": "AMD64 Family 23 Model 8 Stepping 2, AuthenticAMD",
+    "PROCESSOR_LEVEL": "23",
+    "PROCESSOR_REVISION": "0802",
+    "ProgramData": "C:\\ProgramData",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramW6432": "C:\\Program Files",
+    "PSModulePath": "C:\\Program Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
+    "PUBLIC": "C:\\Users\\Public",
+    "SESSIONNAME": "Console",
+    "SKIP_LINK_CHECKING": "true",
+    "SystemDrive": "C:",
+    "SystemRoot": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\dotne\\AppData\\Local\\Temp",
+    "TMP": "C:\\Users\\dotne\\AppData\\Local\\Temp",
+    "USERDOMAIN": "INOVAKDESKTOP",
+    "USERDOMAIN_ROAMINGPROFILE": "INOVAKDESKTOP",
+    "USERNAME": "dotne",
+    "USERPROFILE": "C:\\Users\\dotne",
+    "VERBOSE_LOGGING": "true",
+    "VSCODE_CWD": "C:\\WINDOWS\\System32",
+    "VSCODE_HANDLES_UNCAUGHT_ERRORS": "true",
+    "VSCODE_IPC_HOOK": "\\\\.\\pipe\\684a2fc5d91b113d3ef774242dd63f92-1.44.2-main-sock",
+    "VSCODE_IPC_HOOK_EXTHOST": "\\\\.\\pipe\\vscode-ipc-2d58a33a-92dc-4d0f-acdb-7441f691f049-sock",
+    "VSCODE_LOGS": "C:\\Users\\dotne\\AppData\\Roaming\\Code\\logs\\20200418T082407",
+    "VSCODE_LOG_STACK": "false",
+    "VSCODE_NLS_CONFIG": "{\"locale\":\"hu\",\"availableLanguages\":{},\"_languagePackSupport\":true}",
+    "VSCODE_NODE_CACHED_DATA_DIR": "C:\\Users\\dotne\\AppData\\Roaming\\Code\\CachedData\\ff915844119ce9485abfe8aa9076ec76b5300ddd",
+    "VSCODE_PID": "15104",
+    "windir": "C:\\WINDOWS",
+    "__COMPAT_LAYER": "DetectorsAppHealth"
+  },
+  "sharedObjects": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+    "C:\\WINDOWS\\System32\\KERNEL32.DLL",
+    "C:\\WINDOWS\\System32\\KERNELBASE.dll",
+    "C:\\WINDOWS\\SYSTEM32\\apphelp.dll",
+    "C:\\WINDOWS\\System32\\WS2_32.dll",
+    "C:\\WINDOWS\\System32\\RPCRT4.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dbghelp.dll",
+    "C:\\WINDOWS\\System32\\ADVAPI32.dll",
+    "C:\\WINDOWS\\System32\\ucrtbase.dll",
+    "C:\\WINDOWS\\System32\\msvcrt.dll",
+    "C:\\WINDOWS\\System32\\sechost.dll",
+    "C:\\WINDOWS\\System32\\USER32.dll",
+    "C:\\WINDOWS\\System32\\win32u.dll",
+    "C:\\WINDOWS\\System32\\GDI32.dll",
+    "C:\\WINDOWS\\System32\\gdi32full.dll",
+    "C:\\WINDOWS\\System32\\msvcp_win.dll",
+    "C:\\WINDOWS\\System32\\PSAPI.DLL",
+    "C:\\WINDOWS\\System32\\CRYPT32.dll",
+    "C:\\WINDOWS\\System32\\bcrypt.dll",
+    "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\USERENV.dll",
+    "C:\\WINDOWS\\SYSTEM32\\WINMM.dll",
+    "C:\\WINDOWS\\System32\\IMM32.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\powrprof.dll",
+    "C:\\WINDOWS\\SYSTEM32\\UMPDC.dll",
+    "C:\\WINDOWS\\SYSTEM32\\CRYPTBASE.DLL",
+    "C:\\WINDOWS\\system32\\uxtheme.dll",
+    "C:\\WINDOWS\\System32\\combase.dll",
+    "C:\\WINDOWS\\system32\\mswsock.dll",
+    "C:\\WINDOWS\\SYSTEM32\\kernel.appcore.dll",
+    "C:\\WINDOWS\\System32\\bcryptprimitives.dll",
+    "C:\\WINDOWS\\System32\\NSI.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc6.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\DNSAPI.dll",
+    "C:\\WINDOWS\\system32\\napinsp.dll",
+    "C:\\WINDOWS\\system32\\pnrpnsp.dll",
+    "C:\\WINDOWS\\system32\\wshbth.dll",
+    "C:\\WINDOWS\\system32\\NLAapi.dll",
+    "C:\\WINDOWS\\System32\\winrnr.dll"
+  ]
+}

@@ -1911,69 +1911,69 @@ const extendedOperations: (CpuOp | null)[] = [
   /* 0x3d */ null,
   /* 0x3e */ null,
   /* 0x3f */ null,
-  /* 0x40 */ null,
-  /* 0x41 */ null,
-  /* 0x42 */ null,
-  /* 0x43 */ null,
-  /* 0x44 */ null,
-  /* 0x45 */ null,
-  /* 0x46 */ null,
-  /* 0x47 */ null,
-  /* 0x48 */ null,
-  /* 0x49 */ null,
-  /* 0x4a */ null,
-  /* 0x4b */ null,
-  /* 0x4c */ null,
-  /* 0x4d */ null,
-  /* 0x4e */ null,
-  /* 0x4f */ null,
-  /* 0x50 */ null,
-  /* 0x51 */ null,
-  /* 0x52 */ null,
-  /* 0x53 */ null,
-  /* 0x54 */ null,
-  /* 0x55 */ null,
-  /* 0x56 */ null,
-  /* 0x57 */ null,
-  /* 0x58 */ null,
-  /* 0x59 */ null,
-  /* 0x5a */ null,
-  /* 0x5b */ null,
-  /* 0x5c */ null,
-  /* 0x5d */ null,
-  /* 0x5e */ null,
-  /* 0x5f */ null,
-  /* 0x60 */ null,
-  /* 0x61 */ null,
-  /* 0x62 */ null,
-  /* 0x63 */ null,
-  /* 0x64 */ null,
-  /* 0x65 */ null,
-  /* 0x66 */ null,
-  /* 0x67 */ null,
-  /* 0x68 */ null,
-  /* 0x69 */ null,
-  /* 0x6a */ null,
-  /* 0x6b */ null,
-  /* 0x6c */ null,
-  /* 0x6d */ null,
-  /* 0x6e */ null,
-  /* 0x6f */ null,
-  /* 0x70 */ null,
-  /* 0x71 */ null,
-  /* 0x72 */ null,
-  /* 0x73 */ null,
-  /* 0x74 */ null,
-  /* 0x75 */ null,
-  /* 0x76 */ null,
+  /* 0x40 */ InQCi,
+  /* 0x41 */ OutCiQ,
+  /* 0x42 */ SbcHlQQ,
+  /* 0x43 */ LdNNiQQ,
+  /* 0x44 */ Neg,
+  /* 0x45 */ Retn,
+  /* 0x46 */ ImN,
+  /* 0x47 */ LdXrA,
+  /* 0x48 */ InQCi,
+  /* 0x49 */ OutCiQ,
+  /* 0x4a */ AdcHlQQ,
+  /* 0x4b */ LdQQNNi,
+  /* 0x4c */ Neg,
+  /* 0x4d */ Retn,
+  /* 0x4e */ ImN,
+  /* 0x4f */ LdXrA,
+  /* 0x50 */ InQCi,
+  /* 0x51 */ OutCiQ,
+  /* 0x52 */ SbcHlQQ,
+  /* 0x53 */ LdNNiQQ,
+  /* 0x54 */ Neg,
+  /* 0x55 */ Retn,
+  /* 0x56 */ ImN,
+  /* 0x57 */ LdAXr,
+  /* 0x58 */ InQCi,
+  /* 0x59 */ OutCiQ,
+  /* 0x5a */ AdcHlQQ,
+  /* 0x5b */ LdQQNNi,
+  /* 0x5c */ Neg,
+  /* 0x5d */ Retn,
+  /* 0x5e */ ImN,
+  /* 0x5f */ LdAXr,
+  /* 0x60 */ InQCi,
+  /* 0x61 */ OutCiQ,
+  /* 0x62 */ SbcHlQQ,
+  /* 0x63 */ LdNNiQQ,
+  /* 0x64 */ Neg,
+  /* 0x65 */ Retn,
+  /* 0x66 */ ImN,
+  /* 0x67 */ Rrd,
+  /* 0x68 */ InQCi,
+  /* 0x69 */ OutCiQ,
+  /* 0x6a */ AdcHlQQ,
+  /* 0x6b */ LdQQNNi,
+  /* 0x6c */ Neg,
+  /* 0x6d */ Retn,
+  /* 0x6e */ ImN,
+  /* 0x6f */ Rld,
+  /* 0x70 */ InQCi,
+  /* 0x71 */ OutCiQ,
+  /* 0x72 */ SbcHlQQ,
+  /* 0x73 */ LdNNiQQ,
+  /* 0x74 */ Neg,
+  /* 0x75 */ Retn,
+  /* 0x76 */ ImN,
   /* 0x77 */ null,
-  /* 0x78 */ null,
-  /* 0x79 */ null,
-  /* 0x7a */ null,
-  /* 0x7b */ null,
-  /* 0x7c */ null,
-  /* 0x7d */ null,
-  /* 0x7e */ null,
+  /* 0x78 */ InQCi,
+  /* 0x79 */ OutCiQ,
+  /* 0x7a */ AdcHlQQ,
+  /* 0x7b */ LdQQNNi,
+  /* 0x7c */ Neg,
+  /* 0x7d */ Retn,
+  /* 0x7e */ ImN,
   /* 0x7f */ null,
   /* 0x80 */ null,
   /* 0x81 */ null,
@@ -6596,12 +6596,12 @@ function AddHlNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts += 3;  
+  cpu.tacts += 3;
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
   cpu.hl += value;
-  cpu.tacts += 5;  
+  cpu.tacts += 5;
 }
 
 // add de,NN
@@ -6619,12 +6619,12 @@ function AddDeNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts += 3;  
+  cpu.tacts += 3;
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
   cpu.de += value;
-  cpu.tacts += 5;  
+  cpu.tacts += 5;
 }
 
 // add bc,NN
@@ -6642,26 +6642,487 @@ function AddBcNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts += 3;  
+  cpu.tacts += 3;
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
   cpu.bc += value;
-  cpu.tacts += 5;  
+  cpu.tacts += 5;
 }
 
+// in Q,(c)
+//
+// The contents of Register C are placed on the bottom half (A0
+// through A7) of the address bus to select the I/O device at one
+// of 256 possible ports. The contents of Register B are placed on
+// the top half (A8 through A15) of the address bus at this time.
+// Then one byte from the selected port is placed on the data bus
+// and written to Register Q in the CPU.
+//
+// S is set if input data is negative; otherwise, it is reset.
+// Z is set if input data is 0; otherwise, it is reset.
+// H is reset.
+// P/V is set if parity is even; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 40
+// =================================
+// | 0 | 1 | Q | Q | Q | 0 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 4 (12)
+// Contention breakdown: pc:4,pc+1:4,I/O
+function InQCi(cpu: Z80Cpu): void {
+  const q = (cpu.opCode >> 3) & 0x07;
+  cpu.wz = cpu.bc + 1;
+  const pval = cpu.readPort(cpu.bc);
+  cpu.f = <u8>(aluLogOpFlags[pval] | (cpu.f & FlagsSetMask.C));
+  if (q !== 6) {
+    cpu.setReg8(q, pval);
+  }
+}
+
+// out (c),Q
+//
+// The contents of Register C are placed on the bottom half (A0
+// through A7) of the address bus to select the I/O device at one
+// of 256 possible ports. The contents of Register B are placed on
+// the top half (A8 through A15) of the address bus at this time.
+// Then the byte contained in register B is placed on the data bus
+// and written to the selected peripheral device.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 41
+// =================================
+// | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4, 4 (12)
+// Contention breakdown: pc:4,pc+1:4,I/O
+function OutCiQ(cpu: Z80Cpu): void {
+  const q = (cpu.opCode >> 3) & 0x07;
+  cpu.wz = cpu.bc + 1;
+  cpu.writePort(cpu.bc, q !== 6 ? cpu.getReg8(q) : 0);
+}
+
+// sbc hl,QQ
+//
+// The contents of the register pair QQ and the Carry Flag are
+// subtracted from the contents of HL, and the result is stored
+// in HL.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 12; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is set.
+//  C is set if borrow; otherwise, it is reset.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | Q | Q | 0 | 0 | 1 | 0 |
+// =================================
+// QQ: 00=BC, 01=DE, 10=HL, 11=SP
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:11
+function SbcHlQQ(cpu: Z80Cpu): void {
+  cpu.wz = cpu.hl + 1;
+  const cfVal: u32 = cpu.cFlag ? 1 : 0;
+  var qq = (cpu.opCode & 0x30) >> 4;
+  let flags = FlagsSetMask.N;
+  flags |=
+    ((<u32>(cpu.hl & 0x0fff) - <u32>(cpu.getReg16(qq) & 0x0fff) - cfVal) >> 8) &
+    FlagsSetMask.H;
+  let sbcVal = <u32>cpu.hl - <u32>cpu.getReg16(qq) - cfVal;
+  if ((sbcVal & 0x10000) !== 0) {
+    flags |= FlagsSetMask.C;
+  }
+  if ((sbcVal & 0xffff) === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  var signedSbc =
+    <i32>(<i16>cpu.hl) - <i32>(<i16>cpu.getReg16(qq)) - <i32>cfVal;
+  if (signedSbc < -0x8000 || signedSbc >= 0x8000) {
+    flags |= FlagsSetMask.PV;
+  }
+  cpu.hl = <u16>sbcVal;
+  cpu.f = <u8>(
+    (flags | (cpu.h & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)))
+  );
+  cpu.tacts += 7;
+}
+
+// ld (NN),QQ
+//
+// The low-order byte of register pair QQ is loaded to memory address
+// (NN); the upper byte is loaded to memory address(NN + 1).
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | Q | Q | 0 | 0 | 1 | 1 |
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// QQ: 00=BC, 01=DE, 10=HL, 11=SP
+// T-States: 4, 4, 3, 3, 3, 3 (20)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
+function LdNNiQQ(cpu: Z80Cpu): void {
+  const l = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  let addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz = addr + 1;
+  const regVal = cpu.getReg16((cpu.opCode & 0x30) >> 4);
+  cpu.writeMemory(addr, <u8>regVal);
+  cpu.tacts += 3;
+  cpu.writeMemory(cpu.wz, <u8>(regVal >> 8));
+  cpu.tacts += 3;
+}
+
+// neg
+//
+// The contents of the Accumulator are negated (two's complement).
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if Accumulator was 80h before operation; otherwise, it is reset.
+// N is set.
+// C is set if Accumulator was not 00h before operation; otherwise, it is reset.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 3, 3, 3, 3 (20)
+// Contention breakdown: pc:4,pc+1:4
+function Neg(cpu: Z80Cpu): void {
+  const result = -(<i16>cpu.a);
+  const lNibble = -(<i16>(cpu.a & 0x0f)) & 0x10;
+
+  let flags = result & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3);
+  flags |= FlagsSetMask.N;
+  if ((result & 0xff) === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  if (cpu.a !== 0) {
+    flags |= FlagsSetMask.C;
+  }
+  if (lNibble !== 0) {
+    flags |= FlagsSetMask.H;
+  }
+  if (cpu.a === 0x80) {
+    flags |= FlagsSetMask.PV;
+  }
+  cpu.f = <u8>flags;
+  cpu.a = <u8>result;
+}
+
+// retn (reti)
+//
+// This instruction is used at the end of a nonmaskable interrupts
+// service routine to restore the contents of PC. The state of IFF2
+// is copied back to IFF1 so that maskable interrupts are enabled
+// immediately following the RETN if they were enabled before the
+// nonmaskable interrupt.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 |
+// =================================
+// T-States: 4, 4, 4, 3, 3 (14)
+// Contention breakdown: pc:4,pc+1:4,sp:3,sp+1:3
+function Retn(cpu: Z80Cpu): void {
+  cpu.iff1 = cpu.iff2;
+  let addr = <u16>cpu.readMemory(cpu.sp);
+  cpu.tacts += 3;
+  cpu.sp++;
+  addr += (<u16>cpu.readMemory(cpu.sp)) << 8;
+  cpu.tacts += 3;
+  cpu.sp++;
+  cpu.pc = addr;
+  cpu.wz = addr;
+}
+
+// im N
+//
+// Sets Interrupt Mode to N
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 0 | N | N | 1 | 1 | 0 |
+// =================================
+// N: 00=IM 0, 01=N/A 10=IM 1, 11=IM 2
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function ImN(cpu: Z80Cpu): void {
+  let mode = (cpu.opCode & 0x18) >> 3;
+  if (mode < 2) {
+    mode = 1;
+  }
+  mode--;
+  cpu.interruptMode = mode;
+}
+
+/// ld i,a / ld r,a
+//
+// The contents of A are loaded to I or R
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 0 | R | 1 | 1 | 1 | 1 |
+// =================================
+// R: 0=I, 1=R
+// T-States: 4, 5 (9)
+// Contention breakdown: pc:4,pc+1:5
+function LdXrA(cpu: Z80Cpu): void {
+  if ((cpu.opCode & 0x08) === 0) {
+    cpu.i = cpu.a;
+  } else {
+    cpu.r = cpu.a;
+  }
+  cpu.tacts++;
+}
+
+/// adc hl,QQ
+//
+// The contents of register pair QQ are added with the Carry flag
+// to the contents of HL, and the result is stored in HL.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// H is set if carry from bit 11; otherwise, it is reset.
+// P/V is set if overflow; otherwise, it is reset.
+// N is reset.
+// C is set if carry from bit 15; otherwise, it is reset.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | Q | Q | 1 | 0 | 1 | 0 |
+// =================================
+// QQ: 00=BC, 01=DE, 10=HL, 11=SP
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:11
+function AdcHlQQ(cpu: Z80Cpu): void {
+  cpu.wz = cpu.hl + 1;
+  const cfVal = <u32>cpu.cFlag ? 1 : 0;
+  const qq = (cpu.opCode & 0x30) >> 4;
+  let flags =
+    ((<u32>(cpu.hl & 0x0fff) +
+      <u32>(cpu.getReg16(qq) & 0x0fff) +
+      <u32>(cpu.f & FlagsSetMask.C)) >>
+      8) &
+    FlagsSetMask.H &
+    0xff;
+  const adcVal =
+    <u32>(cpu.hl & 0xffff) + <u32>(cpu.getReg16(qq) & 0xffff) + cfVal;
+  if ((adcVal & 0x10000) !== 0) {
+    flags |= FlagsSetMask.C;
+  }
+  if ((adcVal & 0xffff) === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  const signedAdc =
+    <i32>(<i16>cpu.hl) + <i32>(<i16>cpu.getReg16(qq)) + <i32>cfVal;
+  if (signedAdc < -0x8000 || signedAdc >= 0x8000) {
+    flags |= FlagsSetMask.PV;
+  }
+  cpu.hl = <u16>adcVal;
+  cpu.f = <u8>(
+    (flags | (cpu.h & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)))
+  );
+  cpu.tacts += 7;
+}
+
+// ld qq,(NN)
+//
+// The contents of address (NN) are loaded to the low-order portion
+// of register pair QQ, and the contents of (NN + 1) are loaded to
+// the high-order portion of QQ.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | Q | Q | 1 | 0 | 1 | 1 |
+// =================================
+// |           8-bit L             |
+// =================================
+// |           8-bit H             |
+// =================================
+// QQ: 00=BC, 01=DE, 10=HL, 11=SP
+// T-States: 4, 4, 3, 3, 3, 3 (20)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
+function LdQQNNi(cpu: Z80Cpu): void {
+  const addrl = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  const addr = ((<u16>cpu.readCodeMemory()) << 8) | addrl;
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.wz = addr + 1;
+  const l = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  const h = cpu.readMemory(cpu.wz);
+  cpu.tacts += 3;
+  cpu.setReg16((cpu.opCode & 0x30) >> 4, ((<u16>h) << 8) | (<u16>l));
+}
+
+/// ld a,i / ld a,r
+//
+// The contents of I or R are loaded to A
+//
+// S is set if the I Register is negative; otherwise, it is reset.
+// Z is set if the I Register is 0; otherwise, it is reset.
+// H is reset.
+// P/V contains contents of IFF2.
+// N is reset.
+// C is not affected.
+// If an interrupt occurs during execution of this instruction, the Parity flag contains a 0.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 0 | R | 1 | 1 | 1 | 1 |
+// =================================
+// R: 0=I, 1=R
+// T-States: 4, 5 (9)
+// Contention breakdown: pc:4,pc+1:5
+function LdAXr(cpu: Z80Cpu): void {
+  const source = (cpu.opCode & 0x08) === 0 ? cpu.i : cpu.r;
+  cpu.a = source;
+  const flags =
+    (cpu.f & FlagsSetMask.C) |
+    (source & FlagsSetMask.R3R5) |
+    (cpu.iff2 ? FlagsSetMask.PV : 0) |
+    (source & 0x80) |
+    (source === 0 ? FlagsSetMask.Z : 0);
+  cpu.f = <u8>flags;
+  cpu.tacts++;
+}
+
+// rrd
+//
+// The contents of the low-order four bits (bits 3, 2, 1, and 0)
+// of memory location (HL) are copied to the low-order four bits
+// of A. The previous contents of the low-order four bits of A are
+// copied to the high-order four bits(7, 6, 5, and 4) of location
+// (HL); and the previous contents of the high-order four bits of
+// (HL) are copied to the low-order four bits of (HL). The contents
+// of the high-order bits of A are unaffected.
+//
+// S is set if A is negative after an operation; otherwise, it is reset.
+// Z is set if A is 0 after an operation; otherwise, it is reset.
+// H is reset.
+// P/V is set if the parity of A is even after an operation; otherwise,
+// it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 1 |
+// =================================
+// T-States: 4, 4, 3, 4, 3 (18)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1 ×4,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:7,hl(write):3
+function Rrd(cpu: Z80Cpu): void {
+  const tmp = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+
+  cpu.wz = cpu.hl + 1;
+  cpu.writeMemory(cpu.hl, (cpu.a << 4) | (tmp >> 4));
+  cpu.tacts += 3;
+
+  cpu.a = (cpu.a & 0xf0) | (tmp & 0x0f);
+  cpu.f = <u8>(aluLogOpFlags[cpu.a] | (cpu.f & FlagsSetMask.C));
+}
+
+// rld
+//
+// The contents of the low-order four bits (bits 3, 2, 1, and 0)
+// of the memory location (HL) are copied to the high-order four
+// bits (7, 6, 5, and 4) of that same memory location; the previous
+// contents of those high-order four bits are copied to the
+// low-order four bits of A; and the previous contents of the
+// low-order four bits of A are copied to the low-order four bits
+// of memory location(HL). The contents of the high-order bits of A
+// are unaffected.
+//
+// S is set if A is negative after an operation; otherwise, it is reset.
+// Z is set if the A is 0 after an operation; otherwise, it is reset.
+// H is reset.
+// P/V is set if the parity of A is even after an operation; otherwise,
+// it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 1 |
+// =================================
+// T-States: 4, 4, 3, 4, 3 (18)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1 ×4,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:7,hl(write):3
+function Rld(cpu: Z80Cpu): void {
+  const tmp = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+
+  cpu.wz = cpu.hl + 1;
+  cpu.writeMemory(cpu.hl, ((cpu.a & 0x0f) | (tmp << 4)) & 0xff);
+  cpu.tacts += 3;
+
+  cpu.a = (cpu.a & 0xf0) | (tmp >> 4);
+  cpu.f = <u8>(aluLogOpFlags[cpu.a] | (cpu.f & FlagsSetMask.C));
+}
 
 // ============================================================================
 // JpInC
 
 // jp (c)
 //
-// Sets bottom 14 bits of current PC to value read from I/O port: 
-// PC[13:0] = (IN (C) << 6) (can be used to execute code block read from a disk 
-// stream). "current PC" is address of next instruction after JP (C), as 
-// the PC is advanced by fetching op code from memory and is already advanced 
-// when execution happens - if the JP instruction resides at the very end of 
-// 16k memory block (..FE or ..FF address), then newly composed PC value will 
+// Sets bottom 14 bits of current PC to value read from I/O port:
+// PC[13:0] = (IN (C) << 6) (can be used to execute code block read from a disk
+// stream). "current PC" is address of next instruction after JP (C), as
+// the PC is advanced by fetching op code from memory and is already advanced
+// when execution happens - if the JP instruction resides at the very end of
+// 16k memory block (..FE or ..FF address), then newly composed PC value will
 // land into following 16k block.
 // =================================
 // | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 98
@@ -6676,7 +7137,7 @@ function JpInC(cpu: Z80Cpu): void {
   }
   cpu.wz = cpu.bc + 1;
   const pval = cpu.readPort(cpu.bc);
-  cpu.pc = (cpu.pc & 0xc000) + ((<u16>pval) << 6)
+  cpu.pc = (cpu.pc & 0xc000) + ((<u16>pval) << 6);
   cpu.tacts++;
 }
 
