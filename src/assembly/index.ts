@@ -1,7 +1,7 @@
 import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 import { RunMode } from "../shared/RunMode";
 import { waTestZ80Machine } from "./test-machine/WaTestZ80Machine";
-import { clearMemoryAccessLog, clearIoAccessLog } from "./test-machine/test-devices";
+import { clearMemoryAccessLog, clearIoAccessLog, clearTbBlueAccessLog } from "./test-machine/test-devices";
 
 export { Z80Cpu } from "./Z80Cpu";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
@@ -93,6 +93,13 @@ export function resetIoAccessLog(): void {
 }
 
 /**
+ * Clears the TBBLUE access log
+ */
+export function resetTbBlueAccessLog(): void {
+  clearTbBlueAccessLog();
+}
+
+/**
  * Gets the I/O access log of the test machine
  */
 export function getTestMachineIoAccessLog(): Uint32Array {
@@ -104,6 +111,13 @@ export function getTestMachineIoAccessLog(): Uint32Array {
  */
 export function getTestMachineMemoryAccessLog(): Uint32Array {
   return waTestZ80Machine.memoryAccessLog;
+}
+
+/**
+ * Gets the TBBLUE access log of the test machine
+ */
+export function getTestMachineTbBlueAccessLog(): Uint16Array {
+  return waTestZ80Machine.tbBlueAccessLog;
 }
 
 /**

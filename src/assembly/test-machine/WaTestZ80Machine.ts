@@ -1,7 +1,21 @@
 import { TestZ80MachineState } from "./TestZ80MachineState";
 import { Z80Cpu } from "../Z80Cpu";
-import { RunMode } from "../../shared/RunMode"
-import { readSimpleMemory, writeSimpleMemory, MemoryOp, memoryAccessLog, IoOp, ioAccessLog, simpleMemory, resetMemory, readSimpleIo, writeSimpleIo, setTestInput, setHostCpu } from "./test-devices";
+import { RunMode } from "../../shared/RunMode";
+import {
+  readSimpleMemory,
+  writeSimpleMemory,
+  memoryAccessLog,
+  ioAccessLog,
+  simpleMemory,
+  resetMemory,
+  readSimpleIo,
+  writeSimpleIo,
+  setTestInput,
+  setHostCpu,
+  tbBlueAccessLog,
+  simpleWriteTbBlueIndex,
+  simpleWriteTbBlueValue
+} from "./test-devices";
 import { Z80StateFlags } from "../../shared/cpu-enums";
 
 /**
@@ -20,6 +34,8 @@ class WaTestZ80Machine {
     this.cpu.memoryWriter = writeSimpleMemory;
     this.cpu.portWriter = writeSimpleIo;
     this.cpu.portReader = readSimpleIo;
+    this.cpu.tbBlueIndexWriter = simpleWriteTbBlueIndex;
+    this.cpu.tbBlueValueWriter = simpleWriteTbBlueValue;
     setHostCpu(this.cpu);
   }
 
@@ -50,19 +66,33 @@ class WaTestZ80Machine {
     const log = new Uint32Array(memoryAccessLog.length);
     for (let i = 0; i < memoryAccessLog.length; i++) {
       const l = memoryAccessLog[i];
-      log[i] = (<u32>l.address << 16) | (<u16>l.value << 8) | (l.isWrite ? 1 : 0);
+      log[i] =
+        ((<u32>l.address) << 16) | ((<u16>l.value) << 8) | (l.isWrite ? 1 : 0);
     }
     return log;
   }
 
   /**
-   * Gets the acces log of I/O operations
+   * Gets the access log of I/O operations
    */
   get ioAccessLog(): Uint32Array {
     const log = new Uint32Array(ioAccessLog.length);
     for (let i = 0; i < ioAccessLog.length; i++) {
       const l = ioAccessLog[i];
-      log[i] = (<u32>l.address << 16) | (<u16>l.value << 8) | (l.isOutput ? 1 : 0);
+      log[i] =
+        ((<u32>l.address) << 16) | ((<u16>l.value) << 8) | (l.isOutput ? 1 : 0);
+    }
+    return log;
+  }
+
+  /**
+   * Gets the access log of TBBLUE operations
+   */
+  get tbBlueAccessLog(): Uint16Array {
+    const log = new Uint16Array(tbBlueAccessLog.length);
+    for (let i = 0; i < tbBlueAccessLog.length; i++) {
+      const l = tbBlueAccessLog[i];
+      log[i] = ((<u16>l.data) << 8) | (l.isIndex ? 1 : 0);
     }
     return log;
   }
@@ -110,7 +140,7 @@ class WaTestZ80Machine {
     while (ptr < 0x10000) {
       writeSimpleMemory(<u16>(ptr++), 0);
     }
-    
+
     // --- Init code execution
     this.cpu.reset();
     this.cpu.pc = startAt;

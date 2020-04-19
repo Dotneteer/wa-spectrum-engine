@@ -2,7 +2,7 @@ import { Api } from "./api";
 import { TestZ80MachineState } from "../assembly/test-machine/TestZ80MachineState";
 import { RunMode } from "./RunMode";
 import { ASUtil } from "@assemblyscript/loader";
-import { MemoryOp, IoOp, clearIoAccessLog, clearMemoryAccessLog } from "../assembly/test-machine/test-devices";
+import { MemoryOp, IoOp, clearIoAccessLog, clearMemoryAccessLog, TbBlueOp } from "../assembly/test-machine/test-devices";
 import { FlagsSetMask } from "./cpu-enums";
 
 /**
@@ -76,6 +76,7 @@ export class TestMachine {
     this._memoryBeforeRun = new Uint8Array(this.memory);
     this.moduleApi.resetMemoryAccessLog();
     this.moduleApi.resetIoAccessLog();
+    this.moduleApi.resetTbBlueAccessLog();
     this.moduleApi.runTestMachine();
     return this.cpuState;
   }
@@ -197,6 +198,23 @@ export class TestMachine {
         address: (l >> 16) & 0xffff,
         value: (l >> 8) & 0xff,
         isOutput: (l & 0xff) !== 0
+      });
+    }
+    return result;
+  }
+
+  /**
+   * Gets the memory access log of the test machine
+   */
+  get tbBlueAccessLog(): TbBlueOp[] {
+    const tbBlueAccess = this.moduleApi.getTestMachineTbBlueAccessLog();
+    const log = this.moduleApi.__getArray(tbBlueAccess);
+    const result: TbBlueOp[] = [];
+    for (let i = 0; i < log.length; i++) {
+      const l = log[i];
+      result.push({
+        data: (l >> 8) & 0xff,
+        isIndex: (l & 0xff) !== 0
       });
     }
     return result;

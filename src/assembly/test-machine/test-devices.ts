@@ -147,3 +147,49 @@ export class IoOp {
   value: u8;
   isOutput: bool;
 }
+
+// ============================================================================
+// TBBlue device used for testing
+
+/**
+ * The TBBlue access log
+ */
+export let tbBlueAccessLog: TbBlueOp[] = [];
+
+/**
+ * Clears the TBBLUE access log
+ */
+export function clearTbBlueAccessLog(): void {
+  tbBlueAccessLog = [];
+}
+
+/**
+ * Sets the index of a TBBLUE register
+ * @param index Index to write out
+ */
+export function simpleWriteTbBlueIndex(index: u8): void {
+  tbBlueAccessLog.push({
+    isIndex: true,
+    data: index
+  });
+}
+
+/**
+ * Sets the value of a TBBLUE register
+ * @param value Value to write out
+ */
+export function simpleWriteTbBlueValue(value: u8): void {
+  tbBlueAccessLog.push({
+    isIndex: false,
+    data: value
+  });
+}
+
+/**
+ * Represents information for a TBBlue operation
+ */
+export class TbBlueOp {
+  isIndex: bool;
+  data: u8;  
+}
+

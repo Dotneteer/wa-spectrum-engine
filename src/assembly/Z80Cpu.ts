@@ -93,6 +93,8 @@ export class Z80Cpu {
     this.memoryWriter = (_addr: u16, _value: u8) => {};
     this.portReader = (_addr: u16) => 0xff;
     this.portWriter = (_addr: u16, _value: u8) => {};
+    this.tbBlueIndexWriter = (_index: u8) => {};
+    this.tbBlueValueWriter = (_value: u8) => {};
   }
 
   /**
@@ -139,6 +141,8 @@ export class Z80Cpu {
   memoryWriter: (addr: u16, value: u8) => void;
   portReader: (addr: u16) => u8;
   portWriter: (addr: u16, value: u8) => void;
+  tbBlueIndexWriter: (index: u8) => void;
+  tbBlueValueWriter: (value: u8) => void;
 
   // ==========================================================================
   // CPU State information
@@ -633,10 +637,26 @@ export class Z80Cpu {
   /**
    * Writes the specified I/O port
    * @param address Memory address
-   * @param value Datat to write
+   * @param value Data to write
    */
   writePort(address: u16, value: u8): void {
     this.portWriter(address, value);
+  }
+
+  /**
+   * Writes the TBBLUE index
+   * @param value Index to write
+   */
+  writeTbBlueIndex(index: u8): void {
+    this.tbBlueIndexWriter(index);
+  }
+
+  /**
+   * Writes the TBBLUE value
+   * @param value Index to write
+   */
+  writeTbBlueValue(value: u8): void {
+    this.tbBlueValueWriter(value);
   }
 
   // ==========================================================================
@@ -1985,18 +2005,18 @@ const extendedOperations: (CpuOp | null)[] = [
   /* 0x87 */ null,
   /* 0x88 */ null,
   /* 0x89 */ null,
-  /* 0x8a */ null,
+  /* 0x8a */ PushNN,
   /* 0x8b */ null,
   /* 0x8c */ null,
   /* 0x8d */ null,
   /* 0x8e */ null,
   /* 0x8f */ null,
-  /* 0x90 */ null,
-  /* 0x91 */ null,
-  /* 0x92 */ null,
-  /* 0x93 */ null,
-  /* 0x94 */ null,
-  /* 0x95 */ null,
+  /* 0x90 */ OutInB,
+  /* 0x91 */ NextReg,
+  /* 0x92 */ NextRegA,
+  /* 0x93 */ PixelDn,
+  /* 0x94 */ PixelAd,
+  /* 0x95 */ SetAE,
   /* 0x96 */ null,
   /* 0x97 */ null,
   /* 0x98 */ JpInC,
@@ -2007,35 +2027,35 @@ const extendedOperations: (CpuOp | null)[] = [
   /* 0x9d */ null,
   /* 0x9e */ null,
   /* 0x9f */ null,
-  /* 0xa0 */ null,
-  /* 0xa1 */ null,
-  /* 0xa2 */ null,
-  /* 0xa3 */ null,
-  /* 0xa4 */ null,
-  /* 0xa5 */ null,
+  /* 0xa0 */ Ldi,
+  /* 0xa1 */ Cpi,
+  /* 0xa2 */ Ini,
+  /* 0xa3 */ Outi,
+  /* 0xa4 */ Ldix,
+  /* 0xa5 */ Ldws,
   /* 0xa6 */ null,
   /* 0xa7 */ null,
-  /* 0xa8 */ null,
-  /* 0xa9 */ null,
-  /* 0xaa */ null,
-  /* 0xab */ null,
-  /* 0xac */ null,
+  /* 0xa8 */ Ldd,
+  /* 0xa9 */ Cpd,
+  /* 0xaa */ Ind,
+  /* 0xab */ Outd,
+  /* 0xac */ Lddx,
   /* 0xad */ null,
   /* 0xae */ null,
   /* 0xaf */ null,
-  /* 0xb0 */ null,
-  /* 0xb1 */ null,
-  /* 0xb2 */ null,
-  /* 0xb3 */ null,
-  /* 0xb4 */ null,
+  /* 0xb0 */ Ldir,
+  /* 0xb1 */ Cpir,
+  /* 0xb2 */ Inir,
+  /* 0xb3 */ Otir,
+  /* 0xb4 */ Ldirx,
   /* 0xb5 */ null,
   /* 0xb6 */ null,
-  /* 0xb7 */ null,
-  /* 0xb8 */ null,
-  /* 0xb9 */ null,
-  /* 0xba */ null,
-  /* 0xbb */ null,
-  /* 0xbc */ null,
+  /* 0xb7 */ Ldpirx,
+  /* 0xb8 */ Lddr,
+  /* 0xb9 */ Cpdr,
+  /* 0xba */ Indr,
+  /* 0xbb */ Otdr,
+  /* 0xbc */ Lddrx,
   /* 0xbd */ null,
   /* 0xbe */ null,
   /* 0xbf */ null,
@@ -7112,8 +7132,210 @@ function Rld(cpu: Z80Cpu): void {
   cpu.f = <u8>(aluLogOpFlags[cpu.a] | (cpu.f & FlagsSetMask.C));
 }
 
-// ============================================================================
-// JpInC
+// push NN
+//
+// Pushes the 16-bit value to the stack
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 8A
+// =================================
+// | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0 |
+// =================================
+// |             N Low             |
+// =================================
+// |             N High            |
+// =================================
+// T-States: 4, 4, 3, 3, 3, 3 (20)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,sp-1:3,sp-2:3
+function PushNN(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let value = <u16>cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  value += (<u16>cpu.readCodeMemory()) << 8;
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>(value >> 8));
+  cpu.tacts += 3;
+  cpu.sp--;
+  cpu.writeMemory(cpu.sp, <u8>value);
+  cpu.tacts += 3;
+}
+
+// outinb
+//
+// The contents of the HL register pair are placed on the address
+// bus to select a location in memory. The byte contained in this
+// memory location is temporarily stored in the CPU. Then, after B
+// is decremented, the contents of C are placed on the bottom half
+// (A0 through A7) of the address bus to select the I/O device at
+// one of 256 possible ports. Register B is used as a byte counter,
+// and its decremented value is placed on the top half (A8 through
+// A15) of the address bus. The byte to be output is placed on the
+// data bus and written to a selected peripheral device. Finally,
+// the HL is incremented.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 91
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
+// =================================
+// |           Register            |
+// =================================
+// |            Value              |
+// =================================
+// T-States: 4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,hl:3,I/O
+function OutInB(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  // hl:3
+  var val = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+
+  // I/O
+  cpu.writePort(cpu.bc, val);
+  cpu.hl++;
+}
+
+/// nextreg reg,val
+//
+// Sets the specified 8-bit NEXT register to the
+// provided 8-bit value
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 91
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 |
+// =================================
+// |           Register            |
+// =================================
+// |            Value              |
+// =================================
+// T-States: 4, 4, 3, 3 (14)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3
+function NextReg(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  const reg = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  const val = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.writeTbBlueIndex(reg);
+  cpu.writeTbBlueValue(val);
+}
+
+// nextreg reg,A
+//
+// Sets the specified 8-bit NEXT register to the
+// value of A.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 92
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 0 |
+// =================================
+// |           Register            |
+// =================================
+// |            Value              |
+// =================================
+// T-States: 4, 4, 3 (11)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3
+function NextRegA(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  const reg = cpu.readCodeMemory();
+  cpu.tacts += 3;
+  cpu.pc++;
+  cpu.writeTbBlueIndex(reg);
+  cpu.writeTbBlueValue(cpu.a);
+}
+
+// pixeldn
+//
+// Updates the address in HL to move down by one line of pixels.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 93
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function PixelDn(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+
+  if ((cpu.h & 0x07) === 0x07) {
+    if (cpu.l < 0xe0) {
+      cpu.l += 0x20;
+      cpu.h &= 0xf8;
+    } else {
+      cpu.l += 0x20;
+      cpu.h++;
+    }
+  } else {
+    cpu.hl += 0x0100;
+  }
+}
+
+// pixelad
+//
+// Takes E and D as the X,Y coordinate of a point and
+// calculates the address of the byte containing this
+// pixel in the pixel area of standard ULA screen 0,
+// storing it in HL.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 94
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function PixelAd(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  const da = (<u16>0x4000) | (<u16>(cpu.e >> 3)) | ((<u16>cpu.d) << 5);
+  cpu.hl =
+    (da & 0xf81f) | // --- Reset V5, V4, V3, V2, V1
+    ((da & 0x0700) >> 3) | // --- Keep V5, V4, V3 only
+    ((da & 0x00e0) << 3); // --- Exchange the V2, V1, V0 bit
+  // --- group with V5, V4, V3
+}
+
+// setae
+//
+// Takes the bit number to set from E (only the lower 3 bits)
+// and sets that bit on A.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 95
+// =================================
+// | 1 | 0 | 0 | 1 | 0 | 1 | 0 | 1 |
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function SetAE(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  cpu.a = 0x80 >> (cpu.e & 0x07);
+}
 
 // jp (c)
 //
@@ -7139,6 +7361,1262 @@ function JpInC(cpu: Z80Cpu): void {
   const pval = cpu.readPort(cpu.bc);
   cpu.pc = (cpu.pc & 0xc000) + ((<u16>pval) << 6);
   cpu.tacts++;
+}
+
+// ldi
+//
+// A byte of data is transferred from the memory location addressed
+// by the contents of HL to the memory location addressed by the
+// contents of DE. Then both these register pairs are incremented
+// and BC is decremented.
+//
+// S is not affected.
+// Z is not affected.
+// H is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:1 ×2
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5
+function Ldi(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl++);
+  cpu.tacts += 3;
+  cpu.writeMemory(cpu.de, memVal);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.tacts += 3;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+  }
+  cpu.de++;
+  memVal += cpu.a;
+  memVal = <u8>((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+  cpu.f = <u8>(
+    ((cpu.f &
+      ~(
+        FlagsSetMask.N |
+        FlagsSetMask.H |
+        FlagsSetMask.PV |
+        FlagsSetMask.R3 |
+        FlagsSetMask.R5
+      )) |
+      memVal)
+  );
+  if (--cpu.bc !== 0) {
+    cpu.f |= <u8>FlagsSetMask.PV;
+  }
+}
+
+// cpi
+//
+// The contents of the memory location addressed by HL is compared
+// with the contents of A. With a true compare, Z flag is
+// set. Then HL is incremented and BC is decremented.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if A is (HL); otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1 ×5
+// Gate array contention breakdown: pc:4,pc+1:4,hl:8
+function Cpi(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl);
+  const compRes = cpu.a - memVal;
+  let r3r5 = compRes;
+  let flags = (cpu.f & FlagsSetMask.C) | FlagsSetMask.N;
+  if ((((cpu.a & 0x0f) - (compRes & 0x0f)) & 0x10) !== 0) {
+    flags |= FlagsSetMask.H;
+    r3r5 = compRes - 1;
+  }
+  if ((compRes & 0xff) === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  flags |= compRes & FlagsSetMask.S;
+  flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
+
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.hl++;
+
+  if (--cpu.bc !== 0) {
+    flags |= FlagsSetMask.PV;
+  }
+  cpu.f = <u8>flags;
+  cpu.wz++;
+}
+
+// ini
+//
+// The contents of Register C are placed on the bottom half (A0
+// through A7) of the address bus to select the I/O device at one
+// of 256 possible ports. Register B can be used as a byte counter,
+// and its contents are placed on the top half (A8 through A15) of
+// the address bus at this time. Then one byte from the selected
+// port is placed on the data bus and written to the CPU. The
+// contents of the HL register pair are then placed on the address
+// bus and the input byte is written to the corresponding location
+// of memory. Finally, B is decremented and HL is incremented.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+// =================================
+// T-States: 4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,I/O,hl:3
+function Ini(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  // I/O
+  cpu.wz = cpu.bc + 1;
+  const val = cpu.readPort(cpu.bc);
+
+  // hl:3
+  cpu.writeMemory(cpu.hl, val);
+  cpu.tacts += 3;
+
+  cpu.f |= <u8>FlagsSetMask.N;
+  if (--cpu.b === 0) {
+    cpu.f |= <u8>FlagsSetMask.Z;
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.Z;
+  }
+  cpu.hl++;
+}
+
+// outi
+//
+// The contents of the HL register pair are placed on the address
+// bus to select a location in memory. The byte contained in this
+// memory location is temporarily stored in the CPU. Then, after B
+// is decremented, the contents of C are placed on the bottom half
+// (A0 through A7) of the address bus to select the I/O device at
+// one of 256 possible ports. Register B is used as a byte counter,
+// and its decremented value is placed on the top half (A8 through
+// A15) of the address bus. The byte to be output is placed on the
+// data bus and written to a selected peripheral device. Finally,
+// the HL is incremented.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,hl:3,I/O
+function Outi(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  cpu.f |= <u8>FlagsSetMask.N;
+  if (--cpu.b === 0) {
+    cpu.f |= <u8>FlagsSetMask.Z;
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.Z;
+  }
+
+  // hl:3
+  const val = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+
+  // I/O
+  cpu.writePort(cpu.bc, val);
+
+  cpu.hl++;
+  cpu.wz = cpu.bc + 1;
+}
+
+// ldix
+//
+// A byte of data is transferred from the memory location addressed
+// by the contents of HL to the memory location addressed by the
+// contents of DE, provided, the data does not equal with A.
+// Then both these register pairs are incremented and BC is decremented.
+//
+// No flags are affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED A4
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:5
+function Ldix(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let memVal = cpu.readMemory(cpu.hl++);
+  cpu.tacts += 3;
+  if (cpu.a !== memVal) {
+    cpu.writeMemory(cpu.de, memVal);
+  }
+  cpu.tacts += 5;
+  cpu.de++;
+  cpu.bc--;
+}
+
+// ldws
+//
+// Copies the byte pointed to by HL to the address pointed to by DE and increments
+// only L and D.
+//
+// The flags are identical to what the INC D instruction would produce.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED A4
+// =================================
+// | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3
+function Ldws(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  const val = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+  cpu.writeMemory(cpu.de, val);
+  cpu.tacts += 3;
+  cpu.l++;
+  cpu.f = incOpFlags[cpu.d] | (<u8>(cpu.f & FlagsSetMask.C));
+  cpu.d++;
+}
+
+// ldd
+//
+// Transfers a byte of data from the memory location addressed by
+// HL to the memory location addressed by DE. Then DE, HL, and BC
+// is decremented.
+//
+// S is not affected.
+// Z is not affected.
+// H is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:1 ×2
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5
+function Ldd(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl--);
+  cpu.tacts += 3;
+  cpu.writeMemory(cpu.de, memVal);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.tacts += 3;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+  }
+  cpu.de--;
+  memVal += cpu.a;
+  memVal = <u8>((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+  cpu.f = <u8>(
+    ((cpu.f &
+      ~(
+        FlagsSetMask.N |
+        FlagsSetMask.H |
+        FlagsSetMask.PV |
+        FlagsSetMask.R3 |
+        FlagsSetMask.R5
+      )) |
+      memVal)
+  );
+  if (--cpu.bc !== 0) {
+    cpu.f |= <u8>FlagsSetMask.PV;
+  }
+}
+
+// cpd
+//
+// The contents of the memory location addressed by HL is compared
+// with the contents of A. During the compare operation, the Zero
+// flag is set or reset. HL and BC are decremented.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if A is (HL); otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 1 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1 ×5
+// Gate array contention breakdown: pc:4,pc+1:4,hl:8
+function Cpd(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl);
+  const compRes = cpu.a - memVal;
+  let r3r5 = compRes;
+  let flags = (cpu.f & FlagsSetMask.C) | FlagsSetMask.N;
+  if ((((cpu.a & 0x0f) - (compRes & 0x0f)) & 0x10) !== 0) {
+    flags |= FlagsSetMask.H;
+    r3r5 = compRes - 1;
+  }
+  if (compRes === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  flags |= compRes & FlagsSetMask.S;
+  flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
+
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.hl--;
+
+  if (--cpu.bc !== 0) {
+    flags |= FlagsSetMask.PV;
+  }
+  cpu.f = <u8>flags;
+  cpu.wz--;
+}
+
+// ind
+//
+// The contents of C are placed on the bottom half (A0 through A7)
+// of the address bus to select the I/O device at one of 256
+// possible ports. Register B is used as a byte counter, and its
+// contents are placed on the top half (A8 through A15) of the
+// address bus at this time. Then one byte from the selected port
+// is placed on the data bus and written to the CPU. The contents
+// of HL are placed on the address bus and the input byte is written
+// to the corresponding location of memory. Finally, B and HLL are
+// decremented.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+// =================================
+// T-States: 4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,I/O,hl:3
+function Ind(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  cpu.wz = cpu.bc - 1;
+
+  // I/O
+  const val = cpu.readPort(cpu.bc);
+
+  // hl:3
+  cpu.writeMemory(cpu.hl, val);
+  cpu.tacts += 3;
+
+  cpu.f |= <u8>FlagsSetMask.N;
+  if (--cpu.b === 0) {
+    cpu.f |= <u8>FlagsSetMask.Z;
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.Z;
+  }
+
+  cpu.hl--;
+}
+
+// outd
+//
+// The contents of the HL register pair are placed on the address
+// bus to select a location in memory. The byte contained in this
+// memory location is temporarily stored in the CPU. Then, after B
+// is decremented, the contents of C are placed on the bottom half
+// (A0 through A7) of the address bus to select the I/O device at
+// one of 256 possible ports. Register B is used as a byte counter,
+// and its decremented value is placed on the top half (A8 through
+// A15) of the address bus. The byte to be output is placed on the
+// data bus and written to a selected peripheral device. Finally,
+// the HL is decremented.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 0 | 1 | 1 |
+// =================================
+// T-States: 4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,hl:3,I/O
+function Outd(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  cpu.f = decOpFlags[cpu.b];
+  cpu.f |= <u8>FlagsSetMask.N;
+  if (--cpu.b === 0) {
+    cpu.f |= <u8>FlagsSetMask.Z;
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.Z;
+  }
+
+  // hl:3
+  const val = cpu.readMemory(cpu.hl);
+  cpu.tacts += 3;
+
+  // I/O
+  cpu.writePort(cpu.bc, val);
+
+  cpu.hl--;
+  cpu.wz = cpu.bc - 1;
+}
+
+// lddx
+//
+// Transfers a byte of data from the memory location addressed by
+// HL to the memory location addressed by DE, provided, it is not
+// equal with A. Then DE, HL, and BC is decremented.
+//
+// No flags affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED AC
+// =================================
+// | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 0 |
+// =================================
+// T-States: 4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:1 ×2
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5
+function Lddx(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let memVal = cpu.readMemory(cpu.hl--);
+  cpu.tacts += 3;
+  if (cpu.a !== memVal) {
+    cpu.writeMemory(cpu.de, memVal);
+  }
+  cpu.tacts += 3;
+  cpu.tacts += 2;
+  cpu.de--;
+  cpu.bc--;
+}
+
+// ldir
+//
+// Transfers a byte of data from the memory location addressed by
+// HL to the memory location addressed DE. Then HL and DE are
+// incremented. BC is decremented. If decrementing allows the BC
+// to go to 0, the instruction is terminated. If BC isnot 0,
+// the program counter is decremented by two and the instruction
+// is repeated. Interrupts are recognized and two refresh cycles
+// are executed after each data transfer. When the BC is set to 0
+// prior to instruction execution, the instruction loops
+// through 64 KB.
+//
+// S is not affected.
+// Z is not affected.
+// H is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+// =================================
+// T-States:
+// BC!=0: 4, 4, 3, 5, 5 (21)
+// BC=0:  4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:1 ×2,[de:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
+function Ldir(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl++);
+  cpu.tacts += 3;
+  cpu.writeMemory(cpu.de, memVal);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.tacts += 3;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+  }
+  cpu.de++;
+  memVal += cpu.a;
+  memVal = <u8>((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+  cpu.f = <u8>(
+    ((cpu.f &
+      ~(
+        FlagsSetMask.N |
+        FlagsSetMask.H |
+        FlagsSetMask.PV |
+        FlagsSetMask.R3 |
+        FlagsSetMask.R5
+      )) |
+      memVal)
+  );
+  if (--cpu.bc === 0) {
+    return;
+  }
+
+  cpu.f |= <u8>FlagsSetMask.PV;
+  cpu.pc -= 2;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.de - 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de - 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de - 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de - 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de - 1);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc + 1;
+}
+
+// cpir
+//
+// The contents of the memory location addressed HL is compared with
+// the contents of A. During a compare operation, the Zero flag is
+// set or reset. Then HL is incremented and BC is decremented.
+// If decrementing causes BC to go to 0 or if A = (HL), the
+/// instruction is terminated. If BC is not 0 and A is not equal
+/// (HL), the program counter is decremented by two and the
+/// instruction is repeated. Interrupts are recognized and two
+/// refresh cycles are executed after each data transfer. If BC is set
+/// to 0 before instruction execution, the instruction loops through
+/// 64 KB if no match is found.
+///
+/// S is set if result is negative; otherwise, it is reset.
+/// Z is set if A is (HL); otherwise, it is reset.
+/// H is set if borrow from bit 4; otherwise, it is reset.
+/// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+/// N is set.
+/// C is not affected.
+///
+/// =================================
+/// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+/// =================================
+/// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 1 |
+/// =================================
+/// T-States:
+/// BC!=0: 4, 4, 3, 5, 5 (21)
+/// BC=0:  4, 4, 3, 5 (16)
+/// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1 ×5,[hl:1 ×5]
+/// Gate array contention breakdown: pc:4,pc+1:4,hl:8,[5]
+function Cpir(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl);
+  const compRes = cpu.a - memVal;
+  let r3r5 = compRes;
+  let flags = (cpu.f & FlagsSetMask.C) | FlagsSetMask.N;
+  if ((((cpu.a & 0x0f) - (compRes & 0x0f)) & 0x10) !== 0) {
+    flags |= FlagsSetMask.H;
+    r3r5 = compRes - 1;
+  }
+  if (compRes === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  flags |= compRes & FlagsSetMask.S;
+  flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
+
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.hl++;
+
+  if (--cpu.bc !== 0) {
+    flags |= FlagsSetMask.PV;
+    if ((flags & FlagsSetMask.Z) === 0) {
+      cpu.pc -= 2;
+      if (cpu.useGateArrayContention) {
+        cpu.tacts += 5;
+      } else {
+        cpu.readMemory(cpu.hl - 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl - 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl - 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl - 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl - 1);
+        cpu.tacts++;
+      }
+      cpu.wz = cpu.pc + 1;
+    }
+  }
+  cpu.f = <u8>flags;
+}
+
+// inir
+//
+// The contents of Register C are placed on the bottom half (A0
+// through A7) of the address bus to select the I/O device at one
+// of 256 possible ports. Register B can be used as a byte counter,
+// and its contents are placed on the top half (A8 through A15) of
+// the address bus at this time. Then one byte from the selected
+// port is placed on the data bus and written to the CPU. The
+// contents of the HL register pair are then placed on the address
+// bus and the input byte is written to the corresponding location
+// of memory. Finally, B is decremented and HL is incremented.
+// If decrementing causes B to go to 0, the instruction is terminated.
+// If B is not 0, PC is decremented by two and the instruction
+// repeated. Interrupts are recognized and two refresh cycles
+// execute after each data transfer.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0 |
+// =================================
+// T-States:
+// BC!=0: 4, 5, 3, 4, 5 (21)
+// BC=0:  4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,I/O,hl:3,[hl:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:5,I/O,hl:3,[5]
+function Inir(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  // I/O
+  cpu.wz = cpu.bc + 1;
+  const val = cpu.readPort(cpu.bc);
+
+  // hl:3
+  cpu.writeMemory(cpu.hl, val);
+  cpu.tacts += 3;
+
+  cpu.f = <u8>(decOpFlags[cpu.b] | (cpu.f & FlagsSetMask.C));
+  cpu.b--;
+  cpu.hl++;
+
+  if (cpu.b !== 0) {
+    cpu.f |= <u8>FlagsSetMask.PV;
+    cpu.pc -= 2;
+    if (cpu.useGateArrayContention) {
+      cpu.tacts += 5;
+    } else {
+      cpu.readMemory(cpu.hl - 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl - 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl - 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl - 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl - 1);
+      cpu.tacts++;
+    }
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.PV;
+  }
+}
+
+// otir
+//
+// The contents of the HL register pair are placed on the address
+// bus to select a location in memory. The byte contained in this
+// memory location is temporarily stored in the CPU. Then, after B
+// is decremented, the contents of C are placed on the bottom half
+// (A0 through A7) of the address bus to select the I/O device at
+// one of 256 possible ports. Register B is used as a byte counter,
+// and its decremented value is placed on the top half (A8 through
+// A15) of the address bus. The byte to be output is placed on the
+// data bus and written to a selected peripheral device. Finally,
+// the HL is incremented.
+// If the decremented B Register is not 0, PC is decremented by two
+// and the instruction is repeated. If B has gone to 0, the
+// instruction is terminated. Interrupts are recognized and two
+// refresh cycles are executed after each data transfer.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 1 |
+// =================================
+// T-States:
+// BC!=0: 4, 5, 3, 4, 5 (21)
+// BC=0:  4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,hl:3,I/O,[bc:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:5,hl:3,I/O,[5]
+function Otir(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  cpu.f = decOpFlags[cpu.b];
+  cpu.b--;
+
+  // hl:3
+  const val = cpu.readMemory(cpu.hl++);
+  cpu.tacts += 3;
+
+  // I/O
+  cpu.writePort(cpu.bc, val);
+
+  if (cpu.b !== 0) {
+    cpu.f |= <u8>FlagsSetMask.PV;
+    cpu.pc -= 2;
+    if (cpu.useGateArrayContention) {
+      cpu.tacts += 5;
+    } else {
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+    }
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.PV;
+  }
+  cpu.f &= <u8>~FlagsSetMask.C;
+  if (cpu.l === 0) {
+    cpu.f |= <u8>FlagsSetMask.C;
+  }
+  cpu.wz = cpu.bc + 1;
+}
+
+// LDIRX
+//
+// Transfers a byte of data from the memory location addressed by
+// HL to the memory location addressed DE, provided the data is
+// not equal wioth A. Then HL and DE are
+// incremented. BC is decremented. If decrementing allows the BC
+// to go to 0, the instruction is terminated. If BC isnot 0,
+// the program counter is decremented by two and the instruction
+// is repeated. Interrupts are recognized and two refresh cycles
+// are executed after each data transfer. When the BC is set to 0
+// prior to instruction execution, the instruction loops
+// through 64 KB.
+//
+// No flags affected
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+// =================================
+// T-States:
+// BC!=0: 4, 4, 3, 5, 5 (21)
+// BC=0:  4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:5,[de:3]
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
+function Ldirx(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let memVal = cpu.readMemory(cpu.hl++);
+  cpu.tacts += 3;
+  if (cpu.a !== memVal) {
+    cpu.writeMemory(cpu.de, memVal);
+  }
+  cpu.tacts += 5;
+  cpu.de++;
+  if (--cpu.bc === 0) {
+    return;
+  }
+  cpu.pc -= 2;
+  cpu.tacts += 5;
+  cpu.wz = cpu.pc + 1;
+}
+
+// ldpirx
+//
+// Similar to LDIRX except the source byte address is not just HL, but is
+// obtained by using the top 13 bits of HL and the lower 3 bits of DE and
+// HL does not increment during whole loop (HL works as base address of
+// aligned 8 byte lookup table, DE works as destination and also wrapping
+// index 0..7 into table). This is intended for "pattern fill" functionality.
+//
+// No flags affected.
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED B7
+// =================================
+// | 1 | 0 | 1 | 1 | 0 | 1 | 1 | 1 |
+// =================================
+// T-States:
+// BC!=0: 4, 4, 3, 5, 5 (21)
+// BC=0:  4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:5,[de:3]
+function Ldpirx(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let memVal = cpu.readMemory((cpu.hl & 0xfff8) + (cpu.e & 0x07));
+  cpu.tacts += 3;
+  if (cpu.a !== memVal) {
+    cpu.writeMemory(cpu.de, memVal);
+  }
+  cpu.tacts += 5;
+  cpu.de++;
+  if (--cpu.bc === 0) {
+    return;
+  }
+  cpu.pc -= 2;
+  cpu.tacts += 5;
+  cpu.wz = cpu.pc + 1;
+}
+
+// lddr
+//
+// Transfers a byte of data from the memory location addressed by
+// HL to the memory location addressed by DE. Then DE, HL, and BC
+// is decremented.
+// If decrementing causes BC to go to 0, the instruction is
+// terminated. If BC is not 0, PC is decremented by two and the
+// instruction is repeated. Interrupts are recognized and two
+// refresh cycles execute after each data transfer.
+// When BC is set to 0, prior to instruction execution, the
+// instruction loops through 64 KB.
+//
+// S is not affected.
+// Z is not affected.
+// H is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 0 |
+// =================================
+// T-States:
+// BC!=0: 4, 4, 3, 5, 5 (21)
+// BC=0:  4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:1 ×2,[de:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
+function Lddr(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl--);
+  cpu.tacts += 3;
+  cpu.writeMemory(cpu.de, memVal);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.tacts += 3;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+    cpu.writeMemory(cpu.de, memVal);
+    cpu.tacts++;
+  }
+  cpu.de--;
+  memVal += cpu.a;
+  memVal = <u8>((memVal & FlagsSetMask.R3) | ((memVal << 4) & FlagsSetMask.R5));
+  cpu.f = <u8>(
+    ((cpu.f &
+      ~(
+        FlagsSetMask.N |
+        FlagsSetMask.H |
+        FlagsSetMask.PV |
+        FlagsSetMask.R3 |
+        FlagsSetMask.R5
+      )) |
+      memVal)
+  );
+  if (--cpu.bc === 0) {
+    return;
+  }
+  cpu.f |= <u8>FlagsSetMask.PV;
+  cpu.pc -= 2;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.de + 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de + 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de + 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de + 1);
+    cpu.tacts++;
+    cpu.readMemory(cpu.de + 1);
+    cpu.tacts++;
+  }
+  cpu.wz = cpu.pc + 1;
+}
+
+// cpdr
+//
+// The contents of the memory location addressed by HL is compared
+// with the contents of A. During the compare operation, the Zero
+// flag is set or reset. HL and BC are decremented.
+// If BC is not 0 and A = (HL), PC is decremented by two and the
+// instruction is repeated. Interrupts are recognized and two
+// refresh cycles execute after each data transfer. When the BC is
+// set to 0, prior to instruction execution, the instruction loops
+// through 64 KB if no match is found.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if A is (HL); otherwise, it is reset.
+// H is set if borrow from bit 4; otherwise, it is reset.
+// P/V is set if BC – 1 is not 0; otherwise, it is reset.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 0 | 0 | 1 |
+// =================================
+// T-States:
+// BC!=0: 4, 4, 3, 5, 5 (21)
+// BC=0:  4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1 ×5,[hl:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:4,hl:8,[5]
+function Cpdr(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl);
+  const compRes = cpu.a - memVal;
+  let r3r5 = compRes;
+  let flags = (cpu.f & FlagsSetMask.C) | FlagsSetMask.N;
+  if ((((cpu.a & 0x0f) - (compRes & 0x0f)) & 0x10) !== 0) {
+    flags |= FlagsSetMask.H;
+    r3r5 = compRes - 1;
+  }
+  if (compRes === 0) {
+    flags |= FlagsSetMask.Z;
+  }
+  flags |= compRes & FlagsSetMask.S;
+  flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
+
+  cpu.tacts += 3;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 5;
+  } else {
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.hl--;
+
+  if (--cpu.bc !== 0) {
+    flags |= FlagsSetMask.PV;
+    if ((flags & FlagsSetMask.Z) === 0) {
+      cpu.pc -= 2;
+      if (cpu.useGateArrayContention) {
+        cpu.tacts += 5;
+      } else {
+        cpu.readMemory(cpu.hl + 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl + 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl + 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl + 1);
+        cpu.tacts++;
+        cpu.readMemory(cpu.hl + 1);
+        cpu.tacts++;
+      }
+      cpu.wz = cpu.pc + 1;
+    }
+  }
+  cpu.f = <u8>flags;
+}
+
+// indr
+//
+// The contents of C are placed on the bottom half (A0 through A7)
+// of the address bus to select the I/O device at one of 256
+// possible ports. Register B is used as a byte counter, and its
+// contents are placed on the top half (A8 through A15) of the
+// address bus at this time. Then one byte from the selected port
+// is placed on the data bus and written to the CPU. The contents
+// of HL are placed on the address bus and the input byte is written
+// to the corresponding location of memory. Finally, B and HL are
+// decremented.
+// If decrementing causes B to go to 0, the instruction is
+// terminated. If B is not 0, PC is decremented by two and the
+// instruction repeated. Interrupts are recognized and two refresh
+// cycles are executed after each data transfer.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 0 |
+// =================================
+// T-States:
+// BC!=0: 4, 5, 3, 4, 5 (21)
+// BC=0:  4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,I/O,hl:3,[hl:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:5,I/O,hl:3,[5]
+function Indr(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  cpu.wz = cpu.bc - 1;
+
+  // I/O
+  const val = cpu.readPort(cpu.bc);
+
+  // hl:3
+  cpu.writeMemory(cpu.hl, val);
+  cpu.tacts += 3;
+
+  cpu.f = <u8>(decOpFlags[cpu.b] | (cpu.f & FlagsSetMask.C));
+  cpu.b--;
+  cpu.hl--;
+
+  if (cpu.b !== 0) {
+    cpu.f |= <u8>FlagsSetMask.PV;
+    cpu.pc -= 2;
+    if (cpu.useGateArrayContention) {
+      cpu.tacts += 5;
+    } else {
+      cpu.readMemory(cpu.hl + 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl + 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl + 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl + 1);
+      cpu.tacts++;
+      cpu.readMemory(cpu.hl + 1);
+      cpu.tacts++;
+    }
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.PV;
+  }
+}
+
+// otdr
+//
+// The contents of the HL register pair are placed on the address
+// bus to select a location in memory. The byte contained in this
+// memory location is temporarily stored in the CPU. Then, after B
+// is decremented, the contents of C are placed on the bottom half
+// (A0 through A7) of the address bus to select the I/O device at
+// one of 256 possible ports. Register B is used as a byte counter,
+// and its decremented value is placed on the top half (A8 through
+// A15) of the address bus. The byte to be output is placed on the
+// data bus and written to a selected peripheral device. Finally,
+// the HL is decremented.
+// If the decremented B Register is not 0, PC is decremented by
+// two and the instruction is repeated. If B has gone to 0, the
+// instruction is terminated. Interrupts are recognized and two
+// refresh cycles are executed after each data transfer.
+//
+// S is unknown.
+// Z is set if B – 1 = 0; otherwise it is reset.
+// H is unknown.
+// P/V is unknown.
+// N is set.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 |
+// =================================
+// T-States:
+// BC!=0: 4, 5, 3, 4, 5 (21)
+// BC=0:  4, 5, 3, 4 (16)
+// Contention breakdown: pc:4,pc+1:5,hl:3,I/O,[bc:1 ×5]
+// Gate array contention breakdown: pc:4,pc+1:5,hl:3,I/O,[5]
+function Otdr(cpu: Z80Cpu): void {
+  // pc+1:5 -> remaining 1
+  cpu.tacts++;
+
+  cpu.f = decOpFlags[cpu.b];
+  cpu.b--;
+
+  // hl:3
+  const val = cpu.readMemory(cpu.hl--);
+  cpu.tacts += 3;
+
+  // I/O
+  cpu.writePort(cpu.bc, val);
+
+  if (cpu.b !== 0) {
+    cpu.f |= <u8>FlagsSetMask.PV;
+    cpu.pc -= 2;
+    if (cpu.useGateArrayContention) {
+      cpu.tacts += 5;
+    } else {
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+      cpu.readMemory(cpu.bc);
+      cpu.tacts++;
+    }
+  } else {
+    cpu.f &= <u8>~FlagsSetMask.PV;
+  }
+  cpu.f &= <u8>~FlagsSetMask.C;
+  if (cpu.l === 0xff) {
+    cpu.f |= <u8>FlagsSetMask.C;
+  }
+  cpu.wz = cpu.bc - 1;
+}
+
+// lddrx
+// </summary>
+// <remarks>
+//
+// Transfers a byte of data from the memory location addressed by
+// HL to the memory location addressed by DE, provided the data
+// is not equal with A. Then DE, HL, and BC is decremented.
+// If decrementing causes BC to go to 0, the instruction is
+// terminated. If BC is not 0, PC is decremented by two and the
+// instruction is repeated. Interrupts are recognized and two
+// refresh cycles execute after each data transfer.
+// When BC is set to 0, prior to instruction execution, the
+// instruction loops through 64 KB.
+//
+// No flags affected.
+//
+// =================================
+// | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED BC
+// =================================
+// | 1 | 0 | 1 | 1 | 1 | 1 | 0 | 0 |
+// =================================
+// T-States:
+// BC!=0: 4, 4, 3, 5, 5 (21)
+// BC=0:  4, 4, 3, 5 (16)
+// Contention breakdown: pc:4,pc+1:4,hl:3,de:3,de:3,[de:5]
+// Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
+function Lddrx(cpu: Z80Cpu): void {
+  if (!cpu.allowExtendedInstructionSet) {
+    return;
+  }
+  let memVal = cpu.readMemory(cpu.hl--);
+  cpu.tacts += 3;
+  if (cpu.a !== memVal) {
+    cpu.writeMemory(cpu.de, memVal);
+  }
+  cpu.tacts += 5;
+  cpu.de--;
+  if (--cpu.bc === 0) {
+    return;
+  }
+  cpu.pc -= 2;
+  cpu.tacts += 5;
+  cpu.wz = cpu.pc + 1;
 }
 
 // ============================================================================

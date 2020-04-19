@@ -20,7 +20,9 @@ export interface Api {
   runTestMachine(): void;
   resetMemoryAccessLog(): void;
   resetIoAccessLog(): void;
+  resetTbBlueAccessLog(): void;
   getTestMachineIoAccessLog(): number; // PTR
   getTestMachineMemoryAccessLog(): number; // PTR
+  getTestMachineTbBlueAccessLog(): number; //PTR
   enableExtendedInstructions(allow: boolean): void;
 }
