@@ -2193,198 +2193,198 @@ const bitOperations: (CpuOp | null)[] = [
   /* 0x3d */ SrlQ,
   /* 0x3e */ SrlHli,
   /* 0x3f */ SrlQ,
-  /* 0x40 */ null,
-  /* 0x41 */ null,
-  /* 0x42 */ null,
-  /* 0x43 */ null,
-  /* 0x44 */ null,
-  /* 0x45 */ null,
-  /* 0x46 */ null,
-  /* 0x47 */ null,
-  /* 0x48 */ null,
-  /* 0x49 */ null,
-  /* 0x4a */ null,
-  /* 0x4b */ null,
-  /* 0x4c */ null,
-  /* 0x4d */ null,
-  /* 0x4e */ null,
-  /* 0x4f */ null,
-  /* 0x50 */ null,
-  /* 0x51 */ null,
-  /* 0x52 */ null,
-  /* 0x53 */ null,
-  /* 0x54 */ null,
-  /* 0x55 */ null,
-  /* 0x56 */ null,
-  /* 0x57 */ null,
-  /* 0x58 */ null,
-  /* 0x59 */ null,
-  /* 0x5a */ null,
-  /* 0x5b */ null,
-  /* 0x5c */ null,
-  /* 0x5d */ null,
-  /* 0x5e */ null,
-  /* 0x5f */ null,
-  /* 0x60 */ null,
-  /* 0x61 */ null,
-  /* 0x62 */ null,
-  /* 0x63 */ null,
-  /* 0x64 */ null,
-  /* 0x65 */ null,
-  /* 0x66 */ null,
-  /* 0x67 */ null,
-  /* 0x68 */ null,
-  /* 0x69 */ null,
-  /* 0x6a */ null,
-  /* 0x6b */ null,
-  /* 0x6c */ null,
-  /* 0x6d */ null,
-  /* 0x6e */ null,
-  /* 0x6f */ null,
-  /* 0x70 */ null,
-  /* 0x71 */ null,
-  /* 0x72 */ null,
-  /* 0x73 */ null,
-  /* 0x74 */ null,
-  /* 0x75 */ null,
-  /* 0x76 */ null,
-  /* 0x77 */ null,
-  /* 0x78 */ null,
-  /* 0x79 */ null,
-  /* 0x7a */ null,
-  /* 0x7b */ null,
-  /* 0x7c */ null,
-  /* 0x7d */ null,
-  /* 0x7e */ null,
-  /* 0x7f */ null,
-  /* 0x80 */ null,
-  /* 0x81 */ null,
-  /* 0x82 */ null,
-  /* 0x83 */ null,
-  /* 0x84 */ null,
-  /* 0x85 */ null,
-  /* 0x86 */ null,
-  /* 0x87 */ null,
-  /* 0x88 */ null,
-  /* 0x89 */ null,
-  /* 0x8a */ null,
-  /* 0x8b */ null,
-  /* 0x8c */ null,
-  /* 0x8d */ null,
-  /* 0x8e */ null,
-  /* 0x8f */ null,
-  /* 0x90 */ null,
-  /* 0x91 */ null,
-  /* 0x92 */ null,
-  /* 0x93 */ null,
-  /* 0x94 */ null,
-  /* 0x95 */ null,
-  /* 0x96 */ null,
-  /* 0x97 */ null,
-  /* 0x98 */ null,
-  /* 0x99 */ null,
-  /* 0x9a */ null,
-  /* 0x9b */ null,
-  /* 0x9c */ null,
-  /* 0x9d */ null,
-  /* 0x9e */ null,
-  /* 0x9f */ null,
-  /* 0xa0 */ null,
-  /* 0xa1 */ null,
-  /* 0xa2 */ null,
-  /* 0xa3 */ null,
-  /* 0xa4 */ null,
-  /* 0xa5 */ null,
-  /* 0xa6 */ null,
-  /* 0xa7 */ null,
-  /* 0xa8 */ null,
-  /* 0xa9 */ null,
-  /* 0xaa */ null,
-  /* 0xab */ null,
-  /* 0xac */ null,
-  /* 0xad */ null,
-  /* 0xae */ null,
-  /* 0xaf */ null,
-  /* 0xb0 */ null,
-  /* 0xb1 */ null,
-  /* 0xb2 */ null,
-  /* 0xb3 */ null,
-  /* 0xb4 */ null,
-  /* 0xb5 */ null,
-  /* 0xb6 */ null,
-  /* 0xb7 */ null,
-  /* 0xb8 */ null,
-  /* 0xb9 */ null,
-  /* 0xba */ null,
-  /* 0xbb */ null,
-  /* 0xbc */ null,
-  /* 0xbd */ null,
-  /* 0xbe */ null,
-  /* 0xbf */ null,
-  /* 0xc0 */ null,
-  /* 0xc1 */ null,
-  /* 0xc2 */ null,
-  /* 0xc3 */ null,
-  /* 0xc4 */ null,
-  /* 0xc5 */ null,
-  /* 0xc6 */ null,
-  /* 0xc7 */ null,
-  /* 0xc8 */ null,
-  /* 0xc9 */ null,
-  /* 0xca */ null,
-  /* 0xcb */ null,
-  /* 0xcc */ null,
-  /* 0xcd */ null,
-  /* 0xce */ null,
-  /* 0xcf */ null,
-  /* 0xd0 */ null,
-  /* 0xd1 */ null,
-  /* 0xd2 */ null,
-  /* 0xd3 */ null,
-  /* 0xd4 */ null,
-  /* 0xd5 */ null,
-  /* 0xd6 */ null,
-  /* 0xd7 */ null,
-  /* 0xd8 */ null,
-  /* 0xd9 */ null,
-  /* 0xda */ null,
-  /* 0xdb */ null,
-  /* 0xdc */ null,
-  /* 0xdd */ null,
-  /* 0xde */ null,
-  /* 0xdf */ null,
-  /* 0xe0 */ null,
-  /* 0xe1 */ null,
-  /* 0xe2 */ null,
-  /* 0xe3 */ null,
-  /* 0xe4 */ null,
-  /* 0xe5 */ null,
-  /* 0xe6 */ null,
-  /* 0xe7 */ null,
-  /* 0xe8 */ null,
-  /* 0xe9 */ null,
-  /* 0xea */ null,
-  /* 0xeb */ null,
-  /* 0xec */ null,
-  /* 0xed */ null,
-  /* 0xee */ null,
-  /* 0xef */ null,
-  /* 0xf0 */ null,
-  /* 0xf1 */ null,
-  /* 0xf2 */ null,
-  /* 0xf3 */ null,
-  /* 0xf4 */ null,
-  /* 0xf5 */ null,
-  /* 0xf6 */ null,
-  /* 0xf7 */ null,
-  /* 0xf8 */ null,
-  /* 0xf9 */ null,
-  /* 0xfa */ null,
-  /* 0xfb */ null,
-  /* 0xfc */ null,
-  /* 0xfd */ null,
-  /* 0xfe */ null,
-  /* 0xff */ null,
+  /* 0x40 */ BitNQ,
+  /* 0x41 */ BitNQ,
+  /* 0x42 */ BitNQ,
+  /* 0x43 */ BitNQ,
+  /* 0x44 */ BitNQ,
+  /* 0x45 */ BitNQ,
+  /* 0x46 */ BitNHli,
+  /* 0x47 */ BitNQ,
+  /* 0x48 */ BitNQ,
+  /* 0x49 */ BitNQ,
+  /* 0x4a */ BitNQ,
+  /* 0x4b */ BitNQ,
+  /* 0x4c */ BitNQ,
+  /* 0x4d */ BitNQ,
+  /* 0x4e */ BitNHli,
+  /* 0x4f */ BitNQ,
+  /* 0x50 */ BitNQ,
+  /* 0x51 */ BitNQ,
+  /* 0x52 */ BitNQ,
+  /* 0x53 */ BitNQ,
+  /* 0x54 */ BitNQ,
+  /* 0x55 */ BitNQ,
+  /* 0x56 */ BitNHli,
+  /* 0x57 */ BitNQ,
+  /* 0x58 */ BitNQ,
+  /* 0x59 */ BitNQ,
+  /* 0x5a */ BitNQ,
+  /* 0x5b */ BitNQ,
+  /* 0x5c */ BitNQ,
+  /* 0x5d */ BitNQ,
+  /* 0x5e */ BitNHli,
+  /* 0x5f */ BitNQ,
+  /* 0x60 */ BitNQ,
+  /* 0x61 */ BitNQ,
+  /* 0x62 */ BitNQ,
+  /* 0x63 */ BitNQ,
+  /* 0x64 */ BitNQ,
+  /* 0x65 */ BitNQ,
+  /* 0x66 */ BitNHli,
+  /* 0x67 */ BitNQ,
+  /* 0x68 */ BitNQ,
+  /* 0x69 */ BitNQ,
+  /* 0x6a */ BitNQ,
+  /* 0x6b */ BitNQ,
+  /* 0x6c */ BitNQ,
+  /* 0x6d */ BitNQ,
+  /* 0x6e */ BitNHli,
+  /* 0x6f */ BitNQ,
+  /* 0x70 */ BitNQ,
+  /* 0x71 */ BitNQ,
+  /* 0x72 */ BitNQ,
+  /* 0x73 */ BitNQ,
+  /* 0x74 */ BitNQ,
+  /* 0x75 */ BitNQ,
+  /* 0x76 */ BitNHli,
+  /* 0x77 */ BitNQ,
+  /* 0x78 */ BitNQ,
+  /* 0x79 */ BitNQ,
+  /* 0x7a */ BitNQ,
+  /* 0x7b */ BitNQ,
+  /* 0x7c */ BitNQ,
+  /* 0x7d */ BitNQ,
+  /* 0x7e */ BitNHli,
+  /* 0x7f */ BitNQ,
+  /* 0x80 */ ResNQ,
+  /* 0x81 */ ResNQ,
+  /* 0x82 */ ResNQ,
+  /* 0x83 */ ResNQ,
+  /* 0x84 */ ResNQ,
+  /* 0x85 */ ResNQ,
+  /* 0x86 */ ResNHli,
+  /* 0x87 */ ResNQ,
+  /* 0x88 */ ResNQ,
+  /* 0x89 */ ResNQ,
+  /* 0x8a */ ResNQ,
+  /* 0x8b */ ResNQ,
+  /* 0x8c */ ResNQ,
+  /* 0x8d */ ResNQ,
+  /* 0x8e */ ResNHli,
+  /* 0x8f */ ResNQ,
+  /* 0x90 */ ResNQ,
+  /* 0x91 */ ResNQ,
+  /* 0x92 */ ResNQ,
+  /* 0x93 */ ResNQ,
+  /* 0x94 */ ResNQ,
+  /* 0x95 */ ResNQ,
+  /* 0x96 */ ResNHli,
+  /* 0x97 */ ResNQ,
+  /* 0x98 */ ResNQ,
+  /* 0x99 */ ResNQ,
+  /* 0x9a */ ResNQ,
+  /* 0x9b */ ResNQ,
+  /* 0x9c */ ResNQ,
+  /* 0x9d */ ResNQ,
+  /* 0x9e */ ResNHli,
+  /* 0x9f */ ResNQ,
+  /* 0xa0 */ ResNQ,
+  /* 0xa1 */ ResNQ,
+  /* 0xa2 */ ResNQ,
+  /* 0xa3 */ ResNQ,
+  /* 0xa4 */ ResNQ,
+  /* 0xa5 */ ResNQ,
+  /* 0xa6 */ ResNHli,
+  /* 0xa7 */ ResNQ,
+  /* 0xa8 */ ResNQ,
+  /* 0xa9 */ ResNQ,
+  /* 0xaa */ ResNQ,
+  /* 0xab */ ResNQ,
+  /* 0xac */ ResNQ,
+  /* 0xad */ ResNQ,
+  /* 0xae */ ResNHli,
+  /* 0xaf */ ResNQ,
+  /* 0xb0 */ ResNQ,
+  /* 0xb1 */ ResNQ,
+  /* 0xb2 */ ResNQ,
+  /* 0xb3 */ ResNQ,
+  /* 0xb4 */ ResNQ,
+  /* 0xb5 */ ResNQ,
+  /* 0xb6 */ ResNHli,
+  /* 0xb7 */ ResNQ,
+  /* 0xb8 */ ResNQ,
+  /* 0xb9 */ ResNQ,
+  /* 0xba */ ResNQ,
+  /* 0xbb */ ResNQ,
+  /* 0xbc */ ResNQ,
+  /* 0xbd */ ResNQ,
+  /* 0xbe */ ResNHli,
+  /* 0xbf */ ResNQ,
+  /* 0xc0 */ SetNQ,
+  /* 0xc1 */ SetNQ,
+  /* 0xc2 */ SetNQ,
+  /* 0xc3 */ SetNQ,
+  /* 0xc4 */ SetNQ,
+  /* 0xc5 */ SetNQ,
+  /* 0xc6 */ SetNHli,
+  /* 0xc7 */ SetNQ,
+  /* 0xc8 */ SetNQ,
+  /* 0xc9 */ SetNQ,
+  /* 0xca */ SetNQ,
+  /* 0xcb */ SetNQ,
+  /* 0xcc */ SetNQ,
+  /* 0xcd */ SetNQ,
+  /* 0xce */ SetNHli,
+  /* 0xcf */ SetNQ,
+  /* 0xd0 */ SetNQ,
+  /* 0xd1 */ SetNQ,
+  /* 0xd2 */ SetNQ,
+  /* 0xd3 */ SetNQ,
+  /* 0xd4 */ SetNQ,
+  /* 0xd5 */ SetNQ,
+  /* 0xd6 */ SetNHli,
+  /* 0xd7 */ SetNQ,
+  /* 0xd8 */ SetNQ,
+  /* 0xd9 */ SetNQ,
+  /* 0xda */ SetNQ,
+  /* 0xdb */ SetNQ,
+  /* 0xdc */ SetNQ,
+  /* 0xdd */ SetNQ,
+  /* 0xde */ SetNHli,
+  /* 0xdf */ SetNQ,
+  /* 0xe0 */ SetNQ,
+  /* 0xe1 */ SetNQ,
+  /* 0xe2 */ SetNQ,
+  /* 0xe3 */ SetNQ,
+  /* 0xe4 */ SetNQ,
+  /* 0xe5 */ SetNQ,
+  /* 0xe6 */ SetNHli,
+  /* 0xe7 */ SetNQ,
+  /* 0xe8 */ SetNQ,
+  /* 0xe9 */ SetNQ,
+  /* 0xea */ SetNQ,
+  /* 0xeb */ SetNQ,
+  /* 0xec */ SetNQ,
+  /* 0xed */ SetNQ,
+  /* 0xee */ SetNHli,
+  /* 0xef */ SetNQ,
+  /* 0xf0 */ SetNQ,
+  /* 0xf1 */ SetNQ,
+  /* 0xf2 */ SetNQ,
+  /* 0xf3 */ SetNQ,
+  /* 0xf4 */ SetNQ,
+  /* 0xf5 */ SetNQ,
+  /* 0xf6 */ SetNHli,
+  /* 0xf7 */ SetNQ,
+  /* 0xf8 */ SetNQ,
+  /* 0xf9 */ SetNQ,
+  /* 0xfa */ SetNQ,
+  /* 0xfb */ SetNQ,
+  /* 0xfc */ SetNQ,
+  /* 0xfd */ SetNQ,
+  /* 0xfe */ SetNHli,
+  /* 0xff */ SetNQ,
 ];
 
 /**
@@ -9106,6 +9106,190 @@ function SrlHli(cpu: Z80Cpu): void {
     cpu.tacts++;
   }
   cpu.writeMemory(cpu.hl, srlVal);
+  cpu.tacts += 3;
+}
+
+// bit N,Q
+//
+// This instruction tests bit N in register Q and sets the Z
+// flag accordingly.
+//
+// S Set if N = 7 and tested bit is set.
+// Z is set if specified bit is 0; otherwise, it is reset.
+// H is set.
+// P/V is Set just like ZF flag.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 1 | N | N | N | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function BitNQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const n = (cpu.opCode & 0x38) >> 3;
+  const srcVal = cpu.getReg8(q);
+  const testVal = srcVal & (1 << n);
+  var flags =
+    FlagsSetMask.H |
+    (cpu.f & FlagsSetMask.C) |
+    (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
+  if (testVal === 0) {
+    flags |= FlagsSetMask.Z | FlagsSetMask.PV;
+  }
+  if (n === 7 && testVal !== 0) {
+    flags |= FlagsSetMask.S;
+  }
+  cpu.f = <u8>flags;
+}
+
+// bit N,(hl)
+//
+// This instruction tests bit b in the memory location specified by
+// the contents of HL and sets the Z flag accordingly.
+//
+// S Set if N = 7 and tested bit is set.
+// Z is set if specified bit is 0; otherwise, it is reset.
+// H is set.
+// P/V is Set just like ZF flag.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 1 | N | N | N | 1 | 1 | 0 |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 4 (12)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4
+function BitNHli(cpu: Z80Cpu): void {
+  const srcVal = cpu.readMemory(cpu.hl);
+  const n = (cpu.opCode & 0x38) >> 3;
+  const testVal = srcVal & (1 << n);
+  var flags =
+    FlagsSetMask.H |
+    (cpu.f & FlagsSetMask.C) |
+    (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
+  if (testVal === 0) {
+    flags |= FlagsSetMask.Z | FlagsSetMask.PV;
+  }
+  if (n === 7 && testVal !== 0) {
+    flags |= FlagsSetMask.S;
+  }
+  flags =
+    (flags & ~FlagsSetMask.R3) |
+    (flags & ~FlagsSetMask.R5) |
+    (cpu.wh & (FlagsSetMask.R3 | FlagsSetMask.R5));
+
+  cpu.f = <u8>flags;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+}
+
+// res N,Q
+//
+// Bit N in register Q is reset.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 1 | 0 | N | N | N | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function ResNQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const n = (cpu.opCode & 0x38) >> 3;
+  cpu.setReg8(q, cpu.getReg8(q) & ~(1 << n));
+}
+
+// res N,(hl)
+//
+// Bit N in the memory location addressed by the contents of
+// HL is reset.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 1 | 0 | N | N | N | 1 | 1 | 0 |
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function ResNHli(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl);
+  const n = (cpu.opCode & 0x38) >> 3;
+  memVal &= ~(1 << n);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, memVal);
+  cpu.tacts += 3;
+}
+
+// set N,Q
+//
+// Bit N in register Q is set.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 1 | 1 | N | N | N | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function SetNQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const n = (cpu.opCode & 0x38) >> 3;
+  cpu.setReg8(q, cpu.getReg8(q) | (1 << n));
+}
+
+// set N,(hl)
+//
+// Bit N in the memory location addressed by the contents of
+// HL is set.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 1 | 1 | N | N | N | 1 | 1 | 0 |
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function SetNHli(cpu: Z80Cpu): void {
+  let memVal = cpu.readMemory(cpu.hl);
+  const n = (cpu.opCode & 0x38) >> 3;
+  memVal |= 1 << n;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, memVal);
   cpu.tacts += 3;
 }
 

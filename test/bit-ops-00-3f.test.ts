@@ -15,17 +15,6 @@ const wasmBin = fs.readFileSync(
 const moduleInst = loader.instantiateSync(wasmBin, {}) as loader.ASUtil & Api;
 const testMachine = new TestMachine(moduleInst);
 
-// Helper class for DAA
-class DaaSample {
-  constructor(
-    public a: number,
-    public h: boolean,
-    public n: boolean,
-    public c: boolean,
-    public af: number
-  ) {}
-}
-
 describe("Bit ops 00-3f", () => {
   beforeEach(() => {
     testMachine.reset();
