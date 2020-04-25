@@ -31,11 +31,11 @@
  (data (i32.const 580) "\01")
  (data (i32.const 592) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00P\02\00\00P\02")
  (data (i32.const 628) "\01")
- (data (i32.const 640) "\10\00\00\00\01\00\00\00\05\00\00\00\10\00\00\00\80\02\00\00\80\02")
+ (data (i32.const 640) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00\80\02\00\00\80\02")
  (data (i32.const 676) "\01")
  (data (i32.const 688) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00\b0\02\00\00\b0\02")
  (data (i32.const 724) "\01")
- (data (i32.const 736) "\10\00\00\00\01\00\00\00\05\00\00\00\10\00\00\00\e0\02\00\00\e0\02")
+ (data (i32.const 736) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00\e0\02\00\00\e0\02")
  (data (i32.const 772) "\01")
  (data (i32.const 784) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00\10\03\00\00\10\03")
  (data (i32.const 820) "\01")
@@ -49,11 +49,11 @@
  (data (i32.const 1012) "\01")
  (data (i32.const 1024) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00\00\04\00\00\00\04")
  (data (i32.const 1056) " \00\00\00\01\00\00\00\00\00\00\00 \00\00\00\01\00\00\00\02\00\00\00\03\00\00\00\04\00\00\00\05\00\00\00\06\00\00\00\07\00\00\00\08")
- (data (i32.const 1104) "\10\00\00\00\01\00\00\00\t\00\00\00\10\00\00\000\04\00\000\04\00\00 \00\00\00\08")
+ (data (i32.const 1104) "\10\00\00\00\01\00\00\00\08\00\00\00\10\00\00\000\04\00\000\04\00\00 \00\00\00\08")
  (data (i32.const 1136) "$\00\00\00\01\00\00\00\01\00\00\00$\00\00\00~\00l\00i\00b\00/\00t\00y\00p\00e\00d\00a\00r\00r\00a\00y\00.\00t\00s")
  (data (i32.const 1200) "^\00\00\00\01\00\00\00\01\00\00\00^\00\00\00E\00l\00e\00m\00e\00n\00t\00 \00t\00y\00p\00e\00 \00m\00u\00s\00t\00 \00b\00e\00 \00n\00u\00l\00l\00a\00b\00l\00e\00 \00i\00f\00 \00a\00r\00r\00a\00y\00 \00i\00s\00 \00h\00o\00l\00e\00y")
  (data (i32.const 1313) "\04\00\00\01\00\00\00\00\00\00\00\00\04\00\00\00\00\00\00\t\00\00\00\n\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\0f\00\00\00\10\00\00\00\11\00\00\00\12\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\14\00\00\00\15\00\00\00\t\00\00\00\16\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\17\00\00\00\18\00\00\00\11\00\00\00\19\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\1a\00\00\00\1b\00\00\00\t\00\00\00\1c\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\1d\00\00\00\1e\00\00\00\11\00\00\00\1f\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00 \00\00\00!\00\00\00\t\00\00\00\"\00\00\00\0b\00\00\00#\00\00\00$\00\00\00%\00\00\00&\00\00\00\'\00\00\00\11\00\00\00(\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00)\00\00\00\00\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00+\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00+\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00*\00\00\00*\00\00\00+\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00*\00\00\00+\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00+\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00+\00\00\00*\00\00\00,\00\00\00,\00\00\00,\00\00\00,\00\00\00,\00\00\00,\00\00\00-\00\00\00,\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00+\00\00\00\00\00\00\00.\00\00\00.\00\00\00.\00\00\00.\00\00\00.\00\00\00.\00\00\00/\00\00\00.\00\00\000\00\00\000\00\00\000\00\00\000\00\00\000\00\00\000\00\00\001\00\00\000\00\00\002\00\00\002\00\00\002\00\00\002\00\00\002\00\00\002\00\00\003\00\00\002\00\00\004\00\00\004\00\00\004\00\00\004\00\00\004\00\00\004\00\00\005\00\00\004\00\00\006\00\00\006\00\00\006\00\00\006\00\00\006\00\00\006\00\00\007\00\00\006\00\00\008\00\00\008\00\00\008\00\00\008\00\00\008\00\00\008\00\00\009\00\00\008\00\00\00:\00\00\00:\00\00\00:\00\00\00:\00\00\00:\00\00\00:\00\00\00;\00\00\00:\00\00\00<\00\00\00<\00\00\00<\00\00\00<\00\00\00<\00\00\00<\00\00\00=\00\00\00<\00\00\00>\00\00\00?\00\00\00@\00\00\00A\00\00\00B\00\00\00C\00\00\00D\00\00\00E\00\00\00F\00\00\00G\00\00\00H\00\00\00\00\00\00\00I\00\00\00J\00\00\00D\00\00\00E\00\00\00K\00\00\00L\00\00\00M\00\00\00N\00\00\00O\00\00\00P\00\00\00D\00\00\00E\00\00\00Q\00\00\00R\00\00\00S\00\00\00T\00\00\00U\00\00\00\00\00\00\00D\00\00\00E\00\00\00V\00\00\00W\00\00\00X\00\00\00Y\00\00\00Z\00\00\00[\00\00\00D\00\00\00E\00\00\00\\\00\00\00]\00\00\00^\00\00\00_\00\00\00`\00\00\00\00\00\00\00D\00\00\00E\00\00\00a\00\00\00b\00\00\00c\00\00\00d\00\00\00e\00\00\00f\00\00\00D\00\00\00E\00\00\00g\00\00\00h\00\00\00i\00\00\00j\00\00\00k\00\00\00\00\00\00\00D\00\00\00E")
- (data (i32.const 2352) "\10\00\00\00\01\00\00\00\n\00\00\00\10\00\00\000\05\00\000\05\00\00\00\04\00\00\00\01")
+ (data (i32.const 2352) "\10\00\00\00\01\00\00\00\t\00\00\00\10\00\00\000\05\00\000\05\00\00\00\04\00\00\00\01")
  (data (i32.const 2385) "\04\00\00\01\00\00\00\00\00\00\00\00\04")
  (data (i32.const 2540) "l\00\00\00m")
  (data (i32.const 2556) "n\00\00\00o\00\00\00p\00\00\00q\00\00\00r\00\00\00s")
@@ -66,26 +66,26 @@
  (data (i32.const 3072) "\96\00\00\00\97\00\00\00\98\00\00\00\99\00\00\00\9a")
  (data (i32.const 3104) "\9b\00\00\00\9c\00\00\00\9d\00\00\00\9e\00\00\00\9f")
  (data (i32.const 3132) "\a0\00\00\00\a1\00\00\00\a2\00\00\00\a3\00\00\00\a4\00\00\00\a5")
- (data (i32.const 3424) "\10\00\00\00\01\00\00\00\n\00\00\00\10\00\00\00`\t\00\00`\t\00\00\00\04\00\00\00\01")
- (data (i32.const 3457) "\04\00\00\01\00\00\00\00\00\00\00\00\04")
- (data (i32.const 4496) "\10\00\00\00\01\00\00\00\n\00\00\00\10\00\00\00\90\0d\00\00\90\0d\00\00\00\04\00\00\00\01")
- (data (i32.const 4529) "\04\00\00\01\00\00\00\00\00\00\00\00\04\00\00\00\00\00\00\t\00\00\00\n\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\0f\00\00\00\10\00\00\00\a6\00\00\00\12\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\14\00\00\00\15\00\00\00\t\00\00\00\16\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\17\00\00\00\18\00\00\00\a6\00\00\00\19\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\1a\00\00\00\1b\00\00\00\a7\00\00\00\a8\00\00\00\a9\00\00\00\aa\00\00\00\ab\00\00\00\ac\00\00\00\1d\00\00\00\1e\00\00\00\a6\00\00\00\ad\00\00\00\ae\00\00\00\af\00\00\00\b0\00\00\00\b1\00\00\00 \00\00\00!\00\00\00\t\00\00\00\"\00\00\00\0b\00\00\00\b2\00\00\00\b3\00\00\00\b4\00\00\00&\00\00\00\'\00\00\00\a6\00\00\00(\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00)\00\00\00\00\00\00\00*\00\00\00*\00\00\00*\00\00\00\b5\00\00\00\b6\00\00\00\b7\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00*\00\00\00\b5\00\00\00\b6\00\00\00\b7\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00\b5\00\00\00\b6\00\00\00\b7\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00\b5\00\00\00\b6\00\00\00\b7\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00\b7\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\b5\00\00\00\00\00\00\00\b7\00\00\00*\00\00\00\b8\00\00\00\b8\00\00\00\b8\00\00\00\b8\00\00\00\b8\00\00\00\b8\00\00\00-\00\00\00\b8\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\b5\00\00\00\b6\00\00\00\b7\00\00\00\00\00\00\00.\00\00\00.\00\00\00.\00\00\00.\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\00.\00\00\000\00\00\000\00\00\000\00\00\000\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\000\00\00\002\00\00\002\00\00\002\00\00\002\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\002\00\00\004\00\00\004\00\00\004\00\00\004\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\004\00\00\006\00\00\006\00\00\006\00\00\006\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\006\00\00\008\00\00\008\00\00\008\00\00\008\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\008\00\00\00:\00\00\00:\00\00\00:\00\00\00:\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\00:\00\00\00<\00\00\00<\00\00\00<\00\00\00<\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\00<\00\00\00>\00\00\00?\00\00\00@\00\00\00A\00\00\00B\00\00\00C\00\00\00D\00\00\00E\00\00\00F\00\00\00G\00\00\00H\00\00\00\00\00\00\00I\00\00\00J\00\00\00D\00\00\00E\00\00\00K\00\00\00L\00\00\00M\00\00\00N\00\00\00O\00\00\00P\00\00\00D\00\00\00E\00\00\00Q\00\00\00R\00\00\00S\00\00\00T\00\00\00U\00\00\00\00\00\00\00D\00\00\00E\00\00\00V\00\00\00\bc\00\00\00X\00\00\00\bd\00\00\00Z\00\00\00\be\00\00\00D\00\00\00E\00\00\00\\\00\00\00\bf\00\00\00^\00\00\00_\00\00\00`\00\00\00\00\00\00\00D\00\00\00E\00\00\00a\00\00\00b\00\00\00c\00\00\00d\00\00\00e\00\00\00f\00\00\00D\00\00\00E\00\00\00g\00\00\00\c0\00\00\00i\00\00\00j\00\00\00k\00\00\00\00\00\00\00D\00\00\00E")
- (data (i32.const 5568) "\10\00\00\00\01\00\00\00\n\00\00\00\10\00\00\00\c0\11\00\00\c0\11\00\00\00\04\00\00\00\01")
- (data (i32.const 5601) "\04\00\00\01\00\00\00\00\00\00\00\00\04\00\00\00\00\00\00\c1")
- (data (i32.const 6640) "\10\00\00\00\01\00\00\00\0b\00\00\00\10\00\00\00\f0\15\00\00\f0\15\00\00\00\04\00\00\00\01")
+ (data (i32.const 3424) "\10\00\00\00\01\00\00\00\t\00\00\00\10\00\00\00`\t\00\00`\t\00\00\00\04\00\00\00\01")
+ (data (i32.const 3457) "\04\00\00\01\00\00\00\00\00\00\00\00\04\00\00\a6\00\00\00\a6\00\00\00\a6\00\00\00\a6\00\00\00\a6\00\00\00\a6\00\00\00\a7\00\00\00\a6\00\00\00\a8\00\00\00\a8\00\00\00\a8\00\00\00\a8\00\00\00\a8\00\00\00\a8\00\00\00\a9\00\00\00\a8\00\00\00\aa\00\00\00\aa\00\00\00\aa\00\00\00\aa\00\00\00\aa\00\00\00\aa\00\00\00\ab\00\00\00\aa\00\00\00\ac\00\00\00\ac\00\00\00\ac\00\00\00\ac\00\00\00\ac\00\00\00\ac\00\00\00\ad\00\00\00\ac\00\00\00\ae\00\00\00\ae\00\00\00\ae\00\00\00\ae\00\00\00\ae\00\00\00\ae\00\00\00\af\00\00\00\ae\00\00\00\b0\00\00\00\b0\00\00\00\b0\00\00\00\b0\00\00\00\b0\00\00\00\b0\00\00\00\b1\00\00\00\b0\00\00\00\b2\00\00\00\b2\00\00\00\b2\00\00\00\b2\00\00\00\b2\00\00\00\b2\00\00\00\b3\00\00\00\b2\00\00\00\b4\00\00\00\b4\00\00\00\b4\00\00\00\b4\00\00\00\b4\00\00\00\b4\00\00\00\b5\00\00\00\b4")
+ (data (i32.const 4496) "\10\00\00\00\01\00\00\00\t\00\00\00\10\00\00\00\90\0d\00\00\90\0d\00\00\00\04\00\00\00\01")
+ (data (i32.const 4529) "\04\00\00\01\00\00\00\00\00\00\00\00\04\00\00\00\00\00\00\t\00\00\00\n\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\0f\00\00\00\10\00\00\00\b6\00\00\00\12\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\14\00\00\00\15\00\00\00\t\00\00\00\16\00\00\00\0b\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\17\00\00\00\18\00\00\00\b6\00\00\00\19\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00\1a\00\00\00\1b\00\00\00\b7\00\00\00\b8\00\00\00\b9\00\00\00\ba\00\00\00\bb\00\00\00\bc\00\00\00\1d\00\00\00\1e\00\00\00\b6\00\00\00\bd\00\00\00\be\00\00\00\bf\00\00\00\c0\00\00\00\c1\00\00\00 \00\00\00!\00\00\00\t\00\00\00\"\00\00\00\0b\00\00\00\c2\00\00\00\c3\00\00\00\c4\00\00\00&\00\00\00\'\00\00\00\b6\00\00\00(\00\00\00\13\00\00\00\0c\00\00\00\0d\00\00\00\0e\00\00\00)\00\00\00\00\00\00\00*\00\00\00*\00\00\00*\00\00\00\c5\00\00\00\c6\00\00\00\c7\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00*\00\00\00\c5\00\00\00\c6\00\00\00\c7\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00\c5\00\00\00\c6\00\00\00\c7\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00\c5\00\00\00\c6\00\00\00\c7\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\00\00\00\00*\00\00\00\c7\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\c5\00\00\00\00\00\00\00\c7\00\00\00*\00\00\00\c8\00\00\00\c8\00\00\00\c8\00\00\00\c8\00\00\00\c8\00\00\00\c8\00\00\00-\00\00\00\c8\00\00\00*\00\00\00*\00\00\00*\00\00\00*\00\00\00\c5\00\00\00\c6\00\00\00\c7\00\00\00\00\00\00\00.\00\00\00.\00\00\00.\00\00\00.\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\00.\00\00\000\00\00\000\00\00\000\00\00\000\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\000\00\00\002\00\00\002\00\00\002\00\00\002\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\002\00\00\004\00\00\004\00\00\004\00\00\004\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\004\00\00\006\00\00\006\00\00\006\00\00\006\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\006\00\00\008\00\00\008\00\00\008\00\00\008\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\008\00\00\00:\00\00\00:\00\00\00:\00\00\00:\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\00:\00\00\00<\00\00\00<\00\00\00<\00\00\00<\00\00\00\c9\00\00\00\ca\00\00\00\cb\00\00\00<\00\00\00>\00\00\00?\00\00\00@\00\00\00A\00\00\00B\00\00\00C\00\00\00D\00\00\00E\00\00\00F\00\00\00G\00\00\00H\00\00\00\00\00\00\00I\00\00\00J\00\00\00D\00\00\00E\00\00\00K\00\00\00L\00\00\00M\00\00\00N\00\00\00O\00\00\00P\00\00\00D\00\00\00E\00\00\00Q\00\00\00R\00\00\00S\00\00\00T\00\00\00U\00\00\00\00\00\00\00D\00\00\00E\00\00\00V\00\00\00\cc\00\00\00X\00\00\00\cd\00\00\00Z\00\00\00\ce\00\00\00D\00\00\00E\00\00\00\\\00\00\00\cf\00\00\00^\00\00\00_\00\00\00`\00\00\00\00\00\00\00D\00\00\00E\00\00\00a\00\00\00b\00\00\00c\00\00\00d\00\00\00e\00\00\00f\00\00\00D\00\00\00E\00\00\00g\00\00\00\d0\00\00\00i\00\00\00j\00\00\00k\00\00\00\00\00\00\00D\00\00\00E")
+ (data (i32.const 5568) "\10\00\00\00\01\00\00\00\t\00\00\00\10\00\00\00\c0\11\00\00\c0\11\00\00\00\04\00\00\00\01")
+ (data (i32.const 5601) "\04\00\00\01\00\00\00\00\00\00\00\00\04\00\00\00\00\00\00\d1")
+ (data (i32.const 6640) "\10\00\00\00\01\00\00\00\n\00\00\00\10\00\00\00\f0\15\00\00\f0\15\00\00\00\04\00\00\00\01")
  (data (i32.const 6672) "&\00\00\00\01\00\00\00\01\00\00\00&\00\00\00~\00l\00i\00b\00/\00a\00r\00r\00a\00y\00b\00u\00f\00f\00e\00r\00.\00t\00s")
  (data (i32.const 6740) "\01")
- (data (i32.const 6752) "\10\00\00\00\01\00\00\00\0e\00\00\00\10\00\00\00`\1a\00\00`\1a")
+ (data (i32.const 6752) "\10\00\00\00\01\00\00\00\0d\00\00\00\10\00\00\00`\1a\00\00`\1a")
  (data (i32.const 6788) "\01")
- (data (i32.const 6800) "\10\00\00\00\01\00\00\00\10\00\00\00\10\00\00\00\90\1a\00\00\90\1a")
+ (data (i32.const 6800) "\10\00\00\00\01\00\00\00\0f\00\00\00\10\00\00\00\90\1a\00\00\90\1a")
  (data (i32.const 6836) "\01")
- (data (i32.const 6848) "\10\00\00\00\01\00\00\00\12\00\00\00\10\00\00\00\c0\1a\00\00\c0\1a")
+ (data (i32.const 6848) "\10\00\00\00\01\00\00\00\11\00\00\00\10\00\00\00\c0\1a\00\00\c0\1a")
  (data (i32.const 6884) "\01")
  (data (i32.const 6900) "\01")
  (data (i32.const 6916) "\01")
- (data (i32.const 6928) "\17\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\003\00\00\00\02\00\00\00S\00\00\00\02\00\00\00\93\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\91\00\00\00\02\00\00\00\93\00\00\00\02\00\00\00\93\10\00\00\02\00\00\00\93\10\00\00\02\00\00\001\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00Q\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93\04\00\00\02")
- (table $0 206 funcref)
- (elem (i32.const 1) $src/assembly/Z80Cpu/AluADD $src/assembly/Z80Cpu/AluADC $src/assembly/Z80Cpu/AluSUB $src/assembly/Z80Cpu/AluSBC $src/assembly/Z80Cpu/AluAND $src/assembly/Z80Cpu/AluXOR $src/assembly/Z80Cpu/AluOR $src/assembly/Z80Cpu/AluCP $src/assembly/Z80Cpu/LdQQNN $src/assembly/Z80Cpu/LdBCiA $src/assembly/Z80Cpu/IncQQ $src/assembly/Z80Cpu/IncQ $src/assembly/Z80Cpu/DecQ $src/assembly/Z80Cpu/LdQN $src/assembly/Z80Cpu/Rlca $src/assembly/Z80Cpu/ExAf $src/assembly/Z80Cpu/AddHlQQ $src/assembly/Z80Cpu/LdABci $src/assembly/Z80Cpu/DecQQ $src/assembly/Z80Cpu/Rrca $src/assembly/Z80Cpu/Djnz $src/assembly/Z80Cpu/LdDEiA $src/assembly/Z80Cpu/Rla $src/assembly/Z80Cpu/JrE $src/assembly/Z80Cpu/LdADei $src/assembly/Z80Cpu/Rra $src/assembly/Z80Cpu/JrNz $src/assembly/Z80Cpu/LdNNiHl $src/assembly/Z80Cpu/Daa $src/assembly/Z80Cpu/JrZ $src/assembly/Z80Cpu/LdHlNNi $src/assembly/Z80Cpu/Cpl $src/assembly/Z80Cpu/JrNc $src/assembly/Z80Cpu/LdNNiA $src/assembly/Z80Cpu/IncHli $src/assembly/Z80Cpu/DecHli $src/assembly/Z80Cpu/LdHliN $src/assembly/Z80Cpu/Scf $src/assembly/Z80Cpu/JrC $src/assembly/Z80Cpu/LdANNi $src/assembly/Z80Cpu/Ccf $src/assembly/Z80Cpu/LdQW $src/assembly/Z80Cpu/LdQHli $src/assembly/Z80Cpu/LdHliQ $src/assembly/Z80Cpu/Halt $src/assembly/Z80Cpu/AddAQ $src/assembly/Z80Cpu/AddAHli $src/assembly/Z80Cpu/AdcAQ $src/assembly/Z80Cpu/AdcAHli $src/assembly/Z80Cpu/SubAQ $src/assembly/Z80Cpu/SubAHli $src/assembly/Z80Cpu/SbcAQ $src/assembly/Z80Cpu/SbcAHli $src/assembly/Z80Cpu/AndAQ $src/assembly/Z80Cpu/AndAHli $src/assembly/Z80Cpu/XorAQ $src/assembly/Z80Cpu/XorAHli $src/assembly/Z80Cpu/OrAQ $src/assembly/Z80Cpu/OrAHli $src/assembly/Z80Cpu/CpAQ $src/assembly/Z80Cpu/CpAHli $src/assembly/Z80Cpu/RetNz $src/assembly/Z80Cpu/PopBc $src/assembly/Z80Cpu/JpNz $src/assembly/Z80Cpu/Jp $src/assembly/Z80Cpu/CallNz $src/assembly/Z80Cpu/PushBc $src/assembly/Z80Cpu/AluAN $src/assembly/Z80Cpu/RstN $src/assembly/Z80Cpu/RetZ $src/assembly/Z80Cpu/Ret $src/assembly/Z80Cpu/JpZ $src/assembly/Z80Cpu/CallZ $src/assembly/Z80Cpu/Call $src/assembly/Z80Cpu/RetNc $src/assembly/Z80Cpu/PopDe $src/assembly/Z80Cpu/JpNc $src/assembly/Z80Cpu/OutNA $src/assembly/Z80Cpu/CallNc $src/assembly/Z80Cpu/PushDe $src/assembly/Z80Cpu/RetC $src/assembly/Z80Cpu/Exx $src/assembly/Z80Cpu/JpC $src/assembly/Z80Cpu/InAN $src/assembly/Z80Cpu/CallC $src/assembly/Z80Cpu/RetPo $src/assembly/Z80Cpu/PopHl $src/assembly/Z80Cpu/JpPo $src/assembly/Z80Cpu/ExSpiHl $src/assembly/Z80Cpu/CallPo $src/assembly/Z80Cpu/PushHl $src/assembly/Z80Cpu/RetPe $src/assembly/Z80Cpu/JpHli $src/assembly/Z80Cpu/JpPe $src/assembly/Z80Cpu/ExDeHl $src/assembly/Z80Cpu/CallPe $src/assembly/Z80Cpu/RetP $src/assembly/Z80Cpu/PopAf $src/assembly/Z80Cpu/JpP $src/assembly/Z80Cpu/Di $src/assembly/Z80Cpu/CallP $src/assembly/Z80Cpu/PushAf $src/assembly/Z80Cpu/RetM $src/assembly/Z80Cpu/LdSpHl $src/assembly/Z80Cpu/JpM $src/assembly/Z80Cpu/Ei $src/assembly/Z80Cpu/CallM $src/assembly/Z80Cpu/Swapnib $src/assembly/Z80Cpu/Mirror $src/assembly/Z80Cpu/TestN $src/assembly/Z80Cpu/BslaDeB $src/assembly/Z80Cpu/BsraDeB $src/assembly/Z80Cpu/BsrlDeB $src/assembly/Z80Cpu/BsrfDeB $src/assembly/Z80Cpu/BrlcDeB $src/assembly/Z80Cpu/Mul $src/assembly/Z80Cpu/AddHlA $src/assembly/Z80Cpu/AddDeA $src/assembly/Z80Cpu/AddBcA $src/assembly/Z80Cpu/AddHlNN $src/assembly/Z80Cpu/AddDeNN $src/assembly/Z80Cpu/AddBcNN $src/assembly/Z80Cpu/InQCi $src/assembly/Z80Cpu/OutCiQ $src/assembly/Z80Cpu/SbcHlQQ $src/assembly/Z80Cpu/LdNNiQQ $src/assembly/Z80Cpu/Neg $src/assembly/Z80Cpu/Retn $src/assembly/Z80Cpu/ImN $src/assembly/Z80Cpu/LdXrA $src/assembly/Z80Cpu/AdcHlQQ $src/assembly/Z80Cpu/LdQQNNi $src/assembly/Z80Cpu/LdAXr $src/assembly/Z80Cpu/Rrd $src/assembly/Z80Cpu/Rld $src/assembly/Z80Cpu/PushNN $src/assembly/Z80Cpu/OutInB $src/assembly/Z80Cpu/NextReg $src/assembly/Z80Cpu/NextRegA $src/assembly/Z80Cpu/PixelDn $src/assembly/Z80Cpu/PixelAd $src/assembly/Z80Cpu/SetAE $src/assembly/Z80Cpu/JpInC $src/assembly/Z80Cpu/Ldi $src/assembly/Z80Cpu/Cpi $src/assembly/Z80Cpu/Ini $src/assembly/Z80Cpu/Outi $src/assembly/Z80Cpu/Ldix $src/assembly/Z80Cpu/Ldws $src/assembly/Z80Cpu/Ldd $src/assembly/Z80Cpu/Cpd $src/assembly/Z80Cpu/Ind $src/assembly/Z80Cpu/Outd $src/assembly/Z80Cpu/Lddx $src/assembly/Z80Cpu/Ldir $src/assembly/Z80Cpu/Cpir $src/assembly/Z80Cpu/Inir $src/assembly/Z80Cpu/Otir $src/assembly/Z80Cpu/Ldirx $src/assembly/Z80Cpu/Ldpirx $src/assembly/Z80Cpu/Lddr $src/assembly/Z80Cpu/Cpdr $src/assembly/Z80Cpu/Indr $src/assembly/Z80Cpu/Otdr $src/assembly/Z80Cpu/Lddrx $src/assembly/Z80Cpu/AddIxQQ $src/assembly/Z80Cpu/LdIxNN $src/assembly/Z80Cpu/LdNNiIx $src/assembly/Z80Cpu/IncIx $src/assembly/Z80Cpu/IncXh $src/assembly/Z80Cpu/DecXh $src/assembly/Z80Cpu/LdXhN $src/assembly/Z80Cpu/LdIxNNi $src/assembly/Z80Cpu/DecIx $src/assembly/Z80Cpu/IncXl $src/assembly/Z80Cpu/DecXl $src/assembly/Z80Cpu/LdXlN $src/assembly/Z80Cpu/IncIxi $src/assembly/Z80Cpu/DecIxi $src/assembly/Z80Cpu/LdIxiN $src/assembly/Z80Cpu/LdQXh $src/assembly/Z80Cpu/LdQXl $src/assembly/Z80Cpu/LdQIxi $src/assembly/Z80Cpu/LdIxiQ $src/assembly/Z80Cpu/AluAXh $src/assembly/Z80Cpu/AluAXl $src/assembly/Z80Cpu/AluAIxi $src/assembly/Z80Cpu/PopIx $src/assembly/Z80Cpu/ExSpiIx $src/assembly/Z80Cpu/PushIx $src/assembly/Z80Cpu/JpIxi $src/assembly/Z80Cpu/LdSpIx $src/assembly/Z80Cpu/LdBcNNIdx $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/LdBcNNIdx $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/LdBcNNIdx $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/test-machine/test-devices/readSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleIo $src/assembly/test-machine/test-devices/readSimpleIo $src/assembly/test-machine/test-devices/simpleWriteTbBlueIndex $src/assembly/test-machine/test-devices/simpleWriteTbBlueValue)
+ (data (i32.const 6928) "\16\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\003\00\00\00\02\00\00\00S\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\91\00\00\00\02\00\00\00\93\00\00\00\02\00\00\00\93\10\00\00\02\00\00\00\93\10\00\00\02\00\00\001\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00Q\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93\04\00\00\02")
+ (table $0 222 funcref)
+ (elem (i32.const 1) $src/assembly/Z80Cpu/AluADD $src/assembly/Z80Cpu/AluADC $src/assembly/Z80Cpu/AluSUB $src/assembly/Z80Cpu/AluSBC $src/assembly/Z80Cpu/AluAND $src/assembly/Z80Cpu/AluXOR $src/assembly/Z80Cpu/AluOR $src/assembly/Z80Cpu/AluCP $src/assembly/Z80Cpu/LdQQNN $src/assembly/Z80Cpu/LdBCiA $src/assembly/Z80Cpu/IncQQ $src/assembly/Z80Cpu/IncQ $src/assembly/Z80Cpu/DecQ $src/assembly/Z80Cpu/LdQN $src/assembly/Z80Cpu/Rlca $src/assembly/Z80Cpu/ExAf $src/assembly/Z80Cpu/AddHlQQ $src/assembly/Z80Cpu/LdABci $src/assembly/Z80Cpu/DecQQ $src/assembly/Z80Cpu/Rrca $src/assembly/Z80Cpu/Djnz $src/assembly/Z80Cpu/LdDEiA $src/assembly/Z80Cpu/Rla $src/assembly/Z80Cpu/JrE $src/assembly/Z80Cpu/LdADei $src/assembly/Z80Cpu/Rra $src/assembly/Z80Cpu/JrNz $src/assembly/Z80Cpu/LdNNiHl $src/assembly/Z80Cpu/Daa $src/assembly/Z80Cpu/JrZ $src/assembly/Z80Cpu/LdHlNNi $src/assembly/Z80Cpu/Cpl $src/assembly/Z80Cpu/JrNc $src/assembly/Z80Cpu/LdNNiA $src/assembly/Z80Cpu/IncHli $src/assembly/Z80Cpu/DecHli $src/assembly/Z80Cpu/LdHliN $src/assembly/Z80Cpu/Scf $src/assembly/Z80Cpu/JrC $src/assembly/Z80Cpu/LdANNi $src/assembly/Z80Cpu/Ccf $src/assembly/Z80Cpu/LdQW $src/assembly/Z80Cpu/LdQHli $src/assembly/Z80Cpu/LdHliQ $src/assembly/Z80Cpu/Halt $src/assembly/Z80Cpu/AddAQ $src/assembly/Z80Cpu/AddAHli $src/assembly/Z80Cpu/AdcAQ $src/assembly/Z80Cpu/AdcAHli $src/assembly/Z80Cpu/SubAQ $src/assembly/Z80Cpu/SubAHli $src/assembly/Z80Cpu/SbcAQ $src/assembly/Z80Cpu/SbcAHli $src/assembly/Z80Cpu/AndAQ $src/assembly/Z80Cpu/AndAHli $src/assembly/Z80Cpu/XorAQ $src/assembly/Z80Cpu/XorAHli $src/assembly/Z80Cpu/OrAQ $src/assembly/Z80Cpu/OrAHli $src/assembly/Z80Cpu/CpAQ $src/assembly/Z80Cpu/CpAHli $src/assembly/Z80Cpu/RetNz $src/assembly/Z80Cpu/PopBc $src/assembly/Z80Cpu/JpNz $src/assembly/Z80Cpu/Jp $src/assembly/Z80Cpu/CallNz $src/assembly/Z80Cpu/PushBc $src/assembly/Z80Cpu/AluAN $src/assembly/Z80Cpu/RstN $src/assembly/Z80Cpu/RetZ $src/assembly/Z80Cpu/Ret $src/assembly/Z80Cpu/JpZ $src/assembly/Z80Cpu/CallZ $src/assembly/Z80Cpu/Call $src/assembly/Z80Cpu/RetNc $src/assembly/Z80Cpu/PopDe $src/assembly/Z80Cpu/JpNc $src/assembly/Z80Cpu/OutNA $src/assembly/Z80Cpu/CallNc $src/assembly/Z80Cpu/PushDe $src/assembly/Z80Cpu/RetC $src/assembly/Z80Cpu/Exx $src/assembly/Z80Cpu/JpC $src/assembly/Z80Cpu/InAN $src/assembly/Z80Cpu/CallC $src/assembly/Z80Cpu/RetPo $src/assembly/Z80Cpu/PopHl $src/assembly/Z80Cpu/JpPo $src/assembly/Z80Cpu/ExSpiHl $src/assembly/Z80Cpu/CallPo $src/assembly/Z80Cpu/PushHl $src/assembly/Z80Cpu/RetPe $src/assembly/Z80Cpu/JpHli $src/assembly/Z80Cpu/JpPe $src/assembly/Z80Cpu/ExDeHl $src/assembly/Z80Cpu/CallPe $src/assembly/Z80Cpu/RetP $src/assembly/Z80Cpu/PopAf $src/assembly/Z80Cpu/JpP $src/assembly/Z80Cpu/Di $src/assembly/Z80Cpu/CallP $src/assembly/Z80Cpu/PushAf $src/assembly/Z80Cpu/RetM $src/assembly/Z80Cpu/LdSpHl $src/assembly/Z80Cpu/JpM $src/assembly/Z80Cpu/Ei $src/assembly/Z80Cpu/CallM $src/assembly/Z80Cpu/Swapnib $src/assembly/Z80Cpu/Mirror $src/assembly/Z80Cpu/TestN $src/assembly/Z80Cpu/BslaDeB $src/assembly/Z80Cpu/BsraDeB $src/assembly/Z80Cpu/BsrlDeB $src/assembly/Z80Cpu/BsrfDeB $src/assembly/Z80Cpu/BrlcDeB $src/assembly/Z80Cpu/Mul $src/assembly/Z80Cpu/AddHlA $src/assembly/Z80Cpu/AddDeA $src/assembly/Z80Cpu/AddBcA $src/assembly/Z80Cpu/AddHlNN $src/assembly/Z80Cpu/AddDeNN $src/assembly/Z80Cpu/AddBcNN $src/assembly/Z80Cpu/InQCi $src/assembly/Z80Cpu/OutCiQ $src/assembly/Z80Cpu/SbcHlQQ $src/assembly/Z80Cpu/LdNNiQQ $src/assembly/Z80Cpu/Neg $src/assembly/Z80Cpu/Retn $src/assembly/Z80Cpu/ImN $src/assembly/Z80Cpu/LdXrA $src/assembly/Z80Cpu/AdcHlQQ $src/assembly/Z80Cpu/LdQQNNi $src/assembly/Z80Cpu/LdAXr $src/assembly/Z80Cpu/Rrd $src/assembly/Z80Cpu/Rld $src/assembly/Z80Cpu/PushNN $src/assembly/Z80Cpu/OutInB $src/assembly/Z80Cpu/NextReg $src/assembly/Z80Cpu/NextRegA $src/assembly/Z80Cpu/PixelDn $src/assembly/Z80Cpu/PixelAd $src/assembly/Z80Cpu/SetAE $src/assembly/Z80Cpu/JpInC $src/assembly/Z80Cpu/Ldi $src/assembly/Z80Cpu/Cpi $src/assembly/Z80Cpu/Ini $src/assembly/Z80Cpu/Outi $src/assembly/Z80Cpu/Ldix $src/assembly/Z80Cpu/Ldws $src/assembly/Z80Cpu/Ldd $src/assembly/Z80Cpu/Cpd $src/assembly/Z80Cpu/Ind $src/assembly/Z80Cpu/Outd $src/assembly/Z80Cpu/Lddx $src/assembly/Z80Cpu/Ldir $src/assembly/Z80Cpu/Cpir $src/assembly/Z80Cpu/Inir $src/assembly/Z80Cpu/Otir $src/assembly/Z80Cpu/Ldirx $src/assembly/Z80Cpu/Ldpirx $src/assembly/Z80Cpu/Lddr $src/assembly/Z80Cpu/Cpdr $src/assembly/Z80Cpu/Indr $src/assembly/Z80Cpu/Otdr $src/assembly/Z80Cpu/Lddrx $src/assembly/Z80Cpu/RlcQ $src/assembly/Z80Cpu/RlcHli $src/assembly/Z80Cpu/RrcQ $src/assembly/Z80Cpu/RrcHli $src/assembly/Z80Cpu/RlQ $src/assembly/Z80Cpu/RlHli $src/assembly/Z80Cpu/RrQ $src/assembly/Z80Cpu/RrHli $src/assembly/Z80Cpu/SlaQ $src/assembly/Z80Cpu/SlaHli $src/assembly/Z80Cpu/SraQ $src/assembly/Z80Cpu/SraHli $src/assembly/Z80Cpu/SllQ $src/assembly/Z80Cpu/SllHli $src/assembly/Z80Cpu/SrlQ $src/assembly/Z80Cpu/SrlHli $src/assembly/Z80Cpu/AddIxQQ $src/assembly/Z80Cpu/LdIxNN $src/assembly/Z80Cpu/LdNNiIx $src/assembly/Z80Cpu/IncIx $src/assembly/Z80Cpu/IncXh $src/assembly/Z80Cpu/DecXh $src/assembly/Z80Cpu/LdXhN $src/assembly/Z80Cpu/LdIxNNi $src/assembly/Z80Cpu/DecIx $src/assembly/Z80Cpu/IncXl $src/assembly/Z80Cpu/DecXl $src/assembly/Z80Cpu/LdXlN $src/assembly/Z80Cpu/IncIxi $src/assembly/Z80Cpu/DecIxi $src/assembly/Z80Cpu/LdIxiN $src/assembly/Z80Cpu/LdQXh $src/assembly/Z80Cpu/LdQXl $src/assembly/Z80Cpu/LdQIxi $src/assembly/Z80Cpu/LdIxiQ $src/assembly/Z80Cpu/AluAXh $src/assembly/Z80Cpu/AluAXl $src/assembly/Z80Cpu/AluAIxi $src/assembly/Z80Cpu/PopIx $src/assembly/Z80Cpu/ExSpiIx $src/assembly/Z80Cpu/PushIx $src/assembly/Z80Cpu/JpIxi $src/assembly/Z80Cpu/LdSpIx $src/assembly/Z80Cpu/LdBcNNIdx $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/LdBcNNIdx $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/LdBcNNIdx $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/test-machine/test-devices/readSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleIo $src/assembly/test-machine/test-devices/readSimpleIo $src/assembly/test-machine/test-devices/simpleWriteTbBlueIndex $src/assembly/test-machine/test-devices/simpleWriteTbBlueValue)
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/collectLock (mut i32) (i32.const 0))
  (global $~argumentsLength (mut i32) (i32.const 0))
@@ -97,11 +97,11 @@
  (global $src/assembly/test-machine/test-devices/ioAccessLog (mut i32) (i32.const 6816))
  (global $src/assembly/test-machine/test-devices/tbBlueAccessLog (mut i32) (i32.const 6864))
  (global $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine (mut i32) (i32.const 0))
- (global $src/assembly/index/UINT8ARRAY_ID i32 (i32.const 12))
- (global $src/assembly/index/UINT32ARRAY_ID i32 (i32.const 8))
+ (global $src/assembly/index/UINT8ARRAY_ID i32 (i32.const 11))
+ (global $src/assembly/index/UINT32ARRAY_ID i32 (i32.const 7))
  (global $~lib/rt/__rtti_base i32 (i32.const 6928))
- (global $src/assembly/Z80Cpu/Z80Cpu i32 (i32.const 6))
- (global $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState i32 (i32.const 21))
+ (global $src/assembly/Z80Cpu/Z80Cpu i32 (i32.const 5))
+ (global $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState i32 (i32.const 20))
  (export "__setArgumentsLength" (func $~setArgumentsLength))
  (export "memory" (memory $0))
  (export "__alloc" (func $~lib/rt/tlsf/__alloc))
@@ -1420,7 +1420,7 @@
  )
  (func $~lib/rt/pure/__retain (; 12 ;) (param $0 i32) (result i32)
   local.get $0
-  i32.const 7116
+  i32.const 7108
   i32.gt_u
   if
    local.get $0
@@ -1432,7 +1432,7 @@
  )
  (func $~lib/rt/pure/__release (; 13 ;) (param $0 i32)
   local.get $0
-  i32.const 7116
+  i32.const 7108
   i32.gt_u
   if
    local.get $0
@@ -1758,7 +1758,7 @@
   local.get $2
   call $~lib/memory/memory.copy
   local.get $1
-  i32.const 7116
+  i32.const 7108
   i32.ge_u
   if
    local.get $0
@@ -2131,50 +2131,12 @@
   i32.add
   i32.load8_u
  )
- (func $~lib/array/Array<usize>#__set (; 23 ;) (param $0 i32) (param $1 i32) (param $2 i32)
-  (local $3 i32)
-  local.get $1
-  local.get $0
-  i32.load offset=12
-  i32.ge_u
-  if
-   local.get $1
-   i32.const 0
-   i32.lt_s
-   if
-    i32.const 240
-    i32.const 304
-    i32.const 109
-    i32.const 21
-    call $~lib/builtins/abort
-    unreachable
-   end
-   local.get $0
-   local.get $1
-   i32.const 1
-   i32.add
-   local.tee $3
-   i32.const 2
-   call $~lib/array/ensureSize
-   local.get $0
-   local.get $3
-   i32.store offset=12
-  end
-  local.get $0
-  i32.load offset=4
-  local.get $1
-  i32.const 2
-  i32.shl
-  i32.add
-  local.get $2
-  i32.store
- )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:af (; 24 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:af (; 23 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16
  )
- (func $src/assembly/Z80Cpu/AluADC (; 25 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluADC (; 24 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   (local $3 i32)
   (local $4 i32)
   i32.const 1
@@ -2286,13 +2248,13 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:af
  )
- (func $src/assembly/Z80Cpu/AluADD (; 26 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluADD (; 25 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $0
   local.get $1
   i32.const 0
   call $src/assembly/Z80Cpu/AluADC
  )
- (func $src/assembly/Z80Cpu/AluSBC (; 27 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluSBC (; 26 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   (local $3 i32)
   (local $4 i32)
   local.get $0
@@ -2406,13 +2368,13 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:af
  )
- (func $src/assembly/Z80Cpu/AluSUB (; 28 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluSUB (; 27 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $0
   local.get $1
   i32.const 0
   call $src/assembly/Z80Cpu/AluSBC
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:a (; 29 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:a (; 28 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -2426,7 +2388,7 @@
   i32.or
   i32.store16
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:f (; 30 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:f (; 29 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -2438,7 +2400,7 @@
   i32.or
   i32.store16
  )
- (func $src/assembly/Z80Cpu/AluAND (; 31 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluAND (; 30 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -2458,7 +2420,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/AluXOR (; 32 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluXOR (; 31 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -2476,7 +2438,7 @@
   call $~lib/array/Array<u8>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/AluOR (; 33 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluOR (; 32 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -2494,7 +2456,7 @@
   call $~lib/array/Array<u8>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/AluCP (; 34 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/AluCP (; 33 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   (local $3 i32)
   local.get $0
   i32.load16_u
@@ -2585,7 +2547,7 @@
   select
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $~lib/typedarray/Uint32Array#__get (; 35 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/typedarray/Uint32Array#__get (; 34 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $1
   local.get $0
   i32.load offset=8
@@ -2608,7 +2570,7 @@
   i32.add
   i32.load
  )
- (func $~lib/typedarray/Uint32Array#__set (; 36 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $~lib/typedarray/Uint32Array#__set (; 35 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $1
   local.get $0
   i32.load offset=8
@@ -2632,7 +2594,7 @@
   local.get $2
   i32.store
  )
- (func $src/assembly/MemoryStatusArray/MemoryStatusArray#touch (; 37 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/MemoryStatusArray/MemoryStatusArray#touch (; 36 ;) (param $0 i32) (param $1 i32)
   (local $2 i32)
   local.get $0
   i32.load
@@ -2655,11 +2617,11 @@
   i32.or
   call $~lib/typedarray/Uint32Array#__set
  )
- (func $~setArgumentsLength (; 38 ;) (param $0 i32)
+ (func $~setArgumentsLength (; 37 ;) (param $0 i32)
   local.get $0
   global.set $~argumentsLength
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#readMemory (; 39 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#readMemory (; 38 ;) (param $0 i32) (param $1 i32) (result i32)
   i32.const 1
   global.set $~argumentsLength
   local.get $1
@@ -2669,7 +2631,7 @@
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory (; 40 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory (; 39 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=44
   local.get $0
@@ -2680,22 +2642,22 @@
   i32.load16_u offset=92
   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:bc (; 41 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:bc (; 40 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=2
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:de (; 42 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:de (; 41 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=4
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:hl (; 43 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:hl (; 42 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=6
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#setReg16 (; 44 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#setReg16 (; 43 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   block $break|0
    block $case3|0
     block $case2|0
@@ -2730,7 +2692,7 @@
    i32.store16 offset=94
   end
  )
- (func $src/assembly/Z80Cpu/LdQQNN (; 45 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQQNN (; 44 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -2780,7 +2742,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#writeMemory (; 46 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#writeMemory (; 45 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   i32.const 2
   global.set $~argumentsLength
   local.get $1
@@ -2789,7 +2751,7 @@
   i32.load offset=72
   call_indirect (type $i32_i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/LdBCiA (; 47 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdBCiA (; 46 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=2
@@ -2805,7 +2767,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getReg16 (; 48 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getReg16 (; 47 ;) (param $0 i32) (param $1 i32) (result i32)
   block $case4|0
    block $case3|0
     block $case2|0
@@ -2838,7 +2800,7 @@
   end
   i32.const 65535
  )
- (func $src/assembly/Z80Cpu/IncQQ (; 49 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncQQ (; 48 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -2861,7 +2823,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getReg8 (; 50 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getReg8 (; 49 ;) (param $0 i32) (param $1 i32) (result i32)
   block $case7|0
    block $case6|0
     block $case5|0
@@ -2923,7 +2885,7 @@
   end
   i32.const 255
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:b (; 51 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:b (; 50 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=2
@@ -2937,7 +2899,7 @@
   i32.or
   i32.store16 offset=2
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:c (; 52 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:c (; 51 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=2
@@ -2949,7 +2911,7 @@
   i32.or
   i32.store16 offset=2
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:d (; 53 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:d (; 52 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=4
@@ -2963,7 +2925,7 @@
   i32.or
   i32.store16 offset=4
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:e (; 54 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:e (; 53 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=4
@@ -2975,7 +2937,7 @@
   i32.or
   i32.store16 offset=4
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:h (; 55 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:h (; 54 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=6
@@ -2989,7 +2951,7 @@
   i32.or
   i32.store16 offset=6
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:l (; 56 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:l (; 55 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=6
@@ -3001,7 +2963,7 @@
   i32.or
   i32.store16 offset=6
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#setReg8 (; 57 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#setReg8 (; 56 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   block $break|0
    block $case6|0
     block $case5|0
@@ -3054,7 +3016,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:a
   end
  )
- (func $src/assembly/Z80Cpu/IncQ (; 58 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncQ (; 57 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -3082,7 +3044,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/DecQ (; 59 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecQ (; 58 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -3110,7 +3072,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/LdQN (; 60 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQN (; 59 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=65
@@ -3134,7 +3096,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Rlca (; 61 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Rlca (; 60 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -3172,16 +3134,16 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:_af_ (; 62 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:_af_ (; 61 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=8
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:_af_ (; 63 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:_af_ (; 62 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=8
  )
- (func $src/assembly/Z80Cpu/ExAf (; 64 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/ExAf (; 63 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u offset=8
@@ -3194,12 +3156,12 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:af
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:wz (; 65 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:wz (; 64 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=22
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#aluAddHL (; 66 ;) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#aluAddHL (; 65 ;) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -3262,7 +3224,7 @@
   i32.const 65535
   i32.and
  )
- (func $src/assembly/Z80Cpu/AddHlQQ (; 67 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddHlQQ (; 66 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=65
@@ -3293,7 +3255,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdABci (; 68 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdABci (; 67 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=2
@@ -3313,7 +3275,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/DecQQ (; 69 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecQQ (; 68 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -3336,7 +3298,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Rrca (; 70 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Rrca (; 69 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -3375,7 +3337,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/Djnz (; 71 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Djnz (; 70 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -3495,7 +3457,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/LdDEiA (; 72 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdDEiA (; 71 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=4
@@ -3511,7 +3473,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:cFlag (; 73 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:cFlag (; 72 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 1
@@ -3519,7 +3481,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Rla (; 74 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Rla (; 73 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -3559,7 +3521,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/JrE (; 75 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JrE (; 74 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -3597,7 +3559,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdADei (; 76 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdADei (; 75 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=4
@@ -3617,7 +3579,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Rra (; 77 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Rra (; 76 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -3657,7 +3619,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/JrNz (; 78 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JrNz (; 77 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -3762,7 +3724,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/LdNNiHl (; 79 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdNNiHl (; 78 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -3829,7 +3791,7 @@
   i64.add
   i64.store offset=24
  )
- (func $~lib/array/Array<u16>#__get (; 80 ;) (param $0 i32) (result i32)
+ (func $~lib/array/Array<u16>#__get (; 79 ;) (param $0 i32) (result i32)
   local.get $0
   i32.const 476
   i32.load
@@ -3850,7 +3812,7 @@
   i32.add
   i32.load16_u
  )
- (func $src/assembly/Z80Cpu/Daa (; 81 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Daa (; 80 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -3879,7 +3841,7 @@
   call $~lib/array/Array<u16>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:af
  )
- (func $src/assembly/Z80Cpu/JrZ (; 82 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JrZ (; 81 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -3985,7 +3947,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/LdHlNNi (; 83 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdHlNNi (; 82 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -4051,7 +4013,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/Cpl (; 84 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Cpl (; 83 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -4076,7 +4038,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/JrNc (; 85 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JrNc (; 84 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -4181,7 +4143,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:wh (; 86 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:wh (; 85 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=22
@@ -4195,7 +4157,7 @@
   i32.or
   i32.store16 offset=22
  )
- (func $src/assembly/Z80Cpu/LdNNiA (; 87 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdNNiA (; 86 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -4263,7 +4225,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#aluIncByte (; 88 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#aluIncByte (; 87 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
   i32.const 208
   local.get $1
@@ -4282,7 +4244,7 @@
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/IncHli (; 89 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncHli (; 88 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -4333,7 +4295,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#aluDecByte (; 90 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#aluDecByte (; 89 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
   i32.const 416
   local.get $1
@@ -4352,7 +4314,7 @@
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/DecHli (; 91 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecHli (; 90 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -4403,7 +4365,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdHliN (; 92 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdHliN (; 91 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -4432,7 +4394,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Scf (; 93 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Scf (; 92 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -4449,7 +4411,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/JrC (; 94 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JrC (; 93 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -4555,7 +4517,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/LdANNi (; 95 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdANNi (; 94 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -4606,7 +4568,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Ccf (; 96 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ccf (; 95 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u
@@ -4631,7 +4593,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/LdQW (; 97 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQW (; 96 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=65
@@ -4647,7 +4609,7 @@
   call $src/assembly/Z80Cpu/Z80Cpu#getReg8
   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
  )
- (func $src/assembly/Z80Cpu/LdQHli (; 98 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQHli (; 97 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=65
@@ -4667,7 +4629,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdHliQ (; 99 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdHliQ (; 98 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=6
@@ -4685,7 +4647,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Halt (; 100 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Halt (; 99 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load offset=32
@@ -4699,7 +4661,7 @@
   i32.sub
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/AddAQ (; 101 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddAQ (; 100 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.const 512
@@ -4730,7 +4692,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/AddAHli (; 102 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddAHli (; 101 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -4766,7 +4728,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/AdcAQ (; 103 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AdcAQ (; 102 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -4811,7 +4773,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/AdcAHli (; 104 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AdcAHli (; 103 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -4861,7 +4823,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/SubAQ (; 105 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/SubAQ (; 104 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.const 560
@@ -4892,7 +4854,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/SubAHli (; 106 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/SubAHli (; 105 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -4928,7 +4890,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/SbcAQ (; 107 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/SbcAQ (; 106 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -4973,7 +4935,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/SbcAHli (; 108 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/SbcAHli (; 107 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -5023,7 +4985,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/AndAQ (; 109 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AndAQ (; 108 ;) (param $0 i32)
   local.get $0
   local.get $0
   local.get $0
@@ -5048,7 +5010,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/AndAHli (; 110 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AndAHli (; 109 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -5080,7 +5042,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/XorAQ (; 111 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/XorAQ (; 110 ;) (param $0 i32)
   local.get $0
   local.get $0
   local.get $0
@@ -5103,7 +5065,7 @@
   call $~lib/array/Array<u8>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/XorAHli (; 112 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/XorAHli (; 111 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -5133,7 +5095,7 @@
   call $~lib/array/Array<u8>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/OrAQ (; 113 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/OrAQ (; 112 ;) (param $0 i32)
   local.get $0
   local.get $0
   local.get $0
@@ -5156,7 +5118,7 @@
   call $~lib/array/Array<u8>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/OrAHli (; 114 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/OrAHli (; 113 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -5186,7 +5148,7 @@
   call $~lib/array/Array<u8>#__get
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/CpAQ (; 115 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CpAQ (; 114 ;) (param $0 i32)
   local.get $0
   i32.const 560
   local.get $0
@@ -5214,7 +5176,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/CpAHli (; 116 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CpAHli (; 115 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -5249,7 +5211,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/RetNz (; 117 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetNz (; 116 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -5309,7 +5271,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PopBc (; 118 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PopBc (; 117 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -5351,7 +5313,7 @@
   i32.add
   i32.store16 offset=94
  )
- (func $src/assembly/Z80Cpu/JpNz (; 119 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpNz (; 118 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -5401,7 +5363,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Jp (; 120 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Jp (; 119 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -5444,7 +5406,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/CallNz (; 121 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallNz (; 120 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -5548,7 +5510,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PushBc (; 122 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PushBc (; 121 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u offset=2
@@ -5596,7 +5558,7 @@
   i64.add
   i64.store offset=24
  )
- (func "$~lib/array/Array<(cpu: src/assembly/Z80Cpu/Z80Cpu, value: u8, carry: bool) => void>#__unchecked_get" (; 123 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func "$~lib/array/Array<(cpu: src/assembly/Z80Cpu/Z80Cpu, value: u8, carry: bool) => void>#__unchecked_get" (; 122 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
   i32.load offset=4
   local.get $1
@@ -5605,7 +5567,7 @@
   i32.add
   i32.load
  )
- (func "$~lib/array/Array<(cpu: src/assembly/Z80Cpu/Z80Cpu, value: u8, carry: bool) => void>#__get" (; 124 ;) (param $0 i32) (result i32)
+ (func "$~lib/array/Array<(cpu: src/assembly/Z80Cpu/Z80Cpu, value: u8, carry: bool) => void>#__get" (; 123 ;) (param $0 i32) (result i32)
   local.get $0
   i32.const 1132
   i32.load
@@ -5633,7 +5595,7 @@
   end
   local.get $0
  )
- (func $src/assembly/Z80Cpu/AluAN (; 125 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AluAN (; 124 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -5668,7 +5630,7 @@
   local.get $2
   call_indirect (type $i32_i32_i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/RstN (; 126 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RstN (; 125 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=94
@@ -5724,7 +5686,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/RetZ (; 127 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetZ (; 126 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -5785,7 +5747,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Ret (; 128 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ret (; 127 ;) (param $0 i32)
   local.get $0
   local.get $0
   local.get $0
@@ -5832,7 +5794,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/JpZ (; 129 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpZ (; 128 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -5883,7 +5845,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/CallZ (; 130 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallZ (; 129 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -5988,7 +5950,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Call (; 131 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Call (; 130 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6085,7 +6047,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/RetNc (; 132 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetNc (; 131 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -6145,7 +6107,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PopDe (; 133 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PopDe (; 132 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -6187,7 +6149,7 @@
   i32.add
   i32.store16 offset=94
  )
- (func $src/assembly/Z80Cpu/JpNc (; 134 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpNc (; 133 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6237,7 +6199,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#writePort (; 135 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#writePort (; 134 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   i32.const 2
   global.set $~argumentsLength
   local.get $1
@@ -6246,7 +6208,7 @@
   i32.load offset=80
   call_indirect (type $i32_i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/OutNA (; 136 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/OutNA (; 135 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6290,7 +6252,7 @@
   i32.shr_u
   call $src/assembly/Z80Cpu/Z80Cpu#writePort
  )
- (func $src/assembly/Z80Cpu/CallNc (; 137 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallNc (; 136 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6394,7 +6356,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PushDe (; 138 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PushDe (; 137 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u offset=4
@@ -6442,7 +6404,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/RetC (; 139 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetC (; 138 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -6503,34 +6465,34 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:_bc_ (; 140 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:_bc_ (; 139 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=10
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:_bc_ (; 141 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:_bc_ (; 140 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=10
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:_de_ (; 142 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:_de_ (; 141 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=12
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:_de_ (; 143 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:_de_ (; 142 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=12
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:_hl_ (; 144 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:_hl_ (; 143 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=14
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:_hl_ (; 145 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:_hl_ (; 144 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=14
  )
- (func $src/assembly/Z80Cpu/Exx (; 146 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Exx (; 145 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u offset=2
@@ -6563,7 +6525,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:_hl_
  )
- (func $src/assembly/Z80Cpu/JpC (; 147 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpC (; 146 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6614,7 +6576,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#readPort (; 148 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#readPort (; 147 ;) (param $0 i32) (param $1 i32) (result i32)
   i32.const 1
   global.set $~argumentsLength
   local.get $1
@@ -6624,7 +6586,7 @@
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/InAN (; 149 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/InAN (; 148 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6667,7 +6629,7 @@
   call $src/assembly/Z80Cpu/Z80Cpu#readPort
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/CallC (; 150 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallC (; 149 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6772,7 +6734,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/RetPo (; 151 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetPo (; 150 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -6832,7 +6794,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PopHl (; 152 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PopHl (; 151 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -6874,7 +6836,7 @@
   i32.add
   i32.store16 offset=94
  )
- (func $src/assembly/Z80Cpu/JpPo (; 153 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpPo (; 152 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -6924,7 +6886,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/ExSpiHl (; 154 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/ExSpiHl (; 153 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -7050,7 +7012,7 @@
   i32.load16_u offset=22
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/CallPo (; 155 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallPo (; 154 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7154,7 +7116,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PushHl (; 156 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PushHl (; 155 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u offset=6
@@ -7202,7 +7164,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/RetPe (; 157 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetPe (; 156 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -7263,13 +7225,13 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/JpHli (; 158 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpHli (; 157 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=6
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/JpPe (; 159 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpPe (; 158 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7320,7 +7282,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/ExDeHl (; 160 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/ExDeHl (; 159 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u offset=4
@@ -7333,7 +7295,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/CallPe (; 161 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallPe (; 160 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7438,7 +7400,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/RetP (; 162 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetP (; 161 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -7498,7 +7460,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PopAf (; 163 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PopAf (; 162 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -7540,7 +7502,7 @@
   i32.add
   i32.store16 offset=94
  )
- (func $src/assembly/Z80Cpu/JpP (; 164 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpP (; 163 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7590,7 +7552,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Di (; 165 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Di (; 164 ;) (param $0 i32)
   local.get $0
   i32.const 0
   i32.store8 offset=37
@@ -7598,7 +7560,7 @@
   i32.const 0
   i32.store8 offset=38
  )
- (func $src/assembly/Z80Cpu/CallP (; 166 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallP (; 165 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7702,7 +7664,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/PushAf (; 167 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PushAf (; 166 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load16_u
@@ -7750,7 +7712,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/RetM (; 168 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/RetM (; 167 ;) (param $0 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -7811,7 +7773,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/LdSpHl (; 169 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdSpHl (; 168 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=6
@@ -7823,7 +7785,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/JpM (; 170 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpM (; 169 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7874,7 +7836,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Ei (; 171 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ei (; 170 ;) (param $0 i32)
   local.get $0
   i32.const 1
   i32.store8 offset=40
@@ -7885,7 +7847,7 @@
   i32.const 1
   i32.store8 offset=38
  )
- (func $src/assembly/Z80Cpu/CallM (; 172 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/CallM (; 171 ;) (param $0 i32)
   local.get $0
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -7990,7 +7952,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Swapnib (; 173 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Swapnib (; 172 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8011,7 +7973,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/Mirror (; 174 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Mirror (; 173 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -8054,7 +8016,7 @@
   local.get $3
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/TestN (; 175 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/TestN (; 174 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -8090,7 +8052,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/BslaDeB (; 176 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/BslaDeB (; 175 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8109,7 +8071,7 @@
   i32.shl
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/BsraDeB (; 177 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/BsraDeB (; 176 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8133,7 +8095,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/BsrlDeB (; 178 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/BsrlDeB (; 177 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8152,7 +8114,7 @@
   i32.shr_u
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/BsrfDeB (; 179 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/BsrfDeB (; 178 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8177,7 +8139,7 @@
   i32.xor
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/BrlcDeB (; 180 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/BrlcDeB (; 179 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8208,7 +8170,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/Mul (; 181 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Mul (; 180 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8227,7 +8189,7 @@
   i32.mul
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/AddHlA (; 182 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddHlA (; 181 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8244,7 +8206,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/AddDeA (; 183 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddDeA (; 182 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8261,7 +8223,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:de
  )
- (func $src/assembly/Z80Cpu/AddBcA (; 184 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddBcA (; 183 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -8278,7 +8240,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:bc
  )
- (func $src/assembly/Z80Cpu/AddHlNN (; 185 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddHlNN (; 184 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -8325,7 +8287,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/AddDeNN (; 186 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddDeNN (; 185 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -8372,7 +8334,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/AddBcNN (; 187 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddBcNN (; 186 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -8419,7 +8381,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/InQCi (; 188 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/InQCi (; 187 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -8459,7 +8421,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#setReg8
   end
  )
- (func $src/assembly/Z80Cpu/OutCiQ (; 189 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/OutCiQ (; 188 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=65
@@ -8489,7 +8451,7 @@
   end
   call $src/assembly/Z80Cpu/Z80Cpu#writePort
  )
- (func $src/assembly/Z80Cpu/SbcHlQQ (; 190 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/SbcHlQQ (; 189 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -8607,7 +8569,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdNNiQQ (; 191 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdNNiQQ (; 190 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -8678,7 +8640,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Neg (; 192 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Neg (; 191 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -8753,7 +8715,7 @@
   local.get $2
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/Retn (; 193 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Retn (; 192 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -8802,7 +8764,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/ImN (; 194 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/ImN (; 193 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=65
@@ -8822,17 +8784,17 @@
   i32.sub
   i32.store8 offset=39
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:i (; 195 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:i (; 194 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=16
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:r (; 196 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:r (; 195 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=17
  )
- (func $src/assembly/Z80Cpu/LdXrA (; 197 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdXrA (; 196 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=65
   i32.const 8
@@ -8859,7 +8821,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/AdcHlQQ (; 198 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AdcHlQQ (; 197 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -8980,7 +8942,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdQQNNi (; 199 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQQNNi (; 198 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -9055,7 +9017,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#setReg16
  )
- (func $src/assembly/Z80Cpu/LdAXr (; 200 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdAXr (; 199 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -9107,7 +9069,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Rrd (; 201 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Rrd (; 200 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -9227,7 +9189,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/Rld (; 202 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Rld (; 201 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -9349,7 +9311,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/PushNN (; 203 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PushNN (; 202 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -9428,7 +9390,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/OutInB (; 204 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/OutInB (; 203 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -9465,7 +9427,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#writeTbBlueIndex (; 205 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#writeTbBlueIndex (; 204 ;) (param $0 i32) (param $1 i32)
   i32.const 1
   global.set $~argumentsLength
   local.get $1
@@ -9473,7 +9435,7 @@
   i32.load offset=84
   call_indirect (type $i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#writeTbBlueValue (; 206 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#writeTbBlueValue (; 205 ;) (param $0 i32) (param $1 i32)
   i32.const 1
   global.set $~argumentsLength
   local.get $1
@@ -9481,7 +9443,7 @@
   i32.load offset=88
   call_indirect (type $i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/NextReg (; 207 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/NextReg (; 206 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -9527,7 +9489,7 @@
   local.get $2
   call $src/assembly/Z80Cpu/Z80Cpu#writeTbBlueValue
  )
- (func $src/assembly/Z80Cpu/NextRegA (; 208 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/NextRegA (; 207 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -9560,7 +9522,7 @@
   i32.shr_u
   call $src/assembly/Z80Cpu/Z80Cpu#writeTbBlueValue
  )
- (func $src/assembly/Z80Cpu/PixelDn (; 209 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PixelDn (; 208 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -9626,7 +9588,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:hl
   end
  )
- (func $src/assembly/Z80Cpu/PixelAd (; 210 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PixelAd (; 209 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -9666,7 +9628,7 @@
   i32.or
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/SetAE (; 211 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/SetAE (; 210 ;) (param $0 i32)
   local.get $0
   i32.load8_u offset=66
   i32.eqz
@@ -9682,7 +9644,7 @@
   i32.shr_u
   call $src/assembly/Z80Cpu/Z80Cpu#set:a
  )
- (func $src/assembly/Z80Cpu/JpInC (; 212 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpInC (; 211 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -9718,7 +9680,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Ldi (; 213 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldi (; 212 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -9828,7 +9790,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:f
   end
  )
- (func $src/assembly/Z80Cpu/Cpi (; 214 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Cpi (; 213 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -9999,7 +9961,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Ini (; 215 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ini (; 214 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -10073,7 +10035,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/Outi (; 216 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Outi (; 215 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -10147,7 +10109,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Ldix (; 217 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldix (; 216 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -10204,7 +10166,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:bc
  )
- (func $src/assembly/Z80Cpu/Ldws (; 218 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldws (; 217 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -10264,7 +10226,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:d
  )
- (func $src/assembly/Z80Cpu/Ldd (; 219 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldd (; 218 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -10374,7 +10336,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:f
   end
  )
- (func $src/assembly/Z80Cpu/Cpd (; 220 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Cpd (; 219 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -10545,7 +10507,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Ind (; 221 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ind (; 220 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -10619,7 +10581,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:hl
  )
- (func $src/assembly/Z80Cpu/Outd (; 222 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Outd (; 221 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -10701,7 +10663,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Lddx (; 223 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Lddx (; 222 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -10764,7 +10726,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:bc
  )
- (func $src/assembly/Z80Cpu/Ldir (; 224 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldir (; 223 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -10964,7 +10926,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Cpir (; 225 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Cpir (; 224 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -11222,7 +11184,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/Inir (; 226 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Inir (; 225 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -11383,7 +11345,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:f
   end
  )
- (func $src/assembly/Z80Cpu/Otir (; 227 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Otir (; 226 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -11550,7 +11512,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Ldirx (; 228 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldirx (; 227 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -11631,7 +11593,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Ldpirx (; 229 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Ldpirx (; 228 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -11713,7 +11675,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Lddr (; 230 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Lddr (; 229 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -11913,7 +11875,7 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Cpdr (; 231 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Cpdr (; 230 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -12171,7 +12133,7 @@
   local.get $1
   call $src/assembly/Z80Cpu/Z80Cpu#set:f
  )
- (func $src/assembly/Z80Cpu/Indr (; 232 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Indr (; 231 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -12332,7 +12294,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:f
   end
  )
- (func $src/assembly/Z80Cpu/Otdr (; 233 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Otdr (; 232 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -12500,7 +12462,7 @@
   i32.sub
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Lddrx (; 234 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Lddrx (; 233 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load8_u offset=66
@@ -12581,17 +12543,710 @@
   i32.add
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:iy (; 235 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/RlcQ (; 234 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $1
+  i32.const 992
+  local.get $0
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+  local.get $0
+  i32.const 656
+  local.get $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+ )
+ (func $src/assembly/Z80Cpu/RlcHli (; 235 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  i32.const 992
+  local.get $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+  local.get $0
+  i32.const 656
+  local.get $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+ )
+ (func $src/assembly/Z80Cpu/RrcQ (; 236 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $1
+  i32.const 1040
+  local.get $0
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+  local.get $0
+  i32.const 704
+  local.get $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+ )
+ (func $src/assembly/Z80Cpu/RrcHli (; 237 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  i32.const 704
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  i32.const 1040
+  local.get $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/RlQ (; 238 ;) (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $2
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.set $1
+  local.get $0
+  call $src/assembly/Z80Cpu/Z80Cpu#get:cFlag
+  if
+   local.get $0
+   i32.const 800
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $0
+   local.get $2
+   local.get $1
+   i32.const 1
+   i32.shl
+   i32.const 1
+   i32.add
+   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+  else
+   local.get $0
+   i32.const 752
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $0
+   local.get $2
+   local.get $1
+   i32.const 1
+   i32.shl
+   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+  end
+ )
+ (func $src/assembly/Z80Cpu/RlHli (; 239 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.set $1
+  local.get $0
+  call $src/assembly/Z80Cpu/Z80Cpu#get:cFlag
+  if (result i32)
+   local.get $0
+   i32.const 800
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $1
+   i32.const 1
+   i32.shl
+   i32.const 1
+   i32.add
+  else
+   local.get $0
+   i32.const 752
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $1
+   i32.const 1
+   i32.shl
+  end
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/RrQ (; 240 ;) (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $2
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.set $1
+  local.get $0
+  call $src/assembly/Z80Cpu/Z80Cpu#get:cFlag
+  if
+   local.get $0
+   i32.const 896
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $0
+   local.get $2
+   local.get $1
+   i32.const 1
+   i32.shr_u
+   i32.const 128
+   i32.add
+   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+  else
+   local.get $0
+   i32.const 848
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $0
+   local.get $2
+   local.get $1
+   i32.const 1
+   i32.shr_u
+   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+  end
+ )
+ (func $src/assembly/Z80Cpu/RrHli (; 241 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.set $1
+  local.get $0
+  call $src/assembly/Z80Cpu/Z80Cpu#get:cFlag
+  if (result i32)
+   local.get $0
+   i32.const 896
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $1
+   i32.const 1
+   i32.shr_u
+   i32.const 128
+   i32.add
+  else
+   local.get $0
+   i32.const 848
+   local.get $1
+   call $~lib/array/Array<u8>#__get
+   call $src/assembly/Z80Cpu/Z80Cpu#set:f
+   local.get $1
+   i32.const 1
+   i32.shr_u
+  end
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/SlaQ (; 242 ;) (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  i32.const 752
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $1
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.tee $2
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $0
+  local.get $1
+  local.get $2
+  i32.const 1
+  i32.shl
+  call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+ )
+ (func $src/assembly/Z80Cpu/SlaHli (; 243 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  i32.const 752
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $1
+  i32.const 1
+  i32.shl
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/SraQ (; 244 ;) (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  i32.const 944
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $2
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $0
+  local.get $2
+  local.get $1
+  i32.const 128
+  i32.and
+  local.get $1
+  i32.const 1
+  i32.shr_u
+  i32.add
+  call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+ )
+ (func $src/assembly/Z80Cpu/SraHli (; 245 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  i32.const 944
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $1
+  i32.const 128
+  i32.and
+  local.get $1
+  i32.const 1
+  i32.shr_u
+  i32.add
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/SllQ (; 246 ;) (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  i32.const 800
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $1
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.tee $2
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $0
+  local.get $1
+  local.get $2
+  i32.const 1
+  i32.shl
+  i32.const 1
+  i32.add
+  call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+ )
+ (func $src/assembly/Z80Cpu/SllHli (; 247 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  i32.const 800
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $1
+  i32.const 1
+  i32.shl
+  i32.const 1
+  i32.add
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/SrlQ (; 248 ;) (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  i32.const 848
+  local.get $0
+  local.get $0
+  i32.load8_u offset=65
+  i32.const 7
+  i32.and
+  local.tee $1
+  call $src/assembly/Z80Cpu/Z80Cpu#getReg8
+  local.tee $2
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $0
+  local.get $1
+  local.get $2
+  i32.const 1
+  i32.shr_u
+  call $src/assembly/Z80Cpu/Z80Cpu#setReg8
+ )
+ (func $src/assembly/Z80Cpu/SrlHli (; 249 ;) (param $0 i32)
+  (local $1 i32)
+  local.get $0
+  i32.const 848
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+  local.tee $1
+  call $~lib/array/Array<u8>#__get
+  call $src/assembly/Z80Cpu/Z80Cpu#set:f
+  local.get $1
+  i32.const 1
+  i32.shr_u
+  local.set $1
+  local.get $0
+  i32.load8_u offset=36
+  if
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 4
+   i64.add
+   i64.store offset=24
+  else
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 3
+   i64.add
+   i64.store offset=24
+   local.get $0
+   local.get $0
+   i32.load16_u offset=6
+   call $src/assembly/Z80Cpu/Z80Cpu#readMemory
+   drop
+   local.get $0
+   local.get $0
+   i64.load offset=24
+   i64.const 1
+   i64.add
+   i64.store offset=24
+  end
+  local.get $0
+  local.get $0
+  i32.load16_u offset=6
+  local.get $1
+  call $src/assembly/Z80Cpu/Z80Cpu#writeMemory
+  local.get $0
+  local.get $0
+  i64.load offset=24
+  i64.const 3
+  i64.add
+  i64.store offset=24
+ )
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:iy (; 250 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=20
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:ix (; 236 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:ix (; 251 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=18
  )
- (func $src/assembly/Z80Cpu/AddIxQQ (; 237 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AddIxQQ (; 252 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -12656,7 +13311,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdIxNN (; 238 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdIxNN (; 253 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -12705,7 +13360,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdNNiIx (; 239 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdNNiIx (; 254 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -12788,7 +13443,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/IncIx (; 240 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncIx (; 255 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.set $1
@@ -12828,7 +13483,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/IncXh (; 241 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncXh (; 256 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -12870,7 +13525,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/DecXh (; 242 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecXh (; 257 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -12912,7 +13567,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/LdXhN (; 243 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdXhN (; 258 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -12960,7 +13615,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/LdIxNNi (; 244 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdIxNNi (; 259 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -13036,7 +13691,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/DecIx (; 245 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecIx (; 260 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -13077,7 +13732,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/IncXl (; 246 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncXl (; 261 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -13115,7 +13770,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/DecXl (; 247 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecXl (; 262 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -13153,7 +13808,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/LdXlN (; 248 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdXlN (; 263 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#readCodeMemory
@@ -13199,7 +13854,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/IncIxi (; 249 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/IncIxi (; 264 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -13337,7 +13992,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/DecIxi (; 250 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/DecIxi (; 265 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -13475,7 +14130,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdIxiN (; 251 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdIxiN (; 266 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -13575,7 +14230,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdQXh (; 252 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQXh (; 267 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=65
@@ -13600,7 +14255,7 @@
   i32.shr_u
   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
  )
- (func $src/assembly/Z80Cpu/LdQXl (; 253 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQXl (; 268 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=65
@@ -13623,7 +14278,7 @@
   i32.and
   call $src/assembly/Z80Cpu/Z80Cpu#setReg8
  )
- (func $src/assembly/Z80Cpu/LdQIxi (; 254 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdQIxi (; 269 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -13748,7 +14403,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdIxiQ (; 255 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdIxiQ (; 270 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -13871,7 +14526,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/AluAXh (; 256 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AluAXh (; 271 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -13909,7 +14564,7 @@
   local.get $2
   call_indirect (type $i32_i32_i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/AluAXl (; 257 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AluAXl (; 272 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -13945,7 +14600,7 @@
   local.get $2
   call_indirect (type $i32_i32_i32_=>_none)
  )
- (func $src/assembly/Z80Cpu/AluAIxi (; 258 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/AluAIxi (; 273 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -14077,7 +14732,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/PopIx (; 259 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PopIx (; 274 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -14129,7 +14784,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/ExSpiIx (; 260 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/ExSpiIx (; 275 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -14275,7 +14930,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/PushIx (; 261 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/PushIx (; 276 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   local.set $1
@@ -14337,7 +14992,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/JpIxi (; 262 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/JpIxi (; 277 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load offset=60
@@ -14352,7 +15007,7 @@
   end
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/LdSpIx (; 263 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/LdSpIx (; 278 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load offset=60
@@ -14373,10 +15028,10 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/LdBcNNIdx (; 264 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/LdBcNNIdx (; 279 ;) (param $0 i32) (param $1 i32)
   nop
  )
- (func $start:src/assembly/Z80Cpu (; 265 ;)
+ (func $start:src/assembly/Z80Cpu (; 280 ;)
   (local $0 i32)
   (local $1 i32)
   (local $2 i32)
@@ -15287,9 +15942,7 @@
     i32.or
     local.get $3
     select
-    i32.const 255
-    i32.and
-    call $~lib/array/Array<usize>#__set
+    call $~lib/array/Array<u8>#__set
     local.get $0
     i32.const 1
     i32.add
@@ -15430,9 +16083,7 @@
     i32.const 255
     i32.and
     select
-    i32.const 255
-    i32.and
-    call $~lib/array/Array<usize>#__set
+    call $~lib/array/Array<u8>#__set
     local.get $0
     i32.const 1
     i32.add
@@ -15752,7 +16403,7 @@
    end
   end
  )
- (func $~lib/arraybuffer/ArrayBufferView#constructor (; 266 ;) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
+ (func $~lib/arraybuffer/ArrayBufferView#constructor (; 281 ;) (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
   (local $3 i32)
   (local $4 i32)
   local.get $1
@@ -15820,25 +16471,25 @@
   i32.store offset=8
   local.get $0
  )
- (func $~lib/typedarray/Uint8Array#constructor (; 267 ;) (param $0 i32) (result i32)
+ (func $~lib/typedarray/Uint8Array#constructor (; 282 ;) (param $0 i32) (result i32)
   i32.const 12
-  i32.const 12
+  i32.const 11
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.get $0
   i32.const 0
   call $~lib/arraybuffer/ArrayBufferView#constructor
  )
- (func $~lib/typedarray/Uint32Array#constructor (; 268 ;) (param $0 i32) (result i32)
+ (func $~lib/typedarray/Uint32Array#constructor (; 283 ;) (param $0 i32) (result i32)
   i32.const 12
-  i32.const 8
+  i32.const 7
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.get $0
   i32.const 2
   call $~lib/arraybuffer/ArrayBufferView#constructor
  )
- (func $src/assembly/MemoryStatusArray/MemoryStatusArray#clearAll (; 269 ;) (param $0 i32)
+ (func $src/assembly/MemoryStatusArray/MemoryStatusArray#clearAll (; 284 ;) (param $0 i32)
   (local $1 i32)
   loop $for-loop|0
    local.get $1
@@ -15858,10 +16509,10 @@
    end
   end
  )
- (func $src/assembly/MemoryStatusArray/MemoryStatusArray#constructor (; 270 ;) (result i32)
+ (func $src/assembly/MemoryStatusArray/MemoryStatusArray#constructor (; 285 ;) (result i32)
   (local $0 i32)
   i32.const 4
-  i32.const 7
+  i32.const 6
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $0
@@ -15872,7 +16523,7 @@
   call $src/assembly/MemoryStatusArray/MemoryStatusArray#clearAll
   local.get $0
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#turnOn (; 271 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#turnOn (; 286 ;) (param $0 i32)
   local.get $0
   i32.const 65535
   i32.store16
@@ -15964,18 +16615,18 @@
   i32.const 255
   i32.store8 offset=65
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 (; 272 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 (; 287 ;) (param $0 i32) (result i32)
   i32.const 255
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 (; 273 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 (; 288 ;) (param $0 i32)
   nop
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#constructor (; 274 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#constructor (; 289 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $0
   i32.eqz
   if
    i32.const 96
-   i32.const 6
+   i32.const 5
    call $~lib/rt/tlsf/__alloc
    call $~lib/rt/pure/__retain
    local.set $0
@@ -16094,26 +16745,26 @@
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#turnOn
   local.get $0
-  i32.const 194
+  i32.const 210
   i32.store offset=68
   local.get $0
-  i32.const 195
+  i32.const 211
   i32.store offset=72
   local.get $0
-  i32.const 196
+  i32.const 212
   i32.store offset=76
   local.get $0
-  i32.const 197
+  i32.const 213
   i32.store offset=80
   local.get $0
-  i32.const 198
+  i32.const 214
   i32.store offset=84
   local.get $0
-  i32.const 199
+  i32.const 215
   i32.store offset=88
   local.get $0
  )
- (func $~lib/typedarray/Uint8Array#__set (; 275 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $~lib/typedarray/Uint8Array#__set (; 290 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $1
   local.get $0
   i32.load offset=8
@@ -16133,7 +16784,7 @@
   local.get $2
   i32.store8
  )
- (func $~lib/rt/__allocArray (; 276 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/rt/__allocArray (; 291 ;) (param $0 i32) (param $1 i32) (result i32)
   (local $2 i32)
   (local $3 i32)
   i32.const 16
@@ -16165,9 +16816,9 @@
   i32.store offset=12
   local.get $0
  )
- (func $src/assembly/test-machine/test-devices/clearMemoryAccessLog (; 277 ;)
+ (func $src/assembly/test-machine/test-devices/clearMemoryAccessLog (; 292 ;)
   (local $0 i32)
-  i32.const 14
+  i32.const 13
   i32.const 6896
   call $~lib/rt/__allocArray
   call $~lib/rt/pure/__retain
@@ -16175,7 +16826,7 @@
   call $~lib/rt/pure/__release
   global.set $src/assembly/test-machine/test-devices/memoryAccessLog
  )
- (func $src/assembly/test-machine/test-devices/resetMemory (; 278 ;)
+ (func $src/assembly/test-machine/test-devices/resetMemory (; 293 ;)
   (local $0 i32)
   loop $for-loop|0
    local.get $0
@@ -16195,7 +16846,7 @@
   end
   call $src/assembly/test-machine/test-devices/clearMemoryAccessLog
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#reset (; 279 ;) (param $0 i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#reset (; 294 ;) (param $0 i32)
   local.get $0
   i32.const 0
   i32.store16 offset=4
@@ -16207,7 +16858,7 @@
   call $src/assembly/Z80Cpu/Z80Cpu#turnOn
   call $src/assembly/test-machine/test-devices/resetMemory
  )
- (func $~lib/typedarray/Uint8Array#__get (; 280 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/typedarray/Uint8Array#__get (; 295 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $1
   local.get $0
   i32.load offset=8
@@ -16226,7 +16877,7 @@
   i32.add
   i32.load8_u
  )
- (func $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#push (; 281 ;) (param $0 i32) (param $1 i32)
+ (func $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#push (; 296 ;) (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
   local.get $0
@@ -16251,7 +16902,7 @@
   local.get $3
   i32.store offset=12
  )
- (func $src/assembly/test-machine/test-devices/readSimpleMemory (; 282 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/test-devices/readSimpleMemory (; 297 ;) (param $0 i32) (result i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -16263,7 +16914,7 @@
   local.set $2
   global.get $src/assembly/test-machine/test-devices/memoryAccessLog
   i32.const 4
-  i32.const 13
+  i32.const 12
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $1
@@ -16281,7 +16932,7 @@
   call $~lib/rt/pure/__release
   local.get $2
  )
- (func $src/assembly/test-machine/test-devices/writeSimpleMemory (; 283 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/test-devices/writeSimpleMemory (; 298 ;) (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
   global.get $src/assembly/test-machine/test-devices/simpleMemory
@@ -16294,7 +16945,7 @@
   call $~lib/typedarray/Uint8Array#__set
   global.get $src/assembly/test-machine/test-devices/memoryAccessLog
   i32.const 4
-  i32.const 13
+  i32.const 12
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $2
@@ -16311,7 +16962,7 @@
   local.get $2
   call $~lib/rt/pure/__release
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#delay (; 284 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#delay (; 299 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i64.load offset=24
@@ -16320,12 +16971,12 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/test-machine/test-devices/writeSimpleIo (; 285 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/test-devices/writeSimpleIo (; 300 ;) (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
   global.get $src/assembly/test-machine/test-devices/ioAccessLog
   i32.const 4
-  i32.const 15
+  i32.const 14
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $2
@@ -16345,7 +16996,7 @@
   local.get $2
   call $~lib/rt/pure/__release
  )
- (func $src/assembly/test-machine/test-devices/readSimpleIo (; 286 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/test-devices/readSimpleIo (; 301 ;) (param $0 i32) (result i32)
   (local $1 i32)
   (local $2 i32)
   (local $3 i32)
@@ -16378,7 +17029,7 @@
   call $src/assembly/Z80Cpu/Z80Cpu#delay
   global.get $src/assembly/test-machine/test-devices/ioAccessLog
   i32.const 4
-  i32.const 15
+  i32.const 14
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $1
@@ -16396,12 +17047,12 @@
   call $~lib/rt/pure/__release
   local.get $2
  )
- (func $src/assembly/test-machine/test-devices/simpleWriteTbBlueIndex (; 287 ;) (param $0 i32)
+ (func $src/assembly/test-machine/test-devices/simpleWriteTbBlueIndex (; 302 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   global.get $src/assembly/test-machine/test-devices/tbBlueAccessLog
   i32.const 2
-  i32.const 17
+  i32.const 16
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $1
@@ -16415,12 +17066,12 @@
   local.get $1
   call $~lib/rt/pure/__release
  )
- (func $src/assembly/test-machine/test-devices/simpleWriteTbBlueValue (; 288 ;) (param $0 i32)
+ (func $src/assembly/test-machine/test-devices/simpleWriteTbBlueValue (; 303 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   global.get $src/assembly/test-machine/test-devices/tbBlueAccessLog
   i32.const 2
-  i32.const 17
+  i32.const 16
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $1
@@ -16434,12 +17085,12 @@
   local.get $1
   call $~lib/rt/pure/__release
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#constructor (; 289 ;) (result i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#constructor (; 304 ;) (result i32)
   (local $0 i32)
   (local $1 i32)
   (local $2 i32)
   i32.const 12
-  i32.const 19
+  i32.const 18
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $0
@@ -16465,27 +17116,27 @@
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#reset
   local.get $0
   i32.load
-  i32.const 200
+  i32.const 216
   i32.store offset=68
   local.get $0
   i32.load
-  i32.const 201
+  i32.const 217
   i32.store offset=72
   local.get $0
   i32.load
-  i32.const 202
+  i32.const 218
   i32.store offset=80
   local.get $0
   i32.load
-  i32.const 203
+  i32.const 219
   i32.store offset=76
   local.get $0
   i32.load
-  i32.const 204
+  i32.const 220
   i32.store offset=84
   local.get $0
   i32.load
-  i32.const 205
+  i32.const 221
   i32.store offset=88
   local.get $0
   i32.load
@@ -16504,16 +17155,16 @@
   global.set $src/assembly/test-machine/test-devices/cpu
   local.get $0
  )
- (func $src/assembly/index/initTestMachine (; 290 ;)
+ (func $src/assembly/index/initTestMachine (; 305 ;)
   global.get $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#reset
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#constructor (; 291 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#constructor (; 306 ;) (param $0 i32) (result i32)
   local.get $0
   i32.eqz
   if
    i32.const 58
-   i32.const 21
+   i32.const 20
    call $~lib/rt/tlsf/__alloc
    call $~lib/rt/pure/__retain
    local.set $0
@@ -16604,7 +17255,7 @@
   i32.store8 offset=57
   local.get $0
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:xl (; 292 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:xl (; 307 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=22
@@ -16616,7 +17267,7 @@
   i32.or
   i32.store16 offset=22
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:yh (; 293 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:yh (; 308 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=24
@@ -16630,7 +17281,7 @@
   i32.or
   i32.store16 offset=24
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:yl (; 294 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:yl (; 309 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=24
@@ -16642,12 +17293,12 @@
   i32.or
   i32.store16 offset=24
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:iy (; 295 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:iy (; 310 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=24
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wh (; 296 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wh (; 311 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=26
@@ -16661,7 +17312,7 @@
   i32.or
   i32.store16 offset=26
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wl (; 297 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wl (; 312 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=26
@@ -16673,12 +17324,12 @@
   i32.or
   i32.store16 offset=26
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wz (; 298 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wz (; 313 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=26
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getCpuState (; 299 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getCpuState (; 314 ;) (param $0 i32) (result i32)
   (local $1 i32)
   i32.const 0
   call $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#constructor
@@ -16882,80 +17533,80 @@
   call $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:wz
   local.get $1
  )
- (func $src/assembly/index/getTestMachineState (; 300 ;) (result i32)
+ (func $src/assembly/index/getTestMachineState (; 315 ;) (result i32)
   global.get $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
   i32.load
   call $src/assembly/Z80Cpu/Z80Cpu#getCpuState
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:a (; 301 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:a (; 316 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:af (; 302 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:af (; 317 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:f (; 303 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:f (; 318 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 255
   i32.and
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:b (; 304 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:b (; 319 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=2
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:c (; 305 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:c (; 320 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=2
   i32.const 255
   i32.and
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:bc (; 306 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:bc (; 321 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=2
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:e (; 307 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:e (; 322 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=4
   i32.const 255
   i32.and
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:de (; 308 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:de (; 323 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=4
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:h (; 309 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:h (; 324 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=6
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:l (; 310 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:l (; 325 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=6
   i32.const 255
   i32.and
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:hl (; 311 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:hl (; 326 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=6
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:i (; 312 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:i (; 327 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=16
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:xh (; 313 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:xh (; 328 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=22
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:xh (; 314 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:xh (; 329 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=18
@@ -16969,13 +17620,13 @@
   i32.or
   i32.store16 offset=18
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:xl (; 315 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:xl (; 330 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=22
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:xl (; 316 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:xl (; 331 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=18
@@ -16987,17 +17638,17 @@
   i32.or
   i32.store16 offset=18
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:ix (; 317 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:ix (; 332 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=22
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:yh (; 318 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:yh (; 333 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=24
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:yh (; 319 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:yh (; 334 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=20
@@ -17011,13 +17662,13 @@
   i32.or
   i32.store16 offset=20
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:yl (; 320 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:yl (; 335 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=24
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:yl (; 321 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:yl (; 336 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $0
   i32.load16_u offset=20
@@ -17029,39 +17680,39 @@
   i32.or
   i32.store16 offset=20
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:iy (; 322 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:iy (; 337 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=24
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:pc (; 323 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:pc (; 338 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=18
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:r (; 324 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:r (; 339 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=17
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:sp (; 325 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:sp (; 340 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=20
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:wh (; 326 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:wh (; 341 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=26
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:wl (; 327 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:wl (; 342 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=26
   i32.const 255
   i32.and
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:wz (; 328 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:wz (; 343 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=26
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#updateCpuState (; 329 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#updateCpuState (; 344 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   call $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:a
@@ -17236,17 +17887,17 @@
   i32.load16_u offset=26
   call $src/assembly/Z80Cpu/Z80Cpu#set:wz
  )
- (func $src/assembly/index/updateTestMachineState (; 330 ;) (param $0 i32)
+ (func $src/assembly/index/updateTestMachineState (; 345 ;) (param $0 i32)
   global.get $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
   i32.load
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#updateCpuState
  )
- (func $src/assembly/index/getTestMachineMemory (; 331 ;) (result i32)
+ (func $src/assembly/index/getTestMachineMemory (; 346 ;) (result i32)
   global.get $src/assembly/test-machine/test-devices/simpleMemory
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#set:memory (; 332 ;) (param $0 i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#set:memory (; 347 ;) (param $0 i32)
   (local $1 i32)
   loop $for-loop|0
    local.get $1
@@ -17268,11 +17919,11 @@
    end
   end
  )
- (func $src/assembly/index/updateTestMachineMemory (; 333 ;) (param $0 i32)
+ (func $src/assembly/index/updateTestMachineMemory (; 348 ;) (param $0 i32)
   local.get $0
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#set:memory
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#executeReset (; 334 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#executeReset (; 349 ;) (param $0 i32)
   local.get $0
   i32.const 0
   i32.store8 offset=37
@@ -17310,11 +17961,11 @@
   i64.const 0
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#reset (; 335 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#reset (; 350 ;) (param $0 i32)
   local.get $0
   call $src/assembly/Z80Cpu/Z80Cpu#executeReset
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#initCode (; 336 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#initCode (; 351 ;) (param $0 i32) (param $1 i32)
   (local $2 i32)
   (local $3 i32)
   (local $4 i32)
@@ -17376,7 +18027,7 @@
   i32.const 0
   i32.store16 offset=92
  )
- (func $src/assembly/index/initTestMachineCode (; 337 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/index/initTestMachineCode (; 352 ;) (param $0 i32) (param $1 i32)
   global.get $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
   local.get $0
   i32.store offset=8
@@ -17384,7 +18035,7 @@
   local.get $1
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#initCode
  )
- (func $src/assembly/test-machine/test-devices/setTestInput (; 338 ;) (param $0 i32)
+ (func $src/assembly/test-machine/test-devices/setTestInput (; 353 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load offset=8
@@ -17408,11 +18059,11 @@
    global.set $src/assembly/test-machine/test-devices/inputIndex
   end
  )
- (func $src/assembly/index/initTestMachineInput (; 339 ;) (param $0 i32)
+ (func $src/assembly/index/initTestMachineInput (; 354 ;) (param $0 i32)
   local.get $0
   call $src/assembly/test-machine/test-devices/setTestInput
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#executeInterrupt (; 340 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#executeInterrupt (; 355 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -17573,7 +18224,7 @@
   i32.load16_u offset=22
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#refreshMemory (; 341 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#refreshMemory (; 356 ;) (param $0 i32)
   local.get $0
   local.get $0
   i32.load8_u offset=17
@@ -17594,7 +18245,7 @@
   i64.add
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#executeNmi (; 342 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#executeNmi (; 357 ;) (param $0 i32)
   local.get $0
   i32.load offset=32
   i32.const 8
@@ -17670,7 +18321,7 @@
   i32.const 102
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#processCpuSignals (; 343 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#processCpuSignals (; 358 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=32
   i32.const 1
@@ -17732,7 +18383,7 @@
   end
   i32.const 0
  )
- (func "$~lib/array/Array<((cpu: src/assembly/Z80Cpu/Z80Cpu) => void) | null>#__get" (; 344 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func "$~lib/array/Array<((cpu: src/assembly/Z80Cpu/Z80Cpu) => void) | null>#__get" (; 359 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $1
   local.get $0
   i32.load offset=12
@@ -17749,7 +18400,7 @@
   local.get $1
   call "$~lib/array/Array<(cpu: src/assembly/Z80Cpu/Z80Cpu, value: u8, carry: bool) => void>#__unchecked_get"
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#processStandardOrIndexedOperations (; 345 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#processStandardOrIndexedOperations (; 360 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load offset=60
@@ -17773,7 +18424,7 @@
    call_indirect (type $i32_=>_none)
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#processCBPrefixedOperations (; 346 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#processCBPrefixedOperations (; 361 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load offset=60
@@ -17858,7 +18509,7 @@
    call_indirect (type $i32_i32_=>_none)
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#processEDOperations (; 347 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#processEDOperations (; 362 ;) (param $0 i32)
   (local $1 i32)
   i32.const 3440
   local.get $0
@@ -17873,7 +18524,7 @@
    call_indirect (type $i32_=>_none)
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#executeCpuCycle (; 348 ;) (param $0 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#executeCpuCycle (; 363 ;) (param $0 i32)
   (local $1 i32)
   local.get $0
   i32.load offset=32
@@ -18025,7 +18676,7 @@
   i32.const 1
   i32.store8 offset=41
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#run (; 349 ;) (param $0 i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#run (; 364 ;) (param $0 i32)
   (local $1 i32)
   loop $while-continue|0
    local.get $1
@@ -18082,16 +18733,16 @@
    end
   end
  )
- (func $src/assembly/index/runTestMachine (; 350 ;)
+ (func $src/assembly/index/runTestMachine (; 365 ;)
   global.get $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#run
  )
- (func $src/assembly/index/resetMemoryAccessLog (; 351 ;)
+ (func $src/assembly/index/resetMemoryAccessLog (; 366 ;)
   call $src/assembly/test-machine/test-devices/clearMemoryAccessLog
  )
- (func $src/assembly/index/resetIoAccessLog (; 352 ;)
+ (func $src/assembly/index/resetIoAccessLog (; 367 ;)
   (local $0 i32)
-  i32.const 16
+  i32.const 15
   i32.const 6912
   call $~lib/rt/__allocArray
   call $~lib/rt/pure/__retain
@@ -18099,9 +18750,9 @@
   call $~lib/rt/pure/__release
   global.set $src/assembly/test-machine/test-devices/ioAccessLog
  )
- (func $src/assembly/index/resetTbBlueAccessLog (; 353 ;)
+ (func $src/assembly/index/resetTbBlueAccessLog (; 368 ;)
   (local $0 i32)
-  i32.const 18
+  i32.const 17
   i32.const 6928
   call $~lib/rt/__allocArray
   call $~lib/rt/pure/__retain
@@ -18109,7 +18760,7 @@
   call $~lib/rt/pure/__release
   global.set $src/assembly/test-machine/test-devices/tbBlueAccessLog
  )
- (func $~lib/array/Array<src/assembly/test-machine/test-devices/IoOp>#__get (; 354 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $~lib/array/Array<src/assembly/test-machine/test-devices/IoOp>#__get (; 369 ;) (param $0 i32) (param $1 i32) (result i32)
   local.get $1
   local.get $0
   i32.load offset=12
@@ -18144,7 +18795,7 @@
   end
   local.get $0
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:ioAccessLog (; 355 ;) (result i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:ioAccessLog (; 370 ;) (result i32)
   (local $0 i32)
   (local $1 i32)
   (local $2 i32)
@@ -18192,10 +18843,10 @@
   end
   local.get $2
  )
- (func $src/assembly/index/getTestMachineIoAccessLog (; 356 ;) (result i32)
+ (func $src/assembly/index/getTestMachineIoAccessLog (; 371 ;) (result i32)
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:ioAccessLog
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:memoryAccessLog (; 357 ;) (result i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:memoryAccessLog (; 372 ;) (result i32)
   (local $0 i32)
   (local $1 i32)
   (local $2 i32)
@@ -18243,10 +18894,10 @@
   end
   local.get $2
  )
- (func $src/assembly/index/getTestMachineMemoryAccessLog (; 358 ;) (result i32)
+ (func $src/assembly/index/getTestMachineMemoryAccessLog (; 373 ;) (result i32)
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:memoryAccessLog
  )
- (func $~lib/typedarray/Uint16Array#__set (; 359 ;) (param $0 i32) (param $1 i32) (param $2 i32)
+ (func $~lib/typedarray/Uint16Array#__set (; 374 ;) (param $0 i32) (param $1 i32) (param $2 i32)
   local.get $1
   local.get $0
   i32.load offset=8
@@ -18270,7 +18921,7 @@
   local.get $2
   i32.store16
  )
- (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:tbBlueAccessLog (; 360 ;) (result i32)
+ (func $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:tbBlueAccessLog (; 375 ;) (result i32)
   (local $0 i32)
   (local $1 i32)
   (local $2 i32)
@@ -18278,7 +18929,7 @@
   i32.load offset=12
   local.set $0
   i32.const 12
-  i32.const 20
+  i32.const 19
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.get $0
@@ -18322,250 +18973,250 @@
   end
   local.get $0
  )
- (func $src/assembly/index/getTestMachineTbBlueAccessLog (; 361 ;) (result i32)
+ (func $src/assembly/index/getTestMachineTbBlueAccessLog (; 376 ;) (result i32)
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#get:tbBlueAccessLog
  )
- (func $src/assembly/index/enableExtendedInstructions (; 362 ;) (param $0 i32)
+ (func $src/assembly/index/enableExtendedInstructions (; 377 ;) (param $0 i32)
   global.get $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
   i32.load
   local.get $0
   i32.store8 offset=66
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:tacts (; 363 ;) (param $0 i32) (result i64)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:tacts (; 378 ;) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:tacts (; 364 ;) (param $0 i32) (param $1 i64)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:tacts (; 379 ;) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:stateFlags (; 365 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:stateFlags (; 380 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=32
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:stateFlags (; 366 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:stateFlags (; 381 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=32
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:useGateArrayContention (; 367 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:useGateArrayContention (; 382 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=36
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:useGateArrayContention (; 368 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:useGateArrayContention (; 383 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=36
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:iff1 (; 369 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:iff1 (; 384 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=37
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:iff1 (; 370 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:iff1 (; 385 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=37
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:iff2 (; 371 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:iff2 (; 386 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=38
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:iff2 (; 372 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:iff2 (; 387 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=38
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:interruptMode (; 373 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:interruptMode (; 388 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=39
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:interruptMode (; 374 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:interruptMode (; 389 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=39
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:isInterruptBlocked (; 375 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:isInterruptBlocked (; 390 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=40
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:isInterruptBlocked (; 376 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:isInterruptBlocked (; 391 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=40
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:isInOpExecution (; 377 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:isInOpExecution (; 392 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=41
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:isInOpExecution (; 378 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:isInOpExecution (; 393 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=41
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:executionFlowStatus (; 379 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:executionFlowStatus (; 394 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=44
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReadStatus (; 380 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReadStatus (; 395 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=48
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriteStatus (; 381 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriteStatus (; 396 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=52
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:prefixMode (; 382 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:prefixMode (; 397 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=56
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:prefixMode (; 383 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:prefixMode (; 398 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=56
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:indexMode (; 384 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:indexMode (; 399 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=60
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:indexMode (; 385 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:indexMode (; 400 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=60
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:maskableInterruptModeEntered (; 386 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:maskableInterruptModeEntered (; 401 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=64
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:maskableInterruptModeEntered (; 387 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:maskableInterruptModeEntered (; 402 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=64
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:opCode (; 388 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:opCode (; 403 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=65
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:opCode (; 389 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:opCode (; 404 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=65
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:allowExtendedInstructionSet (; 390 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:allowExtendedInstructionSet (; 405 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=66
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:allowExtendedInstructionSet (; 391 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:allowExtendedInstructionSet (; 406 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=66
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReader (; 392 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReader (; 407 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=68
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryReader (; 393 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryReader (; 408 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=68
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriter (; 394 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriter (; 409 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=72
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryWriter (; 395 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryWriter (; 410 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=72
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:portReader (; 396 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:portReader (; 411 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=76
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:portReader (; 397 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:portReader (; 412 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=76
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:portWriter (; 398 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:portWriter (; 413 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=80
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:portWriter (; 399 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:portWriter (; 414 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=80
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueIndexWriter (; 400 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueIndexWriter (; 415 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=84
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueIndexWriter (; 401 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueIndexWriter (; 416 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=84
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueValueWriter (; 402 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueValueWriter (; 417 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=88
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueValueWriter (; 403 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueValueWriter (; 418 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=88
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:d (; 404 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:d (; 419 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=4
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:pc (; 405 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:pc (; 420 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:pc (; 406 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:pc (; 421 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:sp (; 407 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:sp (; 422 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=94
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:sp (; 408 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:sp (; 423 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=94
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:xh (; 409 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:xh (; 424 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=18
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:xl (; 410 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:xl (; 425 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=18
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:yh (; 411 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:yh (; 426 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=20
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:yl (; 412 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:yl (; 427 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=20
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getIndexReg (; 413 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getIndexReg (; 428 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=60
   i32.const 2
@@ -18580,7 +19231,7 @@
   i32.const 65535
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#setIndexReg (; 414 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#setIndexReg (; 429 ;) (param $0 i32) (param $1 i32)
   local.get $0
   i32.load offset=60
   i32.const 2
@@ -18595,7 +19246,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:sFlag (; 415 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:sFlag (; 430 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 128
@@ -18603,7 +19254,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:zFlag (; 416 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:zFlag (; 431 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 64
@@ -18611,7 +19262,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:r5Flag (; 417 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:r5Flag (; 432 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 32
@@ -18619,7 +19270,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:hFlag (; 418 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:hFlag (; 433 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 16
@@ -18627,7 +19278,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:r3Flag (; 419 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:r3Flag (; 434 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 8
@@ -18635,7 +19286,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:pvFlag (; 420 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:pvFlag (; 435 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 4
@@ -18643,7 +19294,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:nFlag (; 421 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:nFlag (; 436 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 2
@@ -18651,7 +19302,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getCallInstructionLength (; 422 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getCallInstructionLength (; 437 ;) (param $0 i32) (result i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -18714,97 +19365,97 @@
    i32.const 0
   end
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:tactsL (; 423 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:tactsL (; 438 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=28
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:tactsL (; 424 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:tactsL (; 439 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=28
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:stateFlags (; 425 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:stateFlags (; 440 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=36
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:stateFlags (; 426 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:stateFlags (; 441 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=36
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:iff2 (; 427 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:iff2 (; 442 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=42
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:iff2 (; 428 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:iff2 (; 443 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=42
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:interruptMode (; 429 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:interruptMode (; 444 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=43
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:interruptMode (; 430 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:interruptMode (; 445 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=43
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInterruptBlocked (; 431 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInterruptBlocked (; 446 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=44
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInterruptBlocked (; 432 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInterruptBlocked (; 447 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=44
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInOpExecution (; 433 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInOpExecution (; 448 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=45
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInOpExecution (; 434 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInOpExecution (; 449 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=45
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:prefixMode (; 435 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:prefixMode (; 450 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=48
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:prefixMode (; 436 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:prefixMode (; 451 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=48
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:indexMode (; 437 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:indexMode (; 452 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=52
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:indexMode (; 438 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:indexMode (; 453 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=52
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:maskableInterruptModeEntered (; 439 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:maskableInterruptModeEntered (; 454 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=56
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:maskableInterruptModeEntered (; 440 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:maskableInterruptModeEntered (; 455 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=56
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:opCode (; 441 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:opCode (; 456 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=57
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:opCode (; 442 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:opCode (; 457 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=57
  )
- (func $~start (; 443 ;)
+ (func $~start (; 458 ;)
   call $start:src/assembly/Z80Cpu
   i32.const 65536
   call $~lib/typedarray/Uint8Array#constructor
@@ -18815,10 +19466,10 @@
   call $src/assembly/test-machine/WaTestZ80Machine/WaTestZ80Machine#constructor
   global.set $src/assembly/test-machine/WaTestZ80Machine/waTestZ80Machine
  )
- (func $~lib/rt/pure/__collect (; 444 ;)
+ (func $~lib/rt/pure/__collect (; 459 ;)
   nop
  )
- (func $~lib/rt/pure/decrement (; 445 ;) (param $0 i32)
+ (func $~lib/rt/pure/decrement (; 460 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -18884,9 +19535,9 @@
    i32.store offset=4
   end
  )
- (func $~lib/rt/pure/__visit (; 446 ;) (param $0 i32)
+ (func $~lib/rt/pure/__visit (; 461 ;) (param $0 i32)
   local.get $0
-  i32.const 7116
+  i32.const 7108
   i32.lt_u
   if
    return
@@ -18896,7 +19547,7 @@
   i32.sub
   call $~lib/rt/pure/decrement
  )
- (func $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl (; 447 ;) (param $0 i32)
+ (func $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl (; 462 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -18928,20 +19579,20 @@
    end
   end
  )
- (func $~lib/rt/__visit_members (; 448 ;) (param $0 i32)
+ (func $~lib/rt/__visit_members (; 463 ;) (param $0 i32)
   (local $1 i32)
   block $block$4$break
    block $switch$1$default
-    block $switch$1$case$20
-     block $switch$1$case$18
-      block $switch$1$case$16
-       block $switch$1$case$8
+    block $switch$1$case$19
+     block $switch$1$case$17
+      block $switch$1$case$15
+       block $switch$1$case$7
         block $switch$1$case$2
          local.get $0
          i32.const 8
          i32.sub
          i32.load
-         br_table $switch$1$case$2 $switch$1$case$2 $block$4$break $block$4$break $block$4$break $block$4$break $switch$1$case$8 $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $switch$1$case$2 $switch$1$case$16 $switch$1$case$2 $switch$1$case$18 $switch$1$case$2 $switch$1$case$20 $block$4$break $block$4$break $switch$1$case$2 $block$4$break $switch$1$default
+         br_table $switch$1$case$2 $switch$1$case$2 $block$4$break $block$4$break $block$4$break $switch$1$case$7 $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $switch$1$case$2 $switch$1$case$15 $switch$1$case$2 $switch$1$case$17 $switch$1$case$2 $switch$1$case$19 $block$4$break $block$4$break $switch$1$case$2 $block$4$break $switch$1$default
         end
         return
        end
@@ -18990,7 +19641,7 @@
    call $~lib/rt/pure/__visit
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#constructor|trampoline (; 449 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#constructor|trampoline (; 464 ;) (param $0 i32) (param $1 i32) (result i32)
   block $1of1
    block $0of1
     block $outOfRange

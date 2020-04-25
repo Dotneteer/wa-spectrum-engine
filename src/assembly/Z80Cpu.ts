@@ -1288,7 +1288,7 @@ aluLogOpFlags[0] |= <u8>FlagsSetMask.Z;
 /**
  * 8-bit RLC operation flags
  */
-const rlcFlags = [];
+const rlcFlags: u8[] = [];
 for (let b = 0; b < 0x100; b++) {
   let rlcVal = b;
   rlcVal <<= 1;
@@ -1340,7 +1340,7 @@ for (let b = 0; b < 0x100; b++) {
 /**
  * 8-bit RL operations with 0 Carry flag
  */
-const rlCarry0Flags = [];
+const rlCarry0Flags: u8[] = [];
 for (let b = 0; b < 0x100; b++) {
   let rlVal = b;
   rlVal <<= 1;
@@ -2129,70 +2129,70 @@ const extendedOperations: (CpuOp | null)[] = [
  * Bit operations with 0xCB prefix
  */
 const bitOperations: (CpuOp | null)[] = [
-  /* 0x00 */ null,
-  /* 0x01 */ null,
-  /* 0x02 */ null,
-  /* 0x03 */ null,
-  /* 0x04 */ null,
-  /* 0x05 */ null,
-  /* 0x06 */ null,
-  /* 0x07 */ null,
-  /* 0x08 */ null,
-  /* 0x09 */ null,
-  /* 0x0a */ null,
-  /* 0x0b */ null,
-  /* 0x0c */ null,
-  /* 0x0d */ null,
-  /* 0x0e */ null,
-  /* 0x0f */ null,
-  /* 0x10 */ null,
-  /* 0x11 */ null,
-  /* 0x12 */ null,
-  /* 0x13 */ null,
-  /* 0x14 */ null,
-  /* 0x15 */ null,
-  /* 0x16 */ null,
-  /* 0x17 */ null,
-  /* 0x18 */ null,
-  /* 0x19 */ null,
-  /* 0x1a */ null,
-  /* 0x1b */ null,
-  /* 0x1c */ null,
-  /* 0x1d */ null,
-  /* 0x1e */ null,
-  /* 0x1f */ null,
-  /* 0x20 */ null,
-  /* 0x21 */ null,
-  /* 0x22 */ null,
-  /* 0x23 */ null,
-  /* 0x24 */ null,
-  /* 0x25 */ null,
-  /* 0x26 */ null,
-  /* 0x27 */ null,
-  /* 0x28 */ null,
-  /* 0x29 */ null,
-  /* 0x2a */ null,
-  /* 0x2b */ null,
-  /* 0x2c */ null,
-  /* 0x2d */ null,
-  /* 0x2e */ null,
-  /* 0x2f */ null,
-  /* 0x30 */ null,
-  /* 0x31 */ null,
-  /* 0x32 */ null,
-  /* 0x33 */ null,
-  /* 0x34 */ null,
-  /* 0x35 */ null,
-  /* 0x36 */ null,
-  /* 0x37 */ null,
-  /* 0x38 */ null,
-  /* 0x39 */ null,
-  /* 0x3a */ null,
-  /* 0x3b */ null,
-  /* 0x3c */ null,
-  /* 0x3d */ null,
-  /* 0x3e */ null,
-  /* 0x3f */ null,
+  /* 0x00 */ RlcQ,
+  /* 0x01 */ RlcQ,
+  /* 0x02 */ RlcQ,
+  /* 0x03 */ RlcQ,
+  /* 0x04 */ RlcQ,
+  /* 0x05 */ RlcQ,
+  /* 0x06 */ RlcHli,
+  /* 0x07 */ RlcQ,
+  /* 0x08 */ RrcQ,
+  /* 0x09 */ RrcQ,
+  /* 0x0a */ RrcQ,
+  /* 0x0b */ RrcQ,
+  /* 0x0c */ RrcQ,
+  /* 0x0d */ RrcQ,
+  /* 0x0e */ RrcHli,
+  /* 0x0f */ RrcQ,
+  /* 0x10 */ RlQ,
+  /* 0x11 */ RlQ,
+  /* 0x12 */ RlQ,
+  /* 0x13 */ RlQ,
+  /* 0x14 */ RlQ,
+  /* 0x15 */ RlQ,
+  /* 0x16 */ RlHli,
+  /* 0x17 */ RlQ,
+  /* 0x18 */ RrQ,
+  /* 0x19 */ RrQ,
+  /* 0x1a */ RrQ,
+  /* 0x1b */ RrQ,
+  /* 0x1c */ RrQ,
+  /* 0x1d */ RrQ,
+  /* 0x1e */ RrHli,
+  /* 0x1f */ RrQ,
+  /* 0x20 */ SlaQ,
+  /* 0x21 */ SlaQ,
+  /* 0x22 */ SlaQ,
+  /* 0x23 */ SlaQ,
+  /* 0x24 */ SlaQ,
+  /* 0x25 */ SlaQ,
+  /* 0x26 */ SlaHli,
+  /* 0x27 */ SlaQ,
+  /* 0x28 */ SraQ,
+  /* 0x29 */ SraQ,
+  /* 0x2a */ SraQ,
+  /* 0x2b */ SraQ,
+  /* 0x2c */ SraQ,
+  /* 0x2d */ SraQ,
+  /* 0x2e */ SraHli,
+  /* 0x2f */ SraQ,
+  /* 0x30 */ SllQ,
+  /* 0x31 */ SllQ,
+  /* 0x32 */ SllQ,
+  /* 0x33 */ SllQ,
+  /* 0x34 */ SllQ,
+  /* 0x35 */ SllQ,
+  /* 0x36 */ SllHli,
+  /* 0x37 */ SllQ,
+  /* 0x38 */ SrlQ,
+  /* 0x39 */ SrlQ,
+  /* 0x3a */ SrlQ,
+  /* 0x3b */ SrlQ,
+  /* 0x3c */ SrlQ,
+  /* 0x3d */ SrlQ,
+  /* 0x3e */ SrlHli,
+  /* 0x3f */ SrlQ,
   /* 0x40 */ null,
   /* 0x41 */ null,
   /* 0x42 */ null,
@@ -8621,6 +8621,493 @@ function Lddrx(cpu: Z80Cpu): void {
 
 // ============================================================================
 // Bit instructions
+
+// rlc Q
+//
+// The contents of register Q are rotated left 1 bit position. The
+// contents of bit 7 are copied to the Carry flag and also to bit 0.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 0 | 0 | Q | Q | Q | 0x00
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function RlcQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const rlcVal = cpu.getReg8(q);
+  cpu.setReg8(q, rolOpResults[rlcVal]);
+  cpu.f = rlcFlags[rlcVal];
+}
+
+// rlc (hl)
+//
+// The contents of the memory address specified by the contents
+// of HL are rotated left 1 bit position.The contents of bit 7
+// are copied to the Carry flag and also to bit 0.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0x06
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function RlcHli(cpu: Z80Cpu): void {
+  const rlcVal = cpu.readMemory(cpu.hl);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, rolOpResults[rlcVal]);
+  cpu.tacts += 3;
+  cpu.f = rlcFlags[rlcVal];
+}
+
+// rrc Q
+//
+// The contents of register Q are rotated right 1 bit position.
+// The contents of bit 0 are copied to the Carry flag and also
+// to bit 7.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 0 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | Q | Q | Q | 0x08, ...
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function RrcQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const rrcVal = cpu.getReg8(q);
+  cpu.setReg8(q, rorOpResults[rrcVal]);
+  cpu.f = rrcFlags[rrcVal];
+}
+
+// rrc (hl)
+//
+// The contents of the memory address specified by the contents
+// of HL are rotated right 1 bit position. The contents of bit 0
+// are copied to the Carry flag and also to bit 7.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 0 of the source byte.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0x0E
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function RrcHli(cpu: Z80Cpu): void {
+  const rrcVal = cpu.readMemory(cpu.hl);
+  cpu.f = rrcFlags[rrcVal];
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, rorOpResults[rrcVal]);
+  cpu.tacts += 3;
+}
+
+// rl Q
+///
+// The contents of Register Q are rotated left 1 bit position. The
+// contents of bit 7 are copied to the Carry flag, and the previous
+// contents of the Carry flag are copied to bit 0.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | Q | Q | Q | 0x10, ...
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function RlQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const rlVal = cpu.getReg8(q);
+  if (cpu.cFlag) {
+    cpu.f = rlCarry1Flags[rlVal];
+    cpu.setReg8(q, (rlVal << 1) + 1);
+  } else {
+    cpu.f = rlCarry0Flags[rlVal];
+    cpu.setReg8(q, rlVal << 1);
+  }
+}
+
+// rl (hl)
+//
+// The contents of the memory address specified by the contents
+// of HL are rotated left 1 bit position. The contents of bit 7
+// are copied to the Carry flag, and the previous contents of the
+// Carry flag are copied to bit 0.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0x16
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function RlHli(cpu: Z80Cpu): void {
+  var rlVal = cpu.readMemory(cpu.hl);
+  if (cpu.cFlag) {
+    cpu.f = rlCarry1Flags[rlVal];
+    rlVal = (rlVal << 1) + 1;
+  } else {
+    cpu.f = rlCarry0Flags[rlVal];
+    rlVal = rlVal << 1;
+  }
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, rlVal);
+  cpu.tacts += 3;
+}
+
+// rr Q
+//
+// The contents of register B are rotated right 1 bit position
+// through the Carry flag. The contents of bit 0 are copied to the
+// Carry flag and the previous contents of the Carry flag are
+// copied to bit 7.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 0 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 1 | 1 | Q | Q | Q | 0x18, ...
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function RrQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const rrVal = cpu.getReg8(q);
+  if (cpu.cFlag) {
+    cpu.f = rrCarry1Flags[rrVal];
+    cpu.setReg8(q, (rrVal >> 1) + 0x80);
+  } else {
+    cpu.f = rrCarry0Flags[rrVal];
+    cpu.setReg8(q, rrVal >> 1);
+  }
+}
+
+// rr (hl)
+//
+// The contents of the memory address specified by the contents
+// of HL are rotated right 1 bit position through the Carry flag.
+// The contents of bit 0 are copied to the Carry flag and the
+// previous contents of the Carry flag are copied to bit 7.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 0 of (HL).
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0x1E
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function RrHli(cpu: Z80Cpu): void {
+  let rrVal = cpu.readMemory(cpu.hl);
+  if (cpu.cFlag) {
+    cpu.f = rrCarry1Flags[rrVal];
+    rrVal = (rrVal >> 1) + 0x80;
+  } else {
+    cpu.f = rrCarry0Flags[rrVal];
+    rrVal = rrVal >> 1;
+  }
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, rrVal);
+  cpu.tacts += 3;
+}
+
+// sla Q
+//
+// An arithmetic shift left 1 bit position is performed on the
+// contents of register Q. The contents of bit 7 are copied to
+// the Carry flag.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | Q | Q | Q | 0x20, ...
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function SlaQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const slaVal = cpu.getReg8(q);
+  cpu.f = rlCarry0Flags[slaVal];
+  cpu.setReg8(q, slaVal << 1);
+}
+
+// sla (hl)
+//
+// An arithmetic shift left 1 bit position is performed on the
+// contents the memory address specified by the contents of HL.
+// The contents of bit 7 are copied to the Carry flag.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of (HL).
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0x26
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function SlaHli(cpu: Z80Cpu): void {
+  let slaVal = cpu.readMemory(cpu.hl);
+  cpu.f = rlCarry0Flags[slaVal];
+  slaVal <<= 1;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, slaVal);
+  cpu.tacts += 3;
+}
+
+// sra Q
+//
+// An arithmetic shift right 1 bit position is performed on the
+// contents of register B. The contents of bit 0 are copied to the
+// Carry flag and the previous contents of bit 7 remain unchanged.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 0 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0x28
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function SraQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const sraVal = cpu.getReg8(q);
+  cpu.f = sraFlags[sraVal];
+  cpu.setReg8(q, (sraVal >> 1) + (sraVal & 0x80));
+}
+
+// sra (hl)
+//
+// An arithmetic shift right 1 bit position is performed on the
+// contents the memory address specified by the contents of HL.
+// The contents of bit 0 are copied to the Carry flag and the
+// previous contents of bit 7 remain unchanged.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 0 of the source byte.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0x2E
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function SraHli(cpu: Z80Cpu): void {
+  let sraVal = cpu.readMemory(cpu.hl);
+  cpu.f = sraFlags[sraVal];
+  sraVal = (sraVal >> 1) + (sraVal & 0x80);
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, sraVal);
+  cpu.tacts += 3;
+}
+
+// sll Q
+//
+// An arithmetic shift left 1 bit position is performed on the
+// contents of register Q. The contents of bit 7 are copied to
+// the Carry flag. Bit 0 is set to 1.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | Q | Q | Q | 0x30, ...
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function SllQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const sllVal = cpu.getReg8(q);
+  cpu.f = rlCarry1Flags[sllVal];
+  cpu.setReg8(q, (sllVal << 1) + 1);
+}
+
+// sll (hl)
+//
+// An arithmetic shift left 1 bit position is performed on the
+// contents the memory address specified by the contents of HL.
+// The contents of bit 7 are copied to the Carry flag. Bit 0 is
+// set to 1.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 0x36
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function SllHli(cpu: Z80Cpu): void {
+  let sllVal = cpu.readMemory(cpu.hl);
+  cpu.f = rlCarry1Flags[sllVal];
+  sllVal <<= 1;
+  sllVal++;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, sllVal);
+  cpu.tacts += 3;
+}
+
+// srl Q
+//
+// The contents of register B are shifted right 1 bit position.
+// The contents of bit 0 are copied to the Carry flag, and bit 7
+// is reset.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the original register value.
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0x38
+// =================================
+// T-States: 4, 4 (8)
+// Contention breakdown: pc:4,pc+1:4
+function SrlQ(cpu: Z80Cpu): void {
+  const q = cpu.opCode & 0x07;
+  const srlVal = cpu.getReg8(q);
+  cpu.f = rrCarry0Flags[srlVal];
+  cpu.setReg8(q, srlVal >> 1);
+}
+
+// srl (hl)
+//
+// The contents the memory address specified by the contents of HL
+// are shifted right 1 bit position. The contents of bit 0 are
+// copied to the Carry flag, and bit 7 is reset.
+//
+// S, Z, P/V are not affected.
+// H, N are reset.
+// C is data from bit 7 of the source byte
+//
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | 0xCB
+// =================================
+// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 0x3E
+// =================================
+// T-States: 4, 4, 4, 3 (15)
+// Contention breakdown: pc:4,pc+1:4,hl:3,hl:1,hl(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,hl:4,hl(write):3
+function SrlHli(cpu: Z80Cpu): void {
+  let srlVal = cpu.readMemory(cpu.hl);
+  cpu.f = rrCarry0Flags[srlVal];
+  srlVal >>= 1;
+  if (cpu.useGateArrayContention) {
+    cpu.tacts += 4;
+  } else {
+    cpu.tacts += 3;
+    cpu.readMemory(cpu.hl);
+    cpu.tacts++;
+  }
+  cpu.writeMemory(cpu.hl, srlVal);
+  cpu.tacts += 3;
+}
 
 // ============================================================================
 // Indexed bit instructions
