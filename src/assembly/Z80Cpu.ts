@@ -2653,262 +2653,262 @@ const indexedOperations: (CpuOp | null)[] = [
  * Indexed bit operations with 0xCDB, 0xDD/0xFD prefix
  */
 const indexedBitOperations: (IndexedCpuOp | null)[] = [
-  /* 0x00 */ null,
-  /* 0x01 */ LdBcNNIdx,
-  /* 0x02 */ null,
-  /* 0x03 */ null,
-  /* 0x04 */ null,
-  /* 0x05 */ null,
-  /* 0x06 */ null,
-  /* 0x07 */ null,
-  /* 0x08 */ null,
-  /* 0x09 */ null,
-  /* 0x0a */ null,
-  /* 0x0b */ null,
-  /* 0x0c */ null,
-  /* 0x0d */ null,
-  /* 0x0e */ null,
-  /* 0x0f */ null,
-  /* 0x10 */ null,
-  /* 0x11 */ null,
-  /* 0x12 */ null,
-  /* 0x13 */ null,
-  /* 0x14 */ null,
-  /* 0x15 */ null,
-  /* 0x16 */ null,
-  /* 0x17 */ null,
-  /* 0x18 */ null,
-  /* 0x19 */ null,
-  /* 0x1a */ null,
-  /* 0x1b */ null,
-  /* 0x1c */ null,
-  /* 0x1d */ null,
-  /* 0x1e */ null,
-  /* 0x1f */ null,
-  /* 0x20 */ null,
-  /* 0x21 */ null,
-  /* 0x22 */ null,
-  /* 0x23 */ null,
-  /* 0x24 */ null,
-  /* 0x25 */ null,
-  /* 0x26 */ null,
-  /* 0x27 */ null,
-  /* 0x28 */ null,
-  /* 0x29 */ null,
-  /* 0x2a */ null,
-  /* 0x2b */ null,
-  /* 0x2c */ null,
-  /* 0x2d */ null,
-  /* 0x2e */ null,
-  /* 0x2f */ null,
-  /* 0x30 */ null,
-  /* 0x31 */ null,
-  /* 0x32 */ null,
-  /* 0x33 */ null,
-  /* 0x34 */ null,
-  /* 0x35 */ null,
-  /* 0x36 */ null,
-  /* 0x37 */ null,
-  /* 0x38 */ null,
-  /* 0x39 */ null,
-  /* 0x3a */ null,
-  /* 0x3b */ null,
-  /* 0x3c */ null,
-  /* 0x3d */ null,
-  /* 0x3e */ null,
-  /* 0x3f */ null,
-  /* 0x40 */ null,
-  /* 0x41 */ null,
-  /* 0x42 */ null,
-  /* 0x43 */ null,
-  /* 0x44 */ null,
-  /* 0x45 */ null,
-  /* 0x46 */ null,
-  /* 0x47 */ null,
-  /* 0x48 */ null,
-  /* 0x49 */ null,
-  /* 0x4a */ null,
-  /* 0x4b */ null,
-  /* 0x4c */ null,
-  /* 0x4d */ null,
-  /* 0x4e */ null,
-  /* 0x4f */ null,
-  /* 0x50 */ null,
-  /* 0x51 */ null,
-  /* 0x52 */ null,
-  /* 0x53 */ null,
-  /* 0x54 */ null,
-  /* 0x55 */ null,
-  /* 0x56 */ null,
-  /* 0x57 */ null,
-  /* 0x58 */ null,
-  /* 0x59 */ null,
-  /* 0x5a */ null,
-  /* 0x5b */ null,
-  /* 0x5c */ null,
-  /* 0x5d */ null,
-  /* 0x5e */ null,
-  /* 0x5f */ null,
-  /* 0x60 */ null,
-  /* 0x61 */ null,
-  /* 0x62 */ null,
-  /* 0x63 */ null,
-  /* 0x64 */ null,
-  /* 0x65 */ null,
-  /* 0x66 */ null,
-  /* 0x67 */ null,
-  /* 0x68 */ null,
-  /* 0x69 */ null,
-  /* 0x6a */ null,
-  /* 0x6b */ null,
-  /* 0x6c */ null,
-  /* 0x6d */ null,
-  /* 0x6e */ null,
-  /* 0x6f */ null,
-  /* 0x70 */ null,
-  /* 0x71 */ null,
-  /* 0x72 */ null,
-  /* 0x73 */ null,
-  /* 0x74 */ null,
-  /* 0x75 */ null,
-  /* 0x76 */ null,
-  /* 0x77 */ null,
-  /* 0x78 */ null,
-  /* 0x79 */ null,
-  /* 0x7a */ null,
-  /* 0x7b */ null,
-  /* 0x7c */ null,
-  /* 0x7d */ null,
-  /* 0x7e */ null,
-  /* 0x7f */ null,
-  /* 0x80 */ null,
-  /* 0x81 */ null,
-  /* 0x82 */ null,
-  /* 0x83 */ null,
-  /* 0x84 */ null,
-  /* 0x85 */ null,
-  /* 0x86 */ null,
-  /* 0x87 */ null,
-  /* 0x88 */ null,
-  /* 0x89 */ null,
-  /* 0x8a */ null,
-  /* 0x8b */ null,
-  /* 0x8c */ null,
-  /* 0x8d */ null,
-  /* 0x8e */ null,
-  /* 0x8f */ null,
-  /* 0x90 */ null,
-  /* 0x91 */ null,
-  /* 0x92 */ null,
-  /* 0x93 */ null,
-  /* 0x94 */ null,
-  /* 0x95 */ null,
-  /* 0x96 */ null,
-  /* 0x97 */ null,
-  /* 0x98 */ null,
-  /* 0x99 */ null,
-  /* 0x9a */ null,
-  /* 0x9b */ null,
-  /* 0x9c */ null,
-  /* 0x9d */ null,
-  /* 0x9e */ null,
-  /* 0x9f */ null,
-  /* 0xa0 */ null,
-  /* 0xa1 */ null,
-  /* 0xa2 */ null,
-  /* 0xa3 */ null,
-  /* 0xa4 */ null,
-  /* 0xa5 */ null,
-  /* 0xa6 */ null,
-  /* 0xa7 */ null,
-  /* 0xa8 */ null,
-  /* 0xa9 */ null,
-  /* 0xaa */ null,
-  /* 0xab */ null,
-  /* 0xac */ null,
-  /* 0xad */ null,
-  /* 0xae */ null,
-  /* 0xaf */ null,
-  /* 0xb0 */ null,
-  /* 0xb1 */ null,
-  /* 0xb2 */ null,
-  /* 0xb3 */ null,
-  /* 0xb4 */ null,
-  /* 0xb5 */ null,
-  /* 0xb6 */ null,
-  /* 0xb7 */ null,
-  /* 0xb8 */ null,
-  /* 0xb9 */ null,
-  /* 0xba */ null,
-  /* 0xbb */ null,
-  /* 0xbc */ null,
-  /* 0xbd */ null,
-  /* 0xbe */ null,
-  /* 0xbf */ null,
-  /* 0xc0 */ null,
-  /* 0xc1 */ null,
-  /* 0xc2 */ null,
-  /* 0xc3 */ null,
-  /* 0xc4 */ null,
-  /* 0xc5 */ null,
-  /* 0xc6 */ null,
-  /* 0xc7 */ null,
-  /* 0xc8 */ null,
-  /* 0xc9 */ null,
-  /* 0xca */ null,
-  /* 0xcb */ null,
-  /* 0xcc */ null,
-  /* 0xcd */ null,
-  /* 0xce */ null,
-  /* 0xcf */ null,
-  /* 0xd0 */ null,
-  /* 0xd1 */ null,
-  /* 0xd2 */ null,
-  /* 0xd3 */ null,
-  /* 0xd4 */ null,
-  /* 0xd5 */ null,
-  /* 0xd6 */ null,
-  /* 0xd7 */ null,
-  /* 0xd8 */ null,
-  /* 0xd9 */ null,
-  /* 0xda */ null,
-  /* 0xdb */ null,
-  /* 0xdc */ null,
-  /* 0xdd */ null,
-  /* 0xde */ null,
-  /* 0xdf */ null,
-  /* 0xe0 */ null,
-  /* 0xe1 */ null,
-  /* 0xe2 */ null,
-  /* 0xe3 */ null,
-  /* 0xe4 */ null,
-  /* 0xe5 */ null,
-  /* 0xe6 */ null,
-  /* 0xe7 */ null,
-  /* 0xe8 */ null,
-  /* 0xe9 */ null,
-  /* 0xea */ null,
-  /* 0xeb */ null,
-  /* 0xec */ null,
-  /* 0xed */ null,
-  /* 0xee */ null,
-  /* 0xef */ null,
-  /* 0xf0 */ null,
-  /* 0xf1 */ null,
-  /* 0xf2 */ null,
-  /* 0xf3 */ null,
-  /* 0xf4 */ null,
-  /* 0xf5 */ null,
-  /* 0xf6 */ null,
-  /* 0xf7 */ null,
-  /* 0xf8 */ null,
-  /* 0xf9 */ null,
-  /* 0xfa */ null,
-  /* 0xfb */ null,
-  /* 0xfc */ null,
-  /* 0xfd */ null,
-  /* 0xfe */ null,
-  /* 0xff */ null,
+  /* 0x00 */ XrlcQ,
+  /* 0x01 */ XrlcQ,
+  /* 0x02 */ XrlcQ,
+  /* 0x03 */ XrlcQ,
+  /* 0x04 */ XrlcQ,
+  /* 0x05 */ XrlcQ,
+  /* 0x06 */ XrlcQ,
+  /* 0x07 */ XrlcQ,
+  /* 0x08 */ XrrcQ,
+  /* 0x09 */ XrrcQ,
+  /* 0x0a */ XrrcQ,
+  /* 0x0b */ XrrcQ,
+  /* 0x0c */ XrrcQ,
+  /* 0x0d */ XrrcQ,
+  /* 0x0e */ XrrcQ,
+  /* 0x0f */ XrrcQ,
+  /* 0x10 */ XrlQ,
+  /* 0x11 */ XrlQ,
+  /* 0x12 */ XrlQ,
+  /* 0x13 */ XrlQ,
+  /* 0x14 */ XrlQ,
+  /* 0x15 */ XrlQ,
+  /* 0x16 */ XrlQ,
+  /* 0x17 */ XrlQ,
+  /* 0x18 */ XrrQ,
+  /* 0x19 */ XrrQ,
+  /* 0x1a */ XrrQ,
+  /* 0x1b */ XrrQ,
+  /* 0x1c */ XrrQ,
+  /* 0x1d */ XrrQ,
+  /* 0x1e */ XrrQ,
+  /* 0x1f */ XrrQ,
+  /* 0x20 */ XSlaQ,
+  /* 0x21 */ XSlaQ,
+  /* 0x22 */ XSlaQ,
+  /* 0x23 */ XSlaQ,
+  /* 0x24 */ XSlaQ,
+  /* 0x25 */ XSlaQ,
+  /* 0x26 */ XSlaQ,
+  /* 0x27 */ XSlaQ,
+  /* 0x28 */ XSraQ,
+  /* 0x29 */ XSraQ,
+  /* 0x2a */ XSraQ,
+  /* 0x2b */ XSraQ,
+  /* 0x2c */ XSraQ,
+  /* 0x2d */ XSraQ,
+  /* 0x2e */ XSraQ,
+  /* 0x2f */ XSraQ,
+  /* 0x30 */ XSllQ,
+  /* 0x31 */ XSllQ,
+  /* 0x32 */ XSllQ,
+  /* 0x33 */ XSllQ,
+  /* 0x34 */ XSllQ,
+  /* 0x35 */ XSllQ,
+  /* 0x36 */ XSllQ,
+  /* 0x37 */ XSllQ,
+  /* 0x38 */ XSrlQ,
+  /* 0x39 */ XSrlQ,
+  /* 0x3a */ XSrlQ,
+  /* 0x3b */ XSrlQ,
+  /* 0x3c */ XSrlQ,
+  /* 0x3d */ XSrlQ,
+  /* 0x3e */ XSrlQ,
+  /* 0x3f */ XSrlQ,
+  /* 0x40 */ XBitN,
+  /* 0x41 */ XBitN,
+  /* 0x42 */ XBitN,
+  /* 0x43 */ XBitN,
+  /* 0x44 */ XBitN,
+  /* 0x45 */ XBitN,
+  /* 0x46 */ XBitN,
+  /* 0x47 */ XBitN,
+  /* 0x48 */ XBitN,
+  /* 0x49 */ XBitN,
+  /* 0x4a */ XBitN,
+  /* 0x4b */ XBitN,
+  /* 0x4c */ XBitN,
+  /* 0x4d */ XBitN,
+  /* 0x4e */ XBitN,
+  /* 0x4f */ XBitN,
+  /* 0x50 */ XBitN,
+  /* 0x51 */ XBitN,
+  /* 0x52 */ XBitN,
+  /* 0x53 */ XBitN,
+  /* 0x54 */ XBitN,
+  /* 0x55 */ XBitN,
+  /* 0x56 */ XBitN,
+  /* 0x57 */ XBitN,
+  /* 0x58 */ XBitN,
+  /* 0x59 */ XBitN,
+  /* 0x5a */ XBitN,
+  /* 0x5b */ XBitN,
+  /* 0x5c */ XBitN,
+  /* 0x5d */ XBitN,
+  /* 0x5e */ XBitN,
+  /* 0x5f */ XBitN,
+  /* 0x60 */ XBitN,
+  /* 0x61 */ XBitN,
+  /* 0x62 */ XBitN,
+  /* 0x63 */ XBitN,
+  /* 0x64 */ XBitN,
+  /* 0x65 */ XBitN,
+  /* 0x66 */ XBitN,
+  /* 0x67 */ XBitN,
+  /* 0x68 */ XBitN,
+  /* 0x69 */ XBitN,
+  /* 0x6a */ XBitN,
+  /* 0x6b */ XBitN,
+  /* 0x6c */ XBitN,
+  /* 0x6d */ XBitN,
+  /* 0x6e */ XBitN,
+  /* 0x6f */ XBitN,
+  /* 0x70 */ XBitN,
+  /* 0x71 */ XBitN,
+  /* 0x72 */ XBitN,
+  /* 0x73 */ XBitN,
+  /* 0x74 */ XBitN,
+  /* 0x75 */ XBitN,
+  /* 0x76 */ XBitN,
+  /* 0x77 */ XBitN,
+  /* 0x78 */ XBitN,
+  /* 0x79 */ XBitN,
+  /* 0x7a */ XBitN,
+  /* 0x7b */ XBitN,
+  /* 0x7c */ XBitN,
+  /* 0x7d */ XBitN,
+  /* 0x7e */ XBitN,
+  /* 0x7f */ XBitN,
+  /* 0x80 */ XResNQ,
+  /* 0x81 */ XResNQ,
+  /* 0x82 */ XResNQ,
+  /* 0x83 */ XResNQ,
+  /* 0x84 */ XResNQ,
+  /* 0x85 */ XResNQ,
+  /* 0x86 */ XResNQ,
+  /* 0x87 */ XResNQ,
+  /* 0x88 */ XResNQ,
+  /* 0x89 */ XResNQ,
+  /* 0x8a */ XResNQ,
+  /* 0x8b */ XResNQ,
+  /* 0x8c */ XResNQ,
+  /* 0x8d */ XResNQ,
+  /* 0x8e */ XResNQ,
+  /* 0x8f */ XResNQ,
+  /* 0x90 */ XResNQ,
+  /* 0x91 */ XResNQ,
+  /* 0x92 */ XResNQ,
+  /* 0x93 */ XResNQ,
+  /* 0x94 */ XResNQ,
+  /* 0x95 */ XResNQ,
+  /* 0x96 */ XResNQ,
+  /* 0x97 */ XResNQ,
+  /* 0x98 */ XResNQ,
+  /* 0x99 */ XResNQ,
+  /* 0x9a */ XResNQ,
+  /* 0x9b */ XResNQ,
+  /* 0x9c */ XResNQ,
+  /* 0x9d */ XResNQ,
+  /* 0x9e */ XResNQ,
+  /* 0x9f */ XResNQ,
+  /* 0xa0 */ XResNQ,
+  /* 0xa1 */ XResNQ,
+  /* 0xa2 */ XResNQ,
+  /* 0xa3 */ XResNQ,
+  /* 0xa4 */ XResNQ,
+  /* 0xa5 */ XResNQ,
+  /* 0xa6 */ XResNQ,
+  /* 0xa7 */ XResNQ,
+  /* 0xa8 */ XResNQ,
+  /* 0xa9 */ XResNQ,
+  /* 0xaa */ XResNQ,
+  /* 0xab */ XResNQ,
+  /* 0xac */ XResNQ,
+  /* 0xad */ XResNQ,
+  /* 0xae */ XResNQ,
+  /* 0xaf */ XResNQ,
+  /* 0xb0 */ XResNQ,
+  /* 0xb1 */ XResNQ,
+  /* 0xb2 */ XResNQ,
+  /* 0xb3 */ XResNQ,
+  /* 0xb4 */ XResNQ,
+  /* 0xb5 */ XResNQ,
+  /* 0xb6 */ XResNQ,
+  /* 0xb7 */ XResNQ,
+  /* 0xb8 */ XResNQ,
+  /* 0xb9 */ XResNQ,
+  /* 0xba */ XResNQ,
+  /* 0xbb */ XResNQ,
+  /* 0xbc */ XResNQ,
+  /* 0xbd */ XResNQ,
+  /* 0xbe */ XResNQ,
+  /* 0xbf */ XResNQ,
+  /* 0xc0 */ XSetNQ,
+  /* 0xc1 */ XSetNQ,
+  /* 0xc2 */ XSetNQ,
+  /* 0xc3 */ XSetNQ,
+  /* 0xc4 */ XSetNQ,
+  /* 0xc5 */ XSetNQ,
+  /* 0xc6 */ XSetNQ,
+  /* 0xc7 */ XSetNQ,
+  /* 0xc8 */ XSetNQ,
+  /* 0xc9 */ XSetNQ,
+  /* 0xca */ XSetNQ,
+  /* 0xcb */ XSetNQ,
+  /* 0xcc */ XSetNQ,
+  /* 0xcd */ XSetNQ,
+  /* 0xce */ XSetNQ,
+  /* 0xcf */ XSetNQ,
+  /* 0xd0 */ XSetNQ,
+  /* 0xd1 */ XSetNQ,
+  /* 0xd2 */ XSetNQ,
+  /* 0xd3 */ XSetNQ,
+  /* 0xd4 */ XSetNQ,
+  /* 0xd5 */ XSetNQ,
+  /* 0xd6 */ XSetNQ,
+  /* 0xd7 */ XSetNQ,
+  /* 0xd8 */ XSetNQ,
+  /* 0xd9 */ XSetNQ,
+  /* 0xda */ XSetNQ,
+  /* 0xdb */ XSetNQ,
+  /* 0xdc */ XSetNQ,
+  /* 0xdd */ XSetNQ,
+  /* 0xde */ XSetNQ,
+  /* 0xdf */ XSetNQ,
+  /* 0xe0 */ XSetNQ,
+  /* 0xe1 */ XSetNQ,
+  /* 0xe2 */ XSetNQ,
+  /* 0xe3 */ XSetNQ,
+  /* 0xe4 */ XSetNQ,
+  /* 0xe5 */ XSetNQ,
+  /* 0xe6 */ XSetNQ,
+  /* 0xe7 */ XSetNQ,
+  /* 0xe8 */ XSetNQ,
+  /* 0xe9 */ XSetNQ,
+  /* 0xea */ XSetNQ,
+  /* 0xeb */ XSetNQ,
+  /* 0xec */ XSetNQ,
+  /* 0xed */ XSetNQ,
+  /* 0xee */ XSetNQ,
+  /* 0xef */ XSetNQ,
+  /* 0xf0 */ XSetNQ,
+  /* 0xf1 */ XSetNQ,
+  /* 0xf2 */ XSetNQ,
+  /* 0xf3 */ XSetNQ,
+  /* 0xf4 */ XSetNQ,
+  /* 0xf5 */ XSetNQ,
+  /* 0xf6 */ XSetNQ,
+  /* 0xf7 */ XSetNQ,
+  /* 0xf8 */ XSetNQ,
+  /* 0xf9 */ XSetNQ,
+  /* 0xfa */ XSetNQ,
+  /* 0xfb */ XSetNQ,
+  /* 0xfc */ XSetNQ,
+  /* 0xfd */ XSetNQ,
+  /* 0xfe */ XSetNQ,
+  /* 0xff */ XSetNQ,
 ];
 
 // ==========================================================================
@@ -9296,4 +9296,457 @@ function SetNHli(cpu: Z80Cpu): void {
 // ============================================================================
 // Indexed bit instructions
 
-function LdBcNNIdx(cpu: Z80Cpu, addr: u16): void {}
+// rlc (ix + D),Q
+//
+// The contents of the indexed memory address are rotated left 1 bit position. The
+// contents of bit 7 are copied to the Carry flag and also to bit 0. The result is
+// stored in register Q
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 0 | 0 | 0 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XrlcQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let rlcVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  const val = rolOpResults[rlcVal];
+  if (q !== 6) {
+    cpu.setReg8(q, val);
+  }
+  cpu.writeMemory(addr, val);
+  cpu.tacts += 3;
+  cpu.f = rlcFlags[rlcVal];
+}
+
+// rrc (ix + D),Q
+//
+// The contents of the indexed memory address are rotated right 1 bit position. The
+// contents of bit 0 are copied to the Carry flag and also to bit 7. The result is
+// stored in register Q.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 0 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 0 | 0 | 1 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XrrcQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let rrcVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  const val = rorOpResults[rrcVal];
+  if (q !== 6) {
+    cpu.setReg8(q, val);
+  }
+  cpu.writeMemory(addr, val);
+  cpu.tacts += 3;
+  cpu.f = rrcFlags[rrcVal];
+}
+
+// rl (ix + D),Q
+//
+// The contents of the indexed memory address are rotated left 1 bit position. The
+// contents of bit 7 are copied to the Carry flag, and the previous contents of the
+// Carry flag are copied to bit 0. The result is stored in register Q.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 0 | 1 | 0 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XrlQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let rlVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  if (cpu.cFlag) {
+    cpu.f = rlCarry1Flags[rlVal];
+    rlVal <<= 1;
+    rlVal++;
+  } else {
+    cpu.f = rlCarry0Flags[rlVal];
+    rlVal <<= 1;
+  }
+  if (q !== 6) {
+    cpu.setReg8(q, rlVal);
+  }
+  cpu.writeMemory(addr, rlVal);
+  cpu.tacts += 3;
+}
+
+// rr (ix + D),Q
+//
+// The contents of the indexed memory address are rotated right 1 bit position. The
+// contents of bit 0 are copied to the Carry flag, and the previous contents of the
+// Carry flag are copied to bit 7. The result is stored in register Q.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 0 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 0 | 1 | 1 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XrrQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let rrVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  if (cpu.cFlag) {
+    cpu.f = rrCarry1Flags[rrVal];
+    rrVal >>= 1;
+    rrVal += 0x80;
+  } else {
+    cpu.f = rrCarry0Flags[rrVal];
+    rrVal >>= 1;
+  }
+  if (q !== 6) {
+    cpu.setReg8(q, rrVal);
+  }
+  cpu.writeMemory(addr, rrVal);
+  cpu.tacts += 3;
+}
+
+// sla (ix + D),Q
+//
+// An arithmetic shift left 1 bit position is performed on the
+// contents of the indexed memory address. The contents of bit 7
+// are copied to the Carry flag. The result is stored in register Q.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 1 | 0 | 0 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XSlaQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let slaVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  cpu.f = rlCarry0Flags[slaVal];
+  slaVal <<= 1;
+  if (q !== 6) {
+    cpu.setReg8(q, slaVal);
+  }
+  cpu.writeMemory(addr, slaVal);
+  cpu.tacts += 3;
+}
+
+// sra (ix + D),Q
+//
+// An arithmetic shift right 1 bit position is performed on the
+// contents of the indexed memory address. The contents of bit 0 are
+// copied to the Carry flag and the previous contents of bit 7 remain
+// unchanged. The result is stored in register Q.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 1 | 0 | 1 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XSraQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let sraVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  cpu.f = sraFlags[sraVal];
+  sraVal = (sraVal >> 1) + (sraVal & 0x80);
+  if (q !== 6) {
+    cpu.setReg8(q, sraVal);
+  }
+  cpu.writeMemory(addr, sraVal);
+  cpu.tacts += 3;
+}
+
+// sll (ix + D),Q
+//
+// A logic shift left 1 bit position is performed on the
+// contents of the indexed memory address. The contents of bit 7
+// are copied to the Carry flag and bit 0 is set. The result is
+// stored in register Q.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 7 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 1 | 1 | 0 | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XSllQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let sllVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  cpu.f = rlCarry1Flags[sllVal];
+  sllVal <<= 1;
+  sllVal++;
+  if (q !== 6) {
+    cpu.setReg8(q, sllVal);
+  }
+  cpu.writeMemory(addr, sllVal);
+  cpu.tacts += 3;
+}
+
+// srl (ix + D)
+//
+// The contents of the indexed memory address are shifted right 1
+// bit position. The contents of bit 0 are copied to the Carry flag,
+// and bit 7 is reset.
+//
+// S is set if result is negative; otherwise, it is reset.
+// Z is set if result is 0; otherwise, it is reset.
+// P/V is set if parity even; otherwise, it is reset.
+// H, N are reset.
+// C is data from bit 0 of the source byte.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 |
+// =================================
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XSrlQ(cpu: Z80Cpu, addr: u16): void {
+  const q = cpu.opCode & 0x07;
+  let srlVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  cpu.f = rrCarry0Flags[srlVal];
+  srlVal >>= 1;
+  if (q !== 6) {
+    cpu.setReg8(q, srlVal);
+  }
+  cpu.writeMemory(addr, srlVal);
+  cpu.tacts += 3;
+}
+
+// bit N,(ix+D)
+//
+// This instruction tests bit N in the indexed memory location and
+// sets the Z flag accordingly.
+//
+// S Set if N = 7 and tested bit is set.
+// Z is set if specified bit is 0; otherwise, it is reset.
+// H is set.
+// P/V is Set just like ZF flag.
+// N is reset.
+// C is not affected.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 0 | 1 | N | N | N | ? | ? | ? |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4 (20)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 ×2,ii+n:3,ii+n:1
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4
+function XBitN(cpu: Z80Cpu, addr: u16): void {
+  const n = (cpu.opCode & 0x38) >> 3;
+  const srcVal = cpu.readMemory(addr);
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  const testVal = srcVal & (1 << n);
+  var flags =
+    FlagsSetMask.H |
+    (cpu.f & FlagsSetMask.C) |
+    (srcVal & (FlagsSetMask.R3 | FlagsSetMask.R5));
+  if (testVal === 0) {
+    flags |= FlagsSetMask.Z | FlagsSetMask.PV;
+  }
+  if (n === 7 && testVal !== 0) {
+    flags |= FlagsSetMask.S;
+  }
+  cpu.f = <u8>flags;
+}
+
+// res N,(IX+D),Q
+//
+// Bit N of the indexed memory location addressed is reset.
+// The result is autocopied to register Q.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 1 | 0 | N | N | N | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XResNQ(cpu: Z80Cpu, addr: u16): void {
+  let srcVal = cpu.readMemory(addr);
+  const n = (cpu.opCode & 0x38) >> 3;
+  const q = cpu.opCode & 0x07;
+  srcVal &= ~(1 << n);
+  if (q !== 6) {
+    cpu.setReg8(q, srcVal);
+  }
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  cpu.writeMemory(addr, srcVal);
+  cpu.tacts += 3;
+}
+
+// set N,(IX+D),Q
+//
+// Bit N of the indexed memory location addressed is set.
+// The result is autocopied to register Q.
+//
+// =================================
+// | 1 | 1 | X | 1 | 1 | 1 | 0 | 1 | DD/FD prefix
+// =================================
+// | 1 | 1 | 0 | 0 | 1 | 0 | 1 | 1 | CB prefix
+// =================================
+// | 1 | 1 | N | N | N | Q | Q | Q |
+// =================================
+// Q: 000=B, 001=C, 010=D, 011=E
+//    100=H, 101=L, 110=N/A, 111=A
+// T-States: 4, 4, 3, 5, 4, 3 (23)
+// Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,pc+3:1 x 2,ii+n:3,ii+n:1,ii+n(write):3
+// Gate array contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:5,ii+n:4,ii+n(write):3
+function XSetNQ(cpu: Z80Cpu, addr: u16): void {
+  let srcVal = cpu.readMemory(addr);
+  const n = (cpu.opCode & 0x38) >> 3;
+  const q = cpu.opCode & 0x07;
+  srcVal |= 1 << n;
+  if (q !== 6) {
+    cpu.setReg8(q, srcVal);
+  }
+  cpu.tacts += 3;
+  if (!cpu.useGateArrayContention) {
+    cpu.readMemory(addr);
+  }
+  cpu.tacts++;
+  cpu.writeMemory(addr, srcVal);
+  cpu.tacts += 3;
+}
