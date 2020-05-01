@@ -1,5 +1,7 @@
 import { TestZ80MachineState } from "../assembly";
 import { RunMode } from "./RunMode";
+import { ZxSpectrumType } from "./ZxSpectrumType";
+import { ExecuteCycleOptions } from "./ExecuteCycleOptions";
 
 export interface Api {
   // ==========================================================================
@@ -9,7 +11,7 @@ export interface Api {
   UINT32ARRAY_ID: number;
 
   // ==========================================================================
-  // Test machine operations
+  // Z80 Test machine operations
   initTestMachine(): void;
   getTestMachineState(): TestZ80MachineState;
   updateTestMachineState(state: TestZ80MachineState): void;
@@ -25,4 +27,12 @@ export interface Api {
   getTestMachineMemoryAccessLog(): number; // PTR
   getTestMachineTbBlueAccessLog(): number; //PTR
   enableExtendedInstructions(allow: boolean): void;
+
+  // ==========================================================================
+  // ZX Spectrum machine operations
+  initSpectrumMachine(type: ZxSpectrumType): void;
+  getCurrentMachineType(): ZxSpectrumType;
+  turnOnSpectrumMachine(): void;
+  resetSpectrumMachine(): void;
+  executeCycle(options: ExecuteCycleOptions): void;
 }

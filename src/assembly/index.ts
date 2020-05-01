@@ -1,7 +1,20 @@
 import { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 import { RunMode } from "../shared/RunMode";
 import { waTestZ80Machine } from "./test-machine/WaTestZ80Machine";
-import { clearMemoryAccessLog, clearIoAccessLog, clearTbBlueAccessLog } from "./test-machine/test-devices";
+import {
+  clearMemoryAccessLog,
+  clearIoAccessLog,
+  clearTbBlueAccessLog,
+} from "./test-machine/test-devices";
+import { ZxSpectrumType } from "../shared/ZxSpectrumType";
+import { ExecuteCycleOptions } from "../shared/ExecuteCycleOptions";
+import {
+  initSpectrumMachine as _initSpectrumMachine,
+  getCurrentMachineType as _getCurrentMachineType,
+  turnOnSpectrumMachine as _turnOnSpectrumMachine,
+  resetSpectrumMachine as _resetSpectrumMachine,
+  executeCycle as _executeCycle,
+} from "./spectrum/machine/spectrum-machine";
 
 export { Z80Cpu } from "./Z80Cpu";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
@@ -9,8 +22,8 @@ export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
 // ============================================================================
 // Module initialization
 
-export const UINT8ARRAY_ID = idof<Uint8Array>()
-export const UINT32ARRAY_ID = idof<Uint32Array>()
+export const UINT8ARRAY_ID = idof<Uint8Array>();
+export const UINT32ARRAY_ID = idof<Uint32Array>();
 
 // ============================================================================
 // Z80TestMachine API
@@ -126,4 +139,44 @@ export function getTestMachineTbBlueAccessLog(): Uint16Array {
  */
 export function enableExtendedInstructions(allow: bool): void {
   waTestZ80Machine.allowExtendedInstructionSet = allow;
+}
+
+// ============================================================================
+// ZX Spectrum machine API
+
+/**
+ * Creates a new ZX Spectrum model
+ * @param type Type of ZX Spectrum machine to create
+ */
+export function initSpectrumMachine(type: ZxSpectrumType): void {
+  _initSpectrumMachine(type);
+}
+
+/**
+ * Gets the type of the current machine;
+ */
+export function getCurrentMachineType(): ZxSpectrumType {
+  return _getCurrentMachineType();
+}
+
+/**
+ * Turns on the ZX Spectrum machine instance
+ */
+export function turnOnSpectrumMachine(): void {
+  _turnOnSpectrumMachine();
+}
+
+/**
+ * Issues a RESET signal to the ZX Spectrum machine
+ */
+export function resetSpectrumMachine(): void {
+  _resetSpectrumMachine();
+}
+
+/**
+ * Executes a single machine cycle
+ * @param mode Execution mode options
+ */
+export function executeCycle(options: ExecuteCycleOptions): void {
+  _executeCycle(options);
 }
