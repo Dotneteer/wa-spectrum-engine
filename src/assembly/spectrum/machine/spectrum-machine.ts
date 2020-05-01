@@ -1,6 +1,7 @@
 import { ZxSpectrumType } from "../../../shared/ZxSpectrumType";
 import { SpectrumEngine } from "./SpectrumEngine";
 import { ExecuteCycleOptions } from "../../../shared/ExecuteCycleOptions";
+import { sp48GetCpuConfiguration } from "./spectrum-48";
 
 let machineType: ZxSpectrumType = ZxSpectrumType.None;
 
@@ -22,6 +23,10 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
 
   switch (type) {
     default:
+
+      spectrum.getCpuConfiguration = sp48GetCpuConfiguration;
+
+
       break;
   }
 }

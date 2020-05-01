@@ -81,13 +81,16 @@
  (data (i32.const 6836) "\01")
  (data (i32.const 6848) "\10\00\00\00\01\00\00\00\11\00\00\00\10\00\00\00\c0\1a\00\00\c0\1a")
  (data (i32.const 6884) "\01")
- (data (i32.const 6900) "\01")
- (data (i32.const 6916) "\01")
- (data (i32.const 6928) "N\00\00\00\01\00\00\00\01\00\00\00N\00\00\00Z\00X\00 \00S\00p\00e\00c\00t\00r\00u\00m\00 \00i\00n\00s\00t\00a\00n\00c\00e\00 \00i\00s\00 \00n\00o\00t\00 \00i\00n\00i\00t\00i\00a\00l\00i\00z\00e\00d")
- (data (i32.const 7024) "b\00\00\00\01\00\00\00\01\00\00\00b\00\00\00s\00r\00c\00/\00a\00s\00s\00e\00m\00b\00l\00y\00/\00s\00p\00e\00c\00t\00r\00u\00m\00/\00m\00a\00c\00h\00i\00n\00e\00/\00s\00p\00e\00c\00t\00r\00u\00m\00-\00m\00a\00c\00h\00i\00n\00e\00.\00t\00s")
- (data (i32.const 7152) "\18\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\003\00\00\00\02\00\00\00S\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\91\00\00\00\02\00\00\00\93\00\00\00\02\00\00\00\93\10\00\00\02\00\00\00\93\10\00\00\02\00\00\001\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00Q\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93\04\00\00\02\00\00\00\10\00\00\00\00\00\00\00\10")
- (table $0 238 funcref)
- (elem (i32.const 1) $src/assembly/Z80Cpu/AluADD $src/assembly/Z80Cpu/AluADC $src/assembly/Z80Cpu/AluSUB $src/assembly/Z80Cpu/AluSBC $src/assembly/Z80Cpu/AluAND $src/assembly/Z80Cpu/AluXOR $src/assembly/Z80Cpu/AluOR $src/assembly/Z80Cpu/AluCP $src/assembly/Z80Cpu/LdQQNN $src/assembly/Z80Cpu/LdBCiA $src/assembly/Z80Cpu/IncQQ $src/assembly/Z80Cpu/IncQ $src/assembly/Z80Cpu/DecQ $src/assembly/Z80Cpu/LdQN $src/assembly/Z80Cpu/Rlca $src/assembly/Z80Cpu/ExAf $src/assembly/Z80Cpu/AddHlQQ $src/assembly/Z80Cpu/LdABci $src/assembly/Z80Cpu/DecQQ $src/assembly/Z80Cpu/Rrca $src/assembly/Z80Cpu/Djnz $src/assembly/Z80Cpu/LdDEiA $src/assembly/Z80Cpu/Rla $src/assembly/Z80Cpu/JrE $src/assembly/Z80Cpu/LdADei $src/assembly/Z80Cpu/Rra $src/assembly/Z80Cpu/JrNz $src/assembly/Z80Cpu/LdNNiHl $src/assembly/Z80Cpu/Daa $src/assembly/Z80Cpu/JrZ $src/assembly/Z80Cpu/LdHlNNi $src/assembly/Z80Cpu/Cpl $src/assembly/Z80Cpu/JrNc $src/assembly/Z80Cpu/LdNNiA $src/assembly/Z80Cpu/IncHli $src/assembly/Z80Cpu/DecHli $src/assembly/Z80Cpu/LdHliN $src/assembly/Z80Cpu/Scf $src/assembly/Z80Cpu/JrC $src/assembly/Z80Cpu/LdANNi $src/assembly/Z80Cpu/Ccf $src/assembly/Z80Cpu/LdQW $src/assembly/Z80Cpu/LdQHli $src/assembly/Z80Cpu/LdHliQ $src/assembly/Z80Cpu/Halt $src/assembly/Z80Cpu/AddAQ $src/assembly/Z80Cpu/AddAHli $src/assembly/Z80Cpu/AdcAQ $src/assembly/Z80Cpu/AdcAHli $src/assembly/Z80Cpu/SubAQ $src/assembly/Z80Cpu/SubAHli $src/assembly/Z80Cpu/SbcAQ $src/assembly/Z80Cpu/SbcAHli $src/assembly/Z80Cpu/AndAQ $src/assembly/Z80Cpu/AndAHli $src/assembly/Z80Cpu/XorAQ $src/assembly/Z80Cpu/XorAHli $src/assembly/Z80Cpu/OrAQ $src/assembly/Z80Cpu/OrAHli $src/assembly/Z80Cpu/CpAQ $src/assembly/Z80Cpu/CpAHli $src/assembly/Z80Cpu/RetNz $src/assembly/Z80Cpu/PopBc $src/assembly/Z80Cpu/JpNz $src/assembly/Z80Cpu/Jp $src/assembly/Z80Cpu/CallNz $src/assembly/Z80Cpu/PushBc $src/assembly/Z80Cpu/AluAN $src/assembly/Z80Cpu/RstN $src/assembly/Z80Cpu/RetZ $src/assembly/Z80Cpu/Ret $src/assembly/Z80Cpu/JpZ $src/assembly/Z80Cpu/CallZ $src/assembly/Z80Cpu/Call $src/assembly/Z80Cpu/RetNc $src/assembly/Z80Cpu/PopDe $src/assembly/Z80Cpu/JpNc $src/assembly/Z80Cpu/OutNA $src/assembly/Z80Cpu/CallNc $src/assembly/Z80Cpu/PushDe $src/assembly/Z80Cpu/RetC $src/assembly/Z80Cpu/Exx $src/assembly/Z80Cpu/JpC $src/assembly/Z80Cpu/InAN $src/assembly/Z80Cpu/CallC $src/assembly/Z80Cpu/RetPo $src/assembly/Z80Cpu/PopHl $src/assembly/Z80Cpu/JpPo $src/assembly/Z80Cpu/ExSpiHl $src/assembly/Z80Cpu/CallPo $src/assembly/Z80Cpu/PushHl $src/assembly/Z80Cpu/RetPe $src/assembly/Z80Cpu/JpHli $src/assembly/Z80Cpu/JpPe $src/assembly/Z80Cpu/ExDeHl $src/assembly/Z80Cpu/CallPe $src/assembly/Z80Cpu/RetP $src/assembly/Z80Cpu/PopAf $src/assembly/Z80Cpu/JpP $src/assembly/Z80Cpu/Di $src/assembly/Z80Cpu/CallP $src/assembly/Z80Cpu/PushAf $src/assembly/Z80Cpu/RetM $src/assembly/Z80Cpu/LdSpHl $src/assembly/Z80Cpu/JpM $src/assembly/Z80Cpu/Ei $src/assembly/Z80Cpu/CallM $src/assembly/Z80Cpu/Swapnib $src/assembly/Z80Cpu/Mirror $src/assembly/Z80Cpu/TestN $src/assembly/Z80Cpu/BslaDeB $src/assembly/Z80Cpu/BsraDeB $src/assembly/Z80Cpu/BsrlDeB $src/assembly/Z80Cpu/BsrfDeB $src/assembly/Z80Cpu/BrlcDeB $src/assembly/Z80Cpu/Mul $src/assembly/Z80Cpu/AddHlA $src/assembly/Z80Cpu/AddDeA $src/assembly/Z80Cpu/AddBcA $src/assembly/Z80Cpu/AddHlNN $src/assembly/Z80Cpu/AddDeNN $src/assembly/Z80Cpu/AddBcNN $src/assembly/Z80Cpu/InQCi $src/assembly/Z80Cpu/OutCiQ $src/assembly/Z80Cpu/SbcHlQQ $src/assembly/Z80Cpu/LdNNiQQ $src/assembly/Z80Cpu/Neg $src/assembly/Z80Cpu/Retn $src/assembly/Z80Cpu/ImN $src/assembly/Z80Cpu/LdXrA $src/assembly/Z80Cpu/AdcHlQQ $src/assembly/Z80Cpu/LdQQNNi $src/assembly/Z80Cpu/LdAXr $src/assembly/Z80Cpu/Rrd $src/assembly/Z80Cpu/Rld $src/assembly/Z80Cpu/PushNN $src/assembly/Z80Cpu/OutInB $src/assembly/Z80Cpu/NextReg $src/assembly/Z80Cpu/NextRegA $src/assembly/Z80Cpu/PixelDn $src/assembly/Z80Cpu/PixelAd $src/assembly/Z80Cpu/SetAE $src/assembly/Z80Cpu/JpInC $src/assembly/Z80Cpu/Ldi $src/assembly/Z80Cpu/Cpi $src/assembly/Z80Cpu/Ini $src/assembly/Z80Cpu/Outi $src/assembly/Z80Cpu/Ldix $src/assembly/Z80Cpu/Ldws $src/assembly/Z80Cpu/Ldd $src/assembly/Z80Cpu/Cpd $src/assembly/Z80Cpu/Ind $src/assembly/Z80Cpu/Outd $src/assembly/Z80Cpu/Lddx $src/assembly/Z80Cpu/Ldir $src/assembly/Z80Cpu/Cpir $src/assembly/Z80Cpu/Inir $src/assembly/Z80Cpu/Otir $src/assembly/Z80Cpu/Ldirx $src/assembly/Z80Cpu/Ldpirx $src/assembly/Z80Cpu/Lddr $src/assembly/Z80Cpu/Cpdr $src/assembly/Z80Cpu/Indr $src/assembly/Z80Cpu/Otdr $src/assembly/Z80Cpu/Lddrx $src/assembly/Z80Cpu/RlcQ $src/assembly/Z80Cpu/RlcHli $src/assembly/Z80Cpu/RrcQ $src/assembly/Z80Cpu/RrcHli $src/assembly/Z80Cpu/RlQ $src/assembly/Z80Cpu/RlHli $src/assembly/Z80Cpu/RrQ $src/assembly/Z80Cpu/RrHli $src/assembly/Z80Cpu/SlaQ $src/assembly/Z80Cpu/SlaHli $src/assembly/Z80Cpu/SraQ $src/assembly/Z80Cpu/SraHli $src/assembly/Z80Cpu/SllQ $src/assembly/Z80Cpu/SllHli $src/assembly/Z80Cpu/SrlQ $src/assembly/Z80Cpu/SrlHli $src/assembly/Z80Cpu/BitNQ $src/assembly/Z80Cpu/BitNHli $src/assembly/Z80Cpu/ResNQ $src/assembly/Z80Cpu/ResNHli $src/assembly/Z80Cpu/SetNQ $src/assembly/Z80Cpu/SetNHli $src/assembly/Z80Cpu/AddIxQQ $src/assembly/Z80Cpu/LdIxNN $src/assembly/Z80Cpu/LdNNiIx $src/assembly/Z80Cpu/IncIx $src/assembly/Z80Cpu/IncXh $src/assembly/Z80Cpu/DecXh $src/assembly/Z80Cpu/LdXhN $src/assembly/Z80Cpu/LdIxNNi $src/assembly/Z80Cpu/DecIx $src/assembly/Z80Cpu/IncXl $src/assembly/Z80Cpu/DecXl $src/assembly/Z80Cpu/LdXlN $src/assembly/Z80Cpu/IncIxi $src/assembly/Z80Cpu/DecIxi $src/assembly/Z80Cpu/LdIxiN $src/assembly/Z80Cpu/LdQXh $src/assembly/Z80Cpu/LdQXl $src/assembly/Z80Cpu/LdQIxi $src/assembly/Z80Cpu/LdIxiQ $src/assembly/Z80Cpu/AluAXh $src/assembly/Z80Cpu/AluAXl $src/assembly/Z80Cpu/AluAIxi $src/assembly/Z80Cpu/PopIx $src/assembly/Z80Cpu/ExSpiIx $src/assembly/Z80Cpu/PushIx $src/assembly/Z80Cpu/JpIxi $src/assembly/Z80Cpu/LdSpIx $src/assembly/Z80Cpu/XrlcQ $src/assembly/Z80Cpu/XrrcQ $src/assembly/Z80Cpu/XrlQ $src/assembly/Z80Cpu/XrrQ $src/assembly/Z80Cpu/XSlaQ $src/assembly/Z80Cpu/XSraQ $src/assembly/Z80Cpu/XSllQ $src/assembly/Z80Cpu/XSrlQ $src/assembly/Z80Cpu/XBitN $src/assembly/Z80Cpu/XResNQ $src/assembly/Z80Cpu/XSetNQ $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|1 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|1 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/test-machine/test-devices/readSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleIo $src/assembly/test-machine/test-devices/readSimpleIo $src/assembly/test-machine/test-devices/simpleWriteTbBlueIndex $src/assembly/test-machine/test-devices/simpleWriteTbBlueValue)
+ (data (i32.const 6897) "@\00\00\01\00\00\00\00\00\00\00\00@\00\00\f3\af\11\ff\ff\c3\cb\11*]\\\"_\\\18C\c3\f2\15\ff\ff\ff\ff\ff*]\\~\cd}\00\d0\cdt\00\18\f7\ff\ff\ff\c3[3\ff\ff\ff\ff\ff\c5*a\\\e5\c3\9e\16\f5\e5*x\\#\"x\\|\b5 \03\fd4@\c5\d5\cd\bf\02\d1\c1\e1\f1\fb\c9\e1n\fdu\00\ed{=\\\c3\c5\16\ff\ff\ff\ff\ff\ff\ff\f5\e5*\b0\\|\b5 \01\e9\e1\f1\edE*]\\#\"]\\~\c9\fe!\d0\fe\0d\c8\fe\10\d8\fe\18?\d8#\fe\168\01#7\"]\\\c9\bfRN\c4INKEY\a4P\c9F\cePOIN\d4SCREEN\a4ATT\d2A\d4TA\c2VAL\a4COD\c5VA\ccLE\ceSI\ceCO\d3TA\ceAS\ceAC\d3AT\ceL\ceEX\d0IN\d4SQ\d2SG\ceAB\d3PEE\cbI\ceUS\d2STR\a4CHR\a4NO\d4BI\ceO\d2AN\c4<\bd>\bd<\beLIN\c5THE\ceT\cfSTE\d0DEF F\ceCA\d4FORMA\d4MOV\c5ERAS\c5OPEN \a3CLOSE \a3MERG\c5VERIF\d9BEE\d0CIRCL\c5IN\cbPAPE\d2FLAS\c8BRIGH\d4INVERS\c5OVE\d2OU\d4LPRIN\d4LLIS\d4STO\d0REA\c4DAT\c1RESTOR\c5NE\d7BORDE\d2CONTINU\c5DI\cdRE\cdFO\d2GO T\cfGO SU\c2INPU\d4LOA\c4LIS\d4LE\d4PAUS\c5NEX\d4POK\c5PRIN\d4PLO\d4RU\ceSAV\c5RANDOMIZ\c5I\c6CL\d3DRA\d7CLEA\d2RETUR\ceCOP\d9BHY65TGVNJU74RFCMKI83EDX\0eLO92WSZ \0dP01QA\e3\c4\e0\e4\b4\bc\bd\bb\af\b0\b1\c0\a7\a6\be\ad\b2\ba\e5\a5\c2\e1\b3\b9\c1\b8~\dc\da\\\b7{}\d8\bf\ae\aa\ab\dd\de\df\7f\b5\d6|\d5]\db\b6\d9[\d7\0c\07\06\04\05\08\n\0b\t\0f\e2*?\cd\c8\cc\cb^\ac-+=.,;\"\c7<\c3>\c5/\c9`\c6:\d0\ce\a8\ca\d3\d4\d1\d2\a9\cf./\11\ff\ff\01\fe\fe\edx/\e6\1f(\0eg}\14\c0\d6\08\cb<0\faS_ \f4-\cb\008\e6z<\c8\fe(\c8\fe\19\c8{ZW\fe\18\c9\cd\8e\02\c0!\00\\\cb~ \07#5+ \026\ff}!\04\\\bd \ee\cd\1e\03\d0!\00\\\be(.\eb!\04\\\be(\'\cb~ \04\eb\cb~\c8_w#6\05#:\t\\w#\fdN\07\fdV\01\e5\cd3\03\e1w2\08\\\fd\cb\01\ee\c9#6\05#5\c0:\n\\w#~\18\eaB\16\00{\fe\'\d0\fe\18 \03\cbx\c0!\05\02\19~7\c9{\fe:8/\0d\faO\03(\03\c6O\c9!\eb\01\04(\03!\05\02\16\00\19~\c9!)\02\cb@(\f4\cbZ(\n\fd\cb0^\c0\04\c0\c6 \c9\c6\a5\c9\fe0\d8\0d\fa\9d\03 \19!T\02\cbh(\d3\fe80\07\d6 \04\c8\c6\08\c9\d66\04\c8\c6\fe\c9!0\02\fe9(\ba\fe0(\b6\e6\07\c6\80\04\c8\ee\0f\c9\04\c8\cbh!0\02 \a4\d6\10\fe\"(\06\fe \c0>_\c9>@\c9\f3}\cb=\cb=/\e6\03O\06\00\dd!\d1\03\dd\t:H\\\e68\0f\0f\0f\f6\08\00\00\00\04\0c\0d \fd\0e?\05\c2\d6\03\ee\10\d3\feDO\cbg \tz\b3(\tyM\1b\dd\e9M\0c\dd\e9\fb\c9\ef1\'\c0\034\ecl\98\1f\f5\04\a1\0f8!\92\\~\a7 ^#N#Fx\17\9f\b9 T#\be Px\c6<\f2%\04\e2l\04\06\fa\04\d6\0c0\fb\c6\0c\c5!n\04\cd\064\cd\b43\ef\048\f1\86w\ef\c0\0218\cd\94\1e\fe\0b0\"\ef\e0\04\e04\80CU\9f\80\01\0545q\038\cd\99\1e\c5\cd\99\1e\e1PYz\b3\c8\1b\c3\b5\03\cf\n\89\02\d0\12\86\89\n\97`u\89\12\d5\17\1f\89\1b\90A\02\89$\d0S\ca\89.\9d6\b1\898\ffI>\89C\ffjs\89O\a7\00T\89\\\00\00\00\89i\14\f6$\89v\f1\10\05\cd\fb$:;\\\87\fa\8a\1c\e1\d0\e5\cd\f1+bk\0d\f8\t\cb\fe\c9!?\05\e5!\80\1f\cb\7f(\03!\98\0c\08\13\dd+\f3>\02G\10\fe\d3\fe\ee\0f\06\a4- \f5\05%\f2\d8\04\06/\10\fe\d3\fe>\0d\067\10\fe\d3\fe\01\0e;\08o\c3\07\05z\b3(\0c\ddn\00|\adg>\017\c3%\05l\18\f4y\cbx\10\fe0\04\06B\10\fe\d3\fe\06> \ef\05\af<\cb\15\c2\14\05\1b\dd#\061>\7f\db\fe\1f\d0z<\c2\fe\04\06;\10\fe\c9\f5:H\\\e68\0f\0f\0f\d3\fe>\7f\db\fe\1f\fb8\02\cf\0c\f1\c9\14\08\15\f3>\0f\d3\fe!?\05\e5\db\fe\1f\e6 \f6\02O\bf\c0\cd\e7\050\fa!\15\04\10\fe+|\b5 \f9\cd\e3\050\eb\06\9c\cd\e3\050\e4>\c6\b80\e0$ \f1\06\c9\cd\e7\050\d5x\fe\d40\f4\cd\e7\05\d0y\ee\03O&\00\06\b0\18\1f\08 \070\0f\ddu\00\18\0f\cb\11\ad\c0y\1fO\13\18\07\dd~\00\ad\c0\dd#\1b\08\06\b2.\01\cd\e3\05\d0>\cb\b8\cb\15\06\b0\d2\ca\05|\adgz\b3 \ca|\fe\01\c9\cd\e7\05\d0>\16= \fd\a7\04\c8>\7f\db\fe\1f\d0\a9\e6 (\f3y/O\e6\07\f6\08\d3\fe7\c9\f1:t\\\d6\e02t\\\cd\8c\1c\cd0%(<\01\11\00:t\\\a7(\02\0e\"\f7\d5\dd\e1\06\0b> \12\13\10\fc\dd6\01\ff\cd\f1+!\f6\ff\0b\t\030\0f:t\\\a7 \02\cf\0ex\b1(\n\01\n\00\dd\e5\e1#\eb\ed\b0\df\fe\e4 I:t\\\fe\03\ca\8a\1c\e7\cd\b2(\cb\f90\0b!\00\00:t\\=(\15\cf\01\c2\8a\1c\cd0%(\18#~\ddw\0b#~\ddw\0c#\ddq\0e>\01\cbq(\01<\ddw\00\eb\e7\fe) \da\e7\cd\ee\1b\eb\c3Z\07\fe\aa \1f:t\\\fe\03\ca\8a\1c\e7\cd\ee\1b\dd6\0b\00\dd6\0c\1b!\00@\ddu\0d\ddt\0e\18M\fe\af O:t\\\fe\03\ca\8a\1c\e7\cdH  \0c:t\\\a7\ca\8a\1c\cd\e6\1c\18\0f\cd\82\1c\df\fe,(\0c:t\\\a7\ca\8a\1c\cd\e6\1c\18\04\e7\cd\82\1c\cd\ee\1b\cd\99\1e\ddq\0b\ddp\0c\cd\99\1e\ddq\0d\ddp\0e`i\dd6\00\03\18D\fe\ca(\t\cd\ee\1b\dd6\0e\80\18\17:t\\\a7\c2\8a\1c\e7\cd\82\1c\cd\ee\1b\cd\99\1e\ddq\0d\ddp\0e\dd6\00\00*Y\\\ed[S\\7\edR\ddu\0b\ddt\0c*K\\\edR\ddu\0f\ddt\10\eb:t\\\a7\cap\t\e5\01\11\00\dd\t\dd\e5\11\11\00\af7\cdV\05\dd\e10\f2>\fe\cd\01\16\fd6R\03\0e\80\dd~\00\dd\be\ef \02\0e\f6\fe\040\d9\11\c0\t\c5\cd\n\0c\c1\dd\e5\d1!\f0\ff\19\06\n~< \03y\80O\13\1a\be# \01\0c\d7\10\f6\cby \b3>\0d\d7\e1\dd~\00\fe\03(\0c:t\\=\ca\08\08\fe\02\ca\b6\08\e5\ddn\fa\ddf\fb\dd^\0b\ddV\0c|\b5(\0d\edR8&(\07\dd~\00\fe\03 \1d\e1|\b5 \06\ddn\0d\ddf\0e\e5\dd\e1:t\\\fe\027 \01\a7>\ff\cdV\05\d8\cf\1a\dd^\0b\ddV\0c\e5|\b5 \06\13\13\13\eb\18\0c\ddn\fa\ddf\fb\eb7\edR8\t\11\05\00\19DM\cd\05\1f\e1\dd~\00\a7(>|\b5(\13+F+N+\03\03\03\dd\"_\\\cd\e8\19\dd*_\\*Y\\+\ddN\0b\ddF\0c\c5\03\03\03\dd~\fd\f5\cdU\16#\f1w\d1#s#r#\e5\dd\e17>\ff\c3\02\08\eb*Y\\+\dd\"_\\\ddN\0b\ddF\0c\c5\cd\e5\19\c1\e5\c5\cdU\16\dd*_\\#\ddN\0f\ddF\10\t\"K\\\ddf\0e|\e6\c0 \n\ddn\0d\"B\\\fd6\n\00\d1\dd\e17>\ff\c3\02\08\ddN\0b\ddF\0c\c5\03\f76\80\eb\d1\e5\e5\dd\e17>\ff\cd\02\08\e1\ed[S\\~\e6\c0 \19\1a\13\be# \02\1a\be\1b+0\08\e5\eb\cd\b8\19\e1\18\ec\cd,\t\18\e2~O\fe\80\c8\e5*K\\~\fe\80(%\b9(\08\c5\cd\b8\19\c1\eb\18\f0\e6\e0\fe\a0 \12\d1\d5\e5#\13\1a\be \06\170\f7\e1\18\03\e1\18\e0>\ff\d1\eb<7\cd,\t\18\c4 \10\08\"_\\\eb\cd\b8\19\cd\e8\19\eb*_\\\08\08\d5\cd\b8\19\"_\\*S\\\e3\c5\088\07+\cdU\16#\18\03\cdU\16#\c1\d1\edSS\\\ed[_\\\c5\d5\eb\ed\b0\e1\c1\d5\cd\e8\19\d1\c9\e5>\fd\cd\01\16\af\11\a1\t\cd\n\0c\fd\cb\02\ee\cd\d4\15\dd\e5\11\11\00\af\cd\c2\04\dd\e1\062v\10\fd\dd^\0b\ddV\0c>\ff\dd\e1\c3\c2\04\80Start tape, then press any key\ae\0dProgram:\a0\0dNumber array:\a0\0dCharacter array:\a0\0dBytes:\a0\cd\03\0b\fe \d2\d9\n\fe\068i\fe\180e!\0b\n_\16\00\19^\19\e5\c3\03\0bNW\10)TSR7PO_^]\\[ZTS\0c>\"\b9 \11\fd\cb\01N \t\04\0e\02>\18\b8 \03\05\0e!\c3\d9\0d:\91\\\f5\fd6W\01> \cde\0b\f12\91\\\c9\fd\cb\01N\c2\cd\0e\0e!\cdU\0c\05\c3\d9\0d\cd\03\0by==\e6\10\18Z>?\18l\11\87\n2\0f\\\18\0b\11m\n\18\03\11\87\n2\0e\\*Q\\s#r\c9\11\f4\t\cd\80\n*\0e\\W}\fe\16\da\11\" )DJ>\1f\918\0c\c6\02O\fd\cb\01N \16>\16\90\da\9f\1e<G\04\fd\cb\02F\c2U\0c\fd\be1\da\86\0c\c3\d9\0d|\cd\03\0b\81=\e6\1f\c8W\fd\cb\01\c6> \cd;\0c\15 \f8\c9\cd$\0b\fd\cb\01N \1a\fd\cb\02F \08\edC\88\\\"\84\\\c9\edC\8a\\\edC\82\\\"\86\\\c9\fdqE\"\80\\\c9\fd\cb\01N \14\edK\88\\*\84\\\fd\cb\02F\c8\edK\8a\\*\86\\\c9\fdNE*\80\\\c9\fe\808=\fe\900&G\cd8\0b\cd\03\0b\11\92\\\18G!\92\\\cd>\0b\cb\18\9f\e6\0fO\cb\18\9f\e6\f0\b1\0e\04w#\0d \fb\c9\d6\a50\t\c6\15\c5\edK{\\\18\0b\cd\10\0c\c3\03\0b\c5\edK6\\\eb!;\\\cb\86\fe  \02\cb\c6&\00o)))\t\c1\eby=>! \0e\05O\fd\cb\01N(\06\d5\cd\cd\0e\d1y\b9\d5\ccU\0c\d1\c5\e5:\91\\\06\ff\1f8\01\04\1f\1f\9fO>\08\a7\fd\cb\01N(\05\fd\cb0\ce7\eb\08\1a\a0\ae\a9\12\088\13\14#= \f2\eb%\fd\cb\01N\cc\db\0b\e1\c1\0d#\c9\08> \83_\08\18\e6|\0f\0f\0f\e6\03\f6Xg\ed[\8f\\~\ab\a2\ab\fd\cbWv(\08\e6\c7\cbW \02\ee8\fd\cbWf(\08\e6\f8\cbo \02\ee\07w\c9\e5&\00\e3\18\04\11\95\00\f5\cdA\0c8\t> \fd\cb\01F\cc;\0c\1a\e6\7f\cd;\0c\1a\13\870\f5\d1\feH(\03\fe\82\d8z\fe\03\d8> \d5\d9\d7\d9\d1\c9\f5\eb<\cb~#(\fb= \f8\eb\f1\fe \d8\1a\d6A\c9\fd\cb\01N\c0\11\d9\0d\d5x\fd\cb\02F\c2\02\0d\fd\be18\1b\c0\fd\cb\02f(\16\fd^-\1d(Z>\00\cd\01\16\ed{?\\\fd\cb\02\a6\c9\cf\04\fd5R E>\18\902\8c\\*\8f\\\e5:\91\\\f5>\fd\cd\01\16\af\11\f8\0c\cd\n\0c\fd\cb\02\ee!;\\\cb\de\cb\ae\d9\cd\d4\15\d9\fe (E\fe\e2(A\f6 \fen(;>\fe\cd\01\16\f12\91\\\e1\"\8f\\\cd\fe\0d\fdF1\04\0e!\c5\cd\9b\0e|\0f\0f\0f\e6\03\f6Xg\11\e0Z\1aN\06 \eb\12q\13#\10\fa\c1\c9\80scroll\bf\cf\0c\fe\028\80\fd\861\d6\19\d0\edD\c5G*\8f\\\e5*\91\\\e5\cdM\0dx\f5!k\\Fx<w!\89\\\be8\034\06\18\cd\00\0e\f1= \e8\e1\fduW\e1\"\8f\\\edK\88\\\fd\cb\02\86\cd\d9\0d\fd\cb\02\c6\c1\c9\af*\8d\\\fd\cb\02F(\04g\fdn\0e\"\8f\\!\91\\ \02~\0f\ae\e6U\aew\c9\cd\af\0d!<\\\cb\ae\cb\c6\cdM\0d\fdF1\cdD\0e!\c0Z:\8d\\\05\18\07\0e +w\0d \fb\10\f7\fd61\02>\fd\cd\01\16*Q\\\11\f4\t\a7s#r#\11\a8\10?8\f6\01!\17\18*!\00\00\"}\\\fd\cb0\86\cd\94\0d>\fe\cd\01\16\cdM\0d\06\18\cdD\0e*Q\\\11\f4\ts#r\fd6R\01\01!\18!\00[\fd\cb\01N \12x\fd\cb\02F(\05\fd\861\d6\18\c5G\cd\9b\0e\c1>!\91_\16\00\19\c3\dc\n\06\17\cd\9b\0e\0e\08\c5\e5x\e6\07x \0c\eb!\e0\f8\19\eb\01 \00=\ed\b0\eb!\e0\ff\19\ebG\e6\07\0f\0f\0fOx\06\00\ed\b0\06\07\t\e6\f8 \db\e1$\c1\0d \cd\cd\88\0e!\e0\ff\19\eb\ed\b0\06\01\c5\cd\9b\0e\0e\08\c5\e5x\e6\07\0f\0f\0fOx\06\00\0dT]6\00\13\ed\b0\11\01\07\19=\e6\f8G \e5\e1$\c1\0d \dc\cd\88\0ebk\13:\8d\\\fd\cb\02F(\03:H\\w\0b\ed\b0\c1\0e!\c9|\0f\0f\0f=\f6Pg\ebah)))))DM\c9>\18\90W\0f\0f\0f\e6\e0oz\e6\18\f6@g\c9\f3\06\b0!\00@\e5\c5\cd\f4\0e\c1\e1$|\e6\07 \n}\c6 o?\9f\e6\f8\84g\10\e7\18\0d\f3!\00[\06\08\c5\cd\f4\0e\c1\10\f9>\04\d3\fb\fb!\00[\fduF\afGw#\10\fc\fd\cb0\8e\0e!\c3\d9\0dx\fe\03\9f\e6\02\d3\fbW\cdT\1f8\n>\04\d3\fb\fb\cd\df\0e\cf\0c\db\fb\87\f80\eb\0e ^#\06\08\cb\12\cb\13\cb\1a\db\fb\1f0\fbz\d3\fb\10\f0\0d \e9\c9*=\\\e5!\7f\10\e5\eds=\\\cd\d4\15\f5\16\00\fd^\ff!\c8\00\cd\b5\03\f1!8\0f\e5\fe\1801\fe\078-\fe\108:\01\02\00W\fe\168\0c\03\fd\cb7~\ca\1e\10\cd\d4\15_\cd\d4\15\d5*[\\\fd\cb\07\86\cdU\16\c1#p#q\18\n\fd\cb\07\86*[\\\cdR\16\12\13\edS[\\\c9_\16\00!\99\0f\19^\19\e5*[\\\c9\tfjP\b5p~\cf\d4*I\\\fd\cb7n\c2\97\10\cdn\19\cd\95\16z\b3\ca\97\10\e5#N#F!\n\00\tDM\cd\05\1f\cd\97\10*Q\\\e3\e5>\ff\cd\01\16\e1+\fd5\0f\cdU\18\fd4\0f*Y\\####\"[\\\e1\cd\15\16\c9\fd\cb7n \08!I\\\cd\0f\19\18m\fd6\00\10\18\1d\cd1\10\18\05~\fe\0d\c8#\"[\\\c9\cd1\10\01\01\00\c3\e8\19\cd\d4\15\cd\d4\15\e1\e1\e1\"=\\\fd\cb\00~\c0\f9\c97\cd\95\11\edR\19#\c1\d8\c5DMbk#\1a\e6\f0\fe\10 \t#\1a\d6\17\ce\00 \01#\a7\edB\t\eb8\e6\c9\fd\cb7n\c0*I\\\cdn\19\eb\cd\95\16!J\\\cd\1c\19\cd\95\17>\00\c3\01\16\fd\cb7~(\a8\c3\81\0f\fd\cb0f(\a1\fd6\00\ff\16\00\fd^\fe!\90\1a\cd\b5\03\c30\0f\e5\cd\90\11+\cd\e5\19\"[\\\fd6\07\00\e1\c9\fd\cb\02^\c4\1d\11\a7\fd\cb\01n\c8:\08\\\fd\cb\01\ae\f5\fd\cb\02n\c4n\0d\f1\fe 0R\fe\100-\fe\060\nG\e6\01Ox\1f\c6\12\18* \t!j\\>\08\aew\18\0e\fe\0e\d8\d6\0d!A\\\bew \026\00\fd\cb\02\de\bf\c9G\e6\07O>\10\cbX \01<\fdq\d3\11\0d\11\18\06:\0d\\\11\a8\10*O\\##s#r7\c9\cdM\0d\fd\cb\02\9e\fd\cb\02\ae*\8a\\\e5*=\\\e5!g\11\e5\eds=\\*\82\\\e57\cd\95\11\eb\cd}\18\eb\cd\e1\18*\8a\\\e3\eb\cdM\0d:\8b\\\928& \06{\fd\96P0\1e> \d5\cd\f4\t\d1\18\e9\16\00\fd^\fe!\90\1a\cd\b5\03\fd6\00\ff\ed[\8a\\\18\02\d1\e1\e1\"=\\\c1\d5\cd\d9\0d\e1\"\82\\\fd6&\00\c9*a\\+\a7\ed[Y\\\fd\cb7n\c8\ed[a\\\d8*c\\\c9~\fe\0e\01\06\00\cc\e8\19~#\fe\0d \f1\c9\f3>\ff\ed[\b2\\\d9\edK\b4\\\ed[8\\*{\\\d9G>\07\d3\fe>?\edG\00\00\00\00\00\00bk6\02+\bc \fa\a7\edR\19#0\065(\035(\f3+\d9\edC\b4\\\edS8\\\"{\\\d9\04(\19\"\b4\\\11\af>\01\a8\00\eb\ed\b8\eb#\"{\\+\01@\00\edC8\\\"\b2\\!\00<\"6\\*\b2\\6>+\f9++\"=\\\edV\fd!:\\\fb!\b6\\\"O\\\11\af\15\01\15\00\eb\ed\b0\eb+\"W\\#\"S\\\"K\\6\80#\"Y\\6\0d#6\80#\"a\\\"c\\\"e\\>82\8d\\2\8f\\2H\\!#\05\"\t\\\fd5\c6\fd5\ca!\c6\15\11\10\\\01\0e\00\ed\b0\fd\cb\01\ce\cd\df\0e\fd61\02\cdk\0d\af\118\15\cd\n\0c\fd\cb\02\ee\18\07\fd61\02\cd\95\17\cd\b0\16>\00\cd\01\16\cd,\0f\cd\17\1b\fd\cb\00~ \12\fd\cb0f(@*Y\\\cd\a7\11\fd6\00\ff\18\dd*Y\\\"]\\\cd\fb\19x\b1\c2]\15\df\fe\0d(\c0\fd\cb0F\c4\af\0d\cdn\0d>\19\fd\96O2\8c\\\fd\cb\01\fe\fd6\00\ff\fd6\n\01\cd\8a\1bv\fd\cb\01\ae\fd\cb0N\c4\cd\0e::\\<\f5!\00\00\fdt7\fdt&\"\0b\\!\01\00\"\16\\\cd\b0\16\fd\cb7\ae\cdn\0d\fd\cb\02\ee\f1G\fe\n8\02\c6\07\cd\ef\15> \d7x\11\91\13\cd\n\0c\af\116\15\cd\n\0c\edKE\\\cd\1b\1a>:\d7\fdN\0d\06\00\cd\1b\1a\cd\97\10::\\<(\1b\fe\t(\04\fe\15 \03\fd4\0d\01\03\00\11p\\!D\\\cb~(\01\t\ed\b8\fd6\n\ff\fd\cb\01\9e\c3\ac\12\80O\cbNEXT without FO\d2Variable not foun\e4Subscript wron\e7Out of memor\f9Out of scree\eeNumber too bi\e7RETURN without GOSU\c2End of fil\e5STOP statemen\f4Invalid argumen\f4Integer out of rang\e5Nonsense in BASI\c3BREAK - CONT repeat\f3Out of DAT\c1Invalid file nam\e5No room for lin\e5STOP in INPU\d4FOR without NEX\d4Invalid I/O devic\e5Invalid colou\f2BREAK into progra\edRAMTOP no goo\e4Statement los\f4Invalid strea\edFN without DE\c6Parameter erro\f2Tape loading erro\f2,\a0\7f 1982 Sinclair Research Lt\e4>\10\01\00\00\c3\13\13\edCI\\*]\\\eb!U\15\e5*a\\7\edR\e5`i\cdn\19 \06\cd\b8\19\cd\e8\19\c1y=\b0((\c5\03\03\03\03+\ed[S\\\d5\cdU\16\e1\"S\\\c1\c5\13*a\\++\ed\b8*I\\\eb\c1p+q+s+r\f1\c3\a2\12\f4\t\a8\10K\f4\t\c4\15S\81\0f\c4\15R\f4\t\c4\15P\80\cf\12\01\00\06\00\0b\00\01\00\01\00\06\00\10\00\fd\cb\02n \04\fd\cb\02\de\cd\e6\15\d8(\fa\cf\07\d9\e5*Q\\##\18\08\1e0\83\d9\e5*Q\\^#V\eb\cd,\16\e1\d9\c9\87\c6\16o&\\^#Vz\b3 \02\cf\17\1b*O\\\19\"Q\\\fd\cb0\a6####N!-\16\cd\dc\16\d0\16\00^\19\e9K\06S\12P\1b\00\fd\cb\02\c6\fd\cb\01\ae\fd\cb0\e6\18\04\fd\cb\02\86\fd\cb\01\8e\c3M\0d\fd\cb\01\ce\c9\01\01\00\e5\cd\05\1f\e1\cdd\16*e\\\eb\ed\b8\c9\f5\e5!K\\>\0e^#V\e3\a7\edR\19\e30\t\d5\eb\t\ebr+s#\d1#= \e8\eb\d1\f1\a7\edRDM\03\19\eb\c9\00\00\eb\11\8f\16~\e6\c0 \f7V#^\c9*c\\+\cdU\16##\c1\edCa\\\c1\eb#\c9*Y\\6\0d\"[\\#6\80#\"a\\*a\\\"c\\*c\\\"e\\\e5!\92\\\"h\\\e1\c9\ed[Y\\\c3\e5\19#~\a7\c8\b9# \f87\c9\cd\1e\17\cd\01\17\01\00\00\11\e2\a3\eb\198\07\01\d4\15\tN#F\ebq#p\c9\e5*O\\\t###N\eb!\16\17\cd\dc\16N\06\00\t\e9K\05S\03P\01\e1\c9\cd\94\1e\fe\108\02\cf\17\c6\03\07!\10\\O\06\00\tN#F+\c9\ef\018\cd\1e\17x\b1(\16\eb*O\\\t###~\eb\feK(\08\feS(\04\feP \cf\cd]\17s#r\c9\e5\cd\f1+x\b1 \02\cf\0e\c5\1a\e6\dfO!z\17\cd\dc\160\f1N\06\00\t\c1\e9K\06S\08P\n\00\1e\01\18\06\1e\06\18\02\1e\10\0bx\b1 \d5W\e1\c9\18\90\eds?\\\fd6\02\10\cd\af\0d\fd\cb\02\c6\fdF1\cdD\0e\fd\cb\02\86\fd\cb0\c6*I\\\ed[l\\\a7\edR\198\"\d5\cdn\19\11\c0\02\eb\edR\e3\cdn\19\c1\c5\cd\b8\19\c1\t8\0e\ebV#^+\edSl\\\18\ed\"l\\*l\\\cdn\19(\01\eb\cd3\18\fd\cb\02\a6\c9>\03\18\02>\02\fd6\02\00\cd0%\c4\01\16\df\cdp 8\14\df\fe;(\04\fe, \06\e7\cd\82\1c\18\08\cd\e6\1c\18\03\cd\de\1c\cd\ee\1b\cd\99\1ex\e6?gi\"I\\\cdn\19\1e\01\cdU\18\d7\fd\cb\02f(\f6:k\\\fd\96O \ee\ab\c8\e5\d5!l\\\cd\0f\19\d1\e1\18\e0\edKI\\\cd\80\19\16>(\05\11\00\00\cb\13\fds-~\fe@\c1\d0\c5\cd(\1a###\fd\cb\01\86z\a7(\05\d7\fd\cb\01\c6\d5\eb\fd\cb0\96!;\\\cb\96\fd\cb7n(\02\cb\d6*_\\\a7\edR \05>?\cd\c1\18\cd\e1\18\eb~\cd\b6\18#\fe\0d(\06\eb\cd7\19\18\e0\d1\c9\fe\0e\c0######~\c9\d9*\8f\\\e5\cb\bc\cb\fd\"\8f\\!\91\\V\d56\00\cd\f4\t\e1\fdtW\e1\"\8f\\\d9\c9*[\\\a7\edR\c0:A\\\cb\07(\04\c6C\18\16!;\\\cb\9e>K\cbV(\0b\cb\de<\fd\cb0^(\02>C\d5\cd\c1\18\d1\c9^#V\e5\eb#\cdn\19\cd\95\16\e1\fd\cb7n\c0r+s\c9{\a7\f8\18\0d\af\t<8\fc\edB=(\f1\c3\ef\15\cd\1b-00\fe!8,\fd\cb\01\96\fe\cb($\fe: \0e\fd\cb7n \16\fd\cb0V(\14\18\0e\fe\" \n\f5:j\\\ee\042j\\\f1\fd\cb\01\d6\d7\c9\e5*S\\T]\c1\cd\80\19\d0\c5\cd\b8\19\eb\18\f4~\b8\c0#~+\b9\c9###\"]\\\0e\00\15\c8\e7\bb \04\a7\c9#~\cd\b6\18\"]\\\fe\" \01\0d\fe:(\04\fe\cb \04\cbA(\df\fe\0d \e3\157\c9\e5~\fe@8\17\cbo(\14\87\fa\c7\19?\01\05\000\02\0e\12\17#~0\fb\18\06##N#F#\t\d1\a7\edRDM\19\eb\c9\cd\dd\19\c5x/Gy/O\03\cdd\16\eb\e1\19\d5\ed\b0\e1\c9*Y\\+\"]\\\e7!\92\\\"e\\\cd;-\cd\a2-8\04!\f0\d8\t\da\8a\1c\c3\c5\16\d5\e5\af\cbx  `i\1e\ff\18\08\d5V#^\e5\eb\1e \01\18\fc\cd*\19\01\9c\ff\cd*\19\0e\f6\cd*\19}\cd\ef\15\e1\d1\c9\b1\cb\bc\bf\c4\af\b4\93\91\92\95\98\98\98\98\98\98\98\7f\81.lnpH\94V?A+\17\1f7wD\0fY+C-Q:mB\0dI\\D\15]\01=\02\06\00g\1e\06\cb\05\f0\1c\06\00\ed\1e\00\ee\1c\00#\1f\04=\06\cc\06\05\03\1d\04\00\ab\1d\05\cd\1f\05\89 \05\02,\05\b2\1b\00\b7\11\03\a1\1e\05\f9\17\08\00\80\1e\03O\1e\00_\1e\03\ac\1e\00k\0d\t\00\dc\"\06\00:\1f\05\ed\1d\05\'\1e\03B\1e\t\05\82#\00\ac\0e\05\c9\1f\05\f5\17\0b\0b\0b\0b\08\00\f8\03\t\05 #\07\07\07\07\07\07\08\00z\1e\06\00\94\"\05`\1f\06,\n\006\17\06\00\e5\16\n\00\93\17\n,\n\00\93\17\n\00\93\17\00\93\17\fd\cb\01\be\cd\fb\19\af2G\\=2:\\\18\01\e7\cd\bf\16\fd4\0d\fa\8a\1c\df\06\00\fe\0d(z\fe:(\eb!v\1b\e5O\e7y\d6\ce\da\8a\1cO!H\1a\tN\t\18\03*t\\~#\"t\\\01R\1b\c5O\fe 0\0c!\01\1c\06\00\tN\t\e5\df\05\c9\df\b9\c2\8a\1c\e7\c9\cdT\1f8\02\cf\14\fd\cb\n~ q*B\\\cb|(\14!\fe\ff\"E\\*a\\+\ed[Y\\\1b:D\\\183\cdn\19:D\\(\19\a7 CG~\e6\c0x(\0f\cf\ff\c1\cd0%\c8*U\\>\c0\a6\c0\af\fe\01\ce\00V#^\edSE\\#^#V\eb\19#\"U\\\eb\"]\\W\1e\00\fd6\n\ff\15\fdr\0d\ca(\1b\14\cd\8b\19(\08\cf\16\cd0%\c0\c1\c1\df\fe\0d(\ba\fe:\ca(\1b\c3\8a\1c\0f\1dK\tg\0b{\8eq\b4\81\cf\cd\de\1c\bf\c1\cc\ee\1b\eb*t\\N#F\eb\c5\c9\cd\b2(\fd67\000\08\fd\cb7\ce \18\cf\01\cc\96)\fd\cb\01v \0d\af\cd0%\c4\f1+!q\\\b6w\eb\edCr\\\"M\\\c9\c1\cdV\1c\cd\ee\1b\c9:;\\\f5\cd\fb$\f1\fdV\01\aa\e6@ $\cbz\c2\ff*\c9\cd\b2(\f5y\f6\9f< \14\f1\18\a9\e7\cd\82\1c\fe, \t\e7\cd\fb$\fd\cb\01v\c0\cf\0b\cd\fb$\fd\cb\01v\c8\18\f4\fd\cb\01~\fd\cb\02\86\c4M\0d\f1:t\\\d6\13\cd\fc!\cd\ee\1b*\8f\\\"\8d\\!\91\\~\07\ae\e6\aa\aew\c9\cd0%(\13\fd\cb\02\86\cdM\0d!\90\\~\f6\f8w\fd\cbW\b6\df\cd\e2!\18\9f\c3\05\06\fe\0d(\04\fe: \9c\cd0%\c8\ef\a08\c9\cf\08\c1\cd0%(\n\ef\028\eb\cd\e94\da\b3\1b\c3)\1b\fe\cd \t\e7\cd\82\1c\cd\ee\1b\18\06\cd\ee\1b\ef\a18\ef\c0\02\01\e0\018\cd\ff*\"h\\+~\cb\fe\01\06\00\t\078\06\0e\0d\cdU\16#\e5\ef\02\028\e1\eb\0e\n\ed\b0*E\\\ebs#r\fdV\0d\14#r\cd\da\1d\d0\fdF8*E\\\"B\\:G\\\edDW*]\\\1e\f3\c5\edKU\\\cd\86\1d\edCU\\\c18\11\e7\f6 \b8(\03\e7\18\e8\e7>\01\922D\\\c9\cf\11~\fe:(\18#~\e6\c07\c0F#N\edCB\\#N#F\e5\tDM\e1\16\00\c5\cd\8b\19\c1\d0\18\e0\fd\cb7N\c2.\1c*M\\\cb~(\1f#\"h\\\ef\e0\e2\0f\c0\028\cd\da\1d\d8*h\\\11\0f\00\19^#V#f\eb\c3s\1e\cf\00\ef\e1\e0\e26\00\02\01\037\00\048\a7\c987\c9\e7\cd\1f\1c\cd0%()\df\"_\\*W\\~\fe,(\t\1e\e4\cd\86\1d0\02\cf\0d\cdw\00\cdV\1c\df\"W\\*_\\\fd6&\00\cdx\00\df\fe,(\c9\cd\ee\1b\c9\cd0% \0b\cd\fb$\fe,\c4\ee\1b\e7\18\f5>\e4G\ed\b9\11\00\02\c3\8b\19\cd\99\1e`i\cdn\19+\"W\\\c9\cd\99\1ex\b1 \04\edKx\\\edCv\\\c9*n\\\fdV6\18\0c\cd\99\1e`i\16\00|\fe\f00,\"B\\\fdr\n\c9\cd\85\1e\edy\c9\cd\85\1e\02\c9\cd\d5-8\15(\02\edD\f5\cd\99\1e\f1\c9\cd\d5-\18\03\cd\a2-8\01\c8\cf\n\cdg\1e\01\00\00\cdE\1e\18\03\cd\99\1ex\b1 \04\edK\b2\\\c5\ed[K\\*Y\\+\cd\e5\19\cdk\0d*e\\\112\00\19\d1\edR0\08*\b4\\\a7\edR0\02\cf\15\eb\"\b2\\\d1\c16>+\f9\c5\eds=\\\eb\e9\d1\fdf\0d$\e33\edKE\\\c5\e5\eds=\\\d5\cdg\1e\01\14\00*e\\\t8\n\eb!P\00\198\03\edr\d8.\03\c3U\00\01\00\00\cd\05\1fDM\c9\c1\e1\d1z\fe>(\0b;\e3\eb\eds=\\\c5\c3s\1e\d5\e5\cf\06\cd\99\1ev\0bx\b1(\0cx\a1< \01\03\fd\cb\01n(\ee\fd\cb\01\ae\c9>\7f\db\fe\1f\d8>\fe\db\fe\1f\c9\cd0%(\05>\ce\c39\1e\fd\cb\01\f6\cd\8d,0\16\e7\fe$ \05\fd\cb\01\b6\e7\fe( <\e7\fe)( \cd\8d,\d2\8a\1c\eb\e7\fe$ \02\eb\e7\eb\01\06\00\cdU\16##6\0e\fe, \03\e7\18\e0\fe) \13\e7\fe= \0e\e7:;\\\f5\cd\fb$\f1\fd\ae\01\e6@\c2\8a\1c\cd\ee\1b\cd0%\e1\c8\e9>\03\18\02>\02\cd0%\c4\01\16\cdM\0d\cd\df\1f\cd\ee\1b\c9\df\cdE (\0d\cdN (\fb\cd\fc\1f\cdN (\f3\fe)\c8\cd\c3\1f>\0d\d7\c9\df\fe\ac \0d\cdy\1c\cd\c3\1f\cd\07#>\16\18\10\fe\ad \12\e7\cd\82\1c\cd\c3\1f\cd\99\1e>\17\d7y\d7x\d7\c9\cd\f2!\d0\cdp \d0\cd\fb$\cd\c3\1f\fd\cb\01v\cc\f1+\c2\e3-x\b1\0b\c8\1a\13\d7\18\f7\fe)\c8\fe\0d\c8\fe:\c9\df\fe;(\14\fe, \n\cd0%(\0b>\06\d7\18\06\fe\'\c0\cd\f5\1f\e7\cdE  \01\c1\bf\c9\fe#7\c0\e7\cd\82\1c\a7\cd\c3\1f\cd\94\1e\fe\10\d2\0e\16\cd\01\16\a7\c9\cd0%(\08>\01\cd\01\16\cdn\0d\fd6\02\01\cd\c1 \cd\ee\1b\edK\88\\:k\\\b88\03\0e!G\edC\88\\>\19\902\8c\\\fd\cb\02\86\cd\d9\0d\c3n\0d\cdN (\fb\fe( \0e\e7\cd\df\1f\df\fe)\c2\8a\1c\e7\c3\b2!\fe\ca \11\e7\cd\1f\1c\fd\cb7\fe\fd\cb\01v\c2\8a\1c\18\0d\cd\8d,\d2\af!\cd\1f\1c\fd\cb7\be\cd0%\ca\b2!\cd\bf\16!q\\\cb\b6\cb\ee\01\01\00\cb~ \0b:;\\\e6@ \02\0e\03\b6w\f76\0dy\0f\0f0\05>\"\12+w\"[\\\fd\cb7~ ,*]\\\e5*=\\\e5!:!\e5\fd\cb0f(\04\eds=\\*a\\\cd\a7\11\fd6\00\ff\cd,\0f\fd\cb\01\be\cd\b9!\18\03\cd,\0f\fd6\"\00\cd\d6! \n\cd\1d\11\edK\82\\\cd\d9\0d!q\\\cb\ae\cb~\cb\be \1c\e1\e1\"=\\\e1\"_\\\fd\cb\01\fe\cd\b9!*_\\\fd6&\00\"]\\\18\17*c\\\ed[a\\7\edRDM\cd\b2*\cd\ff*\18\03\cd\fc\1f\cdN \ca\c1 \c9*a\\\"]\\\df\fe\e2(\0c:q\\\cdY\1c\df\fe\0d\c8\cf\0b\cd0%\c8\cf\10*Q\\####~\feK\c9\e7\cd\f2!\d8\df\fe,(\f6\fe;(\f2\c3\8a\1c\fe\d9\d8\fe\df?\d8\f5\e7\f1\d6\c9\f5\cd\82\1c\f1\a7\cd\c3\1f\f5\cd\94\1eW\f1\d7z\d7\c9\d6\11\ce\00(\1d\d6\02\ce\00(V\fe\01z\06\01 \04\07\07\06\04Oz\fe\020\16y!\91\\\188z\06\078\05\07\07\07\068Oz\fe\n8\02\cf\13!\8f\\\fe\088\0b~(\07\b0/\e6$(\01xOy\cdl\">\07\ba\9f\cdl\"\07\07\e6PG>\08\ba\9f\ae\a0\aew#x\c9\9fz\0f\06\80 \03\0f\06@Oz\fe\08(\04\fe\020\bdy!\8f\\\cdl\"y\0f\0f\0f\18\d8\cd\94\1e\fe\080\a9\d3\fe\07\07\07\cbo \02\ee\072H\\\c9>\af\90\da\f9$G\a7\1f7\1f\a7\1f\a8\e6\f8\a8gy\07\07\07\a8\e6\c7\a8\07\07oy\e6\07\c9\cd\07#\cd\aa\"G\04~\07\10\fd\e6\01\c3(-\cd\07#\cd\e5\"\c3M\0d\edC}\\\cd\aa\"G\04>\fe\0f\10\fdG~\fdNW\cbA \01\a0\cbQ \02\a8/w\c3\db\0b\cd\14#G\c5\cd\14#Y\c1QO\c9\cd\d5-\da\f9$\0e\01\c8\0e\ff\c9\df\fe,\c2\8a\1c\e7\cd\82\1c\cd\ee\1b\ef*=8~\fe\810\05\ef\028\18\a1\ef\a386\83\ef\c5\028\cd}$\c5\ef1\e1\048~\fe\800\08\ef\02\028\c1\c3\dc\"\ef\c2\01\c0\02\03\01\e0\0f\c0\011\e0\011\e0\a0\c1\028\fd4b\cd\94\1eo\e5\cd\94\1e\e1g\"}\\\c1\c3 $\df\fe,(\06\cd\ee\1b\c3w$\e7\cd\82\1c\cd\ee\1b\ef\c5\a2\04\1f100\00\06\028\c3w$\c0\02\c1\021*\e1\01\e1*\0f\e0\05*\e0\01=8~\fe\810\07\ef\02\028\c3w$\cd}$\c5\ef\02\e1\01\05\c1\02\011\e1\04\c2\02\011\e1\04\e2\e5\e0\03\a2\041\1f\c5\02 \c0\02\c2\02\c1\e5\04\e0\e2\04\0f\e1\01\c1\02\e0\04\e2\e5\04\03\c2*\e1*\0f\028\1a\fe\81\c1\daw$\c5\ef\018:}\\\cd(-\ef\c0\0f\018:~\\\cd(-\ef\c5\0f\e0\e58\c1\05(<\18\14\ef\e11\e3\04\e2\e4\04\03\c1\02\e4\04\e2\e3\04\0f\c2\028\c5\ef\c0\02\e1\0f18:}\\\cd(-\ef\03\e0\e2\0f\c0\01\e08:~\\\cd(-\ef\038\cd\b7$\c1\10\c6\ef\02\02\018:}\\\cd(-\ef\03\018:~\\\cd(-\ef\038\cd\b7$\c3M\0d\ef1(42\00\01\05\e5\01\05*8\cd\d5-8\06\e6\fc\c6\040\02>\fc\f5\cd(-\ef\e5\01\051\1f\c4\021\a2\04\1f\c1\01\c0\021\041\0f\a1\03\1b\c3\028\c1\c9\cd\07#y\b80\06i\d5\af_\18\07\b1\c8hA\d5\16\00`x\1f\858\03\bc8\07\94O\d9\c1\c5\18\04O\d5\d9\c1*}\\x\84Gy<\858\0d(\0d=O\cd\e5\"\d9y\10\d9\d1\c9(\f3\cf\n\df\06\00\c5O!\96%\cd\dc\16y\d2\84&\06\00N\t\e9\cdt\00\03\fe\0d\ca\8a\1c\fe\" \f3\cdt\00\fe\"\c9\e7\fe( \06\cdy\1c\df\fe)\c2\8a\1c\fd\cb\01~\c9\cd\07#*6\\\11\00\01\19y\0f\0f\0f\e6\e0\a8_y\e6\18\ee@W\06`\c5\d5\e5\1a\ae(\04< \1a=O\06\07\14#\1a\ae\a9 \0f\10\f7\c1\c1\c1>\80\90\01\01\00\f7\12\18\n\e1\11\08\00\19\d1\c1\10\d3H\c3\b2*\cd\07#y\0f\0f\0fO\e6\e0\a8oy\e6\03\eeXg~\c3(-\"\1c(O.\f2+\12\a8V\a5W\a7\84\a6\8f\c4\e6\aa\bf\ab\c7\a9\ce\00\e7\c3\ff$\df#\e5\01\00\00\cd\0f% \1b\cd\0f%(\fb\cd0%(\11\f7\e1\d5~#\12\13\fe\" \f8~#\fe\"(\f2\0b\d1!;\\\cb\b6\cb~\c4\b2*\c3\12\'\e7\cd\fb$\fe)\c2\8a\1c\e7\c3\12\'\c3\bd\'\cd0%((\edKv\\\cd+-\ef\a1\0f47\16\044\80A\00\00\802\02\a1\0318\cd\a2-\edCv\\~\a7(\03\d6\10w\18\t\cd0%(\04\ef\a384\e7\c3\c3&\01Z\10\e7\fe#\ca\0d\'!;\\\cb\b6\cb~(\1f\cd\8e\02\0e\00 \13\cd\1e\030\0e\15_\cd3\03\f5\01\01\00\f7\f1\12\0e\01\06\00\cd\b2*\c3\12\'\cd\"%\c45%\e7\c3\db%\cd\"%\c4\80%\e7\18H\cd\"%\c4\cb\"\e7\18?\cd\88,0V\feA0<\cd0% #\cd\9b,\df\01\06\00\cdU\16#6\0e#\eb*e\\\0e\05\a7\edB\"e\\\ed\b0\eb+\cdw\00\18\0e\df#~\fe\0e \fa#\cd\b43\"]\\\fd\cb\01\f6\18\14\cd\b2(\da.\1c\cc\96):;\\\fe\c08\04#\cd\b43\183\01\db\t\fe-(\'\01\18\10\fe\ae( \d6\af\da\8a\1c\01\f0\04\fe\14(\14\d2\8a\1c\06\10\c6\dcO\fe\df0\02\cb\b1\fe\ee8\02\cb\b9\c5\e7\c3\ff$\df\fe( \0c\fd\cb\01v \17\cdR*\e7\18\f0\06\00O!\95\'\cd\dc\160\06N!\ed&\tF\d1z\b88:\a7\ca\18\00\c5!;\\{\fe\ed \06\cbv \02\1e\99\d5\cd0%(\t{\e6?G\ef;8\18\t{\fd\ae\01\e6@\c2\8a\1c\d1!;\\\cb\f6\cb{ \02\cb\b6\c1\18\c1\d5y\fd\cb\01v \15\e6?\c6\08O\fe\10 \04\cb\f1\18\088\d7\fe\17(\02\cb\f9\c5\e7\c3\ff$+\cf-\c3*\c4/\c5^\c6=\ce>\cc<\cd\c7\c9\c8\ca\c9\cb\c5\c7\c6\c8\00\06\08\08\n\02\03\05\05\05\05\05\05\06\cd0% 5\e7\cd\8d,\d2\8a\1c\e7\fe$\f5 \01\e7\fe( \12\e7\fe)(\10\cd\fb$\df\fe, \03\e7\18\f5\fe)\c2\8a\1c\e7!;\\\cb\b6\f1(\02\cb\f6\c3\12\'\e7\e6\dfG\e7\d6$O \01\e7\e7\e5*S\\+\11\ce\00\c5\cd\86\1d\c10\02\cf\18\e5\cd\ab(\e6\df\b8 \08\cd\ab(\d6$\b9(\0c\e1+\11\00\02\c5\cd\8b\19\c1\18\d7\a7\cc\ab(\d1\d1\edS]\\\cd\ab(\e5\fe)(B#~\fe\0e\16@(\07+\cd\ab(#\16\00#\e5\d5\cd\fb$\f1\fd\ae\01\e6@ +\e1\eb*e\\\01\05\00\edB\"e\\\ed\b0\eb+\cd\ab(\fe)(\0d\e5\df\fe, \0d\e7\e1\cd\ab(\18\be\e5\df\fe)(\02\cf\19\d1\eb\"]\\*\0b\\\e3\"\0b\\\d5\e7\e7\cd\fb$\e1\"]\\\e1\"\0b\\\e7\c3\12\'#~\fe!8\fa\c9\fd\cb\01\f6\df\cd\8d,\d2\8a\1c\e5\e6\1fO\e7\e5\fe(((\cb\f1\fe$(\11\cb\e9\cd\88,0\0f\cd\88,0\16\cb\b1\e7\18\f6\e7\fd\cb\01\b6:\0c\\\a7(\06\cd0%\c2Q)A\cd0% \08y\e6\e0\cb\ffO\187*K\\~\e6\7f(-\b9 \"\17\87\f2?)80\d1\d5\e5#\1a\13\fe (\fa\f6 \be(\f4\f6\80\be \06\1a\cd\88,0\15\e1\c5\cd\b8\19\eb\c1\18\ce\cb\f8\d1\df\fe((\t\cb\e8\18\0d\d1\d1\d1\e5\df\cd\88,0\03\e7\18\f8\e1\cb\10\cbp\c9*\0b\\~\fe)\ca\ef(~\f6`G#~\fe\0e(\07+\cd\ab(#\cb\a8x\b9(\12#####\cd\ab(\fe)\ca\ef(\cd\ab(\18\d9\cbi \0c#\ed[e\\\cd\c03\eb\"e\\\d1\d1\af<\c9\afG\cby K\cb~ \0e<#N#F#\eb\cd\b2*\df\c3I*###F\cbq(\n\05(\e8\eb\df\fe( a\eb\eb\18$\e5\df\e1\fe,( \cby(R\cbq \06\fe) <\e7\c9\fe)(l\fe\cc 2\df+\"]\\\18^!\00\00\e5\e7\e1y\fe\c0 \t\df\fe)(Q\fe\cc(\e5\c5\e5\cd\ee*\e3\eb\cd\cc*8\19\0b\cd\f4*\t\d1\c1\10\b3\cby f\e5\cbq \13BK\df\fe)(\02\cf\02\e7\e1\11\05\00\cd\f4*\t\c9\cd\ee*\e3\cd\f4*\c1\t#BK\eb\cd\b1*\df\fe)(\07\fe, \db\cdR*\e7\fe((\f8\fd\cb\01\b6\c9\cd0%\c4\f1+\e7\fe)(P\d5\af\f5\c5\11\01\00\df\e1\fe\cc(\17\f1\cd\cd*\f5PY\e5\df\e1\fe\cc(\t\fe)\c2\8a\1cbk\18\13\e5\e7\e1\fe)(\0c\f1\cd\cd*\f5\df`i\fe) \e6\f1\e3\19+\e3\a7\edR\01\00\008\07#\a7\fa *DM\d1\fd\cb\01\b6\cd0%\c8\af\fd\cb\01\b6\c5\cd\a93\c1*e\\w#s#r#q#p#\"e\\\c9\af\d5\e5\f5\cd\82\1c\f1\cd0%(\12\f5\cd\99\1e\d1x\b17(\05\e1\e5\a7\edBz\de\00\e1\d1\c9\eb#^#V\c9\cd0%\c8\cd\a90\da\15\1f\c9*M\\\fd\cb7N(^\01\05\00\03#~\fe (\fa0\0b\fe\108\11\fe\160\0d#\18\ed\cd\88,8\e7\fe$\ca\c0+y*Y\\+\cdU\16##\eb\d5*M\\\1b\d6\06G(\11#~\fe!8\fa\f6 \13\12\10\f4\f6\80\12>\c0*M\\\ae\f6 \e1\cd\ea+\e5\ef\028\e1\01\05\00\a7\edB\18@\fd\cb\01v(\06\11\06\00\19\18\e7*M\\\edKr\\\fd\cb7F 0x\b1\c8\e5\f7\d5\c5T]#6 \ed\b8\e5\cd\f1+\e1\e3\a7\edB\t0\02DM\e3\ebx\b1(\02\ed\b0\c1\d1\e1\ebx\b1\c8\d5\ed\b0\e1\c9+++~\e5\c5\cd\c6+\c1\e1\03\03\03\c3\e8\19>\df*M\\\a6\f5\cd\f1+\eb\t\c5+\"M\\\03\03\03*Y\\+\cdU\16*M\\\c1\c5\03\ed\b8\eb#\c1p+q\f1+w*Y\\+\c9*e\\+F+N+V+^+~\"e\\\c9\cd\b2(\c2\8a\1c\cd0% \08\cb\b1\cd\96)\cd\ee\1b8\08\c5\cd\b8\19\cd\e8\19\c1\cb\f9\06\00\c5!\01\00\cbq \02.\05\eb\e7&\ff\cd\cc*\da *\e1\c5$\e5`i\cd\f4*\eb\df\fe,(\e8\fe) \bb\e7\c1yh&\00##)\19\da\15\1f\d5\c5\e5DM*Y\\+\cdU\16#w\c1\0b\0b\0b#q#p\c1x#wbk\1b6\00\cbq(\026 \c1\ed\b8\c1p+q+= \f8\c9\cd\1b-?\d8\feA?\d0\fe[\d8\fea?\d0\fe{\c9\fe\c4 \19\11\00\00\e7\d61\ce\00 \n\eb?\edj\da\ad1\eb\18\efBK\c3+-\fe.(\0f\cd;-\fe. (\e7\cd\1b-8\"\18\n\e7\cd\1b-\da\8a\1c\ef\a08\ef\a1\c0\028\df\cd\"-8\0b\ef\e0\a4\05\c0\04\0f8\e7\18\ef\feE(\03\fee\c0\06\ff\e7\fe+(\05\fe- \02\04\e7\cd\1b-8\cb\c5\cd;-\cd\d5-\c1\da\ad1\a7\fa\ad1\04(\02\edD\c3O-\fe0\d8\fe:?\c9\cd\1b-\d8\d60O\06\00\fd!:\\\af_QHG\cd\b6*\ef8\a7\c9\f5\ef\a08\f1\cd\"-\d8\ef\01\a4\04\0f8\cdt\00\18\f1\07\0f0\02/<\f5!\92\\\cd\0b5\ef\a48\f1\cb?0\0d\f5\ef\c1\e0\00\04\043\02\05\e18\f1(\08\f5\ef1\048\f1\18\e5\ef\028\c9#N#~\a9\91_#~\89\a9W\c9\0e\00\e56\00#q#{\a9\91w#z\89\a9w#6\00\e1\c9\ef8~\a7(\05\ef\a2\0f\'8\ef\028\e5\d5\ebF\cd\7f-\af\90\cbyBK{\d1\e1\c9W\17\9f_O\afG\cd\b6*\ef4\ef\1a \9a\85\04\'8\cd\a2-\d8\f5\05\04(\03\f17\c9\f1\c9\ef16\00\0b17\00\0d\028>0\d7\c9*8>-\d7\ef\a0\c3\c4\c5\028\d9\e5\d9\ef1\'\c2\03\e2\01\c2\028~\a7 G\cd\7f-\06\10z\a7 \06\b3(\tS\06\08\d5\d9\d1\d9\18W\ef\e28~\d6~\cd\c1-W:\ac\\\922\ac\\z\cdO-\ef1\'\c1\03\e18\cd\d5-\e52\a1\\=\17\9f<!\ab\\w#\86w\e1\c3\cf.\d6\80\fe\1c8\13\cd\c1-\d6\07G!\ac\\\86wx\edD\cdO-\18\92\eb\cd\ba/\d9\cb\fa}\d9\d6\80G\cb#\cb\12\d9\cb\13\cb\12\d9!\aa\\\0e\05~\8f\'w+\0d \f8\10\e7\af!\a6\\\11\a1\\\06\t\edo\0e\ff\edo \04\0d\0c \n\12\13\fd4q\fd4r\0e\00\cb@(\01#\10\e7:\ab\\\d6\t8\n\fd5q>\04\fd\beo\18A\ef\02\e28\eb\cd\ba/\d9>\80\95.\00\cb\fa\d9\cd\dd/\fd~q\fe\088\06\d9\cb\12\d9\18 \01\00\02{\cd\8b/_z\cd\8b/W\c5\d9\c1\10\f1!\a1\\y\fdNq\tw\fd4q\18\d3\f5!\a1\\\fdNq\06\00\tA\f1+~\ce\00w\a7(\05\fe\n?0\08\10\f16\01\04\fd4r\fdpq\ef\028\d9\e1\d9\edK\ab\\!\a1\\x\fe\t8\04\fe\fc8&\a7\cc\ef\15\af\90\faR/G\18\0cy\a7(\03~#\0d\cd\ef\15\10\f4y\a7\c8\04>.\d7>0\10\fbA\18\e6P\15\06\01\cdJ/>E\d7Jy\a7\f2\83/\edDO>-\18\02>+\d7\06\00\c3\1b\1a\d5o&\00]T))\19)Y\19L}\d1\c9~6\00\a7\c8#\cb~\cb\fe+\c8\c5\01\05\00\tAO7+~/\ce\00w\10\f8y\c1\c9\e5\f5N#Fw#yN\c5#N#F\ebW^\d5#V#^\d5\d9\d1\e1\c1\d9#V#^\f1\e1\c9\a7\c8\fe!0\16\c5G\d9\cb-\cb\1a\cb\1b\d9\cb\1a\cb\1b\10\f2\c1\d0\cd\040\c0\d9\af.\00W]\d9\11\00\00\c9\1c\c0\14\c0\d9\1c \01\14\d9\c9\eb\cdn4\eb\1a\b6 &\d5#\e5#^#V###~#N#F\e1\eb\t\eb\8e\0f\ce\00 \0b\9fw#s#r+++\d1\c9+\d1\cd\932\d9\e5\d9\d5\e5\cd\9b/G\eb\cd\9b/O\b80\03xA\eb\f5\90\cd\ba/\cd\dd/\f1\e1w\e5ha\19\d9\eb\edJ\eb|\8do\1f\ad\d9\eb\e1\1f0\08>\01\cd\dd/4(#\d9}\e6\80\d9#w+(\1f{\edD?_z/\ce\00W\d9{/\ce\00_z/\ce\000\07\1f\d94\ca\ad1\d9W\d9\af\c3U1\c5\06\10|M!\00\00)8\n\cb\11\170\03\198\02\10\f3\c1\c9\cd\e94\d8#\ae\cb\fe+\c9\1a\b6 \"\d5\e5\d5\cd\7f-\eb\e3A\cd\7f-x\a9O\e1\cd\a90\eb\e18\nz\b3 \01O\cd\8e-\d1\c9\d1\cd\932\af\cd\c00\d8\d9\e5\d9\d5\eb\cd\c00\eb8Z\e5\cd\ba/x\a7\edb\d9\e5\edb\d9\06!\18\110\05\19\d9\edZ\d9\d9\cb\1c\cb\1d\d9\cb\1c\cb\1d\d9\cb\18\cb\19\d9\cb\19\1f\10\e4\eb\d9\eb\d9\c1\e1x\81 \01\a7=?\17?\1f\f2F10h\a7< \088\06\d9\cbz\d9 \\w\d9x\d90\15~\a7>\80(\01\af\d9\a2\cd\fb/\07w8.#w+\18)\06 \d9\cbz\d9 \12\07\cb\13\cb\12\d9\cb\13\cb\12\d95(\d7\10\ea\18\d7\170\0c\cd\040 \07\d9\16\80\d94(\18\e5#\d9\d5\d9\c1x\17\cb\16\1fw#q#r#s\e1\d1\d9\e1\d9\c9\cf\05\cd\932\eb\af\cd\c008\f4\eb\cd\c00\d8\d9\e5\d9\d5\e5\cd\ba/\d9\e5`i\d9ah\af\06\df\18\10\17\cb\11\d9\cb\11\cb\10\d9)\d9\edj\d98\10\edR\d9\edR\d90\0f\19\d9\edZ\d9\a7\18\08\a7\edR\d9\edR\d97\04\fa\d21\f5(\e1_Q\d9YP\f1\cb\18\f1\cb\18\d9\c1\e1x\91\c3=1~\a7\c8\fe\810\066\00> \18Q\fe\91 \1a###>\80\a6+\b6+ \03>\80\ae+ 6w#6\ff+>\18\1830,\d5/\c6\91#V#^++\0e\00\cbz(\01\0d\cb\fa\06\08\90\808\04Z\16\00\90(\07G\cb:\cb\1b\10\fa\cd\8e-\d1\c9~\d6\a0\f0\edD\d5\eb+G\cb8\cb8\cb8(\056\00+\10\fb\e6\07(\tG>\ff\cb\'\10\fc\a6w\eb\d1\c9\cd\962\eb~\a7\c0\d5\cd\7f-\af#w+w\06\91z\a7 \08\b3B(\10SX\06\89\eb\05)0\fc\cb\t\cb\1c\cb\1d\eb+s+r+p\d1\c9\00\b0\00@\b0\00\010\00\f1I\0f\da\a2@\b0\00\n\8f6<4\a13\0f0\ca0\af1Q8\1b5$5;5;5;5;5;5;5\140-5;5;5;5;5;5;5\9c5\de5\bc4E6n4i6\de5t6\b57\aa7\da738C8\e27\137\c46\af6J8\924j4\ac4\a54\b34\1f6\c95\015\c03\a06\866\c63z6\065\f94\9b6\837\142\a23O-\972I4\1b4-4\0f4\cd\bf5x2g\\\d9\e3\d9\edSe\\\d9~#\e5\a7\f2\803W\e6`\0f\0f\0f\0f\c6|oz\e6\1f\18\0e\fe\180\08\d9\01\fb\ffT]\t\d9\07o\11\d72&\00\19^#V!e3\e3\d5\d9\edKf\\\c9\f1:g\\\d9\18\c3\d5\e5\01\05\00\cd\05\1f\e1\d1\c9\ed[e\\\cd\c03\edSe\\\c9\cd\a93\ed\b0\c9bk\cd\a93\d9\e5\d9\e3\c5~\e6\c0\07\07O\0c~\e6? \02#~\c6P\12>\05\91#\13\06\00\ed\b0\c1\e3\d9\e1\d9G\af\05\c8\12\13\18\fa\a7\c8\f5\d5\11\00\00\cd\c83\d1\f1=\18\f2O\07\07\81O\06\00\t\c9\d5*h\\\cd\064\cd\c03\e1\c9bk\d9\e5!\c52\d9\cd\f73\cd\c83\d9\e1\d9\c9\e5\eb*h\\\cd\064\eb\cd\c03\eb\e1\c9\06\05\1aN\eb\12q#\13\10\f7\eb\c9G\cd^31\0f\c0\02\a0\c21\e0\04\e2\c1\038\cd\c63\cdb3\0f\01\c2\025\ee\e1\038\c9\06\ff\18\06\cd\e94\d8\06\00~\a7(\0b#x\e6\80\b6\17?\1fw+\c9\d5\e5\cd\7f-\e1x\b1/O\cd\8e-\d1\c9\cd\e94\d8\d5\11\01\00#\cb\16+\9fO\cd\8e-\d1\c9\cd\99\1e\edx\18\04\cd\99\1e\n\c3(-\cd\99\1e!+-\e5\c5\c9\cd\f1+\0bx\b1 #\1a\cd\8d,8\t\d6\908\19\fe\150\15<=\87\87\87\fe\a80\0c\edK{\\\81O0\01\04\c3+-\cf\t\e5\c5G~#\b6#\b6#\b6x\c1\e1\c07\c9\cd\e94\d8>\ff\18\06\cd\e94\18\05\af#\ae+\07\e5>\00w#w#\17w\1f#w#w\e1\c9\eb\cd\e94\eb\d87\18\e7\eb\cd\e94\eb\d0\a7\18\de\eb\cd\e94\eb\d0\d5\1b\af\12\1b\12\d1\c9x\d6\08\cbW \01=\0f0\08\f5\e5\cd<4\d1\eb\f1\cbW \07\0f\f5\cd\0f0\183\0f\f5\cd\f1+\d5\c5\cd\f1+\e1|\b5\e3x \0b\b1\c1(\04\f1?\18\16\f1\18\13\b1(\0d\1a\968\t \ed\0b\13#\e3+\18\df\c1\f1\a7\f5\ef\a08\f1\f5\dc\015\f1\f5\d4\f94\f1\0f\d4\015\c9\cd\f1+\d5\c5\cd\f1+\e1\e5\d5\c5\tDM\f7\cd\b2*\c1\e1x\b1(\02\ed\b0\c1\e1x\b1(\02\ed\b0*e\\\11\fb\ff\e5\19\d1\c9\cd\d5-8\0e \0c\f5\01\01\00\f7\f1\12\cd\b2*\eb\c9\cf\n*]\\\e5x\c6\e3\9f\f5\cd\f1+\d5\03\f7\e1\edS]\\\d5\ed\b0\eb+6\0d\fd\cb\01\be\cd\fb$\df\fe\0d \07\e1\f1\fd\ae\01\e6@\c2\8a\1c\"]\\\fd\cb\01\fe\cd\fb$\e1\"]\\\18\a0\01\01\00\f7\"[\\\e5*Q\\\e5>\ff\cd\01\16\cd\e3-\e1\cd\15\16\d1*[\\\a7\edRDM\cd\b2*\eb\c9\cd\94\1e\fe\10\d2\9f\1e*Q\\\e5\cd\01\16\cd\e6\15\01\00\000\03\0c\f7\12\cd\b2*\e1\cd\15\16\c3\bf5\cd\f1+x\b1(\01\1a\c3(-\cd\f1+\c3+-\d9\e5!g\\5\e1 \04#\d9\c9\d9^{\17\9fW\19\d9\c9\13\13\1a\1b\1b\a7 \ef\d9#\d9\c9\f1\d9\e3\d9\c9\ef\c0\021\e0\05\'\e0\01\c0\04\03\e08\c9\ef16\00\04:8\c91:\c0\03\e0\010\00\03\a1\038\c9\ef=4\f18\aa;)\041\'\c3\031\0f\a1\03\88\136Xef\9dxe@\a2`2\c9\e7!\f7\af$\eb/\b0\b0\14\ee~\bb\94X\f1:~\f8\cf\e38\cd\d5- \078\03\860\t\cf\058\07\960\04\edDw\c9\ef\02\a08\c9\ef=17\00\048\cf\t\a0\028~6\80\cd(-\ef48\00\03\0114\f0L\cc\cc\cd\037\00\08\01\a1\03\0184\ef\014\f01r\17\f8\04\01\a2\03\a2\03142 \04\a2\03\8c\11\ac\14\tV\da\a5Y0\c5\\\90\aa\9epoa\a1\cb\da\96\a41\9f\b4\e7\a0\fe\\\fc\ea\1bC\ca6\ed\a7\9c~^\f0n#\80\93\04\0f8\c9\ef=4\ee\"\f9\83n\041\a2\0f\'\031\0f1\0f1*\a1\0317\c0\00\04\028\c9\a1\03\016\00\02\1b8\c9\ef9*\a1\03\e0\00\06\1b3\03\ef911\041\0f\a1\03\86\14\e6\\\1f\0b\a3\8f8\ee\e9\15c\bb#\ee\92\0d\cd\ed\f1#]\1b\ea\048\c9\ef1\1f\01 \058\c9\cd\972~\fe\818\0e\ef\a1\1b\01\0516\a3\01\00\06\1b3\03\ef\a0\0111\041\0f\a1\03\8c\10\b2\13\0eU\e4\8dX9\bc[\98\fd\9e\006u\a0\db\e8\b4cB\c4\e6\b5\t6\be\e96s\1b]\ec\d8\dec\be\f0a\a1\b3\0c\04\0f8\c9\ef11\04\a1\03\1b(\a1\0f\05$1\0f8\c9\ef\"\a3\03\1b8\c9\ef10\00\1e\a28\ef\0110\00\07%\048\c3\c46\0210\00\t\a0\017\00\06\a1\01\05\02\a18\c9\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff")
+ (data (i32.const 22537) "\10\10\10\10\00\10\00\00$$\00\00\00\00\00\00$~$$~$\00\00\08>(>\n>\08\00bd\08\10&F\00\00\10(\10*D:\00\00\08\10\00\00\00\00\00\00\04\08\08\08\08\04\00\00 \10\10\10\10 \00\00\00\14\08>\08\14\00\00\00\08\08>\08\08\00\00\00\00\00\00\08\08\10\00\00\00\00>\00\00\00\00\00\00\00\00\18\18\00\00\00\02\04\08\10 \00\00<FJRb<\00\00\18(\08\08\08>\00\00<B\02<@~\00\00<B\0c\02B<\00\00\08\18(H~\08\00\00~@|\02B<\00\00<@|BB<\00\00~\02\04\08\10\10\00\00<B<BB<\00\00<BB>\02<\00\00\00\00\10\00\00\10\00\00\00\10\00\00\10\10 \00\00\04\08\10\08\04\00\00\00\00>\00>\00\00\00\00\10\08\04\08\10\00\00<B\04\08\00\08\00\00<JV^@<\00\00<BB~BB\00\00|B|BB|\00\00<B@@B<\00\00xDBBDx\00\00~@|@@~\00\00~@|@@@\00\00<B@NB<\00\00BB~BBB\00\00>\08\08\08\08>\00\00\02\02\02BB<\00\00DHpHDB\00\00@@@@@~\00\00BfZBBB\00\00BbRJFB\00\00<BBBB<\00\00|BB|@@\00\00<BBRJ<\00\00|BB|DB\00\00<@<\02B<\00\00\fe\10\10\10\10\10\00\00BBBBB<\00\00BBBB$\18\00\00BBBBZ$\00\00B$\18\18$B\00\00\82D(\10\10\10\00\00~\04\08\10 ~\00\00\0e\08\08\08\08\0e\00\00\00@ \10\08\04\00\00p\10\10\10\10p\00\00\108T\10\10\10\00\00\00\00\00\00\00\00\ff\00\1c\"x  ~\00\00\008\04<D<\00\00  <\"\"<\00\00\00\1c   \1c\00\00\04\04<DD<\00\00\008Dx@<\00\00\0c\10\18\10\10\10\00\00\00<DD<\048\00@@xDDD\00\00\10\000\10\108\00\00\04\00\04\04\04$\18\00 (00($\00\00\10\10\10\10\10\0c\00\00\00hTTTT\00\00\00xDDDD\00\00\008DDD8\00\00\00xDDx@@\00\00<DD<\04\06\00\00\1c    \00\00\008@8\04x\00\00\108\10\10\10\0c\00\00\00DDDD8\00\00\00DD((\10\00\00\00DTTT(\00\00\00D(\10(D\00\00\00DDD<\048\00\00|\08\10 |\00\00\0e\080\08\08\0e\00\00\08\08\08\08\08\08\00\00p\10\0c\10\10p\00\00\14(\00\00\00\00\00<B\99\a1\a1\99B<")
+ (data (i32.const 23296) "\10\00\00\00\01\00\00\00\03\00\00\00\10\00\00\00\00\1b\00\00\00\1b\00\00\00@\00\00\00@")
+ (data (i32.const 23332) "\01")
+ (data (i32.const 23348) "\01")
+ (data (i32.const 23360) "N\00\00\00\01\00\00\00\01\00\00\00N\00\00\00Z\00X\00 \00S\00p\00e\00c\00t\00r\00u\00m\00 \00i\00n\00s\00t\00a\00n\00c\00e\00 \00i\00s\00 \00n\00o\00t\00 \00i\00n\00i\00t\00i\00a\00l\00i\00z\00e\00d")
+ (data (i32.const 23456) "b\00\00\00\01\00\00\00\01\00\00\00b\00\00\00s\00r\00c\00/\00a\00s\00s\00e\00m\00b\00l\00y\00/\00s\00p\00e\00c\00t\00r\00u\00m\00/\00m\00a\00c\00h\00i\00n\00e\00/\00s\00p\00e\00c\00t\00r\00u\00m\00-\00m\00a\00c\00h\00i\00n\00e\00.\00t\00s")
+ (data (i32.const 23584) "\1c\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\003\00\00\00\02\00\00\00S\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\91\00\00\00\02\00\00\00\93\00\00\00\02\00\00\00\93\10\00\00\02\00\00\00\93\10\00\00\02\00\00\001\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10\00\00\00\00\00\00\00Q\00\00\00\02\00\00\00\10\00\00\00\00\00\00\00\93\04\00\00\02\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\93 \00\00\02\00\00\00\10")
+ (table $0 239 funcref)
+ (elem (i32.const 1) $src/assembly/Z80Cpu/AluADD $src/assembly/Z80Cpu/AluADC $src/assembly/Z80Cpu/AluSUB $src/assembly/Z80Cpu/AluSBC $src/assembly/Z80Cpu/AluAND $src/assembly/Z80Cpu/AluXOR $src/assembly/Z80Cpu/AluOR $src/assembly/Z80Cpu/AluCP $src/assembly/Z80Cpu/LdQQNN $src/assembly/Z80Cpu/LdBCiA $src/assembly/Z80Cpu/IncQQ $src/assembly/Z80Cpu/IncQ $src/assembly/Z80Cpu/DecQ $src/assembly/Z80Cpu/LdQN $src/assembly/Z80Cpu/Rlca $src/assembly/Z80Cpu/ExAf $src/assembly/Z80Cpu/AddHlQQ $src/assembly/Z80Cpu/LdABci $src/assembly/Z80Cpu/DecQQ $src/assembly/Z80Cpu/Rrca $src/assembly/Z80Cpu/Djnz $src/assembly/Z80Cpu/LdDEiA $src/assembly/Z80Cpu/Rla $src/assembly/Z80Cpu/JrE $src/assembly/Z80Cpu/LdADei $src/assembly/Z80Cpu/Rra $src/assembly/Z80Cpu/JrNz $src/assembly/Z80Cpu/LdNNiHl $src/assembly/Z80Cpu/Daa $src/assembly/Z80Cpu/JrZ $src/assembly/Z80Cpu/LdHlNNi $src/assembly/Z80Cpu/Cpl $src/assembly/Z80Cpu/JrNc $src/assembly/Z80Cpu/LdNNiA $src/assembly/Z80Cpu/IncHli $src/assembly/Z80Cpu/DecHli $src/assembly/Z80Cpu/LdHliN $src/assembly/Z80Cpu/Scf $src/assembly/Z80Cpu/JrC $src/assembly/Z80Cpu/LdANNi $src/assembly/Z80Cpu/Ccf $src/assembly/Z80Cpu/LdQW $src/assembly/Z80Cpu/LdQHli $src/assembly/Z80Cpu/LdHliQ $src/assembly/Z80Cpu/Halt $src/assembly/Z80Cpu/AddAQ $src/assembly/Z80Cpu/AddAHli $src/assembly/Z80Cpu/AdcAQ $src/assembly/Z80Cpu/AdcAHli $src/assembly/Z80Cpu/SubAQ $src/assembly/Z80Cpu/SubAHli $src/assembly/Z80Cpu/SbcAQ $src/assembly/Z80Cpu/SbcAHli $src/assembly/Z80Cpu/AndAQ $src/assembly/Z80Cpu/AndAHli $src/assembly/Z80Cpu/XorAQ $src/assembly/Z80Cpu/XorAHli $src/assembly/Z80Cpu/OrAQ $src/assembly/Z80Cpu/OrAHli $src/assembly/Z80Cpu/CpAQ $src/assembly/Z80Cpu/CpAHli $src/assembly/Z80Cpu/RetNz $src/assembly/Z80Cpu/PopBc $src/assembly/Z80Cpu/JpNz $src/assembly/Z80Cpu/Jp $src/assembly/Z80Cpu/CallNz $src/assembly/Z80Cpu/PushBc $src/assembly/Z80Cpu/AluAN $src/assembly/Z80Cpu/RstN $src/assembly/Z80Cpu/RetZ $src/assembly/Z80Cpu/Ret $src/assembly/Z80Cpu/JpZ $src/assembly/Z80Cpu/CallZ $src/assembly/Z80Cpu/Call $src/assembly/Z80Cpu/RetNc $src/assembly/Z80Cpu/PopDe $src/assembly/Z80Cpu/JpNc $src/assembly/Z80Cpu/OutNA $src/assembly/Z80Cpu/CallNc $src/assembly/Z80Cpu/PushDe $src/assembly/Z80Cpu/RetC $src/assembly/Z80Cpu/Exx $src/assembly/Z80Cpu/JpC $src/assembly/Z80Cpu/InAN $src/assembly/Z80Cpu/CallC $src/assembly/Z80Cpu/RetPo $src/assembly/Z80Cpu/PopHl $src/assembly/Z80Cpu/JpPo $src/assembly/Z80Cpu/ExSpiHl $src/assembly/Z80Cpu/CallPo $src/assembly/Z80Cpu/PushHl $src/assembly/Z80Cpu/RetPe $src/assembly/Z80Cpu/JpHli $src/assembly/Z80Cpu/JpPe $src/assembly/Z80Cpu/ExDeHl $src/assembly/Z80Cpu/CallPe $src/assembly/Z80Cpu/RetP $src/assembly/Z80Cpu/PopAf $src/assembly/Z80Cpu/JpP $src/assembly/Z80Cpu/Di $src/assembly/Z80Cpu/CallP $src/assembly/Z80Cpu/PushAf $src/assembly/Z80Cpu/RetM $src/assembly/Z80Cpu/LdSpHl $src/assembly/Z80Cpu/JpM $src/assembly/Z80Cpu/Ei $src/assembly/Z80Cpu/CallM $src/assembly/Z80Cpu/Swapnib $src/assembly/Z80Cpu/Mirror $src/assembly/Z80Cpu/TestN $src/assembly/Z80Cpu/BslaDeB $src/assembly/Z80Cpu/BsraDeB $src/assembly/Z80Cpu/BsrlDeB $src/assembly/Z80Cpu/BsrfDeB $src/assembly/Z80Cpu/BrlcDeB $src/assembly/Z80Cpu/Mul $src/assembly/Z80Cpu/AddHlA $src/assembly/Z80Cpu/AddDeA $src/assembly/Z80Cpu/AddBcA $src/assembly/Z80Cpu/AddHlNN $src/assembly/Z80Cpu/AddDeNN $src/assembly/Z80Cpu/AddBcNN $src/assembly/Z80Cpu/InQCi $src/assembly/Z80Cpu/OutCiQ $src/assembly/Z80Cpu/SbcHlQQ $src/assembly/Z80Cpu/LdNNiQQ $src/assembly/Z80Cpu/Neg $src/assembly/Z80Cpu/Retn $src/assembly/Z80Cpu/ImN $src/assembly/Z80Cpu/LdXrA $src/assembly/Z80Cpu/AdcHlQQ $src/assembly/Z80Cpu/LdQQNNi $src/assembly/Z80Cpu/LdAXr $src/assembly/Z80Cpu/Rrd $src/assembly/Z80Cpu/Rld $src/assembly/Z80Cpu/PushNN $src/assembly/Z80Cpu/OutInB $src/assembly/Z80Cpu/NextReg $src/assembly/Z80Cpu/NextRegA $src/assembly/Z80Cpu/PixelDn $src/assembly/Z80Cpu/PixelAd $src/assembly/Z80Cpu/SetAE $src/assembly/Z80Cpu/JpInC $src/assembly/Z80Cpu/Ldi $src/assembly/Z80Cpu/Cpi $src/assembly/Z80Cpu/Ini $src/assembly/Z80Cpu/Outi $src/assembly/Z80Cpu/Ldix $src/assembly/Z80Cpu/Ldws $src/assembly/Z80Cpu/Ldd $src/assembly/Z80Cpu/Cpd $src/assembly/Z80Cpu/Ind $src/assembly/Z80Cpu/Outd $src/assembly/Z80Cpu/Lddx $src/assembly/Z80Cpu/Ldir $src/assembly/Z80Cpu/Cpir $src/assembly/Z80Cpu/Inir $src/assembly/Z80Cpu/Otir $src/assembly/Z80Cpu/Ldirx $src/assembly/Z80Cpu/Ldpirx $src/assembly/Z80Cpu/Lddr $src/assembly/Z80Cpu/Cpdr $src/assembly/Z80Cpu/Indr $src/assembly/Z80Cpu/Otdr $src/assembly/Z80Cpu/Lddrx $src/assembly/Z80Cpu/RlcQ $src/assembly/Z80Cpu/RlcHli $src/assembly/Z80Cpu/RrcQ $src/assembly/Z80Cpu/RrcHli $src/assembly/Z80Cpu/RlQ $src/assembly/Z80Cpu/RlHli $src/assembly/Z80Cpu/RrQ $src/assembly/Z80Cpu/RrHli $src/assembly/Z80Cpu/SlaQ $src/assembly/Z80Cpu/SlaHli $src/assembly/Z80Cpu/SraQ $src/assembly/Z80Cpu/SraHli $src/assembly/Z80Cpu/SllQ $src/assembly/Z80Cpu/SllHli $src/assembly/Z80Cpu/SrlQ $src/assembly/Z80Cpu/SrlHli $src/assembly/Z80Cpu/BitNQ $src/assembly/Z80Cpu/BitNHli $src/assembly/Z80Cpu/ResNQ $src/assembly/Z80Cpu/ResNHli $src/assembly/Z80Cpu/SetNQ $src/assembly/Z80Cpu/SetNHli $src/assembly/Z80Cpu/AddIxQQ $src/assembly/Z80Cpu/LdIxNN $src/assembly/Z80Cpu/LdNNiIx $src/assembly/Z80Cpu/IncIx $src/assembly/Z80Cpu/IncXh $src/assembly/Z80Cpu/DecXh $src/assembly/Z80Cpu/LdXhN $src/assembly/Z80Cpu/LdIxNNi $src/assembly/Z80Cpu/DecIx $src/assembly/Z80Cpu/IncXl $src/assembly/Z80Cpu/DecXl $src/assembly/Z80Cpu/LdXlN $src/assembly/Z80Cpu/IncIxi $src/assembly/Z80Cpu/DecIxi $src/assembly/Z80Cpu/LdIxiN $src/assembly/Z80Cpu/LdQXh $src/assembly/Z80Cpu/LdQXl $src/assembly/Z80Cpu/LdQIxi $src/assembly/Z80Cpu/LdIxiQ $src/assembly/Z80Cpu/AluAXh $src/assembly/Z80Cpu/AluAXl $src/assembly/Z80Cpu/AluAIxi $src/assembly/Z80Cpu/PopIx $src/assembly/Z80Cpu/ExSpiIx $src/assembly/Z80Cpu/PushIx $src/assembly/Z80Cpu/JpIxi $src/assembly/Z80Cpu/LdSpIx $src/assembly/Z80Cpu/XrlcQ $src/assembly/Z80Cpu/XrrcQ $src/assembly/Z80Cpu/XrlQ $src/assembly/Z80Cpu/XrrQ $src/assembly/Z80Cpu/XSlaQ $src/assembly/Z80Cpu/XSraQ $src/assembly/Z80Cpu/XSllQ $src/assembly/Z80Cpu/XSrlQ $src/assembly/Z80Cpu/XBitN $src/assembly/Z80Cpu/XResNQ $src/assembly/Z80Cpu/XSetNQ $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|1 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|0 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|1 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/Z80Cpu/Z80Cpu#constructor~anonymous|4 $src/assembly/test-machine/test-devices/readSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleMemory $src/assembly/test-machine/test-devices/writeSimpleIo $src/assembly/test-machine/test-devices/readSimpleIo $src/assembly/test-machine/test-devices/simpleWriteTbBlueIndex $src/assembly/test-machine/test-devices/simpleWriteTbBlueValue $src/assembly/spectrum/machine/spectrum-48/sp48GetCpuConfiguration)
  (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
  (global $~lib/rt/tlsf/collectLock (mut i32) (i32.const 0))
  (global $~argumentsLength (mut i32) (i32.const 0))
@@ -103,7 +106,7 @@
  (global $src/assembly/spectrum/machine/spectrum-machine/spectrum (mut i32) (i32.const 0))
  (global $src/assembly/index/UINT8ARRAY_ID i32 (i32.const 11))
  (global $src/assembly/index/UINT32ARRAY_ID i32 (i32.const 7))
- (global $~lib/rt/__rtti_base i32 (i32.const 7152))
+ (global $~lib/rt/__rtti_base i32 (i32.const 23584))
  (global $src/assembly/Z80Cpu/Z80Cpu i32 (i32.const 5))
  (global $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState i32 (i32.const 20))
  (export "__setArgumentsLength" (func $~setArgumentsLength))
@@ -945,11 +948,11 @@
    if
     unreachable
    end
-   i32.const 7360
+   i32.const 23824
    local.tee $0
    i32.const 0
    i32.store
-   i32.const 8928
+   i32.const 25392
    i32.const 0
    i32.store
    loop $for-loop|0
@@ -960,7 +963,7 @@
      local.get $1
      i32.const 2
      i32.shl
-     i32.const 7360
+     i32.const 23824
      i32.add
      i32.const 0
      i32.store offset=4
@@ -978,7 +981,7 @@
        i32.add
        i32.const 2
        i32.shl
-       i32.const 7360
+       i32.const 23824
        i32.add
        i32.const 0
        i32.store offset=96
@@ -996,13 +999,13 @@
      br $for-loop|0
     end
    end
-   i32.const 7360
-   i32.const 8944
+   i32.const 23824
+   i32.const 25408
    memory.size
    i32.const 16
    i32.shl
    call $~lib/rt/tlsf/addMemory
-   i32.const 7360
+   i32.const 23824
    global.set $~lib/rt/tlsf/ROOT
   end
   local.get $0
@@ -1429,7 +1432,7 @@
  )
  (func $~lib/rt/pure/__retain (; 12 ;) (param $0 i32) (result i32)
   local.get $0
-  i32.const 7348
+  i32.const 23812
   i32.gt_u
   if
    local.get $0
@@ -1441,7 +1444,7 @@
  )
  (func $~lib/rt/pure/__release (; 13 ;) (param $0 i32)
   local.get $0
-  i32.const 7348
+  i32.const 23812
   i32.gt_u
   if
    local.get $0
@@ -1767,7 +1770,7 @@
   local.get $2
   call $~lib/memory/memory.copy
   local.get $1
-  i32.const 7348
+  i32.const 23812
   i32.ge_u
   if
    local.get $0
@@ -19798,7 +19801,7 @@
  (func $src/assembly/index/resetIoAccessLog (; 384 ;)
   (local $0 i32)
   i32.const 15
-  i32.const 6912
+  i32.const 23344
   call $~lib/rt/__allocArray
   call $~lib/rt/pure/__retain
   global.get $src/assembly/test-machine/test-devices/ioAccessLog
@@ -19808,7 +19811,7 @@
  (func $src/assembly/index/resetTbBlueAccessLog (; 385 ;)
   (local $0 i32)
   i32.const 17
-  i32.const 6928
+  i32.const 23360
   call $~lib/rt/__allocArray
   call $~lib/rt/pure/__retain
   global.get $src/assembly/test-machine/test-devices/tbBlueAccessLog
@@ -20040,13 +20043,55 @@
  (func $src/assembly/spectrum/machine/SpectrumEngine/SpectrumEngine#constructor (; 395 ;) (result i32)
   (local $0 i32)
   (local $1 i32)
-  i32.const 4
+  i32.const 68
   i32.const 22
   call $~lib/rt/tlsf/__alloc
   call $~lib/rt/pure/__retain
   local.tee $0
   i32.const 0
   i32.store
+  local.get $0
+  i32.const 0
+  i32.store8 offset=4
+  local.get $0
+  i32.const 0
+  i32.store offset=8
+  local.get $0
+  i32.const 0
+  i32.store8 offset=12
+  local.get $0
+  i32.const 0
+  i32.store offset=16
+  local.get $0
+  i32.const 0
+  i32.store offset=20
+  local.get $0
+  i32.const 0
+  i32.store offset=24
+  local.get $0
+  f64.const 0
+  f64.store offset=32
+  local.get $0
+  i32.const 0
+  i32.store offset=40
+  local.get $0
+  i32.const 0
+  i32.store offset=44
+  local.get $0
+  i32.const 0
+  i32.store offset=48
+  local.get $0
+  i32.const 0
+  i32.store offset=52
+  local.get $0
+  i32.const 0
+  i32.store offset=56
+  local.get $0
+  i32.const 0
+  i32.store offset=60
+  local.get $0
+  i32.const 0
+  i32.store offset=64
   i32.const 0
   i32.const 0
   call $src/assembly/Z80Cpu/Z80Cpu#constructor
@@ -20058,8 +20103,31 @@
   local.get $1
   i32.store
   local.get $0
+  i32.const 3
+  i32.store8 offset=4
+  local.get $0
+  i32.const 3500000
+  i32.store offset=8
+  local.get $0
  )
- (func $src/assembly/index/initSpectrumMachine (; 396 ;) (param $0 i32)
+ (func $src/assembly/spectrum/machine/spectrum-48/sp48GetCpuConfiguration (; 396 ;) (result i32)
+  (local $0 i32)
+  i32.const 17
+  i32.const 24
+  call $~lib/rt/tlsf/__alloc
+  call $~lib/rt/pure/__retain
+  local.tee $0
+  f64.const 35e5
+  f64.store
+  local.get $0
+  f64.const 1
+  f64.store offset=8
+  local.get $0
+  i32.const 0
+  i32.store8 offset=16
+  local.get $0
+ )
+ (func $src/assembly/index/initSpectrumMachine (; 397 ;) (param $0 i32)
   local.get $0
   i32.const 1
   local.get $0
@@ -20069,263 +20137,266 @@
   global.get $src/assembly/spectrum/machine/spectrum-machine/spectrum
   call $~lib/rt/pure/__release
   global.set $src/assembly/spectrum/machine/spectrum-machine/spectrum
+  global.get $src/assembly/spectrum/machine/spectrum-machine/spectrum
+  i32.const 238
+  i32.store offset=56
  )
- (func $src/assembly/index/getCurrentMachineType (; 397 ;) (result i32)
+ (func $src/assembly/index/getCurrentMachineType (; 398 ;) (result i32)
   global.get $src/assembly/spectrum/machine/spectrum-machine/machineType
  )
- (func $src/assembly/spectrum/machine/spectrum-machine/checkMachineInitialized (; 398 ;)
+ (func $src/assembly/spectrum/machine/spectrum-machine/checkMachineInitialized (; 399 ;)
   global.get $src/assembly/spectrum/machine/spectrum-machine/spectrum
   i32.eqz
   if
-   i32.const 6944
-   i32.const 7040
-   i32.const 66
+   i32.const 23376
+   i32.const 23472
+   i32.const 71
    i32.const 4
    call $~lib/builtins/abort
    unreachable
   end
  )
- (func $src/assembly/index/turnOnSpectrumMachine (; 399 ;)
+ (func $src/assembly/index/turnOnSpectrumMachine (; 400 ;)
   call $src/assembly/spectrum/machine/spectrum-machine/checkMachineInitialized
  )
- (func $src/assembly/index/executeCycle (; 400 ;) (param $0 i32)
+ (func $src/assembly/index/executeCycle (; 401 ;) (param $0 i32)
   call $src/assembly/spectrum/machine/spectrum-machine/checkMachineInitialized
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:tacts (; 401 ;) (param $0 i32) (result i64)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:tacts (; 402 ;) (param $0 i32) (result i64)
   local.get $0
   i64.load offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:tacts (; 402 ;) (param $0 i32) (param $1 i64)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:tacts (; 403 ;) (param $0 i32) (param $1 i64)
   local.get $0
   local.get $1
   i64.store offset=24
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:stateFlags (; 403 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:stateFlags (; 404 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=32
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:stateFlags (; 404 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:stateFlags (; 405 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=32
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:useGateArrayContention (; 405 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:useGateArrayContention (; 406 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=36
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:useGateArrayContention (; 406 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:useGateArrayContention (; 407 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=36
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:iff1 (; 407 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:iff1 (; 408 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=37
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:iff1 (; 408 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:iff1 (; 409 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=37
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:iff2 (; 409 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:iff2 (; 410 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=38
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:iff2 (; 410 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:iff2 (; 411 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=38
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:interruptMode (; 411 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:interruptMode (; 412 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=39
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:interruptMode (; 412 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:interruptMode (; 413 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=39
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:isInterruptBlocked (; 413 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:isInterruptBlocked (; 414 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=40
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:isInterruptBlocked (; 414 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:isInterruptBlocked (; 415 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=40
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:isInOpExecution (; 415 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:isInOpExecution (; 416 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=41
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:isInOpExecution (; 416 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:isInOpExecution (; 417 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=41
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:executionFlowStatus (; 417 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:executionFlowStatus (; 418 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=44
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReadStatus (; 418 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReadStatus (; 419 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=48
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriteStatus (; 419 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriteStatus (; 420 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=52
   call $~lib/rt/pure/__retain
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:prefixMode (; 420 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:prefixMode (; 421 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=56
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:prefixMode (; 421 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:prefixMode (; 422 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=56
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:indexMode (; 422 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:indexMode (; 423 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=60
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:indexMode (; 423 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:indexMode (; 424 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=60
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:maskableInterruptModeEntered (; 424 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:maskableInterruptModeEntered (; 425 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=64
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:maskableInterruptModeEntered (; 425 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:maskableInterruptModeEntered (; 426 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=64
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:opCode (; 426 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:opCode (; 427 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=65
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:opCode (; 427 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:opCode (; 428 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=65
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:allowExtendedInstructionSet (; 428 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:allowExtendedInstructionSet (; 429 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=66
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:allowExtendedInstructionSet (; 429 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:allowExtendedInstructionSet (; 430 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=66
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReader (; 430 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryReader (; 431 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=68
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryReader (; 431 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryReader (; 432 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=68
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriter (; 432 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:memoryWriter (; 433 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=72
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryWriter (; 433 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:memoryWriter (; 434 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=72
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:portReader (; 434 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:portReader (; 435 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=76
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:portReader (; 435 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:portReader (; 436 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=76
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:portWriter (; 436 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:portWriter (; 437 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=80
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:portWriter (; 437 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:portWriter (; 438 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=80
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueIndexWriter (; 438 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueIndexWriter (; 439 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=84
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueIndexWriter (; 439 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueIndexWriter (; 440 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=84
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueValueWriter (; 440 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:tbBlueValueWriter (; 441 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=88
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueValueWriter (; 441 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:tbBlueValueWriter (; 442 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=88
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:d (; 442 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:d (; 443 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=4
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:pc (; 443 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:pc (; 444 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:pc (; 444 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:pc (; 445 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=92
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:sp (; 445 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:sp (; 446 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=94
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#set:sp (; 446 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#set:sp (; 447 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store16 offset=94
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:xh (; 447 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:xh (; 448 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=18
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:xl (; 448 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:xl (; 449 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=18
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:yh (; 449 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:yh (; 450 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=20
   i32.const 8
   i32.shr_u
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:yl (; 450 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:yl (; 451 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u offset=20
   i32.const 255
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getIndexReg (; 451 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getIndexReg (; 452 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=60
   i32.const 2
@@ -20340,7 +20411,7 @@
   i32.const 65535
   i32.and
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#setIndexReg (; 452 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#setIndexReg (; 453 ;) (param $0 i32) (param $1 i32)
   local.get $0
   i32.load offset=60
   i32.const 2
@@ -20355,7 +20426,7 @@
    call $src/assembly/Z80Cpu/Z80Cpu#set:ix
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:sFlag (; 453 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:sFlag (; 454 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 128
@@ -20363,7 +20434,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:zFlag (; 454 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:zFlag (; 455 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 64
@@ -20371,7 +20442,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:r5Flag (; 455 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:r5Flag (; 456 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 32
@@ -20379,7 +20450,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:hFlag (; 456 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:hFlag (; 457 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 16
@@ -20387,7 +20458,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:r3Flag (; 457 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:r3Flag (; 458 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 8
@@ -20395,7 +20466,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:pvFlag (; 458 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:pvFlag (; 459 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 4
@@ -20403,7 +20474,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#get:nFlag (; 459 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#get:nFlag (; 460 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load16_u
   i32.const 2
@@ -20411,7 +20482,7 @@
   i32.const 0
   i32.ne
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#getCallInstructionLength (; 460 ;) (param $0 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#getCallInstructionLength (; 461 ;) (param $0 i32) (result i32)
   (local $1 i32)
   local.get $0
   local.get $0
@@ -20474,97 +20545,97 @@
    i32.const 0
   end
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:tactsL (; 461 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:tactsL (; 462 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=28
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:tactsL (; 462 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:tactsL (; 463 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=28
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:stateFlags (; 463 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:stateFlags (; 464 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=36
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:stateFlags (; 464 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:stateFlags (; 465 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=36
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:iff2 (; 465 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:iff2 (; 466 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=42
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:iff2 (; 466 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:iff2 (; 467 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=42
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:interruptMode (; 467 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:interruptMode (; 468 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=43
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:interruptMode (; 468 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:interruptMode (; 469 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=43
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInterruptBlocked (; 469 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInterruptBlocked (; 470 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=44
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInterruptBlocked (; 470 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInterruptBlocked (; 471 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=44
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInOpExecution (; 471 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:isInOpExecution (; 472 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=45
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInOpExecution (; 472 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:isInOpExecution (; 473 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=45
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:prefixMode (; 473 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:prefixMode (; 474 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=48
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:prefixMode (; 474 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:prefixMode (; 475 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=48
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:indexMode (; 475 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:indexMode (; 476 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load offset=52
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:indexMode (; 476 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:indexMode (; 477 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store offset=52
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:maskableInterruptModeEntered (; 477 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:maskableInterruptModeEntered (; 478 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=56
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:maskableInterruptModeEntered (; 478 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:maskableInterruptModeEntered (; 479 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=56
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:opCode (; 479 ;) (param $0 i32) (result i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#get:opCode (; 480 ;) (param $0 i32) (result i32)
   local.get $0
   i32.load8_u offset=57
  )
- (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:opCode (; 480 ;) (param $0 i32) (param $1 i32)
+ (func $src/assembly/test-machine/TestZ80MachineState/TestZ80MachineState#set:opCode (; 481 ;) (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store8 offset=57
  )
- (func $~start (; 481 ;)
+ (func $~start (; 482 ;)
   call $start:src/assembly/Z80Cpu
   i32.const 65536
   call $~lib/typedarray/Uint8Array#constructor
@@ -20577,10 +20648,10 @@
   i32.const 0
   global.set $src/assembly/spectrum/machine/spectrum-machine/machineType
  )
- (func $~lib/rt/pure/__collect (; 482 ;)
+ (func $~lib/rt/pure/__collect (; 483 ;)
   nop
  )
- (func $~lib/rt/pure/decrement (; 483 ;) (param $0 i32)
+ (func $~lib/rt/pure/decrement (; 484 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -20646,9 +20717,9 @@
    i32.store offset=4
   end
  )
- (func $~lib/rt/pure/__visit (; 484 ;) (param $0 i32)
+ (func $~lib/rt/pure/__visit (; 485 ;) (param $0 i32)
   local.get $0
-  i32.const 7348
+  i32.const 23812
   i32.lt_u
   if
    return
@@ -20658,7 +20729,7 @@
   i32.sub
   call $~lib/rt/pure/decrement
  )
- (func $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl (; 485 ;) (param $0 i32)
+ (func $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl (; 486 ;) (param $0 i32)
   (local $1 i32)
   (local $2 i32)
   local.get $0
@@ -20690,53 +20761,75 @@
    end
   end
  )
- (func $~lib/rt/__visit_members (; 486 ;) (param $0 i32)
+ (func $~lib/rt/__visit_members (; 487 ;) (param $0 i32)
   (local $1 i32)
   block $block$4$break
    block $switch$1$default
-    block $switch$1$case$19
-     block $switch$1$case$17
-      block $switch$1$case$15
-       block $switch$1$case$7
-        block $switch$1$case$2
+    block $switch$1$case$28
+     block $switch$1$case$24
+      block $switch$1$case$19
+       block $switch$1$case$17
+        block $switch$1$case$15
+         block $switch$1$case$7
+          block $switch$1$case$2
+           local.get $0
+           i32.const 8
+           i32.sub
+           i32.load
+           br_table $switch$1$case$2 $switch$1$case$2 $block$4$break $block$4$break $block$4$break $switch$1$case$7 $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $switch$1$case$2 $switch$1$case$15 $switch$1$case$2 $switch$1$case$17 $switch$1$case$2 $switch$1$case$19 $block$4$break $block$4$break $switch$1$case$2 $block$4$break $switch$1$case$24 $switch$1$case$2 $switch$1$case$2 $block$4$break $switch$1$case$28 $switch$1$case$2 $switch$1$default
+          end
+          return
+         end
          local.get $0
-         i32.const 8
-         i32.sub
-         i32.load
-         br_table $switch$1$case$2 $switch$1$case$2 $block$4$break $block$4$break $block$4$break $switch$1$case$7 $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $block$4$break $switch$1$case$2 $switch$1$case$15 $switch$1$case$2 $switch$1$case$17 $switch$1$case$2 $switch$1$case$19 $block$4$break $block$4$break $switch$1$case$2 $block$4$break $block$4$break $switch$1$case$2 $switch$1$default
+         i32.load offset=44
+         local.tee $1
+         if
+          local.get $1
+          call $~lib/rt/pure/__visit
+         end
+         local.get $0
+         i32.load offset=48
+         local.tee $1
+         if
+          local.get $1
+          call $~lib/rt/pure/__visit
+         end
+         local.get $0
+         i32.load offset=52
+         local.tee $0
+         if
+          local.get $0
+          call $~lib/rt/pure/__visit
+         end
+         return
         end
-        return
-       end
-       local.get $0
-       i32.load offset=44
-       local.tee $1
-       if
-        local.get $1
-        call $~lib/rt/pure/__visit
-       end
-       local.get $0
-       i32.load offset=48
-       local.tee $1
-       if
-        local.get $1
-        call $~lib/rt/pure/__visit
-       end
-       local.get $0
-       i32.load offset=52
-       local.tee $0
-       if
         local.get $0
-        call $~lib/rt/pure/__visit
+        call $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl
+        br $block$4$break
        end
-       return
+       local.get $0
+       call $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl
+       br $block$4$break
       end
       local.get $0
       call $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl
       br $block$4$break
      end
      local.get $0
-     call $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl
-     br $block$4$break
+     i32.load
+     local.tee $1
+     if
+      local.get $1
+      call $~lib/rt/pure/__visit
+     end
+     local.get $0
+     i32.load offset=48
+     local.tee $0
+     if
+      local.get $0
+      call $~lib/rt/pure/__visit
+     end
+     return
     end
     local.get $0
     call $~lib/array/Array<src/assembly/test-machine/test-devices/MemoryOp>#__visit_impl
@@ -20752,7 +20845,7 @@
    call $~lib/rt/pure/__visit
   end
  )
- (func $src/assembly/Z80Cpu/Z80Cpu#constructor|trampoline (; 487 ;) (param $0 i32) (param $1 i32) (result i32)
+ (func $src/assembly/Z80Cpu/Z80Cpu#constructor|trampoline (; 488 ;) (param $0 i32) (param $1 i32) (result i32)
   block $1of1
    block $0of1
     block $outOfRange
