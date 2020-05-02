@@ -35,4 +35,6 @@ export interface Api {
   turnOnSpectrumMachine(): void;
   resetSpectrumMachine(): void;
   executeCycle(options: ExecuteCycleOptions): void;
+
+  
 }

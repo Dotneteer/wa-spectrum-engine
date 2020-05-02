@@ -7,6 +7,24 @@ import {
   MemoryContentionType,
   ScreenConfiguration,
 } from "./configuration";
+import { AddressLocation, PagedBank } from "../memory/address";
+import { SpectrumEngine } from "./SpectrumEngine";
+import { LiteEvent } from "../../events/LiteEvent";
+
+// ============================================================================
+// ZX Spectrum instance
+let spectrum: SpectrumEngine;
+
+// ============================================================================
+// Machine configuration
+
+/**
+ * Sets the ZX Spectrum 48 engine instance
+ * @param engine Engine instance
+ */
+export function sp48SetInstance(engine: SpectrumEngine): void {
+  spectrum = engine;
+}
 
 /**
  * Configuration of the Z80 CPU
@@ -35,7 +53,7 @@ export function sp48GetMemoryConfiguration(): MemoryConfiguration {
 /**
  * Configuration of the screen
  */
-export function getScreenConfiguration(): ScreenConfiguration {
+export function sp48GetScreenConfiguration(): ScreenConfiguration {
   return {
     interruptTact: 14,
     verticalSyncLines: 8,
@@ -53,6 +71,124 @@ export function getScreenConfiguration(): ScreenConfiguration {
     attributeDataPrefetchTime: 1,
   };
 }
+
+/**
+ * Gets a known address of a particular ROM
+ * @param key Known address key
+ * @param romIndex Index of the ROM, by default, 0
+ * @returns Address, if found; otherwise, -1
+ */
+export function sp48GetKnownRomAddress(key: string, romIndex: u8): i32 {
+  if (key === "$LoadBytesInvalidHeaderAddress") return 0x05b6;
+  if (key === "$MainExecAddress") return 0x12ac;
+  if (key === "$SaveBytesRoutineAddress") return 0x04c2;
+  if (key === "$LoadBytesRoutineAddress") return 0x056c;
+  if (key === "$LoadBytesResumeAddress") return 0x05e2;
+  if (key === "$TokenTableAddress") return 0x0095;
+  if (key === "$TokenCount") return 91;
+  if (key === "$TokenOffset") return 0x00a5;
+  return -1;
+}
+
+// ============================================================================
+// Memory device
+const memory: u8[] = new Array<u8>(0x10000);
+
+/**
+ * Resets the memory to the state when the machine is turned on.
+ */
+export function sp48ResetMemory(): void {
+  for (let i = 0; i < memory.length; i++) {
+    memory[i] = 0xff;
+  }
+}
+
+/**
+ * Reads the memory at the specified address
+ * @param addr Memory address
+ * @param supressContention Should memory contention suppressed?
+ * @returns Memory contents
+ */
+export function sp48Read(addr: u16, supressContention: bool = false): u8 {
+  const value = memory[addr];
+  if (supressContention) {
+    return value;
+  }
+  contentionWait(addr);
+  return value;
+}
+
+/**
+ * Sets the memory value at the specified address
+ * @param addr Memory address
+ * @param value Value to write
+ * @param supressContention Should memory contention suppressed?
+ */
+export function sp48Write(
+  addr: u16,
+  value: u8,
+  supressContention: bool = false
+): void {
+  switch (addr & 0xc000) {
+    case 0x0000:
+      // --- ROM cannot be overwritten
+      return;
+    case 0x4000:
+      if (!supressContention) {
+        contentionWait(addr);
+      }
+      break;
+  }
+  memory[addr] = value;
+}
+
+/**
+ * Emulates memory contention
+ * @param addr Memory address
+ */
+function contentionWait(addr: u16): void {}
+
+/**
+ * Gets the buffer that holds memory data
+ */
+export function sp48CloneMemory(): u8[] {
+  const clone = new Array<u8>(memory.length);
+  for (let i = 0; i < memory.length; i++) {
+    clone[i] = memory[i];
+  }
+  return clone;
+}
+
+/**
+ * Gets the data for the specfied RAM bank
+ * @param bankIndex Bank index
+ * @param bank16Mode Do we use 16K mode?
+ */
+export function sp48GetRamBank(bankIndex: u8, bank16Mode: bool = true): u8[] {
+  const ram = new Array<u8>(0x4000);
+  for (let i = 0; i < 0xc000; i++) {
+    ram[i] = memory[i + 0x4000];
+  }
+  return ram;
+}
+
+/**
+ * Checks if the RAM bank with the specified index is paged in
+ * @param index Bank index
+ * @returns Location information
+ */
+export function sp48IsRamBankPagedIn(index: u8): PagedBank {
+  return { isPagedIn: false, baseAddress: 0x4000 };
+}
+
+// ============================================================================
+// Port device
+
+export const tapeEvent = new LiteEvent();
+
+// ============================================================================
+// Screen device
+
 /**
  * The contenxt of the ZX Spectrum 48 ROM
  */
