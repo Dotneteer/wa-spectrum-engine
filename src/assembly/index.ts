@@ -15,6 +15,8 @@ import {
   resetSpectrumMachine as _resetSpectrumMachine,
   executeCycle as _executeCycle,
 } from "./spectrum/machine/spectrum-machine";
+import { SpectrumKeyCode } from "../shared/SpectrumKeyCode";
+import { TapeFormat } from "../shared/TapeFormat";
 
 export { Z80Cpu } from "./Z80Cpu";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
@@ -179,4 +181,22 @@ export function resetSpectrumMachine(): void {
  */
 export function executeCycle(options: ExecuteCycleOptions): void {
   _executeCycle(options);
+}
+
+/**
+ * Sends key press information to the ZX Spectrum machine
+ * @param keycode Code of the key pressed
+ * @param isDown Signs if the key is pressed down
+ */
+export function sendKeyAction(keycode: SpectrumKeyCode, isDown: bool): void {
+  // TODO: Implement this method
+}
+
+/**
+ * Sets the data stream to use as tape input.
+ * @param format Stream format
+ * @param data Binary data
+ */
+export function setTapeStream(format: TapeFormat, data: Uint8Array): void {
+  // TODO: Implement this method
 }

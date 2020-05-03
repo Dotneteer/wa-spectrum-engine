@@ -8,7 +8,7 @@ import {
 } from "./configuration";
 import { AddressLocation, PagedBank } from "../memory/address";
 import { RenderingTact } from "../screen/rendering";
-import { SpectrumKeyCode } from "../keyboard/SpectrumKeyCode";
+import { SpectrumKeyCode } from "../../../shared/SpectrumKeyCode";
 import { LiteEvent } from "../../events/LiteEvent";
 import { BinaryReader } from "../tape/BinaryReader";
 
@@ -22,6 +22,7 @@ export class SpectrumEngine {
   private _clockMultiplier: u8;
   private _currentFrameTact: u32;
   private _frameTacts: u32;
+  private _frameCount: u32;
   private _overflow: u32;
   private _contentionAccummulated: u32;
   private _lastExecutionStartTact: number;
@@ -29,10 +30,22 @@ export class SpectrumEngine {
   private _executeCycleOptions: ExecuteCycleOptions;
   private _executionCompletionReason: ExecutionCompletionReason;
 
+  // ==========================================================================
+  // Life cycle methods
+
+  /**
+   * Initializes a new machine instance
+   */
   constructor() {
     this._cpu = new Z80Cpu();
     this._ulaIssue = 3;
-    this._baseClockFrequency = 3_500_000;
+  }
+
+  /**
+   * Sets up the machine according to its configuration
+   */
+  setup(): void {
+    this._frameCount = 0;
   }
 
   // ==========================================================================
@@ -81,6 +94,10 @@ export class SpectrumEngine {
    */
   get frameTacts(): u32 {
     return this._frameTacts;
+  }
+
+  get frameCount(): u32 {
+    return this._frameCount;
   }
 
   /**
@@ -151,7 +168,7 @@ export class SpectrumEngine {
   /**
    * Resets the memory to the state when the machine is turned on.
    */
-  resetMemory: () => void;
+  resetMemoryDevice: () => void;
 
   /**
    * Gets a known address of a particular ROM
@@ -245,8 +262,18 @@ export class SpectrumEngine {
    */
   isRamBankPagedIn: (index: u8) => PagedBank;
 
+  /**
+   * Tests whether a contended RAM is paged in for 0xC000-0xFFFF
+   */
+  isContendedBankPagedIn: () => bool;
+
   // ==========================================================================
   // Port device functions
+
+  /**
+   * Resets the port device
+   */
+  resetPortDevice: () => void;
 
   /**
    * Reads the port with the specified address
@@ -266,9 +293,9 @@ export class SpectrumEngine {
   // Interrupt device functions
 
   /**
-   * The ULA tact to raise the interrupt at
+   * Resets the interupt device
    */
-  getInterruptTact: () => number;
+  resetInterruptDevice: () => void;
 
   /**
    * Signs that an interrupt has been raised in this frame.
@@ -288,17 +315,21 @@ export class SpectrumEngine {
 
   // ==========================================================================
   // Screen device functions
+  
+  /**
+   * Resets the screen device
+   */
+  resetScreenDevice: () => void;
+
+  /**
+   * Starts rendering a new screen frame
+   */
+  startNewScreenFrame: () => void;
 
   /**
    * Table of ULA tact action information entries
    */
   getRenderingTactTable: () => RenderingTact[];
-
-  /**
-   * Indicates the refresh rate calculated from the base clock frequency
-   * of the CPU and the screen configuration (total #of ULA tacts per frame)
-   */
-  getRefreshRate: () => u32;
 
   /**
    * The number of frames when the flash flag should be toggles
@@ -308,12 +339,12 @@ export class SpectrumEngine {
   /**
    * Gets the current border color
    */
-  getBorderColor: () => u32;
+  getBorderColor: () => u8;
 
   /**
    * Sets the current border color
    */
-  setBorderColor: (color: u32) => void;
+  setBorderColor: (color: u8) => void;
 
   /**
    * Executes the ULA rendering actions between the specified tacts
@@ -372,7 +403,7 @@ export class SpectrumEngine {
    * @param fromTape False: EAR bit comes from an OUT instruction, True: EAR bit comes from tape
    * @param earBit EAR bit value
    */
-  processEarbitValue: (fromTape: bool, earbit: bool) => void;
+  processEarBitValue: (fromTape: bool, earbit: bool) => void;
 
   /**
    * This method signs that tape should override the OUT instruction's EAR bit

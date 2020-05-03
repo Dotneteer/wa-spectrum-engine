@@ -38,6 +38,13 @@ export class ExecuteCycleOptions {
   fastVmMode: bool;
 
   /**
+   * This flag shows whether the virtual machine should render the screen.
+   * True, renders the screen; false, does not render the screen.
+   * This flag overrides the FastVmMode setting.
+   */
+  disableScreenRendering: boolean;
+  
+  /**
    * Timeout in CPU tacts
    */
   timeoutTacts: u32;

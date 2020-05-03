@@ -7,12 +7,27 @@ import {
   sp48GetMemoryConfiguration,
   sp48GetScreenConfiguration,
   sp48GetKnownRomAddress,
-  sp48ResetMemory,
+  sp48ResetMemoryDevice,
   sp48Read,
   sp48Write,
   sp48CloneMemory,
   sp48GetRamBank,
-  tapeEvent,
+  sp48ReadPort,
+  sp48WritePort,
+  sp48ResetPortDevice,
+  sp48ResetInterruptDevice,
+  sp48IsInterruptRaised,
+  sp48IsInterruptRevoked,
+  sp48CheckForInterrupt,
+  sp48ResetScreenDevice,
+  sp48StartNewScreenFrame,
+  sp48GetRenderingTactTable,
+  sp48GetFlashToggleFrames,
+  sp48GetBorderColor,
+  sp48SetBorderColor,
+  sp48RenderScreen,
+  sp48GetContentionValue,
+  sp48GetPixelBuffer,
 } from "./spectrum-48";
 
 const NOT_INITIALIZED = "ZX Spectrum instance is not initialized";
@@ -33,8 +48,11 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
     type = ZxSpectrumType.Spectrum48;
   }
   machineType = type;
+
+  // --- Initialize the machine
   spectrum = new SpectrumEngine();
 
+  // --- Configure the machine according to its type
   switch (type) {
     default:
       sp48SetInstance(spectrum);
@@ -45,7 +63,7 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
       spectrum.getScreenConfiguration = sp48GetScreenConfiguration;
 
       // --- Memory device
-      spectrum.resetMemory = sp48ResetMemory;
+      spectrum.resetMemoryDevice = sp48ResetMemoryDevice;
       spectrum.getKnownRomAddress = sp48GetKnownRomAddress;
       spectrum.read = sp48Read;
       spectrum.write = sp48Write;
@@ -66,14 +84,35 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
         isPagedIn: false,
         baseAddress: 0x4000,
       });
+      spectrum.isContendedBankPagedIn = () => false;
 
       // --- Port device
+      spectrum.resetPortDevice = sp48ResetPortDevice;
+      spectrum.readPort = sp48ReadPort;
+      spectrum.writePort = sp48WritePort;
+
+      // --- Interrupt device
+      spectrum.resetInterruptDevice = sp48ResetInterruptDevice;
+      spectrum.isInterruptRaised = sp48IsInterruptRaised;
+      spectrum.isInterruptRevoked = sp48IsInterruptRevoked;
+      spectrum.checkForInterrupt = sp48CheckForInterrupt;
 
       // --- Screen device
-
+      spectrum.resetScreenDevice = sp48ResetScreenDevice;
+      spectrum.startNewScreenFrame = sp48StartNewScreenFrame;
+      spectrum.getRenderingTactTable = sp48GetRenderingTactTable;
+      spectrum.getFlashToggleFrames = sp48GetFlashToggleFrames;
+      spectrum.getBorderColor = sp48GetBorderColor;
+      spectrum.setBorderColor = sp48SetBorderColor;
+      spectrum.renderScreen = sp48RenderScreen;
+      spectrum.getContentionValue = sp48GetContentionValue;
+      spectrum.getPixelBuffer = sp48GetPixelBuffer;
 
       break;
   }
+
+  // --- Now, we can setup the machine to run
+  spectrum.setup();
 }
 
 /**
@@ -100,7 +139,11 @@ export function resetSpectrumMachine(): void {
   if (!spectrum) {
     throw new Error(NOT_INITIALIZED);
   }
-  // TODO: Implement this method
+  spectrum.cpu.reset();
+  spectrum.resetMemoryDevice();
+  spectrum.resetPortDevice();
+  spectrum.resetInterruptDevice();
+  spectrum.resetScreenDevice();
 }
 
 /**

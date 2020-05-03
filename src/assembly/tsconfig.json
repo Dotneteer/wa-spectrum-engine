@@ -1,6 +1,6 @@
 {
   "extends": "../../node_modules/assemblyscript/std/assembly.json",
   "include": [
-    "./**/*.ts", "Z80Cpu.ts", "../shared/api.ts", "../shared/ZxSpectrumType.ts", "../shared/ExecuteCycleOptions.ts", "../shared/EmulationMode.ts", "../shared/DebugStepMode.ts"
+    "./**/*.ts", "Z80Cpu.ts", "../shared/api.ts", "../shared/ZxSpectrumType.ts", "../shared/ExecuteCycleOptions.ts", "../shared/EmulationMode.ts", "../shared/DebugStepMode.ts", "../shared/SpectrumKeyCode.ts"
   ]
 }

@@ -2,6 +2,8 @@ import { TestZ80MachineState } from "../assembly";
 import { RunMode } from "./RunMode";
 import { ZxSpectrumType } from "./ZxSpectrumType";
 import { ExecuteCycleOptions } from "./ExecuteCycleOptions";
+import { SpectrumKeyCode } from "./SpectrumKeyCode";
+import { TapeFormat } from "./TapeFormat"
 
 export interface Api {
   // ==========================================================================
@@ -35,6 +37,6 @@ export interface Api {
   turnOnSpectrumMachine(): void;
   resetSpectrumMachine(): void;
   executeCycle(options: ExecuteCycleOptions): void;
-
-  
+  sendKeyAction(keycode: SpectrumKeyCode, isDown: boolean): void;
+  setTapeStream(format: TapeFormat, data: number[]): void;
 }

@@ -76,7 +76,8 @@ export enum ScreenRenderingPhase {
  * This structure defines information related to a particular tact
  * of ULA screen rendering
  */
-export class RenderingTact {
+export class 
+RenderingTact {
   /**
    * The rendering phase to be applied for the particular tact
    */
@@ -85,20 +86,20 @@ export class RenderingTact {
   /**
    * Display memory contention delay
    */
-  contentionDelay: number = 0;
+  contentionDelay: u32 = 0;
 
   /**
    * Display memory address used in the particular tact
    */
-  pixelByteToFetchAddress: number = 0;
+  pixelByteToFetchAddress: u16 = 0;
 
   /**
    * Display memory address used in the particular tact
    */
-  attributeToFetchAddress: number = 0;
+  attributeToFetchAddress: u16 = 0;
 
   /**
    * Pixel index in the buffer
    */
-  pixelIndex: number = 0;
+  pixelIndex: u32 = 0;
 }

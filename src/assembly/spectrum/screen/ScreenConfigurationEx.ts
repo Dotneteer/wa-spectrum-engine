@@ -208,7 +208,7 @@ export class ScreenConfigurationEx {
    * @param tactInLine Tacts index within the line
    * @returns True, if the tact is visible on the screen; otherwise, false
    */
-  public isTactVisible(line: number, tactInLine: number): boolean {
+  public isTactVisible(line: u16, tactInLine: u16): boolean {
     const firstVisibleLine =
       this.verticalSyncLines + this.nonVisibleBorderTopLines;
     const lastVisibleLine =
@@ -234,7 +234,7 @@ export class ScreenConfigurationEx {
    * @returns True, if the tact is within the display area of the screen; 
    * otherwise, false.
    */
-  public isTactInDisplayArea(line: number, tactInLine: number): boolean {
+  public isTactInDisplayArea(line: u16, tactInLine: u16): boolean {
     return (
       line >= this.firstDisplayLine &&
       line <= this.lastDisplayLine &&

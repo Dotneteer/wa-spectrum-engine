@@ -7,9 +7,11 @@ import {
   MemoryContentionType,
   ScreenConfiguration,
 } from "./configuration";
-import { AddressLocation, PagedBank } from "../memory/address";
+import { PagedBank } from "../memory/address";
 import { SpectrumEngine } from "./SpectrumEngine";
-import { LiteEvent } from "../../events/LiteEvent";
+import { ScreenRenderingPhase, RenderingTact } from "../screen/rendering";
+import { Z80StateFlags } from "../../../shared/cpu-enums";
+import { ScreenConfigurationEx } from "../screen/ScreenConfigurationEx";
 
 // ============================================================================
 // ZX Spectrum instance
@@ -97,7 +99,7 @@ const memory: u8[] = new Array<u8>(0x10000);
 /**
  * Resets the memory to the state when the machine is turned on.
  */
-export function sp48ResetMemory(): void {
+export function sp48ResetMemoryDevice(): void {
   for (let i = 0; i < memory.length; i++) {
     memory[i] = 0xff;
   }
@@ -184,13 +186,678 @@ export function sp48IsRamBankPagedIn(index: u8): PagedBank {
 // ============================================================================
 // Port device
 
-export const tapeEvent = new LiteEvent();
+let bit3LastValue: bool = false;
+let bit4LastValue: bool = false;
+let bit4ChangedFrom0: u64 = 0;
+let bit4ChangedFrom1: u64 = 0;
+
+/**
+ * Resets the port device
+ */
+export function sp48ResetPortDevice(): void {
+  bit3LastValue = false;
+  bit4LastValue = false;
+  bit4ChangedFrom0 = 0;
+  bit4ChangedFrom1 = 0;
+}
+
+/**
+ * Reads the port with the specified address
+ * @param addr Port address
+ * @returns Port value
+ */
+export function sp48ReadPort(addr: u16): u8 {
+  // --- I/O is contended
+  ioContentionWait(addr);
+
+  if ((addr & 0x0001) === 0) {
+    // --- Handle the port value
+    let readValue = spectrum.getKeyLineStatus(<u8>(addr >> 8));
+    if (spectrum.isInLoadMode()) {
+      const earBit = spectrum.getEarBit(spectrum.cpu.tacts);
+      if (!earBit) {
+        readValue = readValue & 0b1011_1111;
+      }
+    } else {
+      let bit4Sensed = bit4LastValue;
+      if (!bit4Sensed) {
+        let chargeTime = bit4ChangedFrom1 - bit4ChangedFrom0;
+        if (chargeTime > 0) {
+          let delay = chargeTime * 4;
+          if (delay > 2800) {
+            delay = 2800;
+          }
+          bit4Sensed = spectrum.cpu.tacts - bit4ChangedFrom1 < delay;
+        }
+      }
+      var bit6Value = <u8>(bit3LastValue || bit4Sensed ? 0b0100_0000 : 0x00);
+      if (bit3LastValue && !bit4Sensed && spectrum.ulaIssue === 3) {
+        bit6Value = 0x00;
+      }
+      readValue = (readValue & 0b1011_1111) | bit6Value;
+    }
+    return readValue;
+  }
+
+  // --- Handle an unattached port
+  const tactTable = spectrum.getRenderingTactTable();
+  const tact = spectrum.currentFrameTact % tactTable.length;
+  const rt = tactTable[tact];
+  let memAddr: u16 = 0;
+  switch (rt.phase) {
+    case ScreenRenderingPhase.BorderFetchPixel:
+    case ScreenRenderingPhase.DisplayB1FetchB2:
+    case ScreenRenderingPhase.DisplayB2FetchB1:
+      memAddr = rt.pixelByteToFetchAddress;
+      break;
+    case ScreenRenderingPhase.BorderFetchPixelAttr:
+    case ScreenRenderingPhase.DisplayB1FetchA2:
+    case ScreenRenderingPhase.DisplayB2FetchA1:
+      memAddr = rt.attributeToFetchAddress;
+      break;
+  }
+
+  return memAddr === 0 ? 0xff : spectrum.read(memAddr, true);
+}
+
+/**
+ * Sends a byte to the port with the specified address
+ * @param addr Port address
+ * @param data Data to write to the port
+ */
+export function sp48WritePort(addr: u16, value: u8): void {
+  ioContentionWait(addr);
+
+  if ((addr & 0x0001) !== 0) {
+    // --- Unhandled port
+    return;
+  }
+
+  spectrum.setBorderColor(value & 0x07);
+  spectrum.processEarBitValue(false, (value & 0x10) !== 0);
+  spectrum.processMicBit((value & 0x08) !== 0);
+
+  // --- Set the lates value of bit 3
+  bit3LastValue = (value & 0x08) !== 0;
+
+  // --- Manage bit 4 value
+  const curBit4 = (value & 0x10) !== 0;
+  if (!bit4LastValue && curBit4) {
+    // --- Bit 4 goes from 0 to 1
+    bit4ChangedFrom0 = spectrum.cpu.tacts;
+    bit4LastValue = true;
+  } else if (bit4LastValue && !curBit4) {
+    bit4ChangedFrom1 = spectrum.cpu.tacts;
+    bit4LastValue = false;
+  }
+}
+
+/**
+ * Emulates the I/O contention wait
+ * @param addr Port address
+ */
+function ioContentionWait(addr: u16): void {
+  var lowBit = (addr & 0x0001) !== 0;
+  const cpu = spectrum.cpu;
+  if (
+    (addr & 0xc000) === 0x4000 ||
+    ((addr & 0xc000) === 0xc000 && spectrum.isContendedBankPagedIn())
+  ) {
+    if (lowBit) {
+      // --- C:1 x 4 contention scheme
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(1);
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(1);
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(1);
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(1);
+    } else {
+      // --- C:1, C:3 contention scheme
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(1);
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(3);
+    }
+  } else {
+    if (lowBit) {
+      // --- N:4 contention scheme
+      cpu.delay(4);
+    } else {
+      // --- N:1, C:3 contention scheme
+      cpu.delay(1);
+      cpu.delay(spectrum.getContentionValue(spectrum.currentFrameTact));
+      cpu.delay(3);
+    }
+  }
+}
+
+// ==========================================================================
+// Interrupt device
+
+let interruptRaised: bool = false;
+let interruptRevoked: bool = false;
+
+/**
+ * Represents the longest instruction tact count
+ */
+const LONGEST_OP_TACTS = 23;
+
+/**
+ * Resets the interupt device
+ */
+export function sp48ResetInterruptDevice(): void {
+  interruptRaised = false;
+  interruptRevoked = false;
+}
+
+/**
+ * Signs that an interrupt has been raised in this frame.
+ */
+export function sp48IsInterruptRaised(): bool {
+  return interruptRaised;
+}
+
+/**
+ * Signs that the interrupt signal has been revoked
+ */
+export function sp48IsInterruptRevoked(): bool {
+  return interruptRevoked;
+}
+
+/**
+ * Generates an interrupt in the current phase, if time has come.
+ * @param currentTact Current frame tact
+ */
+export function sp48CheckForInterrupt(currentTact: u32): void {
+  const screenConfig = spectrum.getScreenConfiguration();
+  const interruptTact = screenConfig.interruptTact;
+  if (interruptRevoked) {
+    // --- We fully handled the interrupt in this frame
+    return;
+  }
+
+  if (currentTact < interruptTact) {
+    // --- The interrupt should not be raised yet
+    return;
+  }
+
+  if (currentTact > interruptTact + LONGEST_OP_TACTS) {
+    // --- Let's revoke the INT signal independently whether the CPU
+    // --- caught it or not
+    interruptRevoked = true;
+    spectrum.cpu.stateFlags &= Z80StateFlags.InvInt;
+    return;
+  }
+
+  if (interruptRaised) {
+    // --- The interrupt is raised, not revoked, but the CPU has not handled it yet
+    return;
+  }
+
+  // --- Do not raise the interrupt when the CPU blocks it
+  if (spectrum.cpu.isInterruptBlocked) {
+    return;
+  }
+
+  // --- It's time to raise the interrupt
+  interruptRaised = true;
+  spectrum.cpu.stateFlags |= Z80StateFlags.Int;
+}
 
 // ============================================================================
 // Screen device
 
+let renderingTactTable: RenderingTact[];
+let pixelBuffer: u8[];
+let screenConfiguration: ScreenConfigurationEx;
+let borderColor: u8;
+let flashOffColors: u8[];
+let flashOnColors: u8[];
+let flashPhase: bool;
+let pixelByte1: u8;
+let pixelByte2: u8;
+let attrByte1: u8;
+let attrByte2: u8;
+let flashToggleFrames: u16;
+let contentionType: MemoryContentionType;
+
 /**
- * The contenxt of the ZX Spectrum 48 ROM
+ * The ARGB color set for Spectrum 48 pixel values
+ */
+export const SpectrumColors = [
+  0xff000000, // Black
+  0xffaa0000, // Blue
+  0xff0000aa, // Red
+  0xffaa00aa, // Magenta
+  0xff00aa00, // Green
+  0xffaaaa00, // Cyan
+  0xff00aaaa, // Yellow
+  0xffaaaaaa, // White
+  0xff000000, // Bright Black
+  0xffff0000, // Bright Blue
+  0xff0000ff, // Bright Red
+  0xffff00ff, // Bright Magenta
+  0xff00ff00, // Bright Green
+  0xffffff00, // Bright Cyan
+  0xff00ffff, // Bright Yellow
+  0xffffffff, // Bright White
+];
+
+/**
+ * Resets the screen device
+ */
+export function sp48ResetScreenDevice(): void {
+  // --- Obtain configuration
+  const scrConfig = spectrum.getScreenConfiguration();
+  screenConfiguration = new ScreenConfigurationEx(scrConfig);
+  const memConfig = spectrum.getMemoryConfiguration();
+  contentionType = memConfig.contentionType;
+  flashPhase = false;
+
+  // --- Calculate refresh rate related values
+  const refreshRate =
+    spectrum.baseClockFrequency /
+    screenConfiguration.screenRenderingFrameTactCount;
+  flashToggleFrames = <u16>Math.round(refreshRate / 2);
+
+  // --- Calculate color conversion table
+  flashOffColors = new Array<u8>(0x100);
+  flashOnColors = new Array<u8>(0x100);
+  for (let attr = 0; attr < 0x100; attr++) {
+    const ink = (attr & 0x07) | ((attr & 0x40) >> 3);
+    const paper = ((attr & 0x38) >> 3) | ((attr & 0x40) >> 3);
+    flashOffColors[attr] = <u8>paper;
+    flashOffColors[0x100 + attr] = <u8>ink;
+    flashOnColors[attr] = <u8>((attr & 0x80) !== 0 ? ink : paper);
+    flashOnColors[0x100 + attr] = <u8>((attr & 0x80) !== 0 ? paper : ink);
+  }
+
+  // --- Prepare the pixel buffer
+  pixelBuffer = new Array<u8>(
+    screenConfiguration.screenWidth * screenConfiguration.screenLines
+  );
+
+  // --- Initialize the rendering tact table
+  // --- Reset the tact information table
+  const frameTactCount = screenConfiguration.screenRenderingFrameTactCount;
+  renderingTactTable = new Array<RenderingTact>(frameTactCount);
+
+  // --- Iterate through tacts
+  for (let tact = 0; tact < frameTactCount; tact++) {
+    // --- calculate screen line and tact in line values here
+    const line = <u16>Math.floor(tact / screenConfiguration.screenLineTime);
+    var tactInLine = <u16>(tact % screenConfiguration.screenLineTime);
+
+    // --- Default tact description
+    let tactPhase: ScreenRenderingPhase = ScreenRenderingPhase.None;
+    let tactDelay: u32 = 0;
+    let tactPixelAddr: u16 = 0;
+    let tactAttrAddr: u16 = 0;
+    let tactPixelIndex: u32 = 0;
+
+    if (screenConfiguration.isTactVisible(line, tactInLine)) {
+      // --- Calculate the pixel positions of the area
+      const xPos = (tactInLine * 2) & 0xffff;
+      const yPos = <u16>(
+        (line -
+          screenConfiguration.verticalSyncLines -
+          screenConfiguration.nonVisibleBorderTopLines)
+      );
+      tactPixelIndex = yPos * screenConfiguration.screenWidth + xPos;
+
+      // --- The current tact is in a visible screen area (border or display area)
+      if (!screenConfiguration.isTactInDisplayArea(line, tactInLine)) {
+        // --- Set the current border color
+        tactPhase = ScreenRenderingPhase.Border;
+        if (
+          line >= screenConfiguration.firstDisplayLine &&
+          line <= screenConfiguration.lastDisplayLine
+        ) {
+          // --- Left or right border area beside the display area
+          if (
+            tactInLine ===
+            screenConfiguration.borderLeftTime -
+              screenConfiguration.pixelDataPrefetchTime
+          ) {
+            // --- Fetch the first pixel data byte of the current line (2 tacts away)
+            tactPhase = ScreenRenderingPhase.BorderFetchPixel;
+            tactPixelAddr = calculatePixelByteAddress(line, tactInLine + 2);
+            tactDelay = contentionType === MemoryContentionType.Ula ? 0 : 2;
+          } else if (
+            tactInLine ===
+            screenConfiguration.borderLeftTime -
+              screenConfiguration.attributeDataPrefetchTime
+          ) {
+            // --- Fetch the first attribute data byte of the current line (1 tact away)
+            tactPhase = ScreenRenderingPhase.BorderFetchPixelAttr;
+            tactAttrAddr = calculateAttributeAddress(line, tactInLine + 1);
+            tactDelay = contentionType === MemoryContentionType.Ula ? 6 : 1;
+          }
+        }
+      } else {
+        // --- According to the tact, the screen rendering involves separate actions
+        const pixelTact = tactInLine - screenConfiguration.borderLeftTime;
+        switch (pixelTact & 7) {
+          case 0:
+            // --- While displaying the current tact pixels, we need to prefetch the
+            // --- pixel data byte 4 tacts away
+            tactPhase = ScreenRenderingPhase.DisplayB1FetchB2;
+            tactPixelAddr = calculatePixelByteAddress(line, tactInLine + 4);
+            tactDelay = contentionType === MemoryContentionType.Ula ? 5 : 0;
+            break;
+          case 1:
+            // --- While displaying the current tact pixels, we need to prefetch the
+            // --- attribute data byte 3 tacts away
+            tactPhase = ScreenRenderingPhase.DisplayB1FetchA2;
+            tactAttrAddr = calculateAttributeAddress(line, tactInLine + 3);
+            tactDelay = contentionType === MemoryContentionType.Ula ? 4 : 7;
+            break;
+          case 2:
+            // --- Display the current tact pixels
+            tactPhase = ScreenRenderingPhase.DisplayB1;
+            tactDelay = contentionType === MemoryContentionType.Ula ? 3 : 6;
+            break;
+          case 3:
+            // --- Display the current tact pixels
+            tactPhase = ScreenRenderingPhase.DisplayB1;
+            tactDelay = contentionType === MemoryContentionType.Ula ? 2 : 5;
+            break;
+          case 4:
+            // --- Display the current tact pixels
+            tactPhase = ScreenRenderingPhase.DisplayB2;
+            tactDelay = contentionType === MemoryContentionType.Ula ? 1 : 4;
+            break;
+          case 5:
+            // --- Display the current tact pixels
+            tactPhase = ScreenRenderingPhase.DisplayB2;
+            tactDelay = contentionType === MemoryContentionType.Ula ? 0 : 3;
+            break;
+          case 6:
+            if (
+              tactInLine <
+              screenConfiguration.borderLeftTime +
+                screenConfiguration.displayLineTime -
+                2
+            ) {
+              // --- There are still more bytes to display in this line.
+              // --- While displaying the current tact pixels, we need to prefetch the
+              // --- pixel data byte 2 tacts away
+              tactPhase = ScreenRenderingPhase.DisplayB2FetchB1;
+              tactPixelAddr = calculatePixelByteAddress(line, tactInLine + 2);
+              tactDelay = contentionType === MemoryContentionType.Ula ? 0 : 2;
+            } else {
+              // --- Last byte in this line.
+              // --- Display the current tact pixels
+              tactPhase = ScreenRenderingPhase.DisplayB2;
+            }
+            break;
+          case 7:
+            if (
+              tactInLine <
+              screenConfiguration.borderLeftTime +
+                screenConfiguration.displayLineTime -
+                1
+            ) {
+              // --- There are still more bytes to display in this line.
+              // --- While displaying the current tact pixels, we need to prefetch the
+              // --- attribute data byte 1 tacts away
+              tactPhase = ScreenRenderingPhase.DisplayB2FetchA1;
+              tactAttrAddr = calculateAttributeAddress(line, tactInLine + 1);
+              tactDelay = contentionType === MemoryContentionType.Ula ? 6 : 1;
+            } else {
+              // --- Last byte in this line.
+              // --- Display the current tact pixels
+              tactPhase = ScreenRenderingPhase.DisplayB2;
+            }
+            break;
+        }
+      }
+    }
+
+    // --- Calculation is ready, let's store the calculated tact item
+    renderingTactTable[tact] = {
+      phase: tactPhase,
+      contentionDelay: tactDelay,
+      pixelByteToFetchAddress: tactPixelAddr,
+      attributeToFetchAddress: tactAttrAddr,
+      pixelIndex: tactPixelIndex,
+    };
+  }
+
+  /**
+   * Calculates the pixel address for the specified line and tact within
+   * the line
+   * @param line Line index
+   * @param tactInLine Tact index within the line
+   */
+  function calculatePixelByteAddress(line: u16, tactInLine: u32): u16 {
+    const row = line - screenConfiguration.firstDisplayLine;
+    const column = 2 * (tactInLine - screenConfiguration.borderLeftTime);
+    const da = 0x4000 | (column >> 3) | (row << 5);
+    return <u16>((da & 0xf81f) | // --- Reset V5, V4, V3, V2, V1
+    ((da & 0x0700) >> 3) | // --- Keep V5, V4, V3 only
+      ((da & 0x00e0) << 3)); // --- Exchange the V2, V1, V0 bit
+    // --- group with V5, V4, V3
+  }
+
+  /**
+   * Calculates the pixel attribute address for the specified line and
+   * tact within the line
+   * @param line Line index
+   * @param tactInLine Tact index within the line
+   */
+  function calculateAttributeAddress(line: u16, tactInLine: u16): u16 {
+    const row = line - screenConfiguration.firstDisplayLine;
+    const column = 2 * (tactInLine - screenConfiguration.borderLeftTime);
+    const da = (column >> 3) | ((row >> 3) << 5);
+    return <u16>(0x5800 + da);
+  }
+}
+
+/**
+ * Starts rendering a new screen frame
+ */
+export function sp48StartNewScreenFrame(): void {
+  // --- Reset interrupt device state
+  sp48ResetInterruptDevice();
+
+  // --- Screen device
+  if (spectrum.frameCount % flashToggleFrames === 0) {
+    flashPhase = !flashPhase;
+  }
+  sp48RenderScreen(0, spectrum.overflow);
+}
+
+/**
+ * Table of ULA tact action information entries
+ */
+export function sp48GetRenderingTactTable(): RenderingTact[] {
+  return renderingTactTable;
+}
+
+/**
+ * The number of frames when the flash flag should be toggles
+ */
+export function sp48GetFlashToggleFrames(): u32 {
+  return flashToggleFrames;
+}
+
+/**
+ * Gets the current border color
+ */
+export function sp48GetBorderColor(): u8 {
+  return borderColor;
+}
+
+/**
+ * Sets the current border color
+ */
+export function sp48SetBorderColor(color: u8): void {
+  borderColor = color;
+}
+
+/**
+ * Executes the ULA rendering actions between the specified tacts
+ * @param fromTact First ULA tact
+ * @param toTact Last ULA tact
+ */
+export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
+  // --- Do not refresh the screen when in fast mode, or explicitly disabled
+  if (
+    spectrum.executeCycleOptions.disableScreenRendering ||
+    (spectrum.frameCount > 2 &&
+      spectrum.executeCycleOptions.fastVmMode &&
+      spectrum.executeCycleOptions.disableScreenRendering)
+  ) {
+    return;
+  }
+
+  // --- Adjust the tact boundaries
+  fromTact = fromTact % screenConfiguration.screenRenderingFrameTactCount;
+  toTact = toTact % screenConfiguration.screenRenderingFrameTactCount;
+  const buffer = pixelBuffer;
+
+  // --- Carry out each tact action according to the rendering phase
+  for (let currentTact = fromTact; currentTact <= toTact; currentTact++) {
+    const screenTact = renderingTactTable[currentTact];
+
+    switch (screenTact.phase) {
+      case ScreenRenderingPhase.None:
+        // --- Invisible screen area, nothing to do
+        break;
+
+      case ScreenRenderingPhase.Border:
+        // --- Fetch the border color and set the corresponding border pixels
+        buffer[screenTact.pixelIndex] = borderColor;
+        buffer[screenTact.pixelIndex + 1] = borderColor;
+        break;
+
+      case ScreenRenderingPhase.BorderFetchPixel:
+        // --- Fetch the border color and set the corresponding border pixels
+        buffer[screenTact.pixelIndex] = borderColor;
+        buffer[screenTact.pixelIndex + 1] = borderColor;
+        // --- Obtain the future pixel byte
+        pixelByte1 = spectrum.read(screenTact.pixelByteToFetchAddress, true);
+        break;
+
+      case ScreenRenderingPhase.BorderFetchPixelAttr:
+        // --- Fetch the border color and set the corresponding border pixels
+        buffer[screenTact.pixelIndex] = borderColor;
+        buffer[screenTact.pixelIndex + 1] = borderColor;
+        // --- Obtain the future attribute byte
+        attrByte1 = spectrum.read(screenTact.attributeToFetchAddress, true);
+        break;
+
+      case ScreenRenderingPhase.DisplayB1:
+        // --- Display bit 7 and 6 according to the corresponding color
+        buffer[screenTact.pixelIndex] = getColor(pixelByte1 & 0x80, attrByte1);
+        buffer[screenTact.pixelIndex + 1] = getColor(
+          pixelByte1 & 0x40,
+          attrByte1
+        );
+        // --- Shift in the subsequent bits
+        pixelByte1 <<= 2;
+        break;
+
+      case ScreenRenderingPhase.DisplayB1FetchB2:
+        // --- Display bit 7 and 6 according to the corresponding color
+        buffer[screenTact.pixelIndex] = getColor(pixelByte1 & 0x80, attrByte1);
+        buffer[screenTact.pixelIndex + 1] = getColor(
+          pixelByte1 & 0x40,
+          attrByte1
+        );
+        // --- Shift in the subsequent bits
+        pixelByte1 <<= 2;
+        // --- Obtain the next pixel byte
+        pixelByte2 = spectrum.read(screenTact.pixelByteToFetchAddress, true);
+        break;
+
+      case ScreenRenderingPhase.DisplayB1FetchA2:
+        // --- Display bit 7 and 6 according to the corresponding color
+        buffer[screenTact.pixelIndex] = getColor(pixelByte1 & 0x80, attrByte1);
+        buffer[screenTact.pixelIndex + 1] = getColor(
+          pixelByte1 & 0x40,
+          attrByte1
+        );
+        // --- Shift in the subsequent bits
+        pixelByte1 <<= 2;
+        // --- Obtain the next attribute
+        attrByte2 = spectrum.read(screenTact.attributeToFetchAddress, true);
+        break;
+
+      case ScreenRenderingPhase.DisplayB2:
+        // --- Display bit 7 and 6 according to the corresponding color
+        buffer[screenTact.pixelIndex] = getColor(pixelByte2 & 0x80, attrByte2);
+        buffer[screenTact.pixelIndex + 1] = getColor(
+          pixelByte2 & 0x40,
+          attrByte2
+        );
+        // --- Shift in the subsequent bits
+        pixelByte2 <<= 2;
+        break;
+
+      case ScreenRenderingPhase.DisplayB2FetchB1:
+        // --- Display bit 7 and 6 according to the corresponding color
+        buffer[screenTact.pixelIndex] = getColor(pixelByte2 & 0x80, attrByte2);
+        buffer[screenTact.pixelIndex + 1] = getColor(
+          pixelByte2 & 0x40,
+          attrByte2
+        );
+        // --- Shift in the subsequent bits
+        pixelByte2 <<= 2;
+        // --- Obtain the next pixel byte
+        pixelByte1 = spectrum.read(screenTact.pixelByteToFetchAddress, true);
+        break;
+
+      case ScreenRenderingPhase.DisplayB2FetchA1:
+        // --- Display bit 7 and 6 according to the corresponding color
+        buffer[screenTact.pixelIndex] = getColor(pixelByte2 & 0x80, attrByte2);
+        buffer[screenTact.pixelIndex + 1] = getColor(
+          pixelByte2 & 0x40,
+          attrByte2
+        );
+        // --- Shift in the subsequent bits
+        pixelByte2 <<= 2;
+        // --- Obtain the next attribute
+        attrByte1 = spectrum.read(screenTact.attributeToFetchAddress, true);
+        break;
+    }
+  }
+
+  /**
+   * Gets the color index for the specified pixel value according
+   * to the given color attribute
+   * @param pixelValue 0 for paper pixel, non-zero for ink pixel
+   * @param attr Color attribute
+   */
+  function getColor(pixelValue: u8, attr: u8): u8 {
+    const offset = (pixelValue === 0 ? 0 : 0x100) + attr;
+    return flashPhase ? flashOnColors[offset] : flashOffColors[offset];
+  }
+}
+
+/**
+ * Gets the memory contention value for the specified tact
+ * @param tact ULA tact
+ * @returns: The contention value for the ULA tact
+ */
+export function sp48GetContentionValue(tact: u32): u32 {
+  return renderingTactTable[
+    tact % screenConfiguration.screenRenderingFrameTactCount
+  ].contentionDelay;
+}
+
+/**
+ * Gets the buffer that holds the screen pixels
+ */
+export function sp48GetPixelBuffer(): u8[] {
+  return pixelBuffer;
+}
+
+/**
+ * The content of the ZX Spectrum 48 ROM
  */
 export const ZX_SPECTRUM_48_ROM: u8[] = [
   0xf3,
