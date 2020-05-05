@@ -9,150 +9,150 @@ export class ScreenConfigurationEx {
    * The tact index of the interrupt relative to the top-left
    * screen pixel
    */
-  readonly interruptTact: number;
+  readonly interruptTact: u32;
 
   /**
    * Number of lines used for vertical synch
    */
-  readonly verticalSyncLines: number;
+  readonly verticalSyncLines: u32;
 
   /**
    * The number of top border lines that are not visible
    * when rendering the screen
    */
-  readonly nonVisibleBorderTopLines: number;
+  readonly nonVisibleBorderTopLines: u32;
 
   /**
    * The number of border lines before the display
    */
-  readonly borderTopLines: number;
+  readonly borderTopLines: u32;
 
   /**
    * Number of display lines
    */
-  readonly displayLines: number;
+  readonly displayLines: u32;
 
   /**
    * The number of border lines after the display
    */
-  readonly borderBottomLines: number;
+  readonly borderBottomLines: u32;
 
   /**
    * The number of bottom border lines that are not visible
    * when rendering the screen
    */
-  readonly nonVisibleBorderBottomLines: number;
+  readonly nonVisibleBorderBottomLines: u32;
 
   /**
    * Horizontal blanking time (HSync+blanking).
    * Given in Z80 clock cycles.
    */
-  readonly horizontalBlankingTime: number;
+  readonly horizontalBlankingTime: u32;
 
   /**
    * The time of displaying left part of the border.
    * Given in Z80 clock cycles.
    */
-  readonly borderLeftTime: number;
+  readonly borderLeftTime: u32;
 
   /**
    * The time of displaying a pixel row.
    * Given in Z80 clock cycles.
    */
-  readonly displayLineTime: number;
+  readonly displayLineTime: u32;
 
   /**
    * The time of displaying right part of the border.
    * Given in Z80 clock cycles.
    */
-  readonly borderRightTime: number;
+  readonly borderRightTime: u32;
 
   /**
    * The time used to render the nonvisible right part of the border.
    * Given in Z80 clock cycles.
    */
-  readonly nonVisibleBorderRightTime: number;
+  readonly nonVisibleBorderRightTime: u32;
 
   /**
    * The time the data of a particular pixel should be prefetched
    * before displaying it.
    * Given in Z80 clock cycles.
    */
-  readonly pixelDataPrefetchTime: number;
+  readonly pixelDataPrefetchTime: u32;
 
   /**
    * The time the data of a particular pixel attribute should be prefetched
    * before displaying it.
    * Given in Z80 clock cycles.
    */
-  readonly attributeDataPrefetchTime: number;
+  readonly attributeDataPrefetchTime: u32;
 
   /**
    * The total number of lines in the screen
    */
-  readonly screenLines: number;
+  readonly screenLines: u32;
 
   /**
    * The first screen line that contains the top left display pixel
    */
-  readonly firstDisplayLine: number;
+  readonly firstDisplayLine: u32;
 
   /**
    * The last screen line that contains the bottom right display pixel
    */
-  readonly lastDisplayLine: number;
+  readonly lastDisplayLine: u32;
 
   /**
    * The number of border pixels to the left of the display
    */
-  readonly borderLeftPixels: number;
+  readonly borderLeftPixels: u32;
 
   /**
    * The number of displayed pixels in a display row
    */
-  readonly displayWidth: number;
+  readonly displayWidth: u32;
 
   /**
    * The number of border pixels to the right of the display
    */
-  readonly borderRightPixels: number;
+  readonly borderRightPixels: u32;
 
   /**
    * The total width of the screen in pixels
    */
-  readonly screenWidth: number;
+  readonly screenWidth: u32;
 
   /**
    * The time of displaying a full screen line.
    * Given in Z80 clock cycles.
    */
-  readonly screenLineTime: number;
+  readonly screenLineTime: u32;
 
   /**
    * The tact in which the top left pixel should be displayed.
    * Given in Z80 clock cycles.
    */
-  readonly firstDisplayPixelTact: number;
+  readonly firstDisplayPixelTact: u32;
 
   /**
    * The tact in which the top left screen pixel (border) should be displayed
    */
-  readonly firstScreenPixelTact: number;
+  readonly firstScreenPixelTact: u32;
 
   /**
    * The number of raster lines in the screen
    */
-  readonly rasterLines: number;
+  readonly rasterLines: u32;
 
   /**
    * Defines the number of Z80 clock cycles used for the full rendering
    * of the screen.
    */
-  readonly screenRenderingFrameTactCount: number;
+  readonly screenRenderingFrameTactCount: u32;
 
   /**
    * Initializes a new instance of the <see cref="T:System.Object" /> class.
-   * @param configData 
+   * @param configData
    */
   constructor(configData: ScreenConfiguration) {
     this.interruptTact = configData.interruptTact;
@@ -231,7 +231,7 @@ export class ScreenConfigurationEx {
    * Tests whether the tact is in the display area of the screen.
    * @param line Line index
    * @param tactInLine Tacts index within the line
-   * @returns True, if the tact is within the display area of the screen; 
+   * @returns True, if the tact is within the display area of the screen;
    * otherwise, false.
    */
   public isTactInDisplayArea(line: u16, tactInLine: u16): boolean {

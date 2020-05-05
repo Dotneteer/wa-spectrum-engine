@@ -7,15 +7,43 @@ import {
   MemoryContentionType,
   ScreenConfiguration,
 } from "./configuration";
-import { PagedBank } from "../memory/address";
 import { SpectrumEngine } from "./SpectrumEngine";
 import { ScreenRenderingPhase, RenderingTact } from "../screen/rendering";
 import { Z80StateFlags } from "../../../shared/cpu-enums";
-import { ScreenConfigurationEx } from "../screen/ScreenConfigurationEx";
+import { SpectrumKeyCode } from "../../../shared/SpectrumKeyCode";
+import { BinaryWriter } from "../../utils/BinaryWriter";
+import { BinaryReader } from "../../utils/BinaryReader";
 
 // ============================================================================
 // ZX Spectrum instance
 let spectrum: SpectrumEngine;
+
+// ============================================================================
+// Serialization
+
+/**
+ * Serializes the current state of the machine
+ */
+export function sp48SerializeMachineState(w: BinaryWriter): void {
+  serializeMemoryState(w);
+  serializePortState(w);
+  serializeInterruptState(w);
+  serializeScreenState(w);
+  serializeBeeperState(w)
+  serializeKeyboardState(w);
+}
+
+/**
+ * Restores the machine state from the specified binary stream
+ */
+export function restoreMachineState(r: BinaryReader): void {
+  restoreMemoryState(r);
+  restorePortState(r);
+  restoreInterruptState(r);
+  restoreScreenState(r);
+  restoreBeeperState(r);
+  restoreKeyboardState(r);
+}
 
 // ============================================================================
 // Machine configuration
@@ -94,14 +122,39 @@ export function sp48GetKnownRomAddress(key: string, romIndex: u8): i32 {
 
 // ============================================================================
 // Memory device
+
+// --- Memory state
 const memory: u8[] = new Array<u8>(0x10000);
+
+/**
+ * Serializes the memory state
+ * @param w Binary stream writer
+ */
+function serializeMemoryState(w: BinaryWriter): void {
+  w.writeBytes(memory);
+}
+
+/**
+ * Restores the memory state
+ * @param r Binary stream reader
+ */
+function restoreMemoryState(r: BinaryReader): void {
+  const tmp = r.readBytes();
+  let length = memory.length;
+  if (tmp.length < length) {
+    length = tmp.length;
+  }
+  for (let i = 0; i < length; i++) {
+    memory[i] = tmp[i];
+  }
+}
 
 /**
  * Resets the memory to the state when the machine is turned on.
  */
 export function sp48ResetMemoryDevice(): void {
   for (let i = 0; i < memory.length; i++) {
-    memory[i] = 0xff;
+    memory[i] = 0x00;
   }
 }
 
@@ -148,7 +201,9 @@ export function sp48Write(
  * Emulates memory contention
  * @param addr Memory address
  */
-function contentionWait(addr: u16): void {}
+function contentionWait(addr: u16): void {
+  // TODO: Implement this method
+}
 
 /**
  * Gets the buffer that holds memory data
@@ -174,31 +229,45 @@ export function sp48GetRamBank(bankIndex: u8, bank16Mode: bool = true): u8[] {
   return ram;
 }
 
-/**
- * Checks if the RAM bank with the specified index is paged in
- * @param index Bank index
- * @returns Location information
- */
-export function sp48IsRamBankPagedIn(index: u8): PagedBank {
-  return { isPagedIn: false, baseAddress: 0x4000 };
-}
-
 // ============================================================================
 // Port device
 
-let bit3LastValue: bool = false;
-let bit4LastValue: bool = false;
-let bit4ChangedFrom0: u64 = 0;
-let bit4ChangedFrom1: u64 = 0;
+// --- Port device state
+let portBit3LastValue: bool = false;
+let portBit4LastValue: bool = false;
+let portBit4ChangedFrom0: u64 = 0;
+let portBit4ChangedFrom1: u64 = 0;
+
+/**
+ * Serializes the port device state
+ * @param w Binary stream writer
+ */
+function serializePortState(w: BinaryWriter): void {
+  w.writeByte(portBit3LastValue ? 1 : 0);
+  w.writeByte(portBit4LastValue ? 1 : 0);
+  w.writeUint64(portBit4ChangedFrom0);
+  w.writeUint64(portBit4ChangedFrom1);
+}
+
+/**
+ * Restores port device state
+ * @param r Binary stream reader
+ */
+function restorePortState(r: BinaryReader): void {
+  portBit3LastValue = r.readByte() !== 0;
+  portBit4LastValue = r.readByte() !== 0;
+  portBit4ChangedFrom0 = r.readUint64();
+  portBit4ChangedFrom1 = r.readUint64();
+}
 
 /**
  * Resets the port device
  */
 export function sp48ResetPortDevice(): void {
-  bit3LastValue = false;
-  bit4LastValue = false;
-  bit4ChangedFrom0 = 0;
-  bit4ChangedFrom1 = 0;
+  portBit3LastValue = false;
+  portBit4LastValue = false;
+  portBit4ChangedFrom0 = 0;
+  portBit4ChangedFrom1 = 0;
 }
 
 /**
@@ -219,19 +288,21 @@ export function sp48ReadPort(addr: u16): u8 {
         readValue = readValue & 0b1011_1111;
       }
     } else {
-      let bit4Sensed = bit4LastValue;
+      let bit4Sensed = portBit4LastValue;
       if (!bit4Sensed) {
-        let chargeTime = bit4ChangedFrom1 - bit4ChangedFrom0;
+        let chargeTime = portBit4ChangedFrom1 - portBit4ChangedFrom0;
         if (chargeTime > 0) {
           let delay = chargeTime * 4;
           if (delay > 2800) {
             delay = 2800;
           }
-          bit4Sensed = spectrum.cpu.tacts - bit4ChangedFrom1 < delay;
+          bit4Sensed = spectrum.cpu.tacts - portBit4ChangedFrom1 < delay;
         }
       }
-      var bit6Value = <u8>(bit3LastValue || bit4Sensed ? 0b0100_0000 : 0x00);
-      if (bit3LastValue && !bit4Sensed && spectrum.ulaIssue === 3) {
+      var bit6Value = <u8>(
+        (portBit3LastValue || bit4Sensed ? 0b0100_0000 : 0x00)
+      );
+      if (portBit3LastValue && !bit4Sensed && spectrum.ulaIssue === 3) {
         bit6Value = 0x00;
       }
       readValue = (readValue & 0b1011_1111) | bit6Value;
@@ -278,17 +349,17 @@ export function sp48WritePort(addr: u16, value: u8): void {
   spectrum.processMicBit((value & 0x08) !== 0);
 
   // --- Set the lates value of bit 3
-  bit3LastValue = (value & 0x08) !== 0;
+  portBit3LastValue = (value & 0x08) !== 0;
 
   // --- Manage bit 4 value
   const curBit4 = (value & 0x10) !== 0;
-  if (!bit4LastValue && curBit4) {
+  if (!portBit4LastValue && curBit4) {
     // --- Bit 4 goes from 0 to 1
-    bit4ChangedFrom0 = spectrum.cpu.tacts;
-    bit4LastValue = true;
-  } else if (bit4LastValue && !curBit4) {
-    bit4ChangedFrom1 = spectrum.cpu.tacts;
-    bit4LastValue = false;
+    portBit4ChangedFrom0 = spectrum.cpu.tacts;
+    portBit4LastValue = true;
+  } else if (portBit4LastValue && !curBit4) {
+    portBit4ChangedFrom1 = spectrum.cpu.tacts;
+    portBit4LastValue = false;
   }
 }
 
@@ -336,9 +407,27 @@ function ioContentionWait(addr: u16): void {
 // ==========================================================================
 // Interrupt device
 
+// --- Interrupt device state
 let interruptRaised: bool = false;
 let interruptRevoked: bool = false;
 
+/**
+ * Serializes the interrupt device state
+ * @param w Binary stream writer
+ */
+function serializeInterruptState(w: BinaryWriter): void {
+  w.writeByte(interruptRaised ? 1 : 0);
+  w.writeByte(interruptRevoked ? 1 : 0);
+}
+
+/**
+ * Restores the interrupt device state
+ * @param r Binary stream reader
+ */
+function restoreInterruptState(r: BinaryReader): void {
+  interruptRaised = r.readByte() !== 0;
+  interruptRevoked = r.readByte() !== 0;
+}
 /**
  * Represents the longest instruction tact count
  */
@@ -348,6 +437,14 @@ const LONGEST_OP_TACTS = 23;
  * Resets the interupt device
  */
 export function sp48ResetInterruptDevice(): void {
+  interruptRaised = false;
+  interruptRevoked = false;
+}
+
+/**
+ * Starts a new interrupt frame
+ */
+export function sp48StartNewInterruptFrame(): void {
   interruptRaised = false;
   interruptRevoked = false;
 }
@@ -409,19 +506,57 @@ export function sp48CheckForInterrupt(currentTact: u32): void {
 // ============================================================================
 // Screen device
 
-let renderingTactTable: RenderingTact[];
-let pixelBuffer: u8[];
-let screenConfiguration: ScreenConfigurationEx;
-let borderColor: u8;
-let flashOffColors: u8[];
-let flashOnColors: u8[];
-let flashPhase: bool;
-let pixelByte1: u8;
-let pixelByte2: u8;
-let attrByte1: u8;
-let attrByte2: u8;
-let flashToggleFrames: u16;
-let contentionType: MemoryContentionType;
+// --- Screen device state
+let screenBorderColor: u8;
+let screenFlashPhase: bool;
+let screenPixelByte1: u8;
+let screenPixelByte2: u8;
+let screenAttrByte1: u8;
+let screenAttrByte2: u8;
+let screenFlashToggleFrames: u16;
+let screenPixelBuffer: u8[];
+
+// --- Screen device helper variables that do not change after reset
+let screeRenderingTactTable: RenderingTact[];
+let screenFlashOffColors: u8[];
+let screenFlashOnColors: u8[];
+
+/**
+ * Serializes screen device state
+ * @param w Binary stream writer
+ */
+function serializeScreenState(w: BinaryWriter): void {
+  w.writeByte(screenBorderColor);
+  w.writeByte(screenFlashPhase ? 1 : 0);
+  w.writeByte(screenPixelByte1);
+  w.writeByte(screenPixelByte2);
+  w.writeByte(screenAttrByte1);
+  w.writeByte(screenAttrByte2);
+  w.writeUint16(screenFlashToggleFrames);
+  w.writeBytes(screenPixelBuffer);
+}
+
+/**
+ * Restrores screen device state
+ * @param r Binary stream reader
+ */
+function restoreScreenState(r: BinaryReader): void {
+  screenBorderColor = r.readByte();
+  screenFlashPhase = r.readByte() != 0;
+  screenPixelByte1 = r.readByte();
+  screenPixelByte2 = r.readByte();
+  screenAttrByte1 = r.readByte();
+  screenAttrByte2 = r.readByte();
+  screenFlashToggleFrames = r.readUint16();
+  const tmp = r.readBytes();
+  let length = screenPixelBuffer.length;
+  if (tmp.length < length) {
+    length = tmp.length;
+  }
+  for (let i = 0; i < length; i++) {
+    screenPixelBuffer[i] = tmp[i];
+  }
+}
 
 /**
  * The ARGB color set for Spectrum 48 pixel values
@@ -450,42 +585,42 @@ export const SpectrumColors = [
  */
 export function sp48ResetScreenDevice(): void {
   // --- Obtain configuration
-  const scrConfig = spectrum.getScreenConfiguration();
-  screenConfiguration = new ScreenConfigurationEx(scrConfig);
-  const memConfig = spectrum.getMemoryConfiguration();
-  contentionType = memConfig.contentionType;
-  flashPhase = false;
+  const screenConfiguration = spectrum.screenConfiguration;
+  screenFlashPhase = false;
 
   // --- Calculate refresh rate related values
   const refreshRate =
     spectrum.baseClockFrequency /
     screenConfiguration.screenRenderingFrameTactCount;
-  flashToggleFrames = <u16>Math.round(refreshRate / 2);
+  screenFlashToggleFrames = <u16>Math.round(refreshRate / 2);
 
   // --- Calculate color conversion table
-  flashOffColors = new Array<u8>(0x100);
-  flashOnColors = new Array<u8>(0x100);
+  screenFlashOffColors = new Array<u8>(0x100);
+  screenFlashOnColors = new Array<u8>(0x100);
   for (let attr = 0; attr < 0x100; attr++) {
     const ink = (attr & 0x07) | ((attr & 0x40) >> 3);
     const paper = ((attr & 0x38) >> 3) | ((attr & 0x40) >> 3);
-    flashOffColors[attr] = <u8>paper;
-    flashOffColors[0x100 + attr] = <u8>ink;
-    flashOnColors[attr] = <u8>((attr & 0x80) !== 0 ? ink : paper);
-    flashOnColors[0x100 + attr] = <u8>((attr & 0x80) !== 0 ? paper : ink);
+    screenFlashOffColors[attr] = <u8>paper;
+    screenFlashOffColors[0x100 + attr] = <u8>ink;
+    screenFlashOnColors[attr] = <u8>((attr & 0x80) !== 0 ? ink : paper);
+    screenFlashOnColors[0x100 + attr] = <u8>((attr & 0x80) !== 0 ? paper : ink);
   }
 
   // --- Prepare the pixel buffer
-  pixelBuffer = new Array<u8>(
+  screenPixelBuffer = new Array<u8>(
     screenConfiguration.screenWidth * screenConfiguration.screenLines
   );
 
   // --- Initialize the rendering tact table
   // --- Reset the tact information table
   const frameTactCount = screenConfiguration.screenRenderingFrameTactCount;
-  renderingTactTable = new Array<RenderingTact>(frameTactCount);
+  screeRenderingTactTable = new Array<RenderingTact>(frameTactCount);
+
+  const memConfig = spectrum.getMemoryConfiguration();
+  const contentionType = memConfig.contentionType;
 
   // --- Iterate through tacts
-  for (let tact = 0; tact < frameTactCount; tact++) {
+  for (let tact = 0; tact < <i32>frameTactCount; tact++) {
     // --- calculate screen line and tact in line values here
     const line = <u16>Math.floor(tact / screenConfiguration.screenLineTime);
     var tactInLine = <u16>(tact % screenConfiguration.screenLineTime);
@@ -617,7 +752,7 @@ export function sp48ResetScreenDevice(): void {
     }
 
     // --- Calculation is ready, let's store the calculated tact item
-    renderingTactTable[tact] = {
+    screeRenderingTactTable[tact] = {
       phase: tactPhase,
       contentionDelay: tactDelay,
       pixelByteToFetchAddress: tactPixelAddr,
@@ -625,47 +760,43 @@ export function sp48ResetScreenDevice(): void {
       pixelIndex: tactPixelIndex,
     };
   }
+}
 
-  /**
-   * Calculates the pixel address for the specified line and tact within
-   * the line
-   * @param line Line index
-   * @param tactInLine Tact index within the line
-   */
-  function calculatePixelByteAddress(line: u16, tactInLine: u32): u16 {
-    const row = line - screenConfiguration.firstDisplayLine;
-    const column = 2 * (tactInLine - screenConfiguration.borderLeftTime);
-    const da = 0x4000 | (column >> 3) | (row << 5);
-    return <u16>((da & 0xf81f) | // --- Reset V5, V4, V3, V2, V1
-    ((da & 0x0700) >> 3) | // --- Keep V5, V4, V3 only
-      ((da & 0x00e0) << 3)); // --- Exchange the V2, V1, V0 bit
-    // --- group with V5, V4, V3
-  }
+/**
+ * Calculates the pixel address for the specified line and tact within
+ * the line
+ * @param line Line index
+ * @param tactInLine Tact index within the line
+ */
+function calculatePixelByteAddress(line: u16, tactInLine: u32): u16 {
+  const row = line - spectrum.screenConfiguration.firstDisplayLine;
+  const column = 2 * (tactInLine - spectrum.screenConfiguration.borderLeftTime);
+  const da = 0x4000 | (column >> 3) | (row << 5);
+  return <u16>((da & 0xf81f) | // --- Reset V5, V4, V3, V2, V1
+  ((da & 0x0700) >> 3) | // --- Keep V5, V4, V3 only
+    ((da & 0x00e0) << 3)); // --- Exchange the V2, V1, V0 bit
+  // --- group with V5, V4, V3
+}
 
-  /**
-   * Calculates the pixel attribute address for the specified line and
-   * tact within the line
-   * @param line Line index
-   * @param tactInLine Tact index within the line
-   */
-  function calculateAttributeAddress(line: u16, tactInLine: u16): u16 {
-    const row = line - screenConfiguration.firstDisplayLine;
-    const column = 2 * (tactInLine - screenConfiguration.borderLeftTime);
-    const da = (column >> 3) | ((row >> 3) << 5);
-    return <u16>(0x5800 + da);
-  }
+/**
+ * Calculates the pixel attribute address for the specified line and
+ * tact within the line
+ * @param line Line index
+ * @param tactInLine Tact index within the line
+ */
+function calculateAttributeAddress(line: u16, tactInLine: u16): u16 {
+  const row = line - spectrum.screenConfiguration.firstDisplayLine;
+  const column = 2 * (tactInLine - spectrum.screenConfiguration.borderLeftTime);
+  const da = (column >> 3) | ((row >> 3) << 5);
+  return <u16>(0x5800 + da);
 }
 
 /**
  * Starts rendering a new screen frame
  */
 export function sp48StartNewScreenFrame(): void {
-  // --- Reset interrupt device state
-  sp48ResetInterruptDevice();
-
-  // --- Screen device
-  if (spectrum.frameCount % flashToggleFrames === 0) {
-    flashPhase = !flashPhase;
+  if (spectrum.frameCount % screenFlashToggleFrames === 0) {
+    screenFlashPhase = !screenFlashPhase;
   }
   sp48RenderScreen(0, spectrum.overflow);
 }
@@ -674,28 +805,28 @@ export function sp48StartNewScreenFrame(): void {
  * Table of ULA tact action information entries
  */
 export function sp48GetRenderingTactTable(): RenderingTact[] {
-  return renderingTactTable;
+  return screeRenderingTactTable;
 }
 
 /**
  * The number of frames when the flash flag should be toggles
  */
 export function sp48GetFlashToggleFrames(): u32 {
-  return flashToggleFrames;
+  return screenFlashToggleFrames;
 }
 
 /**
  * Gets the current border color
  */
 export function sp48GetBorderColor(): u8 {
-  return borderColor;
+  return screenBorderColor;
 }
 
 /**
  * Sets the current border color
  */
 export function sp48SetBorderColor(color: u8): void {
-  borderColor = color;
+  screenBorderColor = color;
 }
 
 /**
@@ -704,6 +835,7 @@ export function sp48SetBorderColor(color: u8): void {
  * @param toTact Last ULA tact
  */
 export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
+  const screenConfiguration = spectrum.screenConfiguration;
   // --- Do not refresh the screen when in fast mode, or explicitly disabled
   if (
     spectrum.executeCycleOptions.disableScreenRendering ||
@@ -717,11 +849,11 @@ export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
   // --- Adjust the tact boundaries
   fromTact = fromTact % screenConfiguration.screenRenderingFrameTactCount;
   toTact = toTact % screenConfiguration.screenRenderingFrameTactCount;
-  const buffer = pixelBuffer;
+  const buffer = screenPixelBuffer;
 
   // --- Carry out each tact action according to the rendering phase
   for (let currentTact = fromTact; currentTact <= toTact; currentTact++) {
-    const screenTact = renderingTactTable[currentTact];
+    const screenTact = screeRenderingTactTable[currentTact];
 
     switch (screenTact.phase) {
       case ScreenRenderingPhase.None:
@@ -730,112 +862,150 @@ export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
 
       case ScreenRenderingPhase.Border:
         // --- Fetch the border color and set the corresponding border pixels
-        buffer[screenTact.pixelIndex] = borderColor;
-        buffer[screenTact.pixelIndex + 1] = borderColor;
+        buffer[screenTact.pixelIndex] = screenBorderColor;
+        buffer[screenTact.pixelIndex + 1] = screenBorderColor;
         break;
 
       case ScreenRenderingPhase.BorderFetchPixel:
         // --- Fetch the border color and set the corresponding border pixels
-        buffer[screenTact.pixelIndex] = borderColor;
-        buffer[screenTact.pixelIndex + 1] = borderColor;
+        buffer[screenTact.pixelIndex] = screenBorderColor;
+        buffer[screenTact.pixelIndex + 1] = screenBorderColor;
         // --- Obtain the future pixel byte
-        pixelByte1 = spectrum.read(screenTact.pixelByteToFetchAddress, true);
+        screenPixelByte1 = spectrum.read(
+          screenTact.pixelByteToFetchAddress,
+          true
+        );
         break;
 
       case ScreenRenderingPhase.BorderFetchPixelAttr:
         // --- Fetch the border color and set the corresponding border pixels
-        buffer[screenTact.pixelIndex] = borderColor;
-        buffer[screenTact.pixelIndex + 1] = borderColor;
+        buffer[screenTact.pixelIndex] = screenBorderColor;
+        buffer[screenTact.pixelIndex + 1] = screenBorderColor;
         // --- Obtain the future attribute byte
-        attrByte1 = spectrum.read(screenTact.attributeToFetchAddress, true);
+        screenAttrByte1 = spectrum.read(
+          screenTact.attributeToFetchAddress,
+          true
+        );
         break;
 
       case ScreenRenderingPhase.DisplayB1:
         // --- Display bit 7 and 6 according to the corresponding color
-        buffer[screenTact.pixelIndex] = getColor(pixelByte1 & 0x80, attrByte1);
+        buffer[screenTact.pixelIndex] = getColor(
+          screenPixelByte1 & 0x80,
+          screenAttrByte1
+        );
         buffer[screenTact.pixelIndex + 1] = getColor(
-          pixelByte1 & 0x40,
-          attrByte1
+          screenPixelByte1 & 0x40,
+          screenAttrByte1
         );
         // --- Shift in the subsequent bits
-        pixelByte1 <<= 2;
+        screenPixelByte1 <<= 2;
         break;
 
       case ScreenRenderingPhase.DisplayB1FetchB2:
         // --- Display bit 7 and 6 according to the corresponding color
-        buffer[screenTact.pixelIndex] = getColor(pixelByte1 & 0x80, attrByte1);
+        buffer[screenTact.pixelIndex] = getColor(
+          screenPixelByte1 & 0x80,
+          screenAttrByte1
+        );
         buffer[screenTact.pixelIndex + 1] = getColor(
-          pixelByte1 & 0x40,
-          attrByte1
+          screenPixelByte1 & 0x40,
+          screenAttrByte1
         );
         // --- Shift in the subsequent bits
-        pixelByte1 <<= 2;
+        screenPixelByte1 <<= 2;
         // --- Obtain the next pixel byte
-        pixelByte2 = spectrum.read(screenTact.pixelByteToFetchAddress, true);
+        screenPixelByte2 = spectrum.read(
+          screenTact.pixelByteToFetchAddress,
+          true
+        );
         break;
 
       case ScreenRenderingPhase.DisplayB1FetchA2:
         // --- Display bit 7 and 6 according to the corresponding color
-        buffer[screenTact.pixelIndex] = getColor(pixelByte1 & 0x80, attrByte1);
+        buffer[screenTact.pixelIndex] = getColor(
+          screenPixelByte1 & 0x80,
+          screenAttrByte1
+        );
         buffer[screenTact.pixelIndex + 1] = getColor(
-          pixelByte1 & 0x40,
-          attrByte1
+          screenPixelByte1 & 0x40,
+          screenAttrByte1
         );
         // --- Shift in the subsequent bits
-        pixelByte1 <<= 2;
+        screenPixelByte1 <<= 2;
         // --- Obtain the next attribute
-        attrByte2 = spectrum.read(screenTact.attributeToFetchAddress, true);
+        screenAttrByte2 = spectrum.read(
+          screenTact.attributeToFetchAddress,
+          true
+        );
         break;
 
       case ScreenRenderingPhase.DisplayB2:
         // --- Display bit 7 and 6 according to the corresponding color
-        buffer[screenTact.pixelIndex] = getColor(pixelByte2 & 0x80, attrByte2);
+        buffer[screenTact.pixelIndex] = getColor(
+          screenPixelByte2 & 0x80,
+          screenAttrByte2
+        );
         buffer[screenTact.pixelIndex + 1] = getColor(
-          pixelByte2 & 0x40,
-          attrByte2
+          screenPixelByte2 & 0x40,
+          screenAttrByte2
         );
         // --- Shift in the subsequent bits
-        pixelByte2 <<= 2;
+        screenPixelByte2 <<= 2;
         break;
 
       case ScreenRenderingPhase.DisplayB2FetchB1:
         // --- Display bit 7 and 6 according to the corresponding color
-        buffer[screenTact.pixelIndex] = getColor(pixelByte2 & 0x80, attrByte2);
+        buffer[screenTact.pixelIndex] = getColor(
+          screenPixelByte2 & 0x80,
+          screenAttrByte2
+        );
         buffer[screenTact.pixelIndex + 1] = getColor(
-          pixelByte2 & 0x40,
-          attrByte2
+          screenPixelByte2 & 0x40,
+          screenAttrByte2
         );
         // --- Shift in the subsequent bits
-        pixelByte2 <<= 2;
+        screenPixelByte2 <<= 2;
         // --- Obtain the next pixel byte
-        pixelByte1 = spectrum.read(screenTact.pixelByteToFetchAddress, true);
+        screenPixelByte1 = spectrum.read(
+          screenTact.pixelByteToFetchAddress,
+          true
+        );
         break;
 
       case ScreenRenderingPhase.DisplayB2FetchA1:
         // --- Display bit 7 and 6 according to the corresponding color
-        buffer[screenTact.pixelIndex] = getColor(pixelByte2 & 0x80, attrByte2);
+        buffer[screenTact.pixelIndex] = getColor(
+          screenPixelByte2 & 0x80,
+          screenAttrByte2
+        );
         buffer[screenTact.pixelIndex + 1] = getColor(
-          pixelByte2 & 0x40,
-          attrByte2
+          screenPixelByte2 & 0x40,
+          screenAttrByte2
         );
         // --- Shift in the subsequent bits
-        pixelByte2 <<= 2;
+        screenPixelByte2 <<= 2;
         // --- Obtain the next attribute
-        attrByte1 = spectrum.read(screenTact.attributeToFetchAddress, true);
+        screenAttrByte1 = spectrum.read(
+          screenTact.attributeToFetchAddress,
+          true
+        );
         break;
     }
   }
+}
 
-  /**
-   * Gets the color index for the specified pixel value according
-   * to the given color attribute
-   * @param pixelValue 0 for paper pixel, non-zero for ink pixel
-   * @param attr Color attribute
-   */
-  function getColor(pixelValue: u8, attr: u8): u8 {
-    const offset = (pixelValue === 0 ? 0 : 0x100) + attr;
-    return flashPhase ? flashOnColors[offset] : flashOffColors[offset];
-  }
+/**
+ * Gets the color index for the specified pixel value according
+ * to the given color attribute
+ * @param pixelValue 0 for paper pixel, non-zero for ink pixel
+ * @param attr Color attribute
+ */
+function getColor(pixelValue: u8, attr: u8): u8 {
+  const offset = (pixelValue === 0 ? 0 : 0x100) + attr;
+  return screenFlashPhase
+    ? screenFlashOnColors[offset]
+    : screenFlashOffColors[offset];
 }
 
 /**
@@ -844,8 +1014,8 @@ export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
  * @returns: The contention value for the ULA tact
  */
 export function sp48GetContentionValue(tact: u32): u32 {
-  return renderingTactTable[
-    tact % screenConfiguration.screenRenderingFrameTactCount
+  return screeRenderingTactTable[
+    tact % spectrum.screenConfiguration.screenRenderingFrameTactCount
   ].contentionDelay;
 }
 
@@ -853,7 +1023,307 @@ export function sp48GetContentionValue(tact: u32): u32 {
  * Gets the buffer that holds the screen pixels
  */
 export function sp48GetPixelBuffer(): u8[] {
-  return pixelBuffer;
+  return screenPixelBuffer;
+}
+
+// ============================================================================
+// Beeper device
+
+// ---- Beeper device state
+let beeperFirstTact: u64;
+let beeperAccSamples: u32;
+let beeperSampleRate: u32;
+let beeperTactsPerSample: u32;
+let beeperSamplesPerFrame: f32;
+let beeperUseTapeMode: bool;
+let beeperLastEarBit: bool;
+let beeperLastSampleTact: u64;
+let beeperAudioSamples: f32[];
+let beeperNextSampleIndex: i32;
+
+/**
+ * Serializes beeper device state
+ * @param w Binary stream writer
+ */
+function serializeBeeperState(w: BinaryWriter): void {
+  w.writeUint64(beeperFirstTact);
+  w.writeUint32(beeperAccSamples);
+  w.writeUint32(beeperSampleRate);
+  w.writeUint32(<u32>(beeperSamplesPerFrame * 10_000));
+  w.writeByte(beeperUseTapeMode ? 1 : 0);
+  w.writeByte(beeperLastEarBit ? 1 : 0);
+  w.writeUint64(beeperLastSampleTact);
+  w.writeUint16(<u16>beeperAudioSamples.length);
+  for (let i = 0; i < beeperAudioSamples.length; i++) {
+    w.writeUint16(beeperAudioSamples[i] * 10_000);
+  }
+  w.writeUint32(beeperNextSampleIndex);
+}
+
+/**
+ * Restores beeper device state
+ * @param r Binary stream reader
+ */
+function restoreBeeperState(r: BinaryReader): void {
+  beeperFirstTact = r.readUint64();
+  beeperAccSamples = r.readUint32();
+  beeperSampleRate = r.readUint32();
+  beeperSamplesPerFrame = <f32>r.readUint32() / 10_000;
+  beeperUseTapeMode = r.readByte() !== 0;
+  beeperLastEarBit = r.readByte() !== 0;
+  beeperLastSampleTact = r.readUint64();
+  const sampleCount = r.readUint16();
+  beeperAudioSamples = new Array<f32>(sampleCount);
+  for (let i = 0; i < sampleCount; i++) {
+    beeperAudioSamples[i] = <f32>r.readUint16() / 10_000;
+  }
+  beeperNextSampleIndex = r.readUint32();
+}
+
+/**
+ * Resets the beeper device
+ */
+export function sp48ResetBeeperDevice(): void {
+  beeperFirstTact = spectrum.frameBegins;
+  beeperAccSamples = 0;
+  beeperLastEarBit = false;
+  beeperUseTapeMode = false;
+  initializeSampling();
+}
+
+/**
+ * Sets up sampling ionformation for the forthcoming frame
+ */
+function initializeSampling(): void {
+  const nextSamplesCount =
+    <f32>beeperFirstTact +
+    <f32>(spectrum.frameCount + 1) * beeperSamplesPerFrame;
+  const frameBegins = spectrum.frameBegins;
+  beeperLastSampleTact =
+    frameBegins % beeperTactsPerSample === 0
+      ? frameBegins
+      : frameBegins +
+        beeperTactsPerSample -
+        ((frameBegins + beeperTactsPerSample) % beeperTactsPerSample);
+  const samplesInFrame = <i32>(
+    Math.floor(nextSamplesCount - <f32>beeperAccSamples)
+  );
+  beeperAccSamples += samplesInFrame;
+  // --- Empty the samples array
+  beeperAudioSamples = new Array<f32>(samplesInFrame);
+  for (let i = 0; i < samplesInFrame; i++) {
+    beeperAudioSamples[i] = 0.0;
+  }
+  beeperNextSampleIndex = 0;
+}
+
+/**
+ * Starts a new beeper frame;
+ */
+export function sp48StartNewBeeperFrame(): void {
+  initializeSampling();
+  if (spectrum.overflow !== 0) {
+    createSamples(spectrum.frameBegins + spectrum.overflow);
+  }
+}
+
+/**
+ * Creates beeper samples to the specified CPU tacts
+ * @param cpuTacts CPU tacts to create samples to
+ */
+function createSamples(cpuTacts: u64): void {
+  let nextSampleOffset = beeperLastSampleTact;
+  const frametacts = spectrum.screenConfiguration.screenRenderingFrameTactCount;
+  if (cpuTacts > spectrum.frameBegins + frametacts) {
+    cpuTacts = spectrum.frameBegins + frametacts;
+  }
+  while (nextSampleOffset <= cpuTacts) {
+    beeperAudioSamples[beeperNextSampleIndex++] = beeperLastEarBit ? 1.0 : 0.0;
+    nextSampleOffset += beeperTactsPerSample;
+  }
+  if (beeperNextSampleIndex < beeperAudioSamples.length) {
+    const lastSample = beeperAudioSamples[beeperNextSampleIndex - 1];
+    for (let i = beeperNextSampleIndex; i < beeperAudioSamples.length; i++) {
+      beeperAudioSamples[i] = lastSample;
+    }
+  }
+  beeperLastSampleTact = nextSampleOffset;
+}
+
+/**
+ * Completes a beeper frame
+ */
+export function sp48CompleteBeeperFrame(): void {
+  const frameTacts = spectrum.screenConfiguration.screenRenderingFrameTactCount;
+  if (beeperLastSampleTact < spectrum.frameBegins + frameTacts) {
+    // --- Expand the samples till the end of the frame
+    createSamples(spectrum.frameBegins + frameTacts);
+  }
+}
+
+/**
+ * Gets the beeper samples created in the current screen frame
+ */
+export function sp48GetBeeperSamples(): f32[] {
+  return beeperAudioSamples;
+}
+
+/**
+ * Gets the current audio sample rate
+ */
+export function sp48GetBeeperSampleRate(): u32 {
+  return beeperSampleRate;
+}
+
+/**
+ * Sets the beeper sample rate
+ */
+export function sp48SetBeeperSampleRate(rate: u32): void {
+  beeperSampleRate = rate;
+  beeperSamplesPerFrame =
+    (<f32>spectrum.screenConfiguration.screenRenderingFrameTactCount *
+      <f32>rate) /
+    <f32>spectrum.baseClockFrequency /
+    <f32>spectrum.clockMultiplier;
+  beeperTactsPerSample = <u32>(
+    Math.ceil(
+      <f32>spectrum.screenConfiguration.screenRenderingFrameTactCount /
+        beeperSamplesPerFrame
+    )
+  );
+  sp48ResetBeeperDevice();
+}
+
+/**
+ * Gets the latest EAR bit value;
+ */
+export function sp48GetLastEarBit(): bool {
+  return beeperLastEarBit;
+}
+
+/**
+ * This device processes so many samples in a single frame
+ */
+export function sp48GetSamplesPerFrame(): f32 {
+  return beeperSamplesPerFrame;
+}
+
+/**
+ * Number of CPU tacts between samples
+ */
+export function sp48GetTactsPerSample(): u32 {
+  return beeperTactsPerSample;
+}
+
+/**
+ * Processes the change of the EAR bit value
+ * @param fromTape False: EAR bit comes from an OUT instruction, True: EAR bit comes from tape
+ * @param earBit EAR bit value
+ */
+export function sp48ProcessEarBitValue(fromTape: bool, earBit: bool): void {
+  if (!fromTape && beeperUseTapeMode) {
+    // --- The EAR bit comes from and OUT instruction, but now we're in tape mode
+    return;
+  }
+  if (earBit === beeperLastEarBit) {
+    // --- The earbit has not changed
+    return;
+  }
+  createSamples(spectrum.cpu.tacts);
+  beeperLastEarBit = earBit;
+}
+
+/**
+ * This method signs that tape should override the OUT instruction's EAR bit
+ * @param useTape True: Override the OUT instruction with the tape's EAR bit value
+ */
+export function sp48SetTapeOverride(useTape: bool): void {
+  beeperUseTapeMode = useTape;
+}
+
+// ============================================================================
+// Keyboard device
+
+// --- Keyboard device state
+let keyboardLineStatus: u8[];
+
+/**
+ * Serializes the keyboard device state
+ * @param w Binary stream writer
+ */
+function serializeKeyboardState(w: BinaryWriter): void {
+  w.writeBytes(keyboardLineStatus);
+}
+
+/**
+ * Restores keyboard device state
+ * @param r Binary stream reader
+ */
+function restoreKeyboardState(r: BinaryReader): void {
+  keyboardLineStatus = r.readBytes();
+}
+
+/**
+ * Resets the keyboard device
+ */
+export function sp48ResetKeyboardDevice(): void {
+  keyboardLineStatus = new Array<u8>(8);
+  for (let i = 0; i < 8; i++) {
+    keyboardLineStatus[i] = 0x00;
+  }
+}
+
+/**
+ * Sets the status of the specified Spectrum keyboard key
+ * @param key Key code
+ * @param isDown True, if the key is down; otherwise, false
+ */
+export function sp48SetKeyStatus(key: SpectrumKeyCode, isDown: bool): void {
+  const lineIndex = <i32>Math.floor(key / 5);
+  const lineMask = 1 << key % 5;
+  keyboardLineStatus[lineIndex] = isDown
+    ? <u8>(keyboardLineStatus[lineIndex] | lineMask)
+    : <u8>(keyboardLineStatus[lineIndex] & ~lineMask);
+}
+
+/**
+ * Gets the status of the specified Spectrum keyboard key.
+ * @param key Key code
+ * @returns True, if the key is down; otherwise, false
+ */
+export function sp48GetKeyStatus(key: SpectrumKeyCode): bool {
+  const lineIndex = <i32>Math.floor(key / 5);
+  const lineMask = 1 << key % 5;
+  return (keyboardLineStatus[lineIndex] & lineMask) !== 0;
+}
+
+/**
+ * Gets the byte we would get when querying the I/O address with the
+ * specified byte as the highest 8 bits of the address line
+ * @param lines The highest 8 bits of the address line
+ * @returns The status value to be received when querying the I/O
+ */
+export function sp48GetKeyLineStatus(lines: u8): u8 {
+  let status: u8 = 0;
+  lines = ~lines;
+
+  let lineIndex = 0;
+  while (lines > 0) {
+    if ((lines & 0x01) !== 0) {
+      status |= keyboardLineStatus[lineIndex];
+    }
+    lineIndex++;
+    lines >>= 1;
+  }
+  return ~status;
+}
+
+/**
+ * Writes out the state of the ZX Spectrum 48 machine to binary stream
+ */
+export function sp48GetMachineState(): u8[] {
+  const writer = new BinaryWriter();
+  return writer.buffer;
 }
 
 /**

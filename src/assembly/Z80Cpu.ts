@@ -6,6 +6,8 @@ import {
   OpIndexMode,
   FlagsSetMask,
 } from "../shared/cpu-enums";
+import { BinaryWriter } from "./utils/BinaryWriter";
+import { BinaryReader } from "./utils/BinaryReader";
 
 export class Z80Cpu {
   // ==========================================================================
@@ -243,6 +245,73 @@ export class Z80Cpu {
     this.wh = s.wh;
     this.wl = s.wl;
     this.wz = s.wz;
+  }
+
+  /**
+   * Serializes the CPU state into a binary stream
+   */
+  serializeCpuState(w: BinaryWriter): void {
+    w.writeUint16(this.af);
+    w.writeUint16(this.bc);
+    w.writeUint16(this.de);
+    w.writeUint16(this.hl);
+    w.writeUint16(this._af_);
+    w.writeUint16(this._bc_);
+    w.writeUint16(this._de_);
+    w.writeUint16(this._hl_);
+    w.writeByte(this.i);
+    w.writeByte(this.r);
+    w.writeUint16(this.pc);
+    w.writeUint16(this.sp);
+    w.writeUint16(this.ix);
+    w.writeUint16(this.iy);
+    w.writeUint16(this.wz);
+    w.writeByte(this.iff1 ? 1 : 0);
+    w.writeByte(this.iff2 ? 1 : 0);
+    w.writeByte(<u8>this.indexMode);
+    w.writeByte(this.interruptMode);
+    w.writeByte(this.isInOpExecution ? 1 : 0);
+    w.writeByte(this.isInterruptBlocked ? 1 : 0);
+    w.writeByte(this.maskableInterruptModeEntered ? 1 : 0);
+    w.writeByte(this.opCode);
+    w.writeByte(<u8>this.prefixMode);
+    w.writeByte(<u8>this.stateFlags);
+    w.writeUint64(this.tacts);
+    w.writeByte(this.useGateArrayContention ? 1 : 0);
+  }
+
+  /**
+   * Restores the CPU state from a binary stream
+   * @param state Binary stream
+   */
+  restoreCpuState(s: BinaryReader): void {
+    this.af = s.readUint16();
+    this.bc = s.readUint16();
+    this.de = s.readUint16();
+    this.hl = s.readUint16();
+    this._af_ = s.readUint16();
+    this._bc_ = s.readUint16();
+    this._de_ = s.readUint16();
+    this._hl_ = s.readUint16();
+    this.i = s.readByte();
+    this.r = s.readByte();
+    this.pc = s.readUint16();
+    this.sp = s.readUint16();
+    this.ix = s.readUint16();
+    this.iy = s.readUint16();
+    this.wz = s.readUint16();
+    this.iff1 = s.readByte() !== 0;
+    this.iff2 = s.readByte() !== 0;
+    this.indexMode = <OpIndexMode>s.readByte();
+    this.interruptMode = s.readByte();
+    this.isInOpExecution = s.readByte() !== 0;
+    this.isInterruptBlocked = s.readByte() !== 0;
+    this.maskableInterruptModeEntered = s.readByte() !== 0;
+    this.opCode = s.readByte();
+    this.prefixMode = <OpPrefixMode>s.readByte();
+    this.stateFlags = <Z80StateFlags>s.readByte();
+    this.tacts = s.readUint64();
+    this.useGateArrayContention = s.readByte() !== 0;
   }
 
   // ==========================================================================

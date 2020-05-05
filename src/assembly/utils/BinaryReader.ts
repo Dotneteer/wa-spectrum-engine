@@ -17,7 +17,7 @@ export class BinaryReader {
   /**
    * Gets the current stream position
    */
-  get position(): number {
+  get position(): i32 {
     return this._position;
   }
 
@@ -25,7 +25,7 @@ export class BinaryReader {
    * Seeks the specified position
    * @param position Position to seek foor
    */
-  seek(position: number): void {
+  seek(position: i32): void {
     if (position < 0) {
       throw new Error("Stream position cannot be negative");
     }
@@ -39,7 +39,7 @@ export class BinaryReader {
   /**
    * Get the length of the stream
    */
-  get length(): u32 {
+  get length(): i32 {
     return this._buffer.length;
   }
 
@@ -53,26 +53,8 @@ export class BinaryReader {
   /**
    * Test is the current position is at the end of the file
    */
-  get eof(): boolean {
+  get eof(): bool {
     return this._position >= this._buffer.length;
-  }
-
-  /**
-   * Reads the specified number of bytes from the stream
-   * @param count Number of bytes to read
-   */
-  readBytes(count: u16): u8[] {
-    if (this._position + count >= this._buffer.length) {
-      count = this._buffer.length - this._position;
-    }
-    if (count < 0) {
-      count = 0;
-    }
-    const result = new Array<u8>(count);
-    for (let i = 0; i < count; i++) {
-      result[i] = this._buffer[this._position++];
-    }
-    return result;
   }
 
   /**
@@ -84,10 +66,32 @@ export class BinaryReader {
   }
 
   /**
+   * Reads a byte array from the stream. The subsequent 4 bytes defines
+   * the length of the array
+   */
+  readBytes(): u8[] {
+    const length = this.readUint32();
+    const result = new Array<u8>(length);
+    for (let i = 0; i < length; i++) {
+      result[i] = this.readByte();
+    }
+    return result;
+  }
+
+
+  /**
    * Reads a 16-bit unsigned integer from the stream
    */
-  readUInt16(): u16 {
+  readUint16(): u16 {
     return <u16>this.readByte() + ((<u16>this.readByte()) << 8);
+  }
+
+  /**
+   * Reads a 16-bit signed integer from the stream
+   */
+  readInt16(): i16 {
+    const val = <u16>this.readByte() + ((<u16>this.readByte()) << 8);
+    return <i16>val;
   }
 
   /**
@@ -105,7 +109,7 @@ export class BinaryReader {
   /**
    * Reads a 32-bit unsigned integer from the stream
    */
-  readUInt32(): u32 {
+  readUint32(): u32 {
     return (
       <u32>this.readByte() +
       ((<u32>this.readByte()) << 8) +
@@ -115,11 +119,10 @@ export class BinaryReader {
   }
 
   /**
-   * Reads a 16-bit signed integer from the stream
+   * Reads a 32-bit unsigned integer from the stream
    */
-  readInt16(): number {
-    const val = <u16>this.readByte() + ((<u16>this.readByte()) << 8);
-    return <i16>val;
+  readUint64(): u64 {
+    return <u64>(((<u64>this.readUint32()) << 32) | (<u64>this.readUint32()));
   }
 
   /**

@@ -28,6 +28,22 @@ import {
   sp48RenderScreen,
   sp48GetContentionValue,
   sp48GetPixelBuffer,
+  sp48StartNewInterruptFrame,
+  sp48ResetBeeperDevice,
+  sp48StartNewBeeperFrame,
+  sp48CompleteBeeperFrame,
+  sp48GetBeeperSamples,
+  sp48GetBeeperSampleRate,
+  sp48SetBeeperSampleRate,
+  sp48GetLastEarBit,
+  sp48GetSamplesPerFrame,
+  sp48GetTactsPerSample,
+  sp48ProcessEarBitValue,
+  sp48SetTapeOverride,
+  sp48ResetKeyboardDevice,
+  sp48SetKeyStatus,
+  sp48GetKeyLineStatus,
+  sp48GetKeyStatus,
 } from "./spectrum-48";
 
 const NOT_INITIALIZED = "ZX Spectrum instance is not initialized";
@@ -93,6 +109,7 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
 
       // --- Interrupt device
       spectrum.resetInterruptDevice = sp48ResetInterruptDevice;
+      spectrum.startNewInterruptFrame = sp48StartNewInterruptFrame
       spectrum.isInterruptRaised = sp48IsInterruptRaised;
       spectrum.isInterruptRevoked = sp48IsInterruptRevoked;
       spectrum.checkForInterrupt = sp48CheckForInterrupt;
@@ -108,6 +125,25 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
       spectrum.getContentionValue = sp48GetContentionValue;
       spectrum.getPixelBuffer = sp48GetPixelBuffer;
 
+      // --- Beeper device
+      spectrum.resetBeeperDevice = sp48ResetBeeperDevice;
+      spectrum.startNewInterruptFrame = sp48StartNewBeeperFrame;
+      spectrum.completeBeeperFrame = sp48CompleteBeeperFrame;
+      spectrum.getBeeperSamples = sp48GetBeeperSamples;
+      spectrum.getBeeperSampleRate = sp48GetBeeperSampleRate;
+      spectrum.setBeeperSampleRate = sp48SetBeeperSampleRate;
+      spectrum.getLastEarBit = sp48GetLastEarBit;
+      spectrum.getSamplesPerFrame = sp48GetSamplesPerFrame;
+      spectrum.getTactsPerSample = sp48GetTactsPerSample;
+      spectrum.processEarBitValue = sp48ProcessEarBitValue;
+      spectrum.setTapeOverride = sp48SetTapeOverride;
+
+      // --- Keyboard device
+      spectrum.resetKeyboardDevice = sp48ResetKeyboardDevice;
+      spectrum.setKeyStatus = sp48SetKeyStatus;
+      spectrum.getKeyStatus = sp48GetKeyStatus;
+      spectrum.getKeyLineStatus = sp48GetKeyLineStatus;
+      
       break;
   }
 

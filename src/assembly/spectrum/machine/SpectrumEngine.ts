@@ -5,12 +5,16 @@ import {
   CpuConfiguration,
   MemoryConfiguration,
   ScreenConfiguration,
+  serializeScreenConfiguration,
+  restoreScreenConfiguration,
 } from "./configuration";
 import { AddressLocation, PagedBank } from "../memory/address";
 import { RenderingTact } from "../screen/rendering";
 import { SpectrumKeyCode } from "../../../shared/SpectrumKeyCode";
-import { LiteEvent } from "../../events/LiteEvent";
-import { BinaryReader } from "../tape/BinaryReader";
+import { LiteEvent } from "../../utils/LiteEvent";
+import { BinaryReader } from "../../utils/BinaryReader";
+import { ScreenConfigurationEx } from "../screen/ScreenConfigurationEx";
+import { BinaryWriter } from "../../utils/BinaryWriter";
 
 /**
  * This class represents a ZX Spectrum engine
@@ -20,12 +24,13 @@ export class SpectrumEngine {
   private _ulaIssue: u8;
   private _baseClockFrequency: u32;
   private _clockMultiplier: u8;
+  private _screenConfiguration: ScreenConfigurationEx;
   private _currentFrameTact: u32;
-  private _frameTacts: u32;
   private _frameCount: u32;
+  private _frameBegins: u64;
   private _overflow: u32;
   private _contentionAccummulated: u32;
-  private _lastExecutionStartTact: number;
+  private _lastExecutionStartTact: u64;
   private _lastExecutionContentionValue: u32;
   private _executeCycleOptions: ExecuteCycleOptions;
   private _executionCompletionReason: ExecutionCompletionReason;
@@ -45,7 +50,32 @@ export class SpectrumEngine {
    * Sets up the machine according to its configuration
    */
   setup(): void {
+    // --- Configure the cpu
+    const cpuConfig = this.getCpuConfiguration();
+    this._baseClockFrequency = cpuConfig.baseClockFrequency;
+    this._clockMultiplier = cpuConfig.clockMultiplier;
+    this.cpu.allowExtendedInstructionSet  = cpuConfig.supportsNextOperations;
+
+    // --- Configure the screen frame
+    const scr = this.getScreenConfiguration();
+    this._screenConfiguration = new ScreenConfigurationEx(scr);
     this._frameCount = 0;
+    this._frameBegins = 0;
+    this._overflow = 0;
+    this._contentionAccummulated = 0;
+    this._lastExecutionStartTact = 0;
+    this._lastExecutionContentionValue = 0;
+
+    // --- Configure audio sample rate
+    this.setBeeperSampleRate(24000);
+
+    // --- Reset the devices
+    this.resetMemoryDevice();
+    this.resetPortDevice();
+    this.resetScreenDevice();
+    this.resetInterruptDevice();
+    this.resetBeeperDevice();
+    this.resetKeyboardDevice();
   }
 
   // ==========================================================================
@@ -83,21 +113,25 @@ export class SpectrumEngine {
   }
 
   /**
+   * Gets the screen configuration
+   */
+  get screenConfiguration(): ScreenConfigurationEx {
+    return this._screenConfiguration;
+  }
+
+  /**
    * The current tact within the current screen frame
    */
   get currentFrameTact(): u32 {
     return this._currentFrameTact;
   }
 
-  /**
-   * Total number of tacts within a ULA screen frame
-   */
-  get frameTacts(): u32 {
-    return this._frameTacts;
-  }
-
   get frameCount(): u32 {
     return this._frameCount;
+  }
+
+  get frameBegins(): u64 {
+    return this._frameBegins;
   }
 
   /**
@@ -142,6 +176,68 @@ export class SpectrumEngine {
    */
   get executionCompletionReason(): ExecutionCompletionReason {
     return this._executionCompletionReason;
+  }
+
+  // ==========================================================================
+  // Execution cycle
+  executeCycle(options: ExecuteCycleOptions): void {
+    // TODO: prepare for a new frame
+  }
+
+  // ==========================================================================
+  // Configurator functions
+
+  /**
+   * Serializes the state of the engine
+   * @returns The binary stream of the engine state
+   */
+  serializeEngineState(): u8[] {
+    const w = new BinaryWriter();
+
+    // --- Save SpectrumEngine state
+    this._cpu.serializeCpuState(w);
+    w.writeByte(this._ulaIssue);
+    w.writeUint32(this._baseClockFrequency);
+    w.writeByte(this._clockMultiplier);
+    serializeScreenConfiguration(this._screenConfiguration as ScreenConfiguration, w);
+    w.writeUint32(this._currentFrameTact);
+    w.writeUint32(this._frameCount);
+    w.writeUint64(this._frameBegins);
+    w.writeUint32(this._overflow);
+    w.writeUint32(this._contentionAccummulated);
+    w.writeUint64(this._lastExecutionStartTact);
+    w.writeUint32(this._lastExecutionContentionValue);
+
+    // --- Save device state
+    this.serializeMachineState(w);
+    return w.buffer;
+  }
+
+  /**
+   * Restrores the state of the engine
+   * @param state State to restore
+   */
+  restoreEngineState(state: u8[]): void {
+    const r = new BinaryReader(state);
+
+    // --- Restore engine state
+    this._cpu.restoreCpuState(r)
+    this._ulaIssue = r.readByte();
+    this._baseClockFrequency = r.readUint32();
+    this._clockMultiplier = r.readByte();
+    const sc = new ScreenConfiguration();
+    restoreScreenConfiguration(sc, r);
+    this._screenConfiguration = new ScreenConfigurationEx(sc);
+    this._currentFrameTact = r.readUint32();
+    this._frameCount = r.readUint32();
+    this._frameBegins = r.readUint64();
+    this._overflow = r.readUint32();
+    this._contentionAccummulated = r.readUint32();
+    this._lastExecutionStartTact = r.readUint64();
+    this._lastExecutionContentionValue = r.readUint32();
+
+    // --- Restore device states
+    this.restoreMachineState(r);
   }
 
   // ==========================================================================
@@ -298,6 +394,11 @@ export class SpectrumEngine {
   resetInterruptDevice: () => void;
 
   /**
+   * Starts a new interrupt frame
+   */
+  startNewInterruptFrame: () => void;
+
+  /**
    * Signs that an interrupt has been raised in this frame.
    */
   isInterruptRaised: () => bool;
@@ -369,6 +470,21 @@ export class SpectrumEngine {
   // Beeper device functions
 
   /**
+   * Resets the beeper device
+   */
+  resetBeeperDevice: () => void;
+
+  /**
+   * Starts a new beeper frame;
+   */
+  startNewBeeperFrame: () => void;
+
+  /**
+   * Completes a beeper frame
+   */
+  completeBeeperFrame: () => void;
+
+  /**
    * Gets the beeper samples created in the current screen frame
    */
   getBeeperSamples: () => f32[];
@@ -413,6 +529,11 @@ export class SpectrumEngine {
 
   // ==========================================================================
   // Keyboard device functions
+
+  /**
+   * Resets the keyboard device
+   */
+  resetKeyboardDevice: () => void;
 
   /**
    * Sets the status of the specified Spectrum keyboard key
@@ -519,4 +640,17 @@ export class SpectrumEngine {
    * Gets the saved contents
    */
   getSavedContents: () => u8[];
+
+  // ==========================================================================
+  // Machine state serialization
+
+  /**
+   * Serializes the current state of the machine
+   */
+  serializeMachineState: (w: BinaryWriter) => void;
+
+  /**
+   * Restores the machine state from the specified binary stream
+   */
+  restoreMachineState: (s: BinaryReader) => void;
 }
