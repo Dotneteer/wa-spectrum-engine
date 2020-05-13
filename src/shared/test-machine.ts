@@ -2,7 +2,7 @@ import { Api } from "./api";
 import { TestZ80MachineState } from "../assembly/test-machine/TestZ80MachineState";
 import { RunMode } from "./RunMode";
 import { ASUtil } from "@assemblyscript/loader";
-import { MemoryOp, IoOp, clearIoAccessLog, clearMemoryAccessLog, TbBlueOp } from "../assembly/test-machine/test-devices";
+import { MemoryOp, IoOp, TbBlueOp } from "../assembly/test-machine/test-devices";
 import { FlagsSetMask } from "./cpu-enums";
 
 /**

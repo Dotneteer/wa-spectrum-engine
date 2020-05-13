@@ -4,11 +4,6 @@
  */
 export enum EmulationMode {
   /**
-   * Run the virtual machine until stopped
-   */
-  Continuous,
-
-  /**
    * Run the virtual machine in debugger mode
    */
   Debugger,

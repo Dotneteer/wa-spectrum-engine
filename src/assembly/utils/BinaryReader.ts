@@ -1,5 +1,3 @@
-import { ULong } from "./ULong";
-
 /**
  * This class allows you to read binary information from a file or a buffer
  */
@@ -97,14 +95,6 @@ export class BinaryReader {
       ((<u32>this.readByte()) << 16) +
       ((<u32>this.readByte()) << 24)
     );
-  }
-
-  /**
-   * Reads a 32-bit unsigned integer from the stream
-   */
-  readULong(): ULong {
-    const low = this.readUint32();
-    return new ULong(this.readUint32(), low);
   }
 
   /**

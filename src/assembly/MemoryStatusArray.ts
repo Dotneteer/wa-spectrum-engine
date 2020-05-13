@@ -3,7 +3,7 @@
 // --- within the 64K memory space
 export class MemoryStatusArray {
   // --- Stores the array of bits, each number 32 bits
-  private readonly _memoryBits: Uint32Array = new Uint32Array(2048);
+  private _memoryBits: Uint32Array = new Uint32Array(2048);
 
   // --- Create an array of zero bits
   constructor() {

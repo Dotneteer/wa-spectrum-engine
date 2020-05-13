@@ -152,6 +152,8 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
       spectrum.getKeyStatus = sp48GetKeyStatus;
       spectrum.getKeyLineStatus = sp48GetKeyLineStatus;
       
+      // --- Tape device
+      spectrum.checkTapeHooks = () => {};
       break;
   }
 

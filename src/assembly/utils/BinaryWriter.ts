@@ -1,5 +1,3 @@
-import { ULong } from "./ULong";
-
 const CHUNK_INCREMENT = 4096;
 
 /**
@@ -50,15 +48,6 @@ export class BinaryWriter {
     this._buffer[this._position++] = <u8>(value >> 8);
     this._buffer[this._position++] = <u8>(value >> 16);
     this._buffer[this._position++] = <u8>(value >> 24);
-  }
-
-  /**
-   * Writes an u64 value to the stream
-   * @param value Value to write
-   */
-  writeULong(value: ULong): void {
-    this.writeUint32(value.low);
-    this.writeUint32(value.high);
   }
 
   /**

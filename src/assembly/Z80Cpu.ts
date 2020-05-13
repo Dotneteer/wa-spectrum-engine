@@ -8,7 +8,6 @@ import {
 } from "../shared/cpu-enums";
 import { BinaryWriter } from "./utils/BinaryWriter";
 import { BinaryReader } from "./utils/BinaryReader";
-import { ULong } from "./utils/ULong";
 
 export class Z80Cpu {
   // ==========================================================================
@@ -34,7 +33,17 @@ export class Z80Cpu {
   // CPU state variables
   // Gets the current tact of the device -- the clock cycles since
   // the device was reset
-  tacts: ULong;
+  
+  /**
+   * The number of tacts in a frame
+   */
+  tactsInFrame: u32;
+
+  // Number of frames since the CPU started
+  frameCount: u32;
+
+  // Number of tacts within the current frame
+  frameTacts: u32;
 
   // CPU signals and HW flags
   stateFlags: Z80StateFlags;
@@ -60,13 +69,13 @@ export class Z80Cpu {
   isInOpExecution: bool;
 
   // Gets the current execution flow status
-  readonly executionFlowStatus: MemoryStatusArray = new MemoryStatusArray();
+  executionFlowStatus: MemoryStatusArray = new MemoryStatusArray();
 
   // Gets the current memory read status
-  readonly memoryReadStatus: MemoryStatusArray = new MemoryStatusArray();
+  memoryReadStatus: MemoryStatusArray = new MemoryStatusArray();
 
   // Gets the current memory write status
-  readonly memoryWriteStatus: MemoryStatusArray = new MemoryStatusArray();
+  memoryWriteStatus: MemoryStatusArray = new MemoryStatusArray();
 
   // The current Operation Prefix Mode
   prefixMode: OpPrefixMode;
@@ -98,6 +107,30 @@ export class Z80Cpu {
     this.portWriter = (_addr: u16, _value: u8) => {};
     this.tbBlueIndexWriter = (_index: u8) => {};
     this.tbBlueValueWriter = (_value: u8) => {};
+    this.tactsInFrame = 100_000;
+  }
+
+  // ==========================================================================
+  // CPU clock methods
+
+  /**
+   * Sets the number of tacts in a frame
+   * @param value Number of tacts in a frame
+   */
+  setTactsInFrame(value: u32): void {
+    this.tactsInFrame = value;
+  }
+
+  /**
+   * Increments tacts with the specifind amount
+   * @param value Value to increment tacts with
+   */
+  incTact(value: u8): void {
+    this.frameTacts += <u32>value;
+    if (this.frameTacts >= this.tactsInFrame) {
+      this.frameCount++;
+      this.frameTacts -= this.tactsInFrame
+    }
   }
 
   /**
@@ -120,7 +153,8 @@ export class Z80Cpu {
     this._iy = 0xffff;
     this._wz = 0xffff;
 
-    this.tacts = ULong.fromUint32(0);
+    this.frameCount = 0;
+    this.frameTacts = 0;
     this.stateFlags = Z80StateFlags.None;
     this.useGateArrayContention = false;
     this.iff1 = false;
@@ -191,8 +225,8 @@ export class Z80Cpu {
     s.r = this.r;
     s.sp = this.sp;
     s.stateFlags = this.stateFlags;
-    s.tactsH = this.tacts.high;
-    s.tactsL = this.tacts.low;
+    s.tactsH = this.frameCount;
+    s.tactsL = this.frameTacts;
     s.useGateArrayContention = this.useGateArrayContention;
     s.wh = this.wh;
     s.wl = this.wl;
@@ -241,7 +275,8 @@ export class Z80Cpu {
     this.r = s.r;
     this.sp = s.sp;
     this.stateFlags = s.stateFlags;
-    this.tacts = new ULong(s.tactsH, s.tactsL);
+    this.frameCount = s.tactsH;
+    this.frameTacts= s.tactsL;
     this.useGateArrayContention = s.useGateArrayContention;
     this.wh = s.wh;
     this.wl = s.wl;
@@ -277,7 +312,8 @@ export class Z80Cpu {
     w.writeByte(this.opCode);
     w.writeByte(<u8>this.prefixMode);
     w.writeByte(<u8>this.stateFlags);
-    w.writeULong(this.tacts);
+    w.writeUint32(this.frameCount);
+    w.writeUint32(this.frameTacts);
     w.writeByte(this.useGateArrayContention ? 1 : 0);
   }
 
@@ -311,7 +347,8 @@ export class Z80Cpu {
     this.opCode = s.readByte();
     this.prefixMode = <OpPrefixMode>s.readByte();
     this.stateFlags = <Z80StateFlags>s.readByte();
-    this.tacts = s.readULong();
+    this.frameCount = s.readUint32();
+    this.frameTacts = s.readUint32();
     this.useGateArrayContention = s.readByte() !== 0;
   }
 
@@ -744,7 +781,7 @@ export class Z80Cpu {
    * @param ticks Clock ticks
    */
   delay(ticks: i32): void {
-    this.tacts.inc(<u16>ticks);
+    this.incTact(<u8>ticks);
   }
 
   /**
@@ -760,7 +797,7 @@ export class Z80Cpu {
 
     // --- Get operation code and refresh the memory
     let opCode = this.readCodeMemory();
-    this.tacts.inc(3);
+    this.incTact(3);
     this.pc++;
     this.refreshMemory();
 
@@ -886,7 +923,7 @@ export class Z80Cpu {
       // --- subsequent interrupt or reset is received. While in the
       // --- HALT state, the processor executes NOPs to maintain
       // --- memory refresh logic.
-      this.tacts.inc(3);
+      this.incTact(3);
       this.refreshMemory();
       return true;
     }
@@ -925,7 +962,8 @@ export class Z80Cpu {
     this.i = 0x00;
     this.r = 0x00;
     this.isInOpExecution = false;
-    this.tacts = ULong.fromUint32(0);
+    this.frameCount = 0;
+    this.frameTacts = 0;
   }
 
   /**
@@ -940,12 +978,12 @@ export class Z80Cpu {
     this.iff1 = false;
     this.iff2 = false;
     this.sp--;
-    this.tacts.inc(1);
+    this.incTact(1);
     this.writeMemory(this.sp, <u8>(this.pc >> 8));
-    this.tacts.inc(3);
+    this.incTact(3);
     this.sp--;
     this.writeMemory(this.sp, <u8>(this.pc & 0xff));
-    this.tacts.inc(3);
+    this.incTact(3);
 
     switch (this.interruptMode) {
       // --- Interrupt Mode 0:
@@ -965,7 +1003,7 @@ export class Z80Cpu {
         // --- that places instruction on the data bus, so we'll handle
         // --- IM 0 and IM 1 the same way
         this.wz = 0x0038;
-        this.tacts.inc(5);
+        this.incTact(5);
         break;
 
       // --- Interrupt Mode 2:
@@ -986,15 +1024,15 @@ export class Z80Cpu {
       // --- address; addresses must always start in even locations.
       default:
         // --- Getting the lower byte from device (assume 0)
-        this.tacts.inc(2);
+        this.incTact(2);
         let addr = <u16>((((this._i << 8) | this._r) & 0xff00) | 0xff);
-        this.tacts.inc(5);
+        this.incTact(5);
         let l = this.readMemory(addr);
-        this.tacts.inc(3);
+        this.incTact(3);
         let h = this.readMemory(++addr);
-        this.tacts.inc(3);
+        this.incTact(3);
         this.wz = <u16>((h << 8) | l);
-        this.tacts.inc(6);
+        this.incTact(6);
         break;
     }
     this.pc = this.wz;
@@ -1014,7 +1052,7 @@ export class Z80Cpu {
    */
   private refreshMemory(): void {
     this.r = ((this.r + 1) & 0x7f) | (this.r & 0x80);
-    this.tacts.inc(1);
+    this.incTact(1);
   }
 
   // Executes an NMI
@@ -1027,12 +1065,12 @@ export class Z80Cpu {
     this.iff2 = this.iff1;
     this.iff1 = false;
     this.sp--;
-    this.tacts.inc(1);
+    this.incTact(1);
     this.writeMemory(this.sp, <u8>(this.pc >> 8));
-    this.tacts.inc(3);
+    this.incTact(3);
     this.sp--;
     this.writeMemory(this.sp, <u8>(this.pc & 0xff));
-    this.tacts.inc(3);
+    this.incTact(3);
 
     // --- NMI address
     this.pc = 0x0066;
@@ -1072,9 +1110,9 @@ export class Z80Cpu {
     if (!this.useGateArrayContention) {
       this.readMemory(this.pc - 1);
     }
-    this.tacts.inc(1);
+    this.incTact(1);
     this.opCode = this.readCodeMemory();
-    this.tacts.inc(3);
+    this.incTact(3);
     this.pc++;
     const opMethod = indexedBitOperations[this.opCode];
     if (opMethod !== null) {
@@ -3004,13 +3042,13 @@ function LdQQNN(cpu: Z80Cpu): void {
   // pc+1:3
   const low = cpu.readCodeMemory();
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // pc+2:3
   const high = cpu.readCodeMemory();
   cpu.pc++;
   cpu.setReg16(qq, ((<u16>high) << 8) | low);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld (bc),a
@@ -3024,7 +3062,7 @@ function LdQQNN(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,bc:3
 function LdBCiA(cpu: Z80Cpu): void {
   cpu.writeMemory(cpu.bc, cpu.a);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // inc QQ
@@ -3039,7 +3077,7 @@ function IncQQ(cpu: Z80Cpu): void {
   const qq = (cpu.opCode & 0x30) >> 4;
   const value = cpu.getReg16(qq);
   cpu.setReg16(qq, value + 1);
-  cpu.tacts.inc(2);
+  cpu.incTact(2);
 }
 
 // inc Q
@@ -3101,7 +3139,7 @@ function LdQN(cpu: Z80Cpu): void {
   const q = (cpu.opCode & 0x38) >> 3;
   cpu.setReg8(q, cpu.readCodeMemory());
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // rlca
@@ -3160,7 +3198,7 @@ function AddHlQQ(cpu: Z80Cpu): void {
   const qq = (cpu.opCode & 0x30) >> 4;
   cpu.wz = cpu.hl + 1;
   cpu.hl = cpu.aluAddHL(cpu.hl, cpu.getReg16(qq));
-  cpu.tacts.inc(7);
+  cpu.incTact(7);
 }
 
 // ld a,(bc)
@@ -3174,7 +3212,7 @@ function AddHlQQ(cpu: Z80Cpu): void {
 function LdABci(cpu: Z80Cpu): void {
   cpu.wz = cpu.bc + 1;
   cpu.a = cpu.readMemory(cpu.bc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // dec QQ
@@ -3190,7 +3228,7 @@ function DecQQ(cpu: Z80Cpu): void {
   const qq = (cpu.opCode & 0x30) >> 4;
   const value = cpu.getReg16(qq);
   cpu.setReg16(qq, value - 1);
-  cpu.tacts.inc(2);
+  cpu.incTact(2);
 }
 
 // rrca
@@ -3240,27 +3278,27 @@ function Rrca(cpu: Z80Cpu): void {
 // Contention breakdown: pc:5,pc+1:3,[pc+1:1 x 5]
 // Gate array contention breakdown: pc:5,pc+1:3,[5]
 function Djnz(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   const e = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if (--cpu.b === 0) {
     return;
   }
 
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc = cpu.pc + <i8>e;
 }
@@ -3276,7 +3314,7 @@ function Djnz(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,bc:3
 function LdDEiA(cpu: Z80Cpu): void {
   cpu.writeMemory(cpu.de, cpu.a);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // rla
@@ -3321,10 +3359,10 @@ function Rla(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3
 function JrE(cpu: Z80Cpu): void {
   const e = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz = cpu.pc = cpu.pc + <i8>e;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
 }
 
 // ld a,(de)
@@ -3338,7 +3376,7 @@ function JrE(cpu: Z80Cpu): void {
 function LdADei(cpu: Z80Cpu): void {
   cpu.wz = cpu.de + 1;
   cpu.a = cpu.readMemory(cpu.de);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // rra
@@ -3386,25 +3424,25 @@ function Rra(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,[5]
 function JrNz(cpu: Z80Cpu): void {
   const e = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.Z) !== 0) {
     return;
   }
 
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc = cpu.pc + <i8>e;
 }
@@ -3426,22 +3464,22 @@ function JrNz(cpu: Z80Cpu): void {
 function LdNNiHl(cpu: Z80Cpu): void {
   // pc+1:3
   const l = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
 
   // pc+2:3
   const addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
 
   // nn:3
   cpu.wz = addr + 1;
   cpu.writeMemory(addr, cpu.l);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // nn+1:3
   cpu.writeMemory(cpu.wz, cpu.h);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // daa
@@ -3515,25 +3553,25 @@ function Daa(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,[5]
 function JrZ(cpu: Z80Cpu): void {
   const e = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.Z) === 0) {
     return;
   }
 
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc = cpu.pc + <i8>e;
 }
@@ -3557,21 +3595,21 @@ function LdHlNNi(cpu: Z80Cpu): void {
   // pc+1:3
   let addr = <u16>cpu.readCodeMemory();
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // pc+2:3
   addr += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // nn:3
   cpu.wz = addr + 1;
   let val = <u16>cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // nn+1:3
   val += (<u16>cpu.readMemory(cpu.wz)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.hl = val;
 }
 
@@ -3616,25 +3654,25 @@ function Cpl(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,[5]
 function JrNc(cpu: Z80Cpu): void {
   const e = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.C) !== 0) {
     return;
   }
 
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc = cpu.pc + <i8>e;
 }
@@ -3657,18 +3695,18 @@ function LdNNiA(cpu: Z80Cpu): void {
   // pc+1:3
   const l = cpu.readCodeMemory();
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // pc+2:3
   let addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // nn:3
   cpu.wz = <u8>(addr + 1) + ((<u16>cpu.a) << 8);
   cpu.writeMemory(addr, cpu.a);
   cpu.wh = cpu.a;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // jr c,E
@@ -3692,25 +3730,25 @@ function LdNNiA(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,[5]
 function JrC(cpu: Z80Cpu): void {
   const e = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.C) === 0) {
     return;
   }
 
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc = cpu.pc + <i8>e;
 }
@@ -3734,15 +3772,15 @@ function JrC(cpu: Z80Cpu): void {
 function IncHli(cpu: Z80Cpu): void {
   let value = cpu.readMemory(cpu.hl);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   value = cpu.aluIncByte(value);
   cpu.writeMemory(cpu.hl, value);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // dec (hl)
@@ -3764,15 +3802,15 @@ function IncHli(cpu: Z80Cpu): void {
 function DecHli(cpu: Z80Cpu): void {
   let value = cpu.readMemory(cpu.hl);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   value = cpu.aluDecByte(value);
   cpu.writeMemory(cpu.hl, value);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld (hl),N
@@ -3788,10 +3826,10 @@ function DecHli(cpu: Z80Cpu): void {
 function LdHliN(cpu: Z80Cpu): void {
   // pc+1: 3
   const val = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.writeMemory(cpu.hl, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // scf
@@ -3826,14 +3864,14 @@ function Scf(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3,nn:3
 function LdANNi(cpu: Z80Cpu): void {
   let addr = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   addr += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz = addr + 1;
   cpu.a = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ccf
@@ -3880,7 +3918,7 @@ function LdQW(cpu: Z80Cpu): void {
 function LdQHli(cpu: Z80Cpu): void {
   const q = (cpu.opCode & 0x38) >> 3;
   cpu.setReg8(q, cpu.readMemory(cpu.hl));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld (hl),Q
@@ -3896,7 +3934,7 @@ function LdQHli(cpu: Z80Cpu): void {
 function LdHliQ(cpu: Z80Cpu): void {
   const q = cpu.opCode & 0x07;
   cpu.writeMemory(cpu.hl, cpu.getReg8(q));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // halt
@@ -3954,7 +3992,7 @@ function AddAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function AddAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.f = adcFlags[((<u16>cpu.a) << 8) + src];
   cpu.a += src;
 }
@@ -4000,7 +4038,7 @@ function AdcAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function AdcAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   const carry = (cpu.f & FlagsSetMask.C) === 0 ? 0 : 1;
   cpu.f = adcFlags[((<u32>carry) << 16) + ((<u16>cpu.a) << 8) + src];
   cpu.a += <u8>(src + carry);
@@ -4046,7 +4084,7 @@ function SubAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function SubAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.f = sbcFlags[((<u16>cpu.a) << 8) + src];
   cpu.a -= src;
 }
@@ -4093,7 +4131,7 @@ function SbcAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function SbcAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   const carry = (cpu.f & FlagsSetMask.C) === 0 ? 0 : 1;
   cpu.f = sbcFlags[((<u32>carry) << 16) + ((<u16>cpu.a) << 8) + src];
   cpu.a -= <u8>(src + carry);
@@ -4140,7 +4178,7 @@ function AndAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function AndAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.a &= src;
   cpu.f = <u8>(aluLogOpFlags[cpu.a] | FlagsSetMask.H);
 }
@@ -4186,7 +4224,7 @@ function XorAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function XorAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.a ^= src;
   cpu.f = aluLogOpFlags[cpu.a];
 }
@@ -4233,7 +4271,7 @@ function OrAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function OrAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.a |= src;
   cpu.f = aluLogOpFlags[cpu.a];
 }
@@ -4284,7 +4322,7 @@ function CpAQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,hl:3
 function CpAHli(cpu: Z80Cpu): void {
   const src = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   const res = ((<u16>cpu.a) << 8) + src;
   cpu.f = <u8>(
     ((sbcFlags[res] & ~FlagsSetMask.R3 & ~FlagsSetMask.R5) |
@@ -4311,15 +4349,15 @@ function CpAHli(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetNz(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.Z) !== 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -4341,10 +4379,10 @@ function RetNz(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,sp:3,sp+1:3
 function PopBc(cpu: Z80Cpu): void {
   const val = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.bc = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
 }
 
@@ -4366,10 +4404,10 @@ function PopBc(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpNz(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.Z) !== 0) {
     return;
@@ -4392,10 +4430,10 @@ function JpNz(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function Jp(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.pc = cpu.wz;
 }
@@ -4427,10 +4465,10 @@ function Jp(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallNz(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.Z) !== 0) {
     return;
@@ -4438,14 +4476,14 @@ function CallNz(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -4466,12 +4504,12 @@ function CallNz(cpu: Z80Cpu): void {
 function PushBc(cpu: Z80Cpu): void {
   const val = cpu.bc;
   cpu.sp--;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(cpu.sp, <u8>(val >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
@@ -4488,7 +4526,7 @@ function PushBc(cpu: Z80Cpu): void {
 // T-States: 4, 3 (7)
 function AluAN(cpu: Z80Cpu): void {
   const val = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   const alg = aluAlgorithms[(cpu.opCode & 0x38) >> 3];
   alg(cpu, val, cpu.cFlag);
@@ -4513,15 +4551,15 @@ function AluAN(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetZ(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.Z) === 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -4543,10 +4581,10 @@ function RetZ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,sp:3,sp+1:3
 function Ret(cpu: Z80Cpu): void {
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -4569,10 +4607,10 @@ function Ret(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpZ(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.Z) === 0) {
     return;
@@ -4607,10 +4645,10 @@ function JpZ(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallZ(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.Z) === 0) {
     return;
@@ -4618,14 +4656,14 @@ function CallZ(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -4653,22 +4691,22 @@ function CallZ(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,1,sp-1:3,sp-2:3
 function Call(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -4691,15 +4729,15 @@ function Call(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetNc(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.C) !== 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -4721,10 +4759,10 @@ function RetNc(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,sp:3,sp+1:3
 function PopDe(cpu: Z80Cpu): void {
   const val = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.de = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
 }
 
@@ -4746,10 +4784,10 @@ function PopDe(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpNc(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.C) !== 0) {
     return;
@@ -4775,7 +4813,7 @@ function JpNc(cpu: Z80Cpu): void {
 function OutNA(cpu: Z80Cpu): void {
   let port = <u16>cpu.readCodeMemory();
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   cpu.wz = port + 1 + ((<u16>cpu.a) << 8);
@@ -4810,10 +4848,10 @@ function OutNA(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallNc(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.C) !== 0) {
     return;
@@ -4821,14 +4859,14 @@ function CallNc(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -4849,12 +4887,12 @@ function CallNc(cpu: Z80Cpu): void {
 function PushDe(cpu: Z80Cpu): void {
   const val = cpu.de;
   cpu.sp--;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(cpu.sp, <u8>(val >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ret c
@@ -4876,15 +4914,15 @@ function PushDe(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetC(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.C) === 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -4928,10 +4966,10 @@ function Exx(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpC(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.C) === 0) {
     return;
@@ -4958,7 +4996,7 @@ function InAN(cpu: Z80Cpu): void {
   // pc+1:3
   let port = <u16>cpu.readCodeMemory();
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   port += (<u16>cpu.a) << 8;
@@ -4993,10 +5031,10 @@ function InAN(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallC(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.C) === 0) {
     return;
@@ -5004,14 +5042,14 @@ function CallC(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -5034,15 +5072,15 @@ function CallC(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetPo(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.PV) !== 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -5064,10 +5102,10 @@ function RetPo(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,sp:3,sp+1:3
 function PopHl(cpu: Z80Cpu): void {
   const val = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.hl = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
 }
 
@@ -5089,10 +5127,10 @@ function PopHl(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpPo(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.PV) !== 0) {
     return;
@@ -5115,28 +5153,28 @@ function JpPo(cpu: Z80Cpu): void {
 function ExSpiHl(cpu: Z80Cpu): void {
   let tmpSp = cpu.sp;
   cpu.wz = cpu.readMemory(tmpSp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   tmpSp++;
   cpu.wz += (<u16>cpu.readMemory(tmpSp)) << 8;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(tmpSp);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(tmpSp, cpu.h);
   tmpSp--;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(tmpSp, cpu.l);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.writeMemory(tmpSp, cpu.l);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.writeMemory(tmpSp, cpu.l);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.hl = cpu.wz;
 }
@@ -5168,10 +5206,10 @@ function ExSpiHl(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallPo(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.PV) !== 0) {
     return;
@@ -5179,14 +5217,14 @@ function CallPo(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -5207,12 +5245,12 @@ function CallPo(cpu: Z80Cpu): void {
 function PushHl(cpu: Z80Cpu): void {
   const val = cpu.hl;
   cpu.sp--;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(cpu.sp, <u8>(val >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ret pe
@@ -5234,15 +5272,15 @@ function PushHl(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetPe(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.PV) === 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -5278,10 +5316,10 @@ function JpHli(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpPe(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.PV) === 0) {
     return;
@@ -5330,10 +5368,10 @@ function ExDeHl(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallPe(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.PV) === 0) {
     return;
@@ -5341,14 +5379,14 @@ function CallPe(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -5371,15 +5409,15 @@ function CallPe(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetP(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.S) !== 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -5401,10 +5439,10 @@ function RetP(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,sp:3,sp+1:3
 function PopAf(cpu: Z80Cpu): void {
   const val = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.af = ((<u16>cpu.readMemory(cpu.sp)) << 8) | val;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
 }
 
@@ -5426,10 +5464,10 @@ function PopAf(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpP(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.S) !== 0) {
     return;
@@ -5477,10 +5515,10 @@ function Di(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallP(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.S) !== 0) {
     return;
@@ -5488,14 +5526,14 @@ function CallP(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -5516,12 +5554,12 @@ function CallP(cpu: Z80Cpu): void {
 function PushAf(cpu: Z80Cpu): void {
   const val = cpu.af;
   cpu.sp--;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(cpu.sp, <u8>(val >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ret m
@@ -5543,15 +5581,15 @@ function PushAf(cpu: Z80Cpu): void {
 // If X is false: 5 (5)
 // Contention breakdown: pc:5,[sp:3,sp+1:3]
 function RetM(cpu: Z80Cpu): void {
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if ((cpu.f & FlagsSetMask.S) === 0) {
     return;
   }
   cpu.wz = cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.wz += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = cpu.wz;
 }
@@ -5566,7 +5604,7 @@ function RetM(cpu: Z80Cpu): void {
 // Contention breakdown: pc:6
 function LdSpHl(cpu: Z80Cpu): void {
   cpu.sp = cpu.hl;
-  cpu.tacts.inc(2);
+  cpu.incTact(2);
 }
 
 // jp m,NN
@@ -5587,10 +5625,10 @@ function LdSpHl(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:3,pc+2:3
 function JpM(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.S) === 0) {
     return;
@@ -5638,10 +5676,10 @@ function Ei(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:3,pc+2:3,[1,sp-1:3,sp-2:3]
 function CallM(cpu: Z80Cpu): void {
   cpu.wz = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   if ((cpu.f & FlagsSetMask.S) === 0) {
     return;
@@ -5649,14 +5687,14 @@ function CallM(cpu: Z80Cpu): void {
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(cpu.pc);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc = cpu.wz;
 }
 
@@ -5680,13 +5718,13 @@ function CallM(cpu: Z80Cpu): void {
 // Contention breakdown: pc:5,sp-1:3,sp-2:3
 function RstN(cpu: Z80Cpu): void {
   cpu.sp--;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.writeMemory(cpu.sp, <u8>(cpu.pc >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>cpu.pc);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.wz = cpu.opCode & 0x38;
   cpu.pc = cpu.wz;
@@ -5719,7 +5757,7 @@ function AddIxQQ(cpu: Z80Cpu): void {
   const qqVal = qq === 2 ? ixVal : cpu.getReg16(qq);
   cpu.wz = ixVal + 1;
   cpu.setIndexReg(cpu.aluAddHL(ixVal, qqVal));
-  cpu.tacts.inc(7);
+  cpu.incTact(7);
 }
 
 // ld ix,NN
@@ -5741,13 +5779,13 @@ function LdIxNN(cpu: Z80Cpu): void {
   // pc+1:3
   const low = cpu.readCodeMemory();
   cpu.pc++;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // pc+2:3
   const high = cpu.readCodeMemory();
   cpu.pc++;
   cpu.setIndexReg(((<u16>high) << 8) | low);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld(NN),ix
@@ -5772,22 +5810,22 @@ function LdNNiIx(cpu: Z80Cpu): void {
 
   // pc+1:3
   const l = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
 
   // pc+2:3
   const addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
 
   // nn:3
   cpu.wz = addr + 1;
   cpu.writeMemory(addr, <u8>ixVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // nn+1:3
   cpu.writeMemory(cpu.wz, <u8>(ixVal >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // inc ix
@@ -5804,7 +5842,7 @@ function LdNNiIx(cpu: Z80Cpu): void {
 function IncIx(cpu: Z80Cpu): void {
   const value = cpu.getIndexReg();
   cpu.setIndexReg(value + 1);
-  cpu.tacts.inc(2);
+  cpu.incTact(2);
 }
 
 // inc xh
@@ -5856,7 +5894,7 @@ function DecXh(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:4,pc+2:3
 function LdXhN(cpu: Z80Cpu): void {
   const val = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.setIndexReg(((<u16>val) << 8) | (<u8>cpu.getIndexReg()));
 }
@@ -5880,16 +5918,16 @@ function LdXhN(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
 function LdIxNNi(cpu: Z80Cpu): void {
   const l = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   const addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz = addr + 1;
   let val = <u16>cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   val += (<u16>cpu.readMemory(cpu.wz)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.setIndexReg(val);
 }
 
@@ -5906,7 +5944,7 @@ function LdIxNNi(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:6
 function DecIx(cpu: Z80Cpu): void {
   cpu.setIndexReg(cpu.getIndexReg() - 1);
-  cpu.tacts.inc(2);
+  cpu.incTact(2);
 }
 
 // inc xl
@@ -5958,7 +5996,7 @@ function DecXl(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:4,pc+2:3
 function LdXlN(cpu: Z80Cpu): void {
   const val = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.setIndexReg((cpu.getIndexReg() & 0xff00) | val);
 }
@@ -5989,29 +6027,29 @@ function LdXlN(cpu: Z80Cpu): void {
 function IncIxi(cpu: Z80Cpu): void {
   const ixVal = cpu.getIndexReg();
   const offset = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   let memVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   memVal = cpu.aluIncByte(memVal);
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(addr, memVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // dec (ix+D)
@@ -6040,29 +6078,29 @@ function IncIxi(cpu: Z80Cpu): void {
 function DecIxi(cpu: Z80Cpu): void {
   const ixVal = cpu.getIndexReg();
   const offset = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   let memVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   memVal = cpu.aluDecByte(memVal);
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(addr, memVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld (ix+D),N
@@ -6085,22 +6123,22 @@ function DecIxi(cpu: Z80Cpu): void {
 function LdIxiN(cpu: Z80Cpu): void {
   const ixVal = cpu.getIndexReg();
   const offset = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   const val = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(2);
+    cpu.incTact(2);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   cpu.writeMemory(addr, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld Q,xh
@@ -6162,25 +6200,25 @@ function LdQIxi(cpu: Z80Cpu): void {
   const q = (cpu.opCode & 0x38) >> 3;
   const ixVal = cpu.getIndexReg();
   const offset = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   cpu.setReg8(q, cpu.readMemory(addr));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ld (ix+D),Q
@@ -6205,25 +6243,25 @@ function LdIxiQ(cpu: Z80Cpu): void {
   const q = cpu.opCode & 0x07;
   const ixVal = cpu.getIndexReg();
   const offset = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   cpu.writeMemory(addr, cpu.getReg8(q));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // Executes one of the ADD, ADC, SUB, SBC, AND, XOR, OR, or CP
@@ -6286,27 +6324,27 @@ function AluAXl(cpu: Z80Cpu): void {
 function AluAIxi(cpu: Z80Cpu): void {
   const ixVal = cpu.getIndexReg();
   const offset = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.pc);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.pc++;
   const addr = ixVal + <u16>(<i8>offset);
   const op = (cpu.opCode & 0x38) >> 3;
   const alg = aluAlgorithms[op];
   alg(cpu, cpu.readMemory(addr), cpu.cFlag);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // pop ix
@@ -6328,10 +6366,10 @@ function AluAIxi(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:4,sp:3,sp+1:3
 function PopIx(cpu: Z80Cpu): void {
   let val = <u16>cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   val += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.setIndexReg(val);
 }
@@ -6355,26 +6393,26 @@ function ExSpiIx(cpu: Z80Cpu): void {
   let spOld = cpu.sp;
   const ix = cpu.getIndexReg();
   const l = cpu.readMemory(spOld);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   const h = cpu.readMemory(++spOld);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(spOld);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(spOld, <u8>(ix >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(--spOld, <u8>ix);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(spOld);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(spOld);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = ((<u16>h) << 8) | l;
   cpu.setIndexReg(cpu.wz);
@@ -6400,12 +6438,12 @@ function ExSpiIx(cpu: Z80Cpu): void {
 function PushIx(cpu: Z80Cpu): void {
   const ix = cpu.getIndexReg();
   cpu.sp--;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(cpu.sp, <u8>(ix >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>ix);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // jp (ix)
@@ -6437,7 +6475,7 @@ function JpIxi(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:6
 function LdSpIx(cpu: Z80Cpu): void {
   cpu.sp = cpu.getIndexReg();
-  cpu.tacts.inc(2);
+  cpu.incTact(2);
 }
 
 // ============================================================================
@@ -6503,7 +6541,7 @@ function TestN(cpu: Z80Cpu): void {
     return;
   }
   const value = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   const result = cpu.a & value;
   cpu.f = <u8>(aluLogOpFlags[result] | FlagsSetMask.H);
@@ -6686,12 +6724,12 @@ function AddHlNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
   cpu.hl += value;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
 }
 
 // add de,NN
@@ -6709,12 +6747,12 @@ function AddDeNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
   cpu.de += value;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
 }
 
 // add bc,NN
@@ -6732,12 +6770,12 @@ function AddBcNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
   cpu.pc++;
   cpu.bc += value;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
 }
 
 // in Q,(c)
@@ -6839,7 +6877,7 @@ function SbcHlQQ(cpu: Z80Cpu): void {
   cpu.f = <u8>(
     (flags | (cpu.h & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)))
   );
-  cpu.tacts.inc(7);
+  cpu.incTact(7);
 }
 
 // ld (NN),QQ
@@ -6861,17 +6899,17 @@ function SbcHlQQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
 function LdNNiQQ(cpu: Z80Cpu): void {
   const l = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   let addr = ((<u16>cpu.readCodeMemory()) << 8) | l;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz = addr + 1;
   const regVal = cpu.getReg16((cpu.opCode & 0x30) >> 4);
   cpu.writeMemory(addr, <u8>regVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(cpu.wz, <u8>(regVal >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // neg
@@ -6932,10 +6970,10 @@ function Neg(cpu: Z80Cpu): void {
 function Retn(cpu: Z80Cpu): void {
   cpu.iff1 = cpu.iff2;
   let addr = <u16>cpu.readMemory(cpu.sp);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   addr += (<u16>cpu.readMemory(cpu.sp)) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp++;
   cpu.pc = addr;
   cpu.wz = addr;
@@ -6980,7 +7018,7 @@ function LdXrA(cpu: Z80Cpu): void {
   } else {
     cpu.r = cpu.a;
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 }
 
 /// adc hl,QQ
@@ -7031,7 +7069,7 @@ function AdcHlQQ(cpu: Z80Cpu): void {
   cpu.f = <u8>(
     (flags | (cpu.h & (FlagsSetMask.S | FlagsSetMask.R3 | FlagsSetMask.R5)))
   );
-  cpu.tacts.inc(7);
+  cpu.incTact(7);
 }
 
 // ld qq,(NN)
@@ -7054,16 +7092,16 @@ function AdcHlQQ(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:4,pc+2:3,pc+3:3,nn:3,nn+1:3
 function LdQQNNi(cpu: Z80Cpu): void {
   const addrl = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   const addr = ((<u16>cpu.readCodeMemory()) << 8) | addrl;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.wz = addr + 1;
   const l = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   const h = cpu.readMemory(cpu.wz);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.setReg16((cpu.opCode & 0x30) >> 4, ((<u16>h) << 8) | (<u16>l));
 }
 
@@ -7097,7 +7135,7 @@ function LdAXr(cpu: Z80Cpu): void {
     (source & 0x80) |
     (source === 0 ? FlagsSetMask.Z : 0);
   cpu.f = <u8>flags;
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 }
 
 // rrd
@@ -7128,23 +7166,23 @@ function LdAXr(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:4,hl:7,hl(write):3
 function Rrd(cpu: Z80Cpu): void {
   const tmp = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
 
   cpu.wz = cpu.hl + 1;
   cpu.writeMemory(cpu.hl, (cpu.a << 4) | (tmp >> 4));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.a = (cpu.a & 0xf0) | (tmp & 0x0f);
   cpu.f = <u8>(aluLogOpFlags[cpu.a] | (cpu.f & FlagsSetMask.C));
@@ -7179,24 +7217,24 @@ function Rrd(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:4,hl:7,hl(write):3
 function Rld(cpu: Z80Cpu): void {
   const tmp = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
 
   cpu.wz = cpu.hl + 1;
   cpu.writeMemory(cpu.hl, ((cpu.a & 0x0f) | (tmp << 4)) & 0xff);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.a = (cpu.a & 0xf0) | (tmp >> 4);
   cpu.f = <u8>(aluLogOpFlags[cpu.a] | (cpu.f & FlagsSetMask.C));
@@ -7222,17 +7260,17 @@ function PushNN(cpu: Z80Cpu): void {
     return;
   }
   let value = <u16>cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   value += (<u16>cpu.readCodeMemory()) << 8;
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>(value >> 8));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.sp--;
   cpu.writeMemory(cpu.sp, <u8>value);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // outinb
@@ -7265,11 +7303,11 @@ function OutInB(cpu: Z80Cpu): void {
   }
 
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   // hl:3
   var val = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   cpu.writePort(cpu.bc, val);
@@ -7297,10 +7335,10 @@ function NextReg(cpu: Z80Cpu): void {
     return;
   }
   const reg = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   const val = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.writeTbBlueIndex(reg);
   cpu.writeTbBlueValue(val);
@@ -7327,7 +7365,7 @@ function NextRegA(cpu: Z80Cpu): void {
     return;
   }
   const reg = cpu.readCodeMemory();
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.pc++;
   cpu.writeTbBlueIndex(reg);
   cpu.writeTbBlueValue(cpu.a);
@@ -7430,7 +7468,7 @@ function JpInC(cpu: Z80Cpu): void {
   cpu.wz = cpu.bc + 1;
   const pval = cpu.readPort(cpu.bc);
   cpu.pc = (cpu.pc & 0xc000) + ((<u16>pval) << 6);
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 }
 
 // ldi
@@ -7457,16 +7495,16 @@ function JpInC(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5
 function Ldi(cpu: Z80Cpu): void {
   let memVal = cpu.readMemory(cpu.hl++);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(cpu.de, memVal);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.de++;
   memVal += cpu.a;
@@ -7523,20 +7561,20 @@ function Cpi(cpu: Z80Cpu): void {
   flags |= compRes & FlagsSetMask.S;
   flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
 
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.hl++;
 
@@ -7575,7 +7613,7 @@ function Cpi(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:5,I/O,hl:3
 function Ini(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   // I/O
   cpu.wz = cpu.bc + 1;
@@ -7583,7 +7621,7 @@ function Ini(cpu: Z80Cpu): void {
 
   // hl:3
   cpu.writeMemory(cpu.hl, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.f |= <u8>FlagsSetMask.N;
   if (--cpu.b === 0) {
@@ -7623,7 +7661,7 @@ function Ini(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:5,hl:3,I/O
 function Outi(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.f |= <u8>FlagsSetMask.N;
   if (--cpu.b === 0) {
@@ -7634,7 +7672,7 @@ function Outi(cpu: Z80Cpu): void {
 
   // hl:3
   const val = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   cpu.writePort(cpu.bc, val);
@@ -7664,11 +7702,11 @@ function Ldix(cpu: Z80Cpu): void {
     return;
   }
   let memVal = cpu.readMemory(cpu.hl++);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.a !== memVal) {
     cpu.writeMemory(cpu.de, memVal);
   }
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.de++;
   cpu.bc--;
 }
@@ -7692,9 +7730,9 @@ function Ldws(cpu: Z80Cpu): void {
     return;
   }
   const val = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(cpu.de, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.l++;
   cpu.f = incOpFlags[cpu.d] | (<u8>(cpu.f & FlagsSetMask.C));
   cpu.d++;
@@ -7723,16 +7761,16 @@ function Ldws(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5
 function Ldd(cpu: Z80Cpu): void {
   let memVal = cpu.readMemory(cpu.hl--);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(cpu.de, memVal);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.de--;
   memVal += cpu.a;
@@ -7789,20 +7827,20 @@ function Cpd(cpu: Z80Cpu): void {
   flags |= compRes & FlagsSetMask.S;
   flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
 
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.hl--;
 
@@ -7841,7 +7879,7 @@ function Cpd(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:5,I/O,hl:3
 function Ind(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.wz = cpu.bc - 1;
 
@@ -7850,7 +7888,7 @@ function Ind(cpu: Z80Cpu): void {
 
   // hl:3
   cpu.writeMemory(cpu.hl, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.f |= <u8>FlagsSetMask.N;
   if (--cpu.b === 0) {
@@ -7891,7 +7929,7 @@ function Ind(cpu: Z80Cpu): void {
 // Contention breakdown: pc:4,pc+1:5,hl:3,I/O
 function Outd(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.f = decOpFlags[cpu.b];
   cpu.f |= <u8>FlagsSetMask.N;
@@ -7903,7 +7941,7 @@ function Outd(cpu: Z80Cpu): void {
 
   // hl:3
   const val = cpu.readMemory(cpu.hl);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   cpu.writePort(cpu.bc, val);
@@ -7933,12 +7971,12 @@ function Lddx(cpu: Z80Cpu): void {
     return;
   }
   let memVal = cpu.readMemory(cpu.hl--);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.a !== memVal) {
     cpu.writeMemory(cpu.de, memVal);
   }
-  cpu.tacts.inc(3);
-  cpu.tacts.inc(2);
+  cpu.incTact(3);
+  cpu.incTact(2);
   cpu.de--;
   cpu.bc--;
 }
@@ -7974,16 +8012,16 @@ function Lddx(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
 function Ldir(cpu: Z80Cpu): void {
   let memVal = cpu.readMemory(cpu.hl++);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(cpu.de, memVal);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.de++;
   memVal += cpu.a;
@@ -8006,18 +8044,18 @@ function Ldir(cpu: Z80Cpu): void {
   cpu.f |= <u8>FlagsSetMask.PV;
   cpu.pc -= 2;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.de - 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de - 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de - 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de - 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de - 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc + 1;
 }
@@ -8067,20 +8105,20 @@ function Cpir(cpu: Z80Cpu): void {
   flags |= compRes & FlagsSetMask.S;
   flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
 
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.hl++;
 
@@ -8089,18 +8127,18 @@ function Cpir(cpu: Z80Cpu): void {
     if ((flags & FlagsSetMask.Z) === 0) {
       cpu.pc -= 2;
       if (cpu.useGateArrayContention) {
-        cpu.tacts.inc(5);
+        cpu.incTact(5);
       } else {
         cpu.readMemory(cpu.hl - 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl - 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl - 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl - 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl - 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
       }
       cpu.wz = cpu.pc + 1;
     }
@@ -8143,7 +8181,7 @@ function Cpir(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:5,I/O,hl:3,[5]
 function Inir(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   // I/O
   cpu.wz = cpu.bc + 1;
@@ -8151,7 +8189,7 @@ function Inir(cpu: Z80Cpu): void {
 
   // hl:3
   cpu.writeMemory(cpu.hl, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.f = <u8>(decOpFlags[cpu.b] | (cpu.f & FlagsSetMask.C));
   cpu.b--;
@@ -8161,18 +8199,18 @@ function Inir(cpu: Z80Cpu): void {
     cpu.f |= <u8>FlagsSetMask.PV;
     cpu.pc -= 2;
     if (cpu.useGateArrayContention) {
-      cpu.tacts.inc(5);
+      cpu.incTact(5);
     } else {
       cpu.readMemory(cpu.hl - 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl - 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl - 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl - 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl - 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
     }
   } else {
     cpu.f &= <u8>~FlagsSetMask.PV;
@@ -8215,14 +8253,14 @@ function Inir(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:5,hl:3,I/O,[5]
 function Otir(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.f = decOpFlags[cpu.b];
   cpu.b--;
 
   // hl:3
   const val = cpu.readMemory(cpu.hl++);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   cpu.writePort(cpu.bc, val);
@@ -8231,18 +8269,18 @@ function Otir(cpu: Z80Cpu): void {
     cpu.f |= <u8>FlagsSetMask.PV;
     cpu.pc -= 2;
     if (cpu.useGateArrayContention) {
-      cpu.tacts.inc(5);
+      cpu.incTact(5);
     } else {
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
     }
   } else {
     cpu.f &= <u8>~FlagsSetMask.PV;
@@ -8284,17 +8322,17 @@ function Ldirx(cpu: Z80Cpu): void {
     return;
   }
   let memVal = cpu.readMemory(cpu.hl++);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.a !== memVal) {
     cpu.writeMemory(cpu.de, memVal);
   }
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.de++;
   if (--cpu.bc === 0) {
     return;
   }
   cpu.pc -= 2;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.wz = cpu.pc + 1;
 }
 
@@ -8321,17 +8359,17 @@ function Ldpirx(cpu: Z80Cpu): void {
     return;
   }
   let memVal = cpu.readMemory((cpu.hl & 0xfff8) + (cpu.e & 0x07));
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.a !== memVal) {
     cpu.writeMemory(cpu.de, memVal);
   }
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.de++;
   if (--cpu.bc === 0) {
     return;
   }
   cpu.pc -= 2;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.wz = cpu.pc + 1;
 }
 
@@ -8366,16 +8404,16 @@ function Ldpirx(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:4,hl:3,de:5,[5]
 function Lddr(cpu: Z80Cpu): void {
   let memVal = cpu.readMemory(cpu.hl--);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.writeMemory(cpu.de, memVal);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.writeMemory(cpu.de, memVal);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.de--;
   memVal += cpu.a;
@@ -8397,18 +8435,18 @@ function Lddr(cpu: Z80Cpu): void {
   cpu.f |= <u8>FlagsSetMask.PV;
   cpu.pc -= 2;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.de + 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de + 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de + 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de + 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.de + 1);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.wz = cpu.pc + 1;
 }
@@ -8456,20 +8494,20 @@ function Cpdr(cpu: Z80Cpu): void {
   flags |= compRes & FlagsSetMask.S;
   flags |= (r3r5 & FlagsSetMask.R3) | ((r3r5 << 4) & FlagsSetMask.R5);
 
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(5);
+    cpu.incTact(5);
   } else {
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.hl--;
 
@@ -8478,18 +8516,18 @@ function Cpdr(cpu: Z80Cpu): void {
     if ((flags & FlagsSetMask.Z) === 0) {
       cpu.pc -= 2;
       if (cpu.useGateArrayContention) {
-        cpu.tacts.inc(5);
+        cpu.incTact(5);
       } else {
         cpu.readMemory(cpu.hl + 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl + 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl + 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl + 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
         cpu.readMemory(cpu.hl + 1);
-        cpu.tacts.inc(1);
+        cpu.incTact(1);
       }
       cpu.wz = cpu.pc + 1;
     }
@@ -8532,7 +8570,7 @@ function Cpdr(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:5,I/O,hl:3,[5]
 function Indr(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.wz = cpu.bc - 1;
 
@@ -8541,7 +8579,7 @@ function Indr(cpu: Z80Cpu): void {
 
   // hl:3
   cpu.writeMemory(cpu.hl, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   cpu.f = <u8>(decOpFlags[cpu.b] | (cpu.f & FlagsSetMask.C));
   cpu.b--;
@@ -8551,18 +8589,18 @@ function Indr(cpu: Z80Cpu): void {
     cpu.f |= <u8>FlagsSetMask.PV;
     cpu.pc -= 2;
     if (cpu.useGateArrayContention) {
-      cpu.tacts.inc(5);
+      cpu.incTact(5);
     } else {
       cpu.readMemory(cpu.hl + 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl + 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl + 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl + 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.hl + 1);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
     }
   } else {
     cpu.f &= <u8>~FlagsSetMask.PV;
@@ -8605,14 +8643,14 @@ function Indr(cpu: Z80Cpu): void {
 // Gate array contention breakdown: pc:4,pc+1:5,hl:3,I/O,[5]
 function Otdr(cpu: Z80Cpu): void {
   // pc+1:5 -> remaining 1
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
 
   cpu.f = decOpFlags[cpu.b];
   cpu.b--;
 
   // hl:3
   const val = cpu.readMemory(cpu.hl--);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 
   // I/O
   cpu.writePort(cpu.bc, val);
@@ -8621,18 +8659,18 @@ function Otdr(cpu: Z80Cpu): void {
     cpu.f |= <u8>FlagsSetMask.PV;
     cpu.pc -= 2;
     if (cpu.useGateArrayContention) {
-      cpu.tacts.inc(5);
+      cpu.incTact(5);
     } else {
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
       cpu.readMemory(cpu.bc);
-      cpu.tacts.inc(1);
+      cpu.incTact(1);
     }
   } else {
     cpu.f &= <u8>~FlagsSetMask.PV;
@@ -8675,17 +8713,17 @@ function Lddrx(cpu: Z80Cpu): void {
     return;
   }
   let memVal = cpu.readMemory(cpu.hl--);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (cpu.a !== memVal) {
     cpu.writeMemory(cpu.de, memVal);
   }
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.de--;
   if (--cpu.bc === 0) {
     return;
   }
   cpu.pc -= 2;
-  cpu.tacts.inc(5);
+  cpu.incTact(5);
   cpu.wz = cpu.pc + 1;
 }
 
@@ -8740,14 +8778,14 @@ function RlcQ(cpu: Z80Cpu): void {
 function RlcHli(cpu: Z80Cpu): void {
   const rlcVal = cpu.readMemory(cpu.hl);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, rolOpResults[rlcVal]);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.f = rlcFlags[rlcVal];
 }
 
@@ -8801,14 +8839,14 @@ function RrcHli(cpu: Z80Cpu): void {
   const rrcVal = cpu.readMemory(cpu.hl);
   cpu.f = rrcFlags[rrcVal];
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, rorOpResults[rrcVal]);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // rl Q
@@ -8869,14 +8907,14 @@ function RlHli(cpu: Z80Cpu): void {
     rlVal = rlVal << 1;
   }
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, rlVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // rr Q
@@ -8938,14 +8976,14 @@ function RrHli(cpu: Z80Cpu): void {
     rrVal = rrVal >> 1;
   }
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, rrVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // sla Q
@@ -8995,14 +9033,14 @@ function SlaHli(cpu: Z80Cpu): void {
   cpu.f = rlCarry0Flags[slaVal];
   slaVal <<= 1;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, slaVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // sra Q
@@ -9053,14 +9091,14 @@ function SraHli(cpu: Z80Cpu): void {
   cpu.f = sraFlags[sraVal];
   sraVal = (sraVal >> 1) + (sraVal & 0x80);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, sraVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // sll Q
@@ -9112,14 +9150,14 @@ function SllHli(cpu: Z80Cpu): void {
   sllVal <<= 1;
   sllVal++;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, sllVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // srl Q
@@ -9169,14 +9207,14 @@ function SrlHli(cpu: Z80Cpu): void {
   cpu.f = rrCarry0Flags[srlVal];
   srlVal >>= 1;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, srlVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // bit N,Q
@@ -9261,11 +9299,11 @@ function BitNHli(cpu: Z80Cpu): void {
 
   cpu.f = <u8>flags;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
 }
 
@@ -9306,14 +9344,14 @@ function ResNHli(cpu: Z80Cpu): void {
   const n = (cpu.opCode & 0x38) >> 3;
   memVal &= ~(1 << n);
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, memVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // set N,Q
@@ -9353,14 +9391,14 @@ function SetNHli(cpu: Z80Cpu): void {
   const n = (cpu.opCode & 0x38) >> 3;
   memVal |= 1 << n;
   if (cpu.useGateArrayContention) {
-    cpu.tacts.inc(4);
+    cpu.incTact(4);
   } else {
-    cpu.tacts.inc(3);
+    cpu.incTact(3);
     cpu.readMemory(cpu.hl);
-    cpu.tacts.inc(1);
+    cpu.incTact(1);
   }
   cpu.writeMemory(cpu.hl, memVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // ============================================================================
@@ -9393,17 +9431,17 @@ function SetNHli(cpu: Z80Cpu): void {
 function XrlcQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let rlcVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   const val = rolOpResults[rlcVal];
   if (q !== 6) {
     cpu.setReg8(q, val);
   }
   cpu.writeMemory(addr, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.f = rlcFlags[rlcVal];
 }
 
@@ -9434,17 +9472,17 @@ function XrlcQ(cpu: Z80Cpu, addr: u16): void {
 function XrrcQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let rrcVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   const val = rorOpResults[rrcVal];
   if (q !== 6) {
     cpu.setReg8(q, val);
   }
   cpu.writeMemory(addr, val);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   cpu.f = rrcFlags[rrcVal];
 }
 
@@ -9475,11 +9513,11 @@ function XrrcQ(cpu: Z80Cpu, addr: u16): void {
 function XrlQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let rlVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if (cpu.cFlag) {
     cpu.f = rlCarry1Flags[rlVal];
     rlVal <<= 1;
@@ -9492,7 +9530,7 @@ function XrlQ(cpu: Z80Cpu, addr: u16): void {
     cpu.setReg8(q, rlVal);
   }
   cpu.writeMemory(addr, rlVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // rr (ix + D),Q
@@ -9522,11 +9560,11 @@ function XrlQ(cpu: Z80Cpu, addr: u16): void {
 function XrrQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let rrVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   if (cpu.cFlag) {
     cpu.f = rrCarry1Flags[rrVal];
     rrVal >>= 1;
@@ -9539,7 +9577,7 @@ function XrrQ(cpu: Z80Cpu, addr: u16): void {
     cpu.setReg8(q, rrVal);
   }
   cpu.writeMemory(addr, rrVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // sla (ix + D),Q
@@ -9569,18 +9607,18 @@ function XrrQ(cpu: Z80Cpu, addr: u16): void {
 function XSlaQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let slaVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.f = rlCarry0Flags[slaVal];
   slaVal <<= 1;
   if (q !== 6) {
     cpu.setReg8(q, slaVal);
   }
   cpu.writeMemory(addr, slaVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // sra (ix + D),Q
@@ -9611,18 +9649,18 @@ function XSlaQ(cpu: Z80Cpu, addr: u16): void {
 function XSraQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let sraVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.f = sraFlags[sraVal];
   sraVal = (sraVal >> 1) + (sraVal & 0x80);
   if (q !== 6) {
     cpu.setReg8(q, sraVal);
   }
   cpu.writeMemory(addr, sraVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // sll (ix + D),Q
@@ -9653,11 +9691,11 @@ function XSraQ(cpu: Z80Cpu, addr: u16): void {
 function XSllQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let sllVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.f = rlCarry1Flags[sllVal];
   sllVal <<= 1;
   sllVal++;
@@ -9665,7 +9703,7 @@ function XSllQ(cpu: Z80Cpu, addr: u16): void {
     cpu.setReg8(q, sllVal);
   }
   cpu.writeMemory(addr, sllVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // srl (ix + D)
@@ -9693,18 +9731,18 @@ function XSllQ(cpu: Z80Cpu, addr: u16): void {
 function XSrlQ(cpu: Z80Cpu, addr: u16): void {
   const q = cpu.opCode & 0x07;
   let srlVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.f = rrCarry0Flags[srlVal];
   srlVal >>= 1;
   if (q !== 6) {
     cpu.setReg8(q, srlVal);
   }
   cpu.writeMemory(addr, srlVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // bit N,(ix+D)
@@ -9734,11 +9772,11 @@ function XSrlQ(cpu: Z80Cpu, addr: u16): void {
 function XBitN(cpu: Z80Cpu, addr: u16): void {
   const n = (cpu.opCode & 0x38) >> 3;
   const srcVal = cpu.readMemory(addr);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   const testVal = srcVal & (1 << n);
   var flags =
     FlagsSetMask.H |
@@ -9778,13 +9816,13 @@ function XResNQ(cpu: Z80Cpu, addr: u16): void {
   if (q !== 6) {
     cpu.setReg8(q, srcVal);
   }
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(addr, srcVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
 
 // set N,(IX+D),Q
@@ -9812,11 +9850,11 @@ function XSetNQ(cpu: Z80Cpu, addr: u16): void {
   if (q !== 6) {
     cpu.setReg8(q, srcVal);
   }
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
   if (!cpu.useGateArrayContention) {
     cpu.readMemory(addr);
   }
-  cpu.tacts.inc(1);
+  cpu.incTact(1);
   cpu.writeMemory(addr, srcVal);
-  cpu.tacts.inc(3);
+  cpu.incTact(3);
 }
