@@ -13,6 +13,7 @@ import { Z80StateFlags } from "../../../shared/cpu-enums";
 import { SpectrumKeyCode } from "../../../shared/SpectrumKeyCode";
 import { BinaryWriter } from "../../utils/BinaryWriter";
 import { BinaryReader } from "../../utils/BinaryReader";
+import { ULong } from "../../utils/ULong";
 
 // ============================================================================
 // ZX Spectrum instance
@@ -29,14 +30,14 @@ export function sp48SerializeMachineState(w: BinaryWriter): void {
   serializePortState(w);
   serializeInterruptState(w);
   serializeScreenState(w);
-  serializeBeeperState(w)
+  serializeBeeperState(w);
   serializeKeyboardState(w);
 }
 
 /**
  * Restores the machine state from the specified binary stream
  */
-export function restoreMachineState(r: BinaryReader): void {
+export function sp48RestoreMachineState(r: BinaryReader): void {
   restoreMemoryState(r);
   restorePortState(r);
   restoreInterruptState(r);
@@ -235,8 +236,8 @@ export function sp48GetRamBank(bankIndex: u8, bank16Mode: bool = true): u8[] {
 // --- Port device state
 let portBit3LastValue: bool = false;
 let portBit4LastValue: bool = false;
-let portBit4ChangedFrom0: u64 = 0;
-let portBit4ChangedFrom1: u64 = 0;
+let portBit4ChangedFrom0: ULong = ULong.fromUint32(0);
+let portBit4ChangedFrom1: ULong = ULong.fromUint32(0);
 
 /**
  * Serializes the port device state
@@ -245,8 +246,8 @@ let portBit4ChangedFrom1: u64 = 0;
 function serializePortState(w: BinaryWriter): void {
   w.writeByte(portBit3LastValue ? 1 : 0);
   w.writeByte(portBit4LastValue ? 1 : 0);
-  w.writeUint64(portBit4ChangedFrom0);
-  w.writeUint64(portBit4ChangedFrom1);
+  w.writeULong(portBit4ChangedFrom0);
+  w.writeULong(portBit4ChangedFrom1);
 }
 
 /**
@@ -256,8 +257,8 @@ function serializePortState(w: BinaryWriter): void {
 function restorePortState(r: BinaryReader): void {
   portBit3LastValue = r.readByte() !== 0;
   portBit4LastValue = r.readByte() !== 0;
-  portBit4ChangedFrom0 = r.readUint64();
-  portBit4ChangedFrom1 = r.readUint64();
+  portBit4ChangedFrom0 = r.readULong();
+  portBit4ChangedFrom1 = r.readULong();
 }
 
 /**
@@ -266,8 +267,8 @@ function restorePortState(r: BinaryReader): void {
 export function sp48ResetPortDevice(): void {
   portBit3LastValue = false;
   portBit4LastValue = false;
-  portBit4ChangedFrom0 = 0;
-  portBit4ChangedFrom1 = 0;
+  portBit4ChangedFrom0 = ULong.fromUint32(0);
+  portBit4ChangedFrom1 = ULong.fromUint32(0);
 }
 
 /**
@@ -290,13 +291,20 @@ export function sp48ReadPort(addr: u16): u8 {
     } else {
       let bit4Sensed = portBit4LastValue;
       if (!bit4Sensed) {
-        let chargeTime = portBit4ChangedFrom1 - portBit4ChangedFrom0;
-        if (chargeTime > 0) {
-          let delay = chargeTime * 4;
+        let chargeTime = ULong.subtract(
+          portBit4ChangedFrom1,
+          portBit4ChangedFrom0
+        );
+        if (ULong.compare(chargeTime, ULong.fromUint8(0)) > 0) {
+          let delay = chargeTime.low * 4;
           if (delay > 2800) {
             delay = 2800;
           }
-          bit4Sensed = spectrum.cpu.tacts - portBit4ChangedFrom1 < delay;
+          bit4Sensed =
+            ULong.compare(
+              ULong.subtract(spectrum.cpu.tacts, portBit4ChangedFrom1),
+              ULong.fromUint32(delay)
+            ) < 0;
         }
       }
       var bit6Value = <u8>(
@@ -1030,14 +1038,14 @@ export function sp48GetPixelBuffer(): u8[] {
 // Beeper device
 
 // ---- Beeper device state
-let beeperFirstTact: u64;
+let beeperFirstTact: ULong;
 let beeperAccSamples: u32;
 let beeperSampleRate: u32;
 let beeperTactsPerSample: u32;
 let beeperSamplesPerFrame: f32;
 let beeperUseTapeMode: bool;
 let beeperLastEarBit: bool;
-let beeperLastSampleTact: u64;
+let beeperLastSampleTact: ULong;
 let beeperAudioSamples: f32[];
 let beeperNextSampleIndex: i32;
 
@@ -1046,16 +1054,16 @@ let beeperNextSampleIndex: i32;
  * @param w Binary stream writer
  */
 function serializeBeeperState(w: BinaryWriter): void {
-  w.writeUint64(beeperFirstTact);
+  w.writeULong(beeperFirstTact);
   w.writeUint32(beeperAccSamples);
   w.writeUint32(beeperSampleRate);
   w.writeUint32(<u32>(beeperSamplesPerFrame * 10_000));
   w.writeByte(beeperUseTapeMode ? 1 : 0);
   w.writeByte(beeperLastEarBit ? 1 : 0);
-  w.writeUint64(beeperLastSampleTact);
+  w.writeULong(beeperLastSampleTact);
   w.writeUint16(<u16>beeperAudioSamples.length);
   for (let i = 0; i < beeperAudioSamples.length; i++) {
-    w.writeUint16(beeperAudioSamples[i] * 10_000);
+    w.writeUint16(<u16>(beeperAudioSamples[i] * 10_000));
   }
   w.writeUint32(beeperNextSampleIndex);
 }
@@ -1065,16 +1073,16 @@ function serializeBeeperState(w: BinaryWriter): void {
  * @param r Binary stream reader
  */
 function restoreBeeperState(r: BinaryReader): void {
-  beeperFirstTact = r.readUint64();
+  beeperFirstTact = r.readULong();
   beeperAccSamples = r.readUint32();
   beeperSampleRate = r.readUint32();
   beeperSamplesPerFrame = <f32>r.readUint32() / 10_000;
   beeperUseTapeMode = r.readByte() !== 0;
   beeperLastEarBit = r.readByte() !== 0;
-  beeperLastSampleTact = r.readUint64();
+  beeperLastSampleTact = r.readULong();
   const sampleCount = r.readUint16();
   beeperAudioSamples = new Array<f32>(sampleCount);
-  for (let i = 0; i < sampleCount; i++) {
+  for (let i = 0; i < <i32>sampleCount; i++) {
     beeperAudioSamples[i] = <f32>r.readUint16() / 10_000;
   }
   beeperNextSampleIndex = r.readUint32();
@@ -1092,29 +1100,29 @@ export function sp48ResetBeeperDevice(): void {
 }
 
 /**
- * Sets up sampling ionformation for the forthcoming frame
+ * Sets up sampling information for the forthcoming frame
  */
 function initializeSampling(): void {
-  const nextSamplesCount =
-    <f32>beeperFirstTact +
-    <f32>(spectrum.frameCount + 1) * beeperSamplesPerFrame;
-  const frameBegins = spectrum.frameBegins;
-  beeperLastSampleTact =
-    frameBegins % beeperTactsPerSample === 0
-      ? frameBegins
-      : frameBegins +
-        beeperTactsPerSample -
-        ((frameBegins + beeperTactsPerSample) % beeperTactsPerSample);
-  const samplesInFrame = <i32>(
-    Math.floor(nextSamplesCount - <f32>beeperAccSamples)
-  );
-  beeperAccSamples += samplesInFrame;
-  // --- Empty the samples array
-  beeperAudioSamples = new Array<f32>(samplesInFrame);
-  for (let i = 0; i < samplesInFrame; i++) {
-    beeperAudioSamples[i] = 0.0;
-  }
-  beeperNextSampleIndex = 0;
+  // const nextSamplesCount =
+  //   <f32>beeperFirstTact +
+  //   <f32>(spectrum.frameCount + 1) * beeperSamplesPerFrame;
+  // const frameBegins = spectrum.frameBegins;
+  // beeperLastSampleTact =
+  //   frameBegins % beeperTactsPerSample === 0
+  //     ? frameBegins
+  //     : frameBegins +
+  //       beeperTactsPerSample -
+  //       ((frameBegins + beeperTactsPerSample) % beeperTactsPerSample);
+  // const samplesInFrame = <i32>(
+  //   Math.floor(nextSamplesCount - <f32>beeperAccSamples)
+  // );
+  // beeperAccSamples += samplesInFrame;
+  // // --- Empty the samples array
+  // beeperAudioSamples = new Array<f32>(samplesInFrame);
+  // for (let i = 0; i < samplesInFrame; i++) {
+  //   beeperAudioSamples[i] = 0.0;
+  // }
+  // beeperNextSampleIndex = 0;
 }
 
 /**
@@ -1123,7 +1131,7 @@ function initializeSampling(): void {
 export function sp48StartNewBeeperFrame(): void {
   initializeSampling();
   if (spectrum.overflow !== 0) {
-    createSamples(spectrum.frameBegins + spectrum.overflow);
+    createSamples(ULong.add(spectrum.frameBegins, ULong.fromUint32(spectrum.overflow)));
   }
 }
 
@@ -1131,15 +1139,15 @@ export function sp48StartNewBeeperFrame(): void {
  * Creates beeper samples to the specified CPU tacts
  * @param cpuTacts CPU tacts to create samples to
  */
-function createSamples(cpuTacts: u64): void {
+function createSamples(cpuTacts: ULong): void {
   let nextSampleOffset = beeperLastSampleTact;
   const frametacts = spectrum.screenConfiguration.screenRenderingFrameTactCount;
-  if (cpuTacts > spectrum.frameBegins + frametacts) {
-    cpuTacts = spectrum.frameBegins + frametacts;
+  if (ULong.compare(cpuTacts, ULong.add(spectrum.frameBegins, ULong.fromUint32(frametacts))) > 0) {
+    cpuTacts = ULong.add(spectrum.frameBegins, ULong.fromUint32(frametacts));
   }
-  while (nextSampleOffset <= cpuTacts) {
+  while (ULong.compare(nextSampleOffset, cpuTacts) <= 0) {
     beeperAudioSamples[beeperNextSampleIndex++] = beeperLastEarBit ? 1.0 : 0.0;
-    nextSampleOffset += beeperTactsPerSample;
+    nextSampleOffset = ULong.add(nextSampleOffset,ULong.fromUint32(beeperTactsPerSample));
   }
   if (beeperNextSampleIndex < beeperAudioSamples.length) {
     const lastSample = beeperAudioSamples[beeperNextSampleIndex - 1];
@@ -1154,11 +1162,11 @@ function createSamples(cpuTacts: u64): void {
  * Completes a beeper frame
  */
 export function sp48CompleteBeeperFrame(): void {
-  const frameTacts = spectrum.screenConfiguration.screenRenderingFrameTactCount;
-  if (beeperLastSampleTact < spectrum.frameBegins + frameTacts) {
-    // --- Expand the samples till the end of the frame
-    createSamples(spectrum.frameBegins + frameTacts);
-  }
+  // const frameTacts = spectrum.screenConfiguration.screenRenderingFrameTactCount;
+  // if (beeperLastSampleTact < spectrum.frameBegins + frameTacts) {
+  //   // --- Expand the samples till the end of the frame
+  //   createSamples(spectrum.frameBegins + frameTacts);
+  // }
 }
 
 /**

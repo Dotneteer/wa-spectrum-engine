@@ -36,6 +36,8 @@ export interface Api {
   getCurrentMachineType(): ZxSpectrumType;
   turnOnSpectrumMachine(): void;
   resetSpectrumMachine(): void;
+  getSpectrumMachineState(): number; // PTR
+  updateSpectrumMachineState(mem: number /* PTR */): void;
   executeCycle(options: ExecuteCycleOptions): void;
   sendKeyAction(keycode: SpectrumKeyCode, isDown: boolean): void;
   setTapeStream(format: TapeFormat, data: number[]): void;

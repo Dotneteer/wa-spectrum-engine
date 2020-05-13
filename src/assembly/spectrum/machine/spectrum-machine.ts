@@ -44,7 +44,11 @@ import {
   sp48SetKeyStatus,
   sp48GetKeyLineStatus,
   sp48GetKeyStatus,
+  sp48SerializeMachineState,
+  sp48RestoreMachineState
 } from "./spectrum-48";
+import { BinaryWriter } from "../../utils/BinaryWriter";
+import { BinaryReader } from "../../utils/BinaryReader";
 
 const NOT_INITIALIZED = "ZX Spectrum instance is not initialized";
 
@@ -77,6 +81,10 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
       spectrum.getCpuConfiguration = sp48GetCpuConfiguration;
       spectrum.getMemoryConfiguration = sp48GetMemoryConfiguration;
       spectrum.getScreenConfiguration = sp48GetScreenConfiguration;
+
+      // --- State management
+      spectrum.serializeMachineState = sp48SerializeMachineState
+      spectrum.restoreMachineState = sp48RestoreMachineState;
 
       // --- Memory device
       spectrum.resetMemoryDevice = sp48ResetMemoryDevice;
@@ -180,6 +188,34 @@ export function resetSpectrumMachine(): void {
   spectrum.resetPortDevice();
   spectrum.resetInterruptDevice();
   spectrum.resetScreenDevice();
+}
+
+/**
+ * Gets the byte stream that represents the Spectrum machine's state
+ * @returns Spectrum machine state
+ */
+export function getSpectrumMachineState(): Uint8Array {
+  const writer = new BinaryWriter();
+  spectrum.serializeMachineState(writer);
+  const buffer = writer.buffer;
+  const state = new Uint8Array(buffer.length);
+  for (let i = 0; i < buffer.length; i++) {
+    state[i] = buffer[i];
+  }
+  return state;
+}
+
+/**
+ * Updates state of the Spectrum machine
+ * @param state The binary stream that represents the Spectrum machine's state
+ */
+export function updateSpectrumMachineState(state: Uint8Array): void {
+  const buffer = new Array<u8>(state.length);
+  for (let i = 0; i < state.length; i++) {
+    buffer[i] = state[i];
+  }
+  const reader = new BinaryReader(buffer);
+  spectrum.restoreMachineState(reader);
 }
 
 /**

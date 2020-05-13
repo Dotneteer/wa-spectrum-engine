@@ -1,17 +1,15 @@
-import { ULong } from "./ULong";
-
 /**
  * This class allows you to read binary information from a file or a buffer
  */
-export class BinaryReader {
-  private _buffer: u8[];
-  private _position: i32;
+export class UiBinaryReader {
+  private _buffer: Uint8Array;
+  private _position: number;
 
   /**
    * Initializes a binary reader that reads information from a buffer
    * @param buffer Buffer or file name to read form
    */
-  constructor(buffer: u8[]) {
+  constructor(buffer: Uint8Array) {
     this._buffer = buffer;
     this._position = 0;
   }
@@ -19,7 +17,7 @@ export class BinaryReader {
   /**
    * Gets the current stream position
    */
-  get position(): i32 {
+  get position(): number {
     return this._position;
   }
 
@@ -27,7 +25,7 @@ export class BinaryReader {
    * Seeks the specified position
    * @param position Position to seek foor
    */
-  seek(position: i32): void {
+  seek(position: number): void {
     if (position < 0) {
       throw new Error("Stream position cannot be negative");
     }
@@ -41,28 +39,28 @@ export class BinaryReader {
   /**
    * Get the length of the stream
    */
-  get length(): i32 {
+  get length(): number {
     return this._buffer.length;
   }
 
   /**
    * Tests if the reader has contents at all
    */
-  get hasContent(): bool {
+  get hasContent(): boolean {
     return this._buffer.length > 0;
   }
 
   /**
    * Test is the current position is at the end of the file
    */
-  get eof(): bool {
+  get eof(): boolean {
     return this._position >= this._buffer.length;
   }
 
   /**
    * Reads a single byte from the stream
    */
-  readByte(): u8 {
+  readByte(): number {
     this._testEof();
     return this._buffer[this._position++];
   }
@@ -71,10 +69,10 @@ export class BinaryReader {
    * Reads a byte array from the stream. The subsequent 4 bytes defines
    * the length of the array
    */
-  readBytes(): u8[] {
+  readBytes(): Uint8Array {
     const length = this.readUint32();
-    const result = new Array<u8>(length);
-    for (let i = 0; i < <i32>length; i++) {
+    const result = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
       result[i] = this.readByte();
     }
     return result;
@@ -83,28 +81,27 @@ export class BinaryReader {
   /**
    * Reads a 16-bit unsigned integer from the stream
    */
-  readUint16(): u16 {
-    return <u16>this.readByte() + ((<u16>this.readByte()) << 8);
+  readUint16(): number {
+    return this.readByte() + (this.readByte() << 8);
   }
 
   /**
    * Reads a 32-bit unsigned integer from the stream
    */
-  readUint32(): u32 {
+  readUint32(): number {
     return (
-      <u32>this.readByte() +
-      ((<u32>this.readByte()) << 8) +
-      ((<u32>this.readByte()) << 16) +
-      ((<u32>this.readByte()) << 24)
+      this.readByte() +
+      (this.readByte() << 8) +
+      (this.readByte() << 16) +
+      (this.readByte() << 24)
     );
   }
 
   /**
    * Reads a 32-bit unsigned integer from the stream
    */
-  readULong(): ULong {
-    const low = this.readUint32();
-    return new ULong(this.readUint32(), low);
+  readUint64(): number {
+    return ((this.readUint32()) << 32) | (this.readUint32());
   }
 
   /**

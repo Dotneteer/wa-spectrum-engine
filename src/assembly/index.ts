@@ -13,6 +13,8 @@ import {
   getCurrentMachineType as _getCurrentMachineType,
   turnOnSpectrumMachine as _turnOnSpectrumMachine,
   resetSpectrumMachine as _resetSpectrumMachine,
+  getSpectrumMachineState as _getSpectrumMachineState,
+  updateSpectrumMachineState as _updateSpectrumMachineState,
   executeCycle as _executeCycle,
 } from "./spectrum/machine/spectrum-machine";
 import { SpectrumKeyCode } from "../shared/SpectrumKeyCode";
@@ -60,7 +62,6 @@ export function getTestMachineMemory(): Uint8Array {
 
 /**
  * Updates the state of the test machine
- * @param handle Test machine handle
  * @param mem Memory contents
  */
 export function updateTestMachineMemory(mem: Uint8Array): void {
@@ -173,6 +174,22 @@ export function turnOnSpectrumMachine(): void {
  */
 export function resetSpectrumMachine(): void {
   _resetSpectrumMachine();
+}
+
+/**
+ * Gets the byte stream that represents the Spectrum machine's state
+ * @returns Spectrum machine state
+ */
+export function getSpectrumMachineState(): Uint8Array {
+  return _getSpectrumMachineState();
+}
+
+/**
+ * Updates state of the Spectrum machine
+ * @param state The binary stream that represents the Spectrum machine's state
+ */
+export function updateSpectrumMachineState(state: Uint8Array): void {
+  _updateSpectrumMachineState(state);
 }
 
 /**

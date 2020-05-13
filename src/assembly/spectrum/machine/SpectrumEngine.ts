@@ -15,6 +15,8 @@ import { LiteEvent } from "../../utils/LiteEvent";
 import { BinaryReader } from "../../utils/BinaryReader";
 import { ScreenConfigurationEx } from "../screen/ScreenConfigurationEx";
 import { BinaryWriter } from "../../utils/BinaryWriter";
+import { EmulationMode } from "../../../shared/EmulationMode";
+import { ULong } from "../../utils/ULong";
 
 /**
  * This class represents a ZX Spectrum engine
@@ -27,10 +29,11 @@ export class SpectrumEngine {
   private _screenConfiguration: ScreenConfigurationEx;
   private _currentFrameTact: u32;
   private _frameCount: u32;
-  private _frameBegins: u64;
+  private _frameBegins: ULong;
+  private _frameCompleted: bool;
   private _overflow: u32;
   private _contentionAccummulated: u32;
-  private _lastExecutionStartTact: u64;
+  private _lastExecutionStartTact: ULong;
   private _lastExecutionContentionValue: u32;
   private _executeCycleOptions: ExecuteCycleOptions;
   private _executionCompletionReason: ExecutionCompletionReason;
@@ -47,6 +50,15 @@ export class SpectrumEngine {
   }
 
   /**
+   * Resets a configured engine
+   */
+  reset(): void {
+    this.cpu.reset();
+
+  }
+
+
+  /**
    * Sets up the machine according to its configuration
    */
   setup(): void {
@@ -54,16 +66,17 @@ export class SpectrumEngine {
     const cpuConfig = this.getCpuConfiguration();
     this._baseClockFrequency = cpuConfig.baseClockFrequency;
     this._clockMultiplier = cpuConfig.clockMultiplier;
-    this.cpu.allowExtendedInstructionSet  = cpuConfig.supportsNextOperations;
+    this.cpu.allowExtendedInstructionSet = cpuConfig.supportsNextOperations;
 
     // --- Configure the screen frame
     const scr = this.getScreenConfiguration();
     this._screenConfiguration = new ScreenConfigurationEx(scr);
     this._frameCount = 0;
-    this._frameBegins = 0;
+    this._frameBegins = ULong.fromUint32(0);
+    this._frameCompleted = true;
     this._overflow = 0;
     this._contentionAccummulated = 0;
-    this._lastExecutionStartTact = 0;
+    this._lastExecutionStartTact = ULong.fromUint32(0);
     this._lastExecutionContentionValue = 0;
 
     // --- Configure audio sample rate
@@ -126,12 +139,25 @@ export class SpectrumEngine {
     return this._currentFrameTact;
   }
 
+  /**
+   * Number of frames rendered since the machine started
+   */
   get frameCount(): u32 {
     return this._frameCount;
   }
 
-  get frameBegins(): u64 {
+  /**
+   * The CPU tacs that signs the beginning of the last screen frame
+   */
+  get frameBegins(): ULong {
     return this._frameBegins;
+  }
+
+  /**
+   * Indicates that a screen frame has just completed
+   */
+  get frameCompleted(): bool {
+    return this._frameCompleted;
   }
 
   /**
@@ -152,7 +178,7 @@ export class SpectrumEngine {
   /**
    * The CPU tact at which the last execution cycle started
    */
-  get lastExecutionStartTact(): u64 {
+  get lastExecutionStartTact(): ULong {
     return this._lastExecutionStartTact;
   }
 
@@ -181,7 +207,141 @@ export class SpectrumEngine {
   // ==========================================================================
   // Execution cycle
   executeCycle(options: ExecuteCycleOptions): void {
-    // TODO: prepare for a new frame
+    this._executeCycleOptions = options;
+    this._executionCompletionReason = ExecutionCompletionReason.None;
+
+    if (options.emulationMode !== EmulationMode.UntilUlaFrameEnds) {
+      this._lastExecutionStartTact = this.cpu.tacts;
+      this._lastExecutionContentionValue = this._contentionAccummulated;
+    }
+
+    // --- We use these variables to calculate wait time at the end of the frame
+    const cycleStartTact = this.cpu.tacts;
+
+    // --- We use this variable to check whether to stop in Debug mode
+    let executedInstructionCount = -1;
+
+    // if (this._frameCompleted) {
+    //   // --- This counter helps us to calculate where we are in the frame after
+    //   // --- each CPU operation cycle
+    //   this._lastFrameStartCpuTick = this.cpu.tacts - this.overflow;
+
+    //   // --- Notify devices to start a new frame
+    //   this.onNewFrame();
+    //   this.lastRenderedUlaTact = this.overflow;
+    //   this._frameCompleted = false;
+    // }
+
+    // // --- Loop #2: The physical frame cycle that goes on while CPU and ULA
+    // // --- processes everything whithin a physical frame (0.019968 second)
+    // while (!this._frameCompleted) {
+    //   // --- Check debug mode when a CPU instruction has been entirelly executed
+    //   if (!this.cpu.isInOpExecution) {
+    //     // --- Check for cancellation
+    //     if (token.isCancellationRequested) {
+    //       this.executionCompletionReason = ExecutionCompletionReason.Cancelled;
+    //       return false;
+    //     }
+
+    //     // --- The next instruction is about to be executed
+    //     executedInstructionCount++;
+
+    //     // --- Check for timeout
+    //     if (
+    //       options.timeoutTacts > 0 &&
+    //       cycleStartTact + options.timeoutTacts < this.cpu.tacts
+    //     ) {
+    //       this.executionCompletionReason = ExecutionCompletionReason.Timeout;
+    //       return false;
+    //     }
+
+    //     // --- Check for reaching the termination point
+    //     if (options.emulationMode === EmulationMode.UntilExecutionPoint) {
+    //       if (options.terminationPoint < 0x4000) {
+    //         // --- ROM & address must match
+    //         if (
+    //           options.terminationRom ===
+    //             this.memoryDevice.getSelectedRomIndex() &&
+    //           options.terminationPoint === this.cpu.pc
+    //         ) {
+    //           // --- We reached the termination point within ROM
+    //           this.executionCompletionReason =
+    //             ExecutionCompletionReason.TerminationPointReached;
+    //           return true;
+    //         }
+    //       } else if (options.terminationPoint === this.cpu.pc) {
+    //         // --- We reached the termination point within RAM
+    //         this.executionCompletionReason =
+    //           ExecutionCompletionReason.TerminationPointReached;
+    //         return true;
+    //       }
+    //     }
+
+    //     // --- Check for a debugging stop point
+    //     if (options.emulationMode === EmulationMode.Debugger) {
+    //       if (this.isDebugStop(options, executedInstructionCount)) {
+    //         // --- At this point, the cycle should be stopped because of debugging reasons
+    //         // --- The screen should be refreshed
+    //         this.screenDevice.onFrameCompleted();
+    //         this.executionCompletionReason =
+    //           ExecutionCompletionReason.BreakpointReached;
+    //         return true;
+    //       }
+    //     }
+    //   }
+
+    //   // --- Check for interrupt signal generation
+    //   this.interruptDevice.checkForInterrupt(this.currentFrameTact);
+
+    //   // --- Run a single Z80 instruction
+    //   this.cpu.executeCpuCycle();
+    //   this._lastBreakpoint = undefined;
+
+    //   // --- Run a rendering cycle according to the current CPU tact count
+    //   const lastTact = this.currentFrameTact;
+    //   this.screenDevice.renderScreen(this.lastRenderedUlaTact + 1, lastTact);
+    //   this.lastRenderedUlaTact = lastTact;
+
+    //   // --- Exit if the emulation mode specifies so
+    //   if (
+    //     options.emulationMode === EmulationMode.UntilHalt &&
+    //     (this.cpu.stateFlags & Z80StateFlags.Halted) !== 0
+    //   ) {
+    //     this.executionCompletionReason = ExecutionCompletionReason.Halted;
+    //     return true;
+    //   }
+
+    //   // --- Notify each CPU-bound device that the current operation has been completed
+    //   for (const device of this._cpuBoundDevices) {
+    //     device.onCpuOperationCompleted();
+    //   }
+
+    //   // --- Decide whether this frame has been completed
+    //   this._frameCompleted =
+    //     !this.cpu.isInOpExecution && this.currentFrameTact >= this._frameTacts;
+    // } // -- End Loop #2
+
+    // // --- A physical frame has just been completed. Take care about screen refresh
+    // this.frameCount++;
+
+    // // --- Notify devices that the current frame completed
+    // this.onFrameCompleted();
+
+    // // --- Start a new frame and carry on
+    // this.overflow = this.currentFrameTact % this._frameTacts;
+
+    // // --- Exit if the emulation mode specifies so
+    // if (
+    //   options.emulationMode === EmulationMode.UntilFrameEnds ||
+    //   options.emulationMode === EmulationMode.Debugger
+    // ) {
+    //   this.executionCompletionReason = ExecutionCompletionReason.FrameCompleted;
+    //   return true;
+    // }
+
+    // // --- The cycle has been interrupted by cancellation
+    // this.executionCompletionReason = ExecutionCompletionReason.Cancelled;
+    // return false;
   }
 
   // ==========================================================================
@@ -199,13 +359,17 @@ export class SpectrumEngine {
     w.writeByte(this._ulaIssue);
     w.writeUint32(this._baseClockFrequency);
     w.writeByte(this._clockMultiplier);
-    serializeScreenConfiguration(this._screenConfiguration as ScreenConfiguration, w);
+    serializeScreenConfiguration(
+      this._screenConfiguration as ScreenConfiguration,
+      w
+    );
     w.writeUint32(this._currentFrameTact);
     w.writeUint32(this._frameCount);
-    w.writeUint64(this._frameBegins);
+    w.writeULong(this._frameBegins);
+    w.writeByte(this._frameCompleted ? 1 : 0);
     w.writeUint32(this._overflow);
     w.writeUint32(this._contentionAccummulated);
-    w.writeUint64(this._lastExecutionStartTact);
+    w.writeULong(this._lastExecutionStartTact);
     w.writeUint32(this._lastExecutionContentionValue);
 
     // --- Save device state
@@ -221,7 +385,7 @@ export class SpectrumEngine {
     const r = new BinaryReader(state);
 
     // --- Restore engine state
-    this._cpu.restoreCpuState(r)
+    this._cpu.restoreCpuState(r);
     this._ulaIssue = r.readByte();
     this._baseClockFrequency = r.readUint32();
     this._clockMultiplier = r.readByte();
@@ -230,10 +394,11 @@ export class SpectrumEngine {
     this._screenConfiguration = new ScreenConfigurationEx(sc);
     this._currentFrameTact = r.readUint32();
     this._frameCount = r.readUint32();
-    this._frameBegins = r.readUint64();
+    this._frameBegins = r.readULong();
+    this._frameCompleted = r.readByte() !== 0;
     this._overflow = r.readUint32();
     this._contentionAccummulated = r.readUint32();
-    this._lastExecutionStartTact = r.readUint64();
+    this._lastExecutionStartTact = r.readULong();
     this._lastExecutionContentionValue = r.readUint32();
 
     // --- Restore device states
@@ -416,7 +581,7 @@ export class SpectrumEngine {
 
   // ==========================================================================
   // Screen device functions
-  
+
   /**
    * Resets the screen device
    */
@@ -569,7 +734,7 @@ export class SpectrumEngine {
    * Gets the EAR bit read from the tape
    * @param cpuTicks Number of CPU ticks for the sample
    */
-  getEarBit: (cpuTicks: u64) => bool;
+  getEarBit: (cpuTicks: ULong) => bool;
 
   /**
    * Sets the current tape mode according to the current PC register
