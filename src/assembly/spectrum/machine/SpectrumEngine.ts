@@ -1,6 +1,6 @@
 import { Z80Cpu } from "../../Z80Cpu";
-import { ExecuteCycleOptions } from "../../../shared/ExecuteCycleOptions";
-import { ExecutionCompletionReason } from "../../../shared/ExecutionCompletionReason";
+import { ExecuteCycleOptions } from "../../spectrum/machine/ExecuteCycleOptions";
+import { ExecutionCompletionReason } from "../../spectrum/machine/ExecutionCompletionReason";
 import {
   CpuConfiguration,
   MemoryConfiguration,
@@ -15,7 +15,7 @@ import { LiteEvent } from "../../utils/LiteEvent";
 import { BinaryReader } from "../../utils/BinaryReader";
 import { ScreenConfigurationEx } from "../screen/ScreenConfigurationEx";
 import { BinaryWriter } from "../../utils/BinaryWriter";
-import { EmulationMode } from "../../../shared/EmulationMode";
+import { EmulationMode } from "./EmulationMode";
 import { Z80StateFlags } from "../../../shared/cpu-enums";
 
 /**
@@ -85,7 +85,7 @@ export class SpectrumEngine {
     // --- Reset the devices
     this.resetMemoryDevice();
     this.resetPortDevice();
-    //this.resetScreenDevice();
+    this.resetScreenDevice();
     this.resetInterruptDevice();
     this.resetBeeperDevice();
     this.resetKeyboardDevice();
@@ -216,7 +216,7 @@ export class SpectrumEngine {
       // // --- This counter helps us to calculate where we are in the frame after
       // // --- each CPU operation cycle
       // this._lastFrameStartCpuTick = this.cpu.tacts - this.overflow;
-      
+
       // --- Notify devices to start a new frame
       this.startNewInterruptFrame();
       this.startNewScreenFrame();
@@ -228,6 +228,7 @@ export class SpectrumEngine {
 
     // --- The physical frame cycle that goes on while CPU and ULA
     // --- processes everything within a screen rendering frame
+    trace("Wait for frame completion");
     while (!this._frameCompleted) {
       // --- Check debug mode when a CPU instruction has been entirelly executed
       if (!this.cpu.isInOpExecution) {
@@ -290,7 +291,9 @@ export class SpectrumEngine {
 
       // --- Decide whether this frame has been completed
       this._frameCompleted =
-        !this.cpu.isInOpExecution && this.currentFrameTact >= this._screenConfiguration.screenRenderingFrameTactCount;
+        !this._cpu.isInOpExecution &&
+        this._cpu.frameCount >
+          this._lastExecutionStartFrameCount;
     }
 
     // --- Notify devices that the current frame completed
@@ -300,7 +303,8 @@ export class SpectrumEngine {
     this._overflow = this.currentFrameTact;
 
     // --- Return with a completed frame
-    this._executionCompletionReason = ExecutionCompletionReason.UlaFrameCompleted;
+    this._executionCompletionReason =
+      ExecutionCompletionReason.UlaFrameCompleted;
   }
 
   isDebugStop(
@@ -327,7 +331,7 @@ export class SpectrumEngine {
     w.writeUint32(this._baseClockFrequency);
     w.writeByte(this._clockMultiplier);
     serializeScreenConfiguration(
-      this._screenConfiguration as ScreenConfiguration,
+      this._screenConfiguration,
       w
     );
     w.writeUint32(this._lastExecutionStartFrameCount);
@@ -337,6 +341,7 @@ export class SpectrumEngine {
     w.writeUint32(this._overflow);
     w.writeUint32(this._contentionAccummulated);
     w.writeUint32(this._lastExecutionContentionValue);
+    w.writeByte(<u8>this._executionCompletionReason);
 
     // --- Save device state
     this.serializeMachineState(w);
@@ -365,7 +370,8 @@ export class SpectrumEngine {
     this._overflow = r.readUint32();
     this._contentionAccummulated = r.readUint32();
     this._lastExecutionContentionValue = r.readUint32();
-
+    this._executionCompletionReason = r.readByte();
+    
     // --- Restore device states
     this.restoreMachineState(r);
   }

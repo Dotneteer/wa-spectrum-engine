@@ -69,9 +69,9 @@ export class UiBinaryReader {
    * Reads a byte array from the stream. The subsequent 4 bytes defines
    * the length of the array
    */
-  readBytes(): Uint8Array {
+  readBytes(): number[] {
     const length = this.readUint32();
-    const result = new Uint8Array(length);
+    const result: number[] = [];
     for (let i = 0; i < length; i++) {
       result[i] = this.readByte();
     }

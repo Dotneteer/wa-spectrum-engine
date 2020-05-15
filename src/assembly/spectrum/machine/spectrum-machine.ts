@@ -1,6 +1,6 @@
 import { ZxSpectrumType } from "../../../shared/ZxSpectrumType";
 import { SpectrumEngine } from "./SpectrumEngine";
-import { ExecuteCycleOptions } from "../../../shared/ExecuteCycleOptions";
+import { ExecuteCycleOptions } from "../../spectrum/machine/ExecuteCycleOptions";
 import {
   sp48SetInstance,
   sp48GetCpuConfiguration,
@@ -47,8 +47,6 @@ import {
   sp48SerializeMachineState,
   sp48RestoreMachineState
 } from "./spectrum-48";
-import { BinaryWriter } from "../../utils/BinaryWriter";
-import { BinaryReader } from "../../utils/BinaryReader";
 
 const NOT_INITIALIZED = "ZX Spectrum instance is not initialized";
 
@@ -135,7 +133,7 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
 
       // --- Beeper device
       spectrum.resetBeeperDevice = sp48ResetBeeperDevice;
-      spectrum.startNewInterruptFrame = sp48StartNewBeeperFrame;
+      spectrum.startNewBeeperFrame = sp48StartNewBeeperFrame;
       spectrum.completeBeeperFrame = sp48CompleteBeeperFrame;
       spectrum.getBeeperSamples = sp48GetBeeperSamples;
       spectrum.getBeeperSampleRate = sp48GetBeeperSampleRate;
@@ -197,9 +195,7 @@ export function resetSpectrumMachine(): void {
  * @returns Spectrum machine state
  */
 export function getSpectrumMachineState(): Uint8Array {
-  const writer = new BinaryWriter();
-  spectrum.serializeMachineState(writer);
-  const buffer = writer.buffer;
+  const buffer = spectrum.serializeEngineState();
   const state = new Uint8Array(buffer.length);
   for (let i = 0; i < buffer.length; i++) {
     state[i] = buffer[i];
@@ -216,8 +212,7 @@ export function updateSpectrumMachineState(state: Uint8Array): void {
   for (let i = 0; i < state.length; i++) {
     buffer[i] = state[i];
   }
-  const reader = new BinaryReader(buffer);
-  spectrum.restoreMachineState(reader);
+  spectrum.restoreEngineState(buffer);
 }
 
 /**
@@ -228,5 +223,5 @@ export function executeCycle(options: ExecuteCycleOptions): void {
   if (!spectrum) {
     throw new Error(NOT_INITIALIZED);
   }
-  // TODO: Implement this method
+  spectrum.executeCycle(options);
 }

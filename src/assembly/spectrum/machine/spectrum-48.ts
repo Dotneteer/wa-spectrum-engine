@@ -13,7 +13,6 @@ import { Z80StateFlags } from "../../../shared/cpu-enums";
 import { SpectrumKeyCode } from "../../../shared/SpectrumKeyCode";
 import { BinaryWriter } from "../../utils/BinaryWriter";
 import { BinaryReader } from "../../utils/BinaryReader";
-import { ZxSpectrumType } from "../../../shared/ZxSpectrumType";
 
 // ============================================================================
 // ZX Spectrum instance
@@ -26,24 +25,24 @@ let spectrum: SpectrumEngine;
  * Serializes the current state of the machine
  */
 export function sp48SerializeMachineState(w: BinaryWriter): void {
-  serializeMemoryState(w);
-  serializePortState(w);
   serializeInterruptState(w);
-  serializeScreenState(w);
-  serializeBeeperState(w);
   serializeKeyboardState(w);
+  serializeScreenState(w);
+  serializePortState(w);
+  serializeMemoryState(w);
+  serializeBeeperState(w);
 }
 
 /**
  * Restores the machine state from the specified binary stream
  */
 export function sp48RestoreMachineState(r: BinaryReader): void {
-  restoreMemoryState(r);
-  restorePortState(r);
   restoreInterruptState(r);
-  restoreScreenState(r);
-  restoreBeeperState(r);
   restoreKeyboardState(r);
+  restoreScreenState(r);
+  restorePortState(r);
+  restoreMemoryState(r);
+  restoreBeeperState(r);
 }
 
 // ============================================================================
@@ -73,7 +72,7 @@ export function sp48GetCpuConfiguration(): CpuConfiguration {
  */
 export function sp48GetMemoryConfiguration(): MemoryConfiguration {
   return {
-    romContents: [ZX_SPECTRUM_48_ROM],
+    romContents: ZX_SPECTRUM_48_ROM,
     spectrum48RomIndex: 0,
     ramBanks: 0,
     contentionType: MemoryContentionType.Ula,
@@ -540,7 +539,7 @@ let screenFlashToggleFrames: u16;
 let screenPixelBuffer: u8[];
 
 // --- Screen device helper variables that do not change after reset
-let screeRenderingTactTable: RenderingTact[];
+let screenRenderingTactTable: RenderingTact[];
 let screenFlashOffColors: u8[];
 let screenFlashOnColors: u8[];
 
@@ -630,21 +629,19 @@ export function sp48ResetScreenDevice(): void {
   }
 
   // --- Prepare the pixel buffer
-  if (screenPixelBuffer === null) {
-    screenPixelBuffer = new Array<u8>(
-      screenConfiguration.screenWidth * screenConfiguration.screenLines
-    );
-  }
+  screenPixelBuffer = new Array<u8>(
+    screenConfiguration.screenWidth * screenConfiguration.screenLines
+  );
 
   // --- Initialize the rendering tact table
   // --- Reset the tact information table
   const frameTactCount = screenConfiguration.screenRenderingFrameTactCount;
-  screeRenderingTactTable = new Array<RenderingTact>(frameTactCount);
+  screenRenderingTactTable = new Array<RenderingTact>(frameTactCount);
 
   const memConfig = spectrum.getMemoryConfiguration();
   const contentionType = memConfig.contentionType;
 
-  // --- Iterate through tacts
+  // // --- Iterate through tacts
   for (let tact = 0; tact < <i32>frameTactCount; tact++) {
     // --- calculate screen line and tact in line values here
     const line = <u16>Math.floor(tact / screenConfiguration.screenLineTime);
@@ -777,7 +774,7 @@ export function sp48ResetScreenDevice(): void {
     }
 
     // --- Calculation is ready, let's store the calculated tact item
-    screeRenderingTactTable[tact] = {
+    screenRenderingTactTable[tact] = {
       phase: tactPhase,
       contentionDelay: tactDelay,
       pixelByteToFetchAddress: tactPixelAddr,
@@ -830,7 +827,7 @@ export function sp48StartNewScreenFrame(): void {
  * Table of ULA tact action information entries
  */
 export function sp48GetRenderingTactTable(): RenderingTact[] {
-  return screeRenderingTactTable;
+  return screenRenderingTactTable;
 }
 
 /**
@@ -878,7 +875,7 @@ export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
 
   // --- Carry out each tact action according to the rendering phase
   for (let currentTact = fromTact; currentTact <= toTact; currentTact++) {
-    const screenTact = screeRenderingTactTable[currentTact];
+    const screenTact = screenRenderingTactTable[currentTact];
 
     switch (screenTact.phase) {
       case ScreenRenderingPhase.None:
@@ -1039,7 +1036,7 @@ function getColor(pixelValue: u8, attr: u8): u8 {
  * @returns: The contention value for the ULA tact
  */
 export function sp48GetContentionValue(tact: u32): u32 {
-  return screeRenderingTactTable[
+  return screenRenderingTactTable[
     tact % spectrum.screenConfiguration.screenRenderingFrameTactCount
   ].contentionDelay;
 }
@@ -1292,6 +1289,7 @@ let keyboardLineStatus: u8[];
  * @param w Binary stream writer
  */
 function serializeKeyboardState(w: BinaryWriter): void {
+  trace("keyboard line status:", 1, keyboardLineStatus.length);
   w.writeBytes(keyboardLineStatus);
 }
 

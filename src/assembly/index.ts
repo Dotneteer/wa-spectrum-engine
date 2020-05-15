@@ -7,7 +7,7 @@ import {
   clearTbBlueAccessLog,
 } from "./test-machine/test-devices";
 import { ZxSpectrumType } from "../shared/ZxSpectrumType";
-import { ExecuteCycleOptions } from "../shared/ExecuteCycleOptions";
+import { ExecuteCycleOptions } from "./spectrum/machine/ExecuteCycleOptions";
 import {
   initSpectrumMachine as _initSpectrumMachine,
   getCurrentMachineType as _getCurrentMachineType,
@@ -22,6 +22,7 @@ import { TapeFormat } from "../shared/TapeFormat";
 
 export { Z80Cpu } from "./Z80Cpu";
 export { TestZ80MachineState } from "./test-machine/TestZ80MachineState";
+export { ExecuteCycleOptions } from "./spectrum/machine/ExecuteCycleOptions";
 
 // ============================================================================
 // Module initialization

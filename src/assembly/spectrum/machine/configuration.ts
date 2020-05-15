@@ -1,5 +1,6 @@
 import { BinaryWriter } from "../../utils/BinaryWriter";
 import { BinaryReader } from "../../utils/BinaryReader";
+import { ScreenConfigurationEx } from "../screen/ScreenConfigurationEx";
 
 /**
  * This interface defines the configuration data for Z80 CPU
@@ -54,7 +55,7 @@ export class MemoryConfiguration {
   /**
    * The contents of ROM banks
    */
-  romContents: u8[][];
+  romContents: u8[];
 
   /**
    * The index of the Spectrum 48K BASIC ROM
@@ -178,7 +179,7 @@ export class ScreenConfiguration {
  * @param w Output binary stream
  */
 export function serializeScreenConfiguration(
-  s: ScreenConfiguration,
+  s: ScreenConfigurationEx,
   w: BinaryWriter
 ): void {
   w.writeUint32(s.interruptTact);

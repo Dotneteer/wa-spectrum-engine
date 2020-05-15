@@ -1,7 +1,7 @@
 import { TestZ80MachineState } from "../assembly";
 import { RunMode } from "./RunMode";
 import { ZxSpectrumType } from "./ZxSpectrumType";
-import { ExecuteCycleOptions } from "./ExecuteCycleOptions";
+import { ExecuteCycleOptions } from "../assembly/spectrum/machine/ExecuteCycleOptions";
 import { SpectrumKeyCode } from "./SpectrumKeyCode";
 import { TapeFormat } from "./TapeFormat"
 
