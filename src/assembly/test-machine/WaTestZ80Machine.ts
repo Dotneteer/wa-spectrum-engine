@@ -30,10 +30,8 @@ class WaTestZ80Machine {
   constructor() {
     this.cpu = new Z80Cpu();
     this.reset();
-    this.cpu.memoryReader = readSimpleMemory;
-    this.cpu.memoryWriter = writeSimpleMemory;
-    this.cpu.portWriter = writeSimpleIo;
-    this.cpu.portReader = readSimpleIo;
+    this.cpu.setMemoryHandlers(readSimpleMemory, writeSimpleMemory);
+    this.cpu.setPortHandlers(readSimpleIo, writeSimpleIo);
     this.cpu.tbBlueIndexWriter = simpleWriteTbBlueIndex;
     this.cpu.tbBlueValueWriter = simpleWriteTbBlueValue;
     setHostCpu(this.cpu);
@@ -133,12 +131,12 @@ class WaTestZ80Machine {
   ): void {
     // --- Initialize the code
     for (let i = 0; i < programCode.length; i++) {
-      writeSimpleMemory(codeAddress++, <u8>programCode[i]);
+      writeSimpleMemory(codeAddress++, <u8>programCode[i], false);
     }
     this.codeEndsAt = codeAddress;
     let ptr: i32 = <i32>codeAddress;
     while (ptr < 0x10000) {
-      writeSimpleMemory(<u16>(ptr++), 0);
+      writeSimpleMemory(<u16>(ptr++), 0, false);
     }
 
     // --- Init code execution

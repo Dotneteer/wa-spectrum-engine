@@ -45,7 +45,7 @@ export function clearMemoryAccessLog(): void {
  * @param address Memory address
  * @param value Value to write
  */
-export function writeSimpleMemory(address: u16, value: u8): void {
+export function writeSimpleMemory(address: u16, value: u8, suppress: bool): void {
   simpleMemory[address] = value;
   memoryAccessLog.push({
     address,
@@ -59,7 +59,7 @@ export function writeSimpleMemory(address: u16, value: u8): void {
  * @param address Memory address
  * @returns Memory contents
  */
-export function readSimpleMemory(address: u16): u8 {
+export function readSimpleMemory(address: u16, suppress: bool): u8 {
   const value = simpleMemory[address];
   memoryAccessLog.push({
     address,

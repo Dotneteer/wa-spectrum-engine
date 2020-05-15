@@ -55,9 +55,13 @@ describe("Execution cycle", () => {
       terminationPoint: 0,
       timeoutTacts: 0
     };
-    spectrumMachine.executeCycle(options);
-    const state = spectrumMachine.getMachineState();
-    state.screenState.screenPixelBuffer = new Uint8Array(0);
-    console.log(JSON.stringify(state, null, 2));
+    const start = Date.now().valueOf();
+    for (let i = 0; i < 200; i++) {
+      spectrumMachine.executeCycle(options);
+    }
+    console.log(Date.now().valueOf() - start);
+    //const state = spectrumMachine.getMachineState();
+    //state.screenState.screenPixelBuffer = new Uint8Array(0);
+    //console.log(JSON.stringify(state, null, 2));
   });
 });

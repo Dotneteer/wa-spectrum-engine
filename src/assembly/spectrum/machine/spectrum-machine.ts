@@ -113,6 +113,10 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
       spectrum.readPort = sp48ReadPort;
       spectrum.writePort = sp48WritePort;
 
+      // --- Bind memory and port to CPU
+      spectrum.cpu.setMemoryHandlers(sp48Read, sp48Write);
+      spectrum.cpu.setPortHandlers(sp48ReadPort, sp48WritePort);
+
       // --- Interrupt device
       spectrum.resetInterruptDevice = sp48ResetInterruptDevice;
       spectrum.startNewInterruptFrame = sp48StartNewInterruptFrame
@@ -152,6 +156,12 @@ export function initSpectrumMachine(type: ZxSpectrumType): void {
       
       // --- Tape device
       spectrum.checkTapeHooks = () => {};
+      spectrum.isInLoadMode = () => false;
+      spectrum.getEarBit = () => true;
+      spectrum.setTapeMode = () => {};
+      spectrum.processMicBit = () => {};
+      spectrum.checkTapeHooks = () => {};
+      
       break;
   }
 

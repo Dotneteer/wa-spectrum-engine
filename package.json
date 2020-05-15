@@ -1,7 +1,7 @@
 {
   "scripts": {
     "asbuild:untouched": "asc src/assembly/index.ts -b build/untouched.wasm -t build/untouched.wat --validate --sourceMap --debug",
-    "asbuild:optimized": "asc src/assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --validate --sourceMap --optimize",
+    "asbuild:optimized": "asc src/assembly/index.ts -b build/optimized.wasm -t build/optimized.wat --validate --sourceMap -O3 --noAssert",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
     "test": "ts-mocha -p ./test/tsconfig.json ./test/**/*.test.ts"
   },

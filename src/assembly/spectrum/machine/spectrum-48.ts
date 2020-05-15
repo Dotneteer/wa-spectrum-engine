@@ -153,7 +153,10 @@ function restoreMemoryState(r: BinaryReader): void {
  * Resets the memory to the state when the machine is turned on.
  */
 export function sp48ResetMemoryDevice(): void {
-  for (let i = 0; i < memory.length; i++) {
+  for (let i = 0; i < ZX_SPECTRUM_48_ROM.length; i++) {
+    memory[i] = ZX_SPECTRUM_48_ROM[i];
+  }
+  for (let i = ZX_SPECTRUM_48_ROM.length; i < memory.length; i++) {
     memory[i] = 0x00;
   }
 }
@@ -490,8 +493,7 @@ export function sp48IsInterruptRevoked(): bool {
  * @param currentTact Current frame tact
  */
 export function sp48CheckForInterrupt(currentTact: u32): void {
-  const screenConfig = spectrum.getScreenConfiguration();
-  const interruptTact = screenConfig.interruptTact;
+  const interruptTact = spectrum.screenConfiguration.interruptTact;
   if (interruptRevoked) {
     // --- We fully handled the interrupt in this frame
     return;
@@ -536,7 +538,7 @@ let screenPixelByte2: u8;
 let screenAttrByte1: u8;
 let screenAttrByte2: u8;
 let screenFlashToggleFrames: u16;
-let screenPixelBuffer: u8[];
+let screenPixelBuffer: Uint8Array;
 
 // --- Screen device helper variables that do not change after reset
 let screenRenderingTactTable: RenderingTact[];
@@ -555,7 +557,7 @@ function serializeScreenState(w: BinaryWriter): void {
   w.writeByte(screenAttrByte1);
   w.writeByte(screenAttrByte2);
   w.writeUint16(screenFlashToggleFrames);
-  w.writeBytes(screenPixelBuffer);
+//  w.writeBytes(screenPixelBuffer);
 }
 
 /**
@@ -629,7 +631,7 @@ export function sp48ResetScreenDevice(): void {
   }
 
   // --- Prepare the pixel buffer
-  screenPixelBuffer = new Array<u8>(
+  screenPixelBuffer = new Uint8Array(
     screenConfiguration.screenWidth * screenConfiguration.screenLines
   );
 
@@ -857,24 +859,25 @@ export function sp48SetBorderColor(color: u8): void {
  * @param toTact Last ULA tact
  */
 export function sp48RenderScreen(fromTact: u32, toTact: u32): void {
-  const screenConfiguration = spectrum.screenConfiguration;
+  //const screenConfiguration = spectrum.screenConfiguration;
   // --- Do not refresh the screen when in fast mode, or explicitly disabled
-  if (
-    spectrum.executeCycleOptions.disableScreenRendering ||
-    (spectrum.frameCount > 2 &&
-      spectrum.executeCycleOptions.fastVmMode &&
-      spectrum.executeCycleOptions.disableScreenRendering)
-  ) {
-    return;
-  }
+  // if (
+  //   spectrum.executeCycleOptions.disableScreenRendering ||
+  //   (spectrum.frameCount > 2 &&
+  //     spectrum.executeCycleOptions.fastVmMode &&
+  //     spectrum.executeCycleOptions.disableScreenRendering)
+  // ) {
+  //   return;
+  // }
 
   // --- Adjust the tact boundaries
-  fromTact = fromTact % screenConfiguration.screenRenderingFrameTactCount;
-  toTact = toTact % screenConfiguration.screenRenderingFrameTactCount;
+  // fromTact = fromTact % screenConfiguration.screenRenderingFrameTactCount;
+  // toTact = toTact % screenConfiguration.screenRenderingFrameTactCount;
   const buffer = screenPixelBuffer;
 
   // --- Carry out each tact action according to the rendering phase
   for (let currentTact = fromTact; currentTact <= toTact; currentTact++) {
+    buffer[currentTact] = 0;
     const screenTact = screenRenderingTactTable[currentTact];
 
     switch (screenTact.phase) {
@@ -1045,7 +1048,11 @@ export function sp48GetContentionValue(tact: u32): u32 {
  * Gets the buffer that holds the screen pixels
  */
 export function sp48GetPixelBuffer(): u8[] {
-  return screenPixelBuffer;
+  const arr = new Array<u8>(screenPixelBuffer.length);
+  for (let i = 0;  i < screenPixelBuffer.length; i++) {
+    arr[i] = screenPixelBuffer[i];
+  }
+  return arr;
 }
 
 // ============================================================================
@@ -1289,7 +1296,6 @@ let keyboardLineStatus: u8[];
  * @param w Binary stream writer
  */
 function serializeKeyboardState(w: BinaryWriter): void {
-  trace("keyboard line status:", 1, keyboardLineStatus.length);
   w.writeBytes(keyboardLineStatus);
 }
 

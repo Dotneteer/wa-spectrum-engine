@@ -63,7 +63,7 @@ export class SpectrumEngine {
     const cpuConfig = this.getCpuConfiguration();
     this._baseClockFrequency = cpuConfig.baseClockFrequency;
     this._clockMultiplier = cpuConfig.clockMultiplier;
-    this.cpu.allowExtendedInstructionSet = cpuConfig.supportsNextOperations;
+    this._cpu.allowExtendedInstructionSet = cpuConfig.supportsNextOperations;
 
     // --- Configure the screen frame
     const scr = this.getScreenConfiguration();
@@ -89,6 +89,10 @@ export class SpectrumEngine {
     this.resetInterruptDevice();
     this.resetBeeperDevice();
     this.resetKeyboardDevice();
+
+    // --- Copy ROM contents into the memory
+    this.selectRom(0);
+    this.reset();
   }
 
   // ==========================================================================
@@ -228,7 +232,6 @@ export class SpectrumEngine {
 
     // --- The physical frame cycle that goes on while CPU and ULA
     // --- processes everything within a screen rendering frame
-    trace("Wait for frame completion");
     while (!this._frameCompleted) {
       // --- Check debug mode when a CPU instruction has been entirelly executed
       if (!this.cpu.isInOpExecution) {
@@ -374,6 +377,12 @@ export class SpectrumEngine {
     
     // --- Restore device states
     this.restoreMachineState(r);
+  }
+
+  // ==========================================================================
+  // Helper functions
+  private memoryReadOperation(addr: u16): u8 {
+    return this.read(addr, false);
   }
 
   // ==========================================================================

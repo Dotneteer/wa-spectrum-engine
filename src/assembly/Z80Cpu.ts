@@ -33,7 +33,7 @@ export class Z80Cpu {
   // CPU state variables
   // Gets the current tact of the device -- the clock cycles since
   // the device was reset
-  
+
   /**
    * The number of tacts in a frame
    */
@@ -110,6 +110,32 @@ export class Z80Cpu {
     this.tactsInFrame = 100_000;
   }
 
+  /**
+   * Sets the memory handler functions
+   * @param reader Reader function
+   * @param writer Writer function
+   */
+  setMemoryHandlers(
+    reader: (addr: u16, suppress: bool) => u8,
+    writer: (addr: u16, val: u8, suppress: bool) => void
+  ): void {
+    this.memoryReader = reader;
+    this.memoryWriter = writer;
+  }
+
+  /**
+   * Sets the port handler functions
+   * @param reader Reader function
+   * @param writer Writer function
+   */
+  setPortHandlers(
+    reader: (addr: u16) => u8,
+    writer: (addr: u16, val: u8) => void
+  ): void {
+    this.portReader = reader;
+    this.portWriter = writer;
+  }
+
   // ==========================================================================
   // CPU clock methods
 
@@ -129,7 +155,7 @@ export class Z80Cpu {
     this.frameTacts += <u32>value;
     if (this.frameTacts >= this.tactsInFrame) {
       this.frameCount++;
-      this.frameTacts -= this.tactsInFrame
+      this.frameTacts -= this.tactsInFrame;
     }
   }
 
@@ -174,8 +200,8 @@ export class Z80Cpu {
   // ==========================================================================
   // Memory and port handling
 
-  memoryReader: (addr: u16) => u8;
-  memoryWriter: (addr: u16, value: u8) => void;
+  memoryReader: (addr: u16, suppress: bool) => u8;
+  memoryWriter: (addr: u16, value: u8, suppress: bool) => void;
   portReader: (addr: u16) => u8;
   portWriter: (addr: u16, value: u8) => void;
   tbBlueIndexWriter: (index: u8) => void;
@@ -276,7 +302,7 @@ export class Z80Cpu {
     this.sp = s.sp;
     this.stateFlags = s.stateFlags;
     this.frameCount = s.tactsH;
-    this.frameTacts= s.tactsL;
+    this.frameTacts = s.tactsL;
     this.useGateArrayContention = s.useGateArrayContention;
     this.wh = s.wh;
     this.wl = s.wl;
@@ -721,7 +747,7 @@ export class Z80Cpu {
    * @param address Memory address
    */
   readMemory(address: u16): u8 {
-    return this.memoryReader(address);
+    return this.memoryReader(address, false);
   }
 
   /**
@@ -730,7 +756,7 @@ export class Z80Cpu {
    * @param value Datat to write
    */
   writeMemory(address: u16, value: u8): void {
-    this.memoryWriter(address, value);
+    this.memoryWriter(address, value, false);
   }
 
   /**
