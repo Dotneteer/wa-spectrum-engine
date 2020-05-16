@@ -13,7 +13,7 @@ describe("Z80 CPU register access", () => {
   });
 
   beforeEach(() => {
-    api.resetCpu();
+    api.turnOnCpu();
   })
 
   it("setA", () => {

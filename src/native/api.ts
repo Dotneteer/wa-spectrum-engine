@@ -2,6 +2,7 @@
  * Represents the CPU API
  */
 export interface CpuApi {
+  turnOnCpu(): void;
   getA(): number;
   setA(val: number): void;
   getF(): number;
@@ -51,5 +52,4 @@ export interface CpuApi {
   setWL(val: number): void;
   getWZ(): number;
   setWZ(val: number): number;
-  resetCpu(): void;
 }
