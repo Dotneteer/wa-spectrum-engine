@@ -3,6 +3,8 @@
  */
 export interface CpuApi {
   turnOnCpu(): void;
+  resetMemory(): void;
+  memory: any;
   getA(): number;
   setA(val: number): void;
   getF(): number;

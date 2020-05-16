@@ -186,4 +186,14 @@ describe("Z80 CPU register access", () => {
     expect(api.getWZ()).toBe(0x3cae);
   })
 
+  it("resetMemory", () => {
+    api.resetMemory();
+    const buff = api.memory.buffer;
+    const mem = new Uint8Array(buff, 0, 0x10000);
+    let sum = 0;
+    for (let i = 0; i < mem.length; i++) {
+      sum += mem[i];
+    }
+    expect(sum).toBe(0x00);
+  })
 });

@@ -6,6 +6,7 @@
   ;; CPU API
 
   (export "turnOnCpu" (func $turnOnCpu))
+  (export "resetMemory" (func $resetMemory))
   (export "getA" (func $getA))
   (export "setA" (func $setA))
   (export "getF" (func $getF))
@@ -57,6 +58,12 @@
   (export "setWZ" (func $setWZ))
 
   ;; ==========================================================================
+  ;; Function signatures
+
+  (type $MemReadFunc (func (param $addr i32) (param $suppCont i32) (result i32)))
+  (type $MemWriteFunc (func (param $addr i32) (param $v i32) (param $suppCont i32)))
+
+  ;; ==========================================================================
   ;; Constant values
 
   ;; The index of the first byte of the ZX Spectrum 48 memory
@@ -98,11 +105,18 @@
   (global $OP_IDX_IX i32 (i32.const 0x01))
   (global $OP_IDX_IY i32 (i32.const 0x02))
 
+  ;; Machine type discriminator
+  (global $MACHINE_TYPE i32 (i32.const 0x00))
+
+  ;; Number of functions per machine types
+  (global $MACHINE_FUNC_COUNT i32 (i32.const 0x04))
+
   ;; ==========================================================================
   ;; Z80 CPU state
 
   ;; Once-set
-  (global $tactsInFrame (mut i32) (i32.const 1_000_000))
+  (global $tactsInFrame (mut i32) (i32.const 1_000_000)) ;; Number of tacts within a frame
+  (global $allowExtendedSet (mut i32) (i32.const 0x00))  ;; Should allow extended operation set?
 
   ;; Mutable
   (global $frameCount (mut i32) (i32.const 0x0000)) ;; Number of frames from start
@@ -118,8 +132,11 @@
   (global $opCode (mut i32) (i32.const 0x00)) ;; Operation code being processed
 
   ;; Memory access jump tables
-  (table $memoryRead 1 anyfunc)
-  (elem (i32.const 0) $defaultRead)
+  (table $dispatch 2 anyfunc)
+  (elem (i32.const 0) 
+    $defaultRead
+    $defaultWrite
+  )
 
   ;; ==========================================================================
   ;; Z80 CPU registers access
@@ -516,6 +533,23 @@
   ;; ==========================================================================
   ;; Z80 Memory access
 
+  (func $resetMemory
+    (local $i i32)
+    i32.const 0
+    set_local $i
+    (loop $loop
+      get_local $i   ;; addr
+      i32.const 0x00 ;; v
+      i32.const 0    ;; suppCont
+      call $writeMemory
+      (i32.add (get_local $i) (i32.const 1))
+      set_local $i
+      (br_if $loop 
+        (i32.le_u (get_local $i) (i32.const 0xffff))
+      )
+    )
+  )
+
   ;; Default memory read operation
   ;; $addr: 16-bit memory address
   ;; $suppCont: Suppress memory contention flag
@@ -534,4 +568,31 @@
     get_local $v
     i32.store8
   )
+
+  ;; Reads the specified memory location of the current machine type
+  ;; $addr: 16-bit memory address
+  ;; $suppCont: Suppress memory contention flag
+  ;; returns: Memory contents
+  (func $readMemory (param $addr i32) (param $suppCont i32) (result i32)
+    get_local $addr
+    get_local $suppCont
+    (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+    call_indirect (type $MemReadFunc)
+  )
+
+  ;; Writes the specified memory location of the current machine type
+  ;; $addr: 16-bit memory address
+  ;; $v: 8-bit value to write
+  ;; $suppCont: Suppress memory contention flag
+  (func $writeMemory (param $addr i32) (param $v i32) (param $suppCont i32)
+    get_local $addr
+    get_local $v
+    get_local $suppCont
+    (i32.add 
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 1)
+    )
+    call_indirect (type $MemWriteFunc)
+  )
+
 )
