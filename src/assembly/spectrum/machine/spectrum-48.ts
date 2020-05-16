@@ -124,7 +124,7 @@ export function sp48GetKnownRomAddress(key: string, romIndex: u8): i32 {
 // Memory device
 
 // --- Memory state
-const memory: u8[] = new Array<u8>(0x10000);
+const memory: StaticArray<u8> = StaticArray.fromArray(new Array<u8>(0x10000));
 
 /**
  * Serializes the memory state
@@ -538,7 +538,7 @@ let screenPixelByte2: u8;
 let screenAttrByte1: u8;
 let screenAttrByte2: u8;
 let screenFlashToggleFrames: u16;
-let screenPixelBuffer: Uint8Array;
+let screenPixelBuffer: StaticArray<u8>;
 
 // --- Screen device helper variables that do not change after reset
 let screenRenderingTactTable: RenderingTact[];
@@ -557,7 +557,7 @@ function serializeScreenState(w: BinaryWriter): void {
   w.writeByte(screenAttrByte1);
   w.writeByte(screenAttrByte2);
   w.writeUint16(screenFlashToggleFrames);
-//  w.writeBytes(screenPixelBuffer);
+  w.writeBytes(screenPixelBuffer);
 }
 
 /**
@@ -631,9 +631,7 @@ export function sp48ResetScreenDevice(): void {
   }
 
   // --- Prepare the pixel buffer
-  screenPixelBuffer = new Uint8Array(
-    screenConfiguration.screenWidth * screenConfiguration.screenLines
-  );
+  screenPixelBuffer = StaticArray.fromArray(new Array<u8>(screenConfiguration.screenWidth * screenConfiguration.screenLines));
 
   // --- Initialize the rendering tact table
   // --- Reset the tact information table
@@ -1289,7 +1287,7 @@ export function sp48SetTapeOverride(useTape: bool): void {
 // Keyboard device
 
 // --- Keyboard device state
-let keyboardLineStatus: u8[];
+let keyboardLineStatus: StaticArray<u8>;
 
 /**
  * Serializes the keyboard device state
@@ -1311,7 +1309,7 @@ function restoreKeyboardState(r: BinaryReader): void {
  * Resets the keyboard device
  */
 export function sp48ResetKeyboardDevice(): void {
-  keyboardLineStatus = new Array<u8>(8);
+  keyboardLineStatus = StaticArray.fromArray(new Array<u8>(8));
   for (let i = 0; i < 8; i++) {
     keyboardLineStatus[i] = 0x00;
   }

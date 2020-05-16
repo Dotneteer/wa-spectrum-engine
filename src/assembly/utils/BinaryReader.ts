@@ -69,9 +69,9 @@ export class BinaryReader {
    * Reads a byte array from the stream. The subsequent 4 bytes defines
    * the length of the array
    */
-  readBytes(): u8[] {
+  readBytes(): StaticArray<u8> {
     const length = this.readUint32();
-    const result = new Array<u8>(length);
+    const result = StaticArray.fromArray(new Array<u8>(length));
     for (let i = 0; i < <i32>length; i++) {
       result[i] = this.readByte();
     }

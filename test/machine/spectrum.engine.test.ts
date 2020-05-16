@@ -60,8 +60,8 @@ describe("Execution cycle", () => {
       spectrumMachine.executeCycle(options);
     }
     console.log(Date.now().valueOf() - start);
-    //const state = spectrumMachine.getMachineState();
-    //state.screenState.screenPixelBuffer = new Uint8Array(0);
-    //console.log(JSON.stringify(state, null, 2));
+    const state = spectrumMachine.getMachineState();
+    state.screenState.screenPixelBuffer = new Uint8Array(0);
+    console.log(JSON.stringify(state, null, 2));
   });
 });

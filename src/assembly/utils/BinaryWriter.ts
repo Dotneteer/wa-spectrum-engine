@@ -20,7 +20,7 @@ export class BinaryWriter {
    * Writes an array of bytes to the stream
    * @param value Value to write
    */
-  writeBytes(value: u8[]): void {
+  writeBytes(value: StaticArray<u8>): void {
     this._extend(value.length + 4);
     this.writeUint32(<u32>value.length);
     for (let i = 0; i < value.length; i++) {
