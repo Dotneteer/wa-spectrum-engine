@@ -1,18 +1,18 @@
 // This enum defines the run modes the Z80TestMachine allows
 export enum RunMode {
   // Run while the machine is disposed or a break signal arrives.
-  Normal,
+  Normal = 0,
 
   // Run a single CPU Execution cycle, even if an operation
   // contains multiple bytes
-  OneCycle,
+  OneCycle = 1,
 
   // Pause when the next single instruction is executed.
-  OneInstruction,
+  OneInstruction = 2,
 
   // Run until a HALT instruction is reached.
-  UntilHalt,
+  UntilHalt = 3,
 
   // Run until the whole injected code is executed
-  UntilEnd
+  UntilEnd = 4
 }

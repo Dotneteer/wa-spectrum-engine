@@ -1,10 +1,13 @@
+import { RunMode } from "../shared/RunMode";
+
 /**
  * Represents the CPU API
  */
 export interface CpuApi {
+  memory: any;
   turnOnCpu(): void;
   resetMemory(): void;
-  memory: any;
+  resetCpu(): void;
   getA(): number;
   setA(val: number): void;
   getF(): number;
@@ -54,4 +57,29 @@ export interface CpuApi {
   setWL(val: number): void;
   getWZ(): number;
   setWZ(val: number): number;
+  getReg8(r: number): number;
+  setReg8(r: number, v: number): void;
+  getReg16(r: number): number;
+  setReg16(r: number, v: number): void;
+  setIndexMode(m: number): void;
+  getIndexReg(): number;
+  setIndexReg(v: number): void;
+  getFrameCount(): number;
+  getFrameTacts(): number;
+  incTacts(v: number): void;
+  setCpuSignals(s: number): void;
+  setInterruptBlocked(s: number): void;
+  setInterruptMode(s: number): void;
+  setIff1(s: number): void;
+  processCpuSignals(): number;
+  getCpuState(): void;
+  updateCpuState(): void;
+  enableExtendedInstructions(f: boolean): void;
+  prepareTest(mode: RunMode, codeEnds: number): void;
+  setTestInputLength(length: number): void;
+  getMemLogLength(): number;
+  getIoLogLength(): number;
+  getTbBlueLogLength(): number;
+  runTestCode(): void;
+  restMachineType(): void;
 }
