@@ -2,7 +2,7 @@ import "mocha";
 import * as expect from "expect";
 import * as fs from "fs";
 import { CpuApi } from "../../src/native/api";
-import { Z80StateFlags } from "../../src/shared/cpu-enums"
+import { Z80StateFlags } from "../../src/shared/cpu-enums";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: CpuApi;
@@ -223,14 +223,14 @@ describe("Z80 CPU register access", () => {
 
   it("setIndexReg #1", () => {
     api.setIndexMode(1);
-    api.setIndexReg(0x1234)
+    api.setIndexReg(0x1234);
     expect(api.getIndexReg()).toBe(0x1234);
     expect(api.getIY()).toBe(0xffff);
   });
 
   it("setIndexReg #2", () => {
     api.setIndexMode(2);
-    api.setIndexReg(0x1234)
+    api.setIndexReg(0x1234);
     expect(api.getIndexReg()).toBe(0x1234);
     expect(api.getIX()).toBe(0xffff);
   });
@@ -328,7 +328,7 @@ describe("Z80 CPU register access", () => {
     api.setPC(0x1234);
     api.setCpuSignals(Z80StateFlags.Nmi);
     expect(api.processCpuSignals()).toBeTruthy();
-    expect(api.getSP()).toBe(0xfffd)
+    expect(api.getSP()).toBe(0xfffd);
     const mem = new Uint8Array(api.memory.buffer, 0, 0x10000);
     expect(mem[0xfffd]).toBe(0x34);
     expect(mem[0xfffe]).toBe(0x12);
@@ -338,13 +338,13 @@ describe("Z80 CPU register access", () => {
   it("processCpuSignals (INT mode #0)", () => {
     api.resetCpu();
     api.setPC(0x1234);
-    api.setIndexReg(0)
+    api.setIndexReg(0);
     api.setCpuSignals(Z80StateFlags.Int);
     api.setInterruptBlocked(0);
     api.setIff1(1);
     api.setInterruptMode(0);
     expect(api.processCpuSignals()).toBeTruthy();
-    expect(api.getSP()).toBe(0xfffd)
+    expect(api.getSP()).toBe(0xfffd);
     const mem = new Uint8Array(api.memory.buffer, 0, 0x10000);
     expect(mem[0xfffd]).toBe(0x34);
     expect(mem[0xfffe]).toBe(0x12);
@@ -355,13 +355,13 @@ describe("Z80 CPU register access", () => {
   it("processCpuSignals (INT mode #1)", () => {
     api.resetCpu();
     api.setPC(0x1234);
-    api.setIndexReg(0)
+    api.setIndexReg(0);
     api.setCpuSignals(Z80StateFlags.Int);
     api.setInterruptBlocked(0);
     api.setIff1(1);
     api.setInterruptMode(1);
     expect(api.processCpuSignals()).toBeTruthy();
-    expect(api.getSP()).toBe(0xfffd)
+    expect(api.getSP()).toBe(0xfffd);
     const mem = new Uint8Array(api.memory.buffer, 0, 0x10000);
     expect(mem[0xfffd]).toBe(0x34);
     expect(mem[0xfffe]).toBe(0x12);
@@ -373,20 +373,38 @@ describe("Z80 CPU register access", () => {
     const mem = new Uint8Array(api.memory.buffer, 0, 0x10000);
     api.resetCpu();
     api.setPC(0x1234);
-    api.setIndexReg(0)
+    api.setIndexReg(0);
     api.setCpuSignals(Z80StateFlags.Int);
     api.setInterruptBlocked(0);
     api.setIff1(1);
     api.setInterruptMode(2);
     api.setI(0x5f);
-    mem[0x5ffe] = 0x12
-    mem[0x5fff] = 0xac
+    mem[0x5ffe] = 0x12;
+    mem[0x5fff] = 0xac;
     expect(api.processCpuSignals()).toBeTruthy();
-    expect(api.getSP()).toBe(0xfffd)
+    expect(api.getSP()).toBe(0xfffd);
     expect(mem[0xfffd]).toBe(0x34);
     expect(mem[0xfffe]).toBe(0x12);
     expect(api.getPC()).toBe(0xac12);
     expect(api.getWZ()).toBe(0xac12);
   });
 
+  it("Generate NOOP table", () => {
+    let startIndex = 30;
+    let result = `  (elem (i32.const ${startIndex})\r\n`;
+    for (let i = 0; i < 32; i++) {
+      const start = i * 8;
+      const end = start + 7;
+      result += `    ;; 0x${(start < 16 ? "0" : "") + start.toString(16)}-0x${
+        (end < 16 ? "0" : "") + end.toString(16)
+      }\r\n`;
+      result += "    ";
+      for (let j = 0; j < 8; j++) {
+        result += "$NOOP".padEnd(10, " ");
+      }
+      result += "\r\n";
+    }
+    result += "  )\r\n";
+    console.log(result);
+  });
 });

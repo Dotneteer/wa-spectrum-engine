@@ -90,8 +90,9 @@
   ;; ==========================================================================
   ;; Function signatures
 
-  (type $MemReadFunc (func (param $addr i32) (param $suppCont i32) (result i32)))
-  (type $MemWriteFunc (func (param $addr i32) (param $v i32) (param $suppCont i32)))
+  (type $MemReadFunc (func (param $addr i32) (result i32)))
+  (type $MemWriteFunc (func (param $addr i32) (param $v i32)))
+  (type $OpFunc (func))
 
   ;; ==========================================================================
   ;; Constant values
@@ -121,7 +122,7 @@
 
   ;; Reg16 index conversion table
   (global $REG16_TAB_OFFS i32 (i32.const 0x1_6028))
-  (data (i32.const 0x1_6028) "\02\04\06\20")
+  (data (i32.const 0x1_6028) "\02\04\06\14")
 
   ;; State transfer buffer (length: 0xc0)
   (global $STATE_TRANSFER_BUFF i32 (i32.const 0x1_6040))
@@ -414,7 +415,7 @@
   ;; $addr: 16-bit memory address
   ;; $suppCont: Suppress memory contention flag
   ;; returns: Memory contents
-  (func $testMachineRead (param $addr i32) (param $suppCont i32) (result i32)
+  (func $testMachineRead (param $addr i32) (result i32)
     (local $value i32)
     (local $logAddr i32)
     ;; Read the memory value
@@ -454,7 +455,7 @@
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
   ;; $suppCont: Suppress memory contention flag
-  (func $testMachineWrite (param $addr i32) (param $v i32) (param $suppCont i32)
+  (func $testMachineWrite (param $addr i32) (param $v i32)
     (local $logAddr i32)
 
     ;; Write the memory value
@@ -490,8 +491,21 @@
   ;; ==========================================================================
   ;; Function jump table
 
-  ;; 24: 5 machine types (6 function for each)
-  (table $dispatch 30 anyfunc)
+  ;; Jump table start indices
+  (global $STANDARD_JT i32 (i32.const 30))
+  (global $INDEXED_JT i32 (i32.const 286))
+  (global $EXTENDED_JT i32 (i32.const 542))
+  (global $BIT_JT i32 (i32.const 798))
+  (global $INDEXED_BIT_JT i32 (i32.const 1054))
+
+  ;; 30: 5 machine types (6 function for each)
+  ;; 256: Standard operations
+  ;; 256: Indexed operations
+  ;; 256: Extended operations
+  ;; 256: Bit operations
+  ;; 256: Indexed bit operations
+
+  (table $dispatch 1310 anyfunc)
   (elem (i32.const 0) 
     ;; Index 0: Machine type #0
     $defaultRead
@@ -532,6 +546,346 @@
     $NOOP
     $NOOP
     $NOOP
+  )
+
+;; Table of standard instructions
+(elem (i32.const 30)
+    ;; 0x00-0x07
+    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x08-0x0f
+    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x10-0x17
+    $NOOP     $LdQQNN   $NOOP     $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x18-0x1f
+    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x20-0x27
+    $NOOP     $LdQQNN   $NOOP     $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x28-0x2f
+    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x30-0x37
+    $NOOP     $LdQQNN   $NOOP     $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x38-0x3f
+    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x40-0x47
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x48-0x4f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x50-0x57
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x58-0x5f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x60-0x67
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x68-0x6f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x70-0x77
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x78-0x7f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x80-0x87
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x88-0x8f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x90-0x97
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x98-0x9f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa0-0xa7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa8-0xaf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb0-0xb7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb8-0xbf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc0-0xc7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc8-0xcf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd0-0xd7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd8-0xdf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe0-0xe7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe8-0xef
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf0-0xf7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf8-0xff
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+  )
+
+;; Table of indexed instructions
+(elem (i32.const 286)
+    ;; 0x00-0x07
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x08-0x0f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x10-0x17
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x18-0x1f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x20-0x27
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x28-0x2f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x30-0x37
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x38-0x3f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x40-0x47
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x48-0x4f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x50-0x57
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x58-0x5f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x60-0x67
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x68-0x6f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x70-0x77
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x78-0x7f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x80-0x87
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x88-0x8f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x90-0x97
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x98-0x9f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa0-0xa7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa8-0xaf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb0-0xb7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb8-0xbf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc0-0xc7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc8-0xcf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd0-0xd7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd8-0xdf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe0-0xe7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe8-0xef
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf0-0xf7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf8-0xff
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+  )
+
+;; Table of extended instructions
+(elem (i32.const 542)
+    ;; 0x00-0x07
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x08-0x0f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x10-0x17
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x18-0x1f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x20-0x27
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x28-0x2f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x30-0x37
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x38-0x3f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x40-0x47
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x48-0x4f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x50-0x57
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x58-0x5f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x60-0x67
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x68-0x6f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x70-0x77
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x78-0x7f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x80-0x87
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x88-0x8f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x90-0x97
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x98-0x9f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa0-0xa7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa8-0xaf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb0-0xb7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb8-0xbf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc0-0xc7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc8-0xcf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd0-0xd7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd8-0xdf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe0-0xe7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe8-0xef
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf0-0xf7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf8-0xff
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+  )
+
+;; Table of bit instructions
+(elem (i32.const 798)
+    ;; 0x00-0x07
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x08-0x0f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x10-0x17
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x18-0x1f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x20-0x27
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x28-0x2f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x30-0x37
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x38-0x3f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x40-0x47
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x48-0x4f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x50-0x57
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x58-0x5f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x60-0x67
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x68-0x6f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x70-0x77
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x78-0x7f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x80-0x87
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x88-0x8f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x90-0x97
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x98-0x9f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa0-0xa7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa8-0xaf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb0-0xb7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb8-0xbf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc0-0xc7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc8-0xcf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd0-0xd7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd8-0xdf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe0-0xe7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe8-0xef
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf0-0xf7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf8-0xff
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+  )
+
+;; Table of indexed bit instructions
+(elem (i32.const 1054)
+    ;; 0x00-0x07
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x08-0x0f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x10-0x17
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x18-0x1f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x20-0x27
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x28-0x2f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x30-0x37
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x38-0x3f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x40-0x47
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x48-0x4f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x50-0x57
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x58-0x5f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x60-0x67
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x68-0x6f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x70-0x77
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x78-0x7f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x80-0x87
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x88-0x8f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x90-0x97
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0x98-0x9f
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa0-0xa7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xa8-0xaf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb0-0xb7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xb8-0xbf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc0-0xc7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xc8-0xcf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd0-0xd7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xd8-0xdf
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe0-0xe7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xe8-0xef
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf0-0xf7
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    ;; 0xf8-0xff
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
   )
 
   ;; Represents a no-operation function
@@ -1108,7 +1462,6 @@
     (loop $loop
       get_local $i   ;; addr
       i32.const 0x00 ;; v
-      i32.const 0    ;; suppCont
       call $writeMemory
       (i32.add (get_local $i) (i32.const 1))
       tee_local $i
@@ -1122,7 +1475,7 @@
   ;; $addr: 16-bit memory address
   ;; $suppCont: Suppress memory contention flag
   ;; returns: Memory contents
-  (func $defaultRead (param $addr i32) (param $suppCont i32) (result i32)
+  (func $defaultRead (param $addr i32) (result i32)
     (i32.add (get_local $addr) (get_global $SP_MEM_OFFS))
     i32.load8_u
   )
@@ -1131,7 +1484,7 @@
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
   ;; $suppCont: Suppress memory contention flag
-  (func $defaultWrite (param $addr i32) (param $v i32) (param $suppCont i32)
+  (func $defaultWrite (param $addr i32) (param $v i32)
     (i32.add (get_local $addr) (get_global $SP_MEM_OFFS))
     get_local $v
     i32.store8
@@ -1141,26 +1494,28 @@
   ;; $addr: 16-bit memory address
   ;; $suppCont: Suppress memory contention flag
   ;; returns: Memory contents
-  (func $readMemory (param $addr i32) (param $suppCont i32) (result i32)
+  (func $readMemory (param $addr i32) (result i32)
     get_local $addr
-    get_local $suppCont
     (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
     call_indirect (type $MemReadFunc)
+    i32.const 3
+    call $incTacts
   )
 
   ;; Writes the specified memory location of the current machine type
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
   ;; $suppCont: Suppress memory contention flag
-  (func $writeMemory (param $addr i32) (param $v i32) (param $suppCont i32)
+  (func $writeMemory (param $addr i32) (param $v i32)
     get_local $addr
     get_local $v
-    get_local $suppCont
     (i32.add 
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 1)
     )
     call_indirect (type $MemWriteFunc)
+    i32.const 3
+    call $incTacts
   )
 
   ;; ==========================================================================
@@ -1186,11 +1541,8 @@
     ;; Read it from PC and store in opCode
     call $readCodeMemory
     set_global $opCode
-    ;; Count the memory read time
-    i32.const 3
-    call $incTacts
-    ;; Increment PC and execute a memory refresh
-    call $incPC
+
+    ;; Execute a memory refresh
     call $refreshMemory
 
     ;; Branch according to prefix modes
@@ -1496,14 +1848,12 @@
       tee_local $addr
       i32.const 5
       call $incTacts
-      i32.const 0
       call $readMemory ;;  l
       i32.const 3
       call $incTacts
       get_local $addr
       i32.const 1
       i32.add
-      i32.const 0
       call $readMemory ;; h, l
       i32.const 3
       call $incTacts
@@ -1527,7 +1877,19 @@
   )
 
   ;; Processes standard or indexed operations
-  (func $processStandardOrIndexedOperations)
+  (func $processStandardOrIndexedOperations
+    get_global $indexMode
+    i32.const 0
+    i32.eq
+    if (result i32)
+      get_global $STANDARD_JT
+    else
+      get_global $INDEXED_JT
+    end
+    get_global $opCode
+    i32.add
+    call_indirect (type $OpFunc)
+  )
 
   ;; Processes bit operations
   (func $processBitOperations)
@@ -1563,14 +1925,12 @@
     get_local $v
     i32.const 8
     i32.shr_u
-    i32.const 0
     call $writeMemory
     i32.const 3
     call $incTacts
     call $decSP
     call $getSP
     get_local $v
-    i32.const 0
     call $writeMemory
     i32.const 3
     call $incTacts
@@ -1578,8 +1938,94 @@
 
   ;; Reads the memory location at PC
   (func $readCodeMemory (result i32)
+    (local $result i32)
     call $getPC
-    i32.const 0
     call $readMemory
+    call $incPC
+  )
+
+  ;; ==========================================================================
+  ;; Standard operations
+
+  ;; ld QQ,NN (0x01, 0x11, 0x21, 0x31)
+  ;; QQ: BC, DE, HL, SP
+  (func $LdQQNN
+    ;; Get 16-bit reg index
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+
+    ;; Get value to put into the reg
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.add
+
+    ;; Store value
+    call $setReg16
+  )
+
+  ;; ld (bc),a (0x02)
+  (func $LdBCiA
+    call $getBC
+    call $getA
+    call $writeMemory
+  )
+
+  ;; inc QQ (0x03, 0x13, 0x23, 0x33)
+  ;; QQ: BC, DE, HL, SP
+  (func $IncQQ
+    (local $qq i32)
+    ;; Get 16-bit reg index
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+    tee_local $qq
+    get_local $qq
+
+    ;; Increment reg value
+    call $getReg16
+    i32.const 1
+    i32.add
+
+    ;; Store value
+    call $setReg16
+
+    ;; Adjust clock
+    i32.const 2
+    call $incTacts
+  )
+
+  ;; dec QQ (0x0b, 0x1b, 0x2b, 0x3b)
+  ;; QQ: BC, DE, HL, SP
+  (func $DecQQ
+    (local $qq i32)
+    ;; Get 16-bit reg index
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+    tee_local $qq
+    get_local $qq
+
+    ;; Decrement reg value
+    call $getReg16
+    i32.const 1
+    i32.sub
+
+    ;; Store value
+    call $setReg16
+
+    ;; Adjust clock
+    i32.const 2
+    call $incTacts
   )
 )
+
+
