@@ -1,6 +1,9 @@
 (module
+  (func $trace (import "imports" "trace") (param i32))
+
   ;; We keep 512 KB of memory 
   (memory (export "memory") 8)
+
 
   ;; ==========================================================================
   ;; CPU API
@@ -101,45 +104,44 @@
   ;; Block lenght: 0x1_0000
   (global $SP_MEM_OFFS i32 (i32.const 0))
 
-  ;; The offset of the execution flow status map (length: 0x2000)
-  (global $EXEC_FLOW_STAT_OFFS i32 (i32.const 0x1_0000))
-  
-  ;; The offset of the memory read status map (length: 0x2000)
-  (global $MEM_READ_STAT_OFFS i32 (i32.const 0x1_2000))
-
-  ;; The offset of the memory write status map (length: 0x2000)
-  (global $MEM_WRITE_STAT_OFFS i32 (i32.const 0x1_4000))
-
   ;; ==========================================================================
   ;; Z80 CPU state
 
   ;; The index of the register area (length: 0x1c)
-  (global $REG_AREA_INDEX i32 (i32.const 0x1_6000))
+  (global $REG_AREA_INDEX i32 (i32.const 0x1_0000))
 
   ;; Reg8 index conversion table
-  (global $REG8_TAB_OFFS i32 (i32.const 0x1_6020))
-  (data (i32.const 0x1_6020) "\03\02\05\04\07\06\00\01")
+  (global $REG8_TAB_OFFS i32 (i32.const 0x1_0020))
+  (data (i32.const 0x1_0020) "\03\02\05\04\07\06\00\01")
 
   ;; Reg16 index conversion table
-  (global $REG16_TAB_OFFS i32 (i32.const 0x1_6028))
-  (data (i32.const 0x1_6028) "\02\04\06\14")
+  (global $REG16_TAB_OFFS i32 (i32.const 0x1_0028))
+  (data (i32.const 0x1_0028) "\02\04\06\14")
 
   ;; State transfer buffer (length: 0xc0)
-  (global $STATE_TRANSFER_BUFF i32 (i32.const 0x1_6040))
+  (global $STATE_TRANSFER_BUFF i32 (i32.const 0x1_0040))
   
   ;; The offset of the test input stream (length: 0x0100)
-  (global $TEST_INPUT_OFFS i32 (i32.const 0x1_6100))
+  (global $TEST_INPUT_OFFS i32 (i32.const 0x1_0100))
 
   ;; The offset of the test memory access log stream stream (length: 0x0400)
-  (global $TEST_MEM_LOG_OFFS i32 (i32.const 0x1_6200))
+  (global $TEST_MEM_LOG_OFFS i32 (i32.const 0x1_0200))
 
   ;; The offset of the test I/O access log stream stream (length: 0x0400)
-  (global $TEST_IO_LOG_OFFS i32 (i32.const 0x1_6600))
+  (global $TEST_IO_LOG_OFFS i32 (i32.const 0x1_0600))
 
   ;; The offset of the test TBBlue access log stream stream (length: 0x0400)
-  (global $TEST_TBBLUE_LOG_OFFS i32 (i32.const 0x1_6A00))
+  (global $TEST_TBBLUE_LOG_OFFS i32 (i32.const 0x1_0A00))
 
-  ;; Next slot: 0x1_16200
+  ;; 8-bit INC operation flags table
+  (global $INC_FLAGS i32 (i32.const 0x1_0b00))
+  (data (i32.const 0x1_0b00) "\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\94\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\50")
+
+  ;; 8-bit DEC operation flags table
+  (global $DEC_FLAGS i32 (i32.const 0x1_0c00))
+  (data (i32.const 0x1_0c00) "\ba\42\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3e\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa")
+
+  ;; Next slot: 0x1_0d00
 
   ;; Z80 State flags
   (global $Z80_STATE_INT i32 (i32.const 0x01))
@@ -551,21 +553,21 @@
 ;; Table of standard instructions
 (elem (i32.const 30)
     ;; 0x00-0x07
-    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca     
     ;; 0x08-0x0f
-    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $ExAf     $AddHLQQ  $LdABCi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rrca     
     ;; 0x10-0x17
-    $NOOP     $LdQQNN   $NOOP     $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $Djnz     $LdQQNN   $LdDEiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rla     
     ;; 0x18-0x1f
-    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $JrE      $AddHLQQ  $LdADEi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rra     
     ;; 0x20-0x27
-    $NOOP     $LdQQNN   $NOOP     $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $JrNz     $LdQQNN   $LdNNiHL  $IncQQ    $IncQ     $DecQ     $LdQN     $Daa     
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $JrZ      $AddHLQQ  $NOOP     $DecQQ    $IncQ     $DecQ     $LdQN     $NOOP     
     ;; 0x30-0x37
-    $NOOP     $LdQQNN   $NOOP     $IncQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $JrNc     $LdQQNN   $NOOP     $IncQQ    $IncQ     $DecQ     $LdQN     $NOOP     
     ;; 0x38-0x3f
-    $NOOP     $NOOP     $NOOP     $DecQQ    $NOOP     $NOOP     $NOOP     $NOOP     
+    $JrC      $AddHLQQ  $NOOP     $DecQQ    $IncQ     $DecQ     $LdQN     $NOOP     
     ;; 0x40-0x47
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
     ;; 0x48-0x4f
@@ -1473,7 +1475,6 @@
 
   ;; Default memory read operation
   ;; $addr: 16-bit memory address
-  ;; $suppCont: Suppress memory contention flag
   ;; returns: Memory contents
   (func $defaultRead (param $addr i32) (result i32)
     (i32.add (get_local $addr) (get_global $SP_MEM_OFFS))
@@ -1483,7 +1484,6 @@
   ;; Default memory write operation
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
-  ;; $suppCont: Suppress memory contention flag
   (func $defaultWrite (param $addr i32) (param $v i32)
     (i32.add (get_local $addr) (get_global $SP_MEM_OFFS))
     get_local $v
@@ -1492,7 +1492,6 @@
 
   ;; Reads the specified memory location of the current machine type
   ;; $addr: 16-bit memory address
-  ;; $suppCont: Suppress memory contention flag
   ;; returns: Memory contents
   (func $readMemory (param $addr i32) (result i32)
     get_local $addr
@@ -1502,10 +1501,19 @@
     call $incTacts
   )
 
+  ;; Reads the specified memory location of the current machine type
+  ;; but with no extra delay applies
+  ;; $addr: 16-bit memory address
+  (func $memoryDelay (param $addr i32)
+    get_local $addr
+    (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+    call_indirect (type $MemReadFunc)
+    drop
+  )
+
   ;; Writes the specified memory location of the current machine type
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
-  ;; $suppCont: Suppress memory contention flag
   (func $writeMemory (param $addr i32) (param $v i32)
     get_local $addr
     get_local $v
@@ -1944,6 +1952,115 @@
     call $incPC
   )
 
+  ;; Add two 16-bit values followinf the add hl,NN logic
+  (func $AluAddHl (param $regHL i32) (param $other i32) (result i32)
+    (local $f i32)
+    (local $res i32)
+
+    ;; Keep S, Z, and PV from F
+    call $getF
+    i32.const 0xc4 ;; Mask for preserving S, Z, PV
+    i32.and
+    set_local $f
+
+    ;; Calc the value of H flag
+    (i32.add
+      (i32.and (get_local $regHL) (i32.const 0x0fff))
+      (i32.and (get_local $other) (i32.const 0x0fff))
+    )
+    i32.const 0x08
+    i32.shr_u
+    i32.const 0x10 ;; Mask for H flag
+    i32.and        ;; Now, we have H flag on top
+
+    ;; Combine H flag with others
+    get_local $f
+    i32.or
+    set_local $f
+
+    ;; Calculate result
+    get_local $regHL
+    get_local $other
+    i32.add
+    tee_local $res
+
+    ;; Test for C flag
+    i32.const 0x1_0000
+    i32.ge_u
+    if
+      ;; Set C
+      get_local $f
+      i32.const 0x01
+      i32.or
+      set_local $f
+    end
+
+    ;; Calculate R3 and R5 flags
+    get_local $res
+    i32.const 8
+    i32.shr_u
+    i32.const 0x28 ;; Mask for R3, R5
+    i32.and
+
+    ;; Combine them with F
+    get_local $f
+    i32.or
+    call $setF
+
+    ;; Fetch the result
+    get_local $res
+  )
+
+  ;; Carries out a relative jump
+  ;; $e: 8-bit distance value
+  (func $relativeJump (param $e i32)
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.ne
+    if
+      i32.const 5
+      call $incTacts
+    else
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    ;; Convert the 8-bit distance to i32
+    get_local $e
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    
+    ;; Calculate the destination address
+    call $getPC
+    i32.add
+    call $setPC
+
+    ;; Copy to WZ
+    call $getPC
+    call $setWZ
+  )
+
   ;; ==========================================================================
   ;; Standard operations
 
@@ -2001,6 +2118,177 @@
     call $incTacts
   )
 
+  ;; inc Q (0x04, 0x0c, 0x14, 0x1c, 0x24, 0x2c, 0x34, 0x3c)
+  (func $IncQ
+    (local $q i32)
+    (local $v i32)
+
+    ;; Get 8-bit reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u
+    tee_local $q
+    get_local $q
+
+    ;; Get reg value for later use
+    call $getReg8
+    tee_local $v
+
+    ;; Increment register value
+    i32.const 1
+    i32.add
+    call $setReg8
+
+    ;; Adjust flags
+    get_global $INC_FLAGS
+    get_local $v
+    i32.add
+    i32.load8_u
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
+  )
+
+  ;; dec Q (0x05, 0x0d, 0x15, 0x1d, 0x25, 0x2d, 0x35, 0x3d)
+  (func $DecQ
+    (local $q i32)
+    (local $v i32)
+
+    ;; Get 8-bit reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u
+    tee_local $q
+    get_local $q
+
+    ;; Get reg value for later use
+    call $getReg8
+    tee_local $v
+
+    ;; Decrement register value
+    i32.const 1
+    i32.sub
+    call $setReg8
+
+    ;; Adjust flags
+    get_global $DEC_FLAGS
+    get_local $v
+    i32.add
+    i32.load8_u
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
+  )
+
+  ;; dec Q (0x06, 0x0e, 0x16, 0x1e, 0x26, 0x2e, 0x36, 0x3e)
+  (func $LdQN
+    (local $q i32)
+
+    ;; Get 8-bit reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u
+    tee_local $q
+
+    ;; Fetch data and store it
+    call $readCodeMemory
+    call $setReg8
+  )
+
+  ;; rlca (0x07)
+  (func $Rlca
+    (local $res i32)
+    (local $newC i32)
+    call $getA
+    i32.const 1
+    i32.shl
+    tee_local $res
+    i32.const 0x100
+    i32.ge_u
+    if (result i32)
+      i32.const 0x01
+    else
+      i32.const 0x00
+    end
+    tee_local $newC
+    get_local $res
+    i32.or
+    call $setA
+    call $getF
+    i32.const 0xc4 ;; S, Z, PV flags mask
+    i32.and
+    get_local $newC
+    i32.or
+    call $setF
+  )
+
+  ;; ex af,af'
+  (func $ExAf
+    (local $tmp i32)
+    call $getAF
+    set_local $tmp
+    get_global $REG_AREA_INDEX
+    i32.load16_u offset=8
+    call $setA
+    get_global $REG_AREA_INDEX
+    get_local $tmp
+    i32.store16 offset=8
+  )
+
+  ;; add hl,QQ (0x09, 0x19, 0x29, 0x39)
+  ;; QQ: BC, DE, HL, SP
+  (func $AddHLQQ
+    (local $qq i32)
+    ;; Get 16-bit reg index
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+    set_local $qq
+
+    ;; Calculate WZ
+    call $getHL
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Calc the new HL value
+    call $getHL
+    get_local $qq
+    call $getReg16
+    call $AluAddHl
+    call $setHL
+
+    ;; Adjust tacts
+    i32.const 7
+    call $incTacts
+  )
+
+  ;; ld a,(bc) (0x0a)
+  (func $LdABCi
+    ;; Calculate WZ
+    call $getBC
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Read A from (BC)
+    call $getBC
+    call $readMemory
+    call $setA
+  )
+
   ;; dec QQ (0x0b, 0x1b, 0x2b, 0x3b)
   ;; QQ: BC, DE, HL, SP
   (func $DecQQ
@@ -2025,6 +2313,540 @@
     ;; Adjust clock
     i32.const 2
     call $incTacts
+  )
+
+  ;; rrca (0x0f)
+  (func $Rrca
+    (local $newC i32)
+    ;; Calc new C flag
+    call $getA
+    i32.const 1
+    i32.and
+    set_local $newC
+
+    ;; Shift value
+    call $getA
+    i32.const 1
+    i32.shr_u
+
+    ;; Combine with C flag
+    get_local $newC
+    i32.const 7
+    i32.shl
+    i32.or
+    call $setA
+
+    ;; Calc the new F
+    call $getF
+    i32.const 0xC4 ;; Keep S, Z, PV
+    i32.and
+    get_local $newC
+    i32.or
+    call $setF
+  )
+
+  ;; djnz (0x10)
+  (func $Djnz
+    (local $e i32)
+    i32.const 1
+    call $incTacts
+    call $readCodeMemory
+    set_local $e
+
+    ;; Decrement B
+    call $getB
+    i32.const 1
+    i32.sub
+    call $setB
+
+    ;; Reached 0?
+    call $getB
+    i32.const 0
+    i32.eq
+    if
+      return
+    end
+
+    ;; Jump
+    get_local $e
+    call $relativeJump
+  )
+
+  ;; ld (de),a (0x12)
+  (func $LdDEiA
+    call $getDE
+    call $getA
+    call $writeMemory
+  )
+
+  ;; rla (0x17)
+  (func $Rla
+    (local $res i32)
+    (local $newC i32)
+    ;; Shift left
+    call $getA
+    i32.const 1
+    i32.shl
+    tee_local $res
+
+    ;; Calculate new C flag
+    i32.const 8
+    i32.shr_u
+    i32.const 0x01 ;; C Flag mask
+    i32.and
+    set_local $newC
+
+    ;; Adjust with current C flag
+    call $getF
+    i32.const 0x01 ;; C Flag mask
+    i32.and
+    get_local $res
+    i32.or
+    call $setA
+
+    ;; Calculate new C Flag
+    call $getF
+    i32.const 0xc4 ;; Keep S, Z, PV
+    i32.and
+    get_local $newC
+    i32.or
+    call $setF
+  )
+
+  ;; jr NN (0x18)
+  (func $JrE
+    ;; Calculate new address
+    call $readCodeMemory
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    call $getPC
+    i32.add
+    call $setPC
+
+    ;; Set WZ
+    call $getPC
+    call $setWZ
+
+    ;; Adjust tacts
+    i32.const 5
+    call $incTacts
+  )
+
+  ;; ld a,(de) (0x1a)
+  (func $LdADEi
+    ;; Calculate WZ
+    call $getDE
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Read A from (DE)
+    call $getDE
+    call $readMemory
+    call $setA
+  )
+
+  ;; rra (0x1f)
+  (func $Rra
+    (local $newC i32)
+
+    ;; Calculate the new C flag
+    call $getA
+    i32.const 1
+    i32.and
+    set_local $newC
+
+    ;; Shift right
+    call $getA
+    i32.const 1
+    i32.shr_u
+
+    ;; Adjust with current C flag
+    call $getF
+    i32.const 0x01 ;; C Flag mask
+    i32.and
+    i32.const 7
+    i32.shl
+    i32.or
+    call $setA
+
+    ;; Calculate new C Flag
+    call $getF
+    i32.const 0xc4 ;; Keep S, Z, PV
+    i32.and
+    get_local $newC
+    i32.or
+    call $setF
+  )
+
+  ;; jr nz,NN (0x20)
+  (func $JrNz
+    (local $e i32)
+    call $readCodeMemory
+    set_local $e
+
+    ;; Decrement B
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.ne
+    if
+      ;; NZ condition is false, return
+      return
+    end
+
+    ;; Jump
+    get_local $e
+    call $relativeJump
+  )
+
+  ;; ld (NN),hl
+  (func $LdNNiHL
+    (local $addr i32)
+    ;; Obtain the address to store HL
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    tee_local $addr
+
+    ;; Set WZ to addr + 1
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Store HL
+    get_local $addr
+    call $getL
+    call $writeMemory
+    call $getWZ
+    call $getH
+    call $writeMemory
+  )
+
+  ;; daa (0x27)
+  (func $Daa
+    (local $a i32)
+    (local $lNibble i32)
+    (local $hNibble i32)
+    (local $diff i32)
+    (local $cAfter i32)
+    (local $hFlag i32)
+    (local $nFlag i32)
+    (local $hAfter i32)
+    (local $pvAfter i32)
+    
+    ;; Get A and store nibbles
+    call $getA
+    tee_local $a
+    i32.const 4
+    i32.shr_u
+    set_local $hNibble
+    get_local $a
+    i32.const 0x0f
+    i32.and
+    set_local $lNibble
+
+    ;; Calculate H flag
+    call $getF
+    i32.const 0x10 ;; Mask for H flag
+    i32.and
+    set_local $hFlag
+
+    ;; Calculate N flag
+    call $getF
+    i32.const 0x02 ;; Mask for N flag
+    i32.and
+    set_local $nFlag
+
+    ;; Set default calculation values
+    i32.const 0x00
+    set_local $diff
+    i32.const 0x00
+    set_local $cAfter
+
+    ;; Calculate the diff value
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.const 0
+    i32.eq
+    if
+      ;; C flag is 0
+      ;; Test if hNibble is 0..9 and lNibble is 0..9
+      (i32.and 
+        (i32.le_u (get_local $hNibble) (i32.const 9))
+        (i32.le_u (get_local $lNibble) (i32.const 9))
+      )
+      if
+        i32.const 0x06
+        i32.const 0x00
+        get_local $hFlag
+        select
+        set_local $diff
+      else
+        ;; Test if hNibble is 0..8 and lNibble is a..f
+        (i32.le_u (get_local $hNibble) (i32.const 8))
+        (i32.ge_u (get_local $lNibble) (i32.const 0x0a))
+        (i32.le_u (get_local $lNibble) (i32.const 0x0f))
+        i32.and
+        i32.and
+        if
+          i32.const 6
+          set_local $diff
+        else
+          ;; Test if hNibble is a..f and lNibble is 0..9 and H flag not set
+          (i32.ge_u (get_local $hNibble) (i32.const 0x0a))
+          (i32.le_u (get_local $hNibble) (i32.const 0x0f))
+          (i32.le_u (get_local $lNibble) (i32.const 0x09))
+          (i32.eq (get_local $hFlag) (i32.const 0x00))
+          i32.and
+          i32.and
+          i32.and
+          if
+            i32.const 0x60
+            set_local $diff
+            i32.const 1
+            set_local $cAfter
+          else
+            ;; Test if hNibble is 9..f and lNibble is a..f
+            (i32.ge_u (get_local $hNibble) (i32.const 0x09))
+            (i32.le_u (get_local $hNibble) (i32.const 0x0f))
+            (i32.ge_u (get_local $lNibble) (i32.const 0x0a))
+            (i32.le_u (get_local $lNibble) (i32.const 0x0f))
+            i32.and
+            i32.and
+            i32.and
+            if
+              i32.const 0x66
+              set_local $diff
+              i32.const 1
+              set_local $cAfter
+            else
+              ;; Test if hNibble is a..f and lNibble is 0..9
+              (i32.ge_u (get_local $hNibble) (i32.const 0x0a))
+              (i32.le_u (get_local $hNibble) (i32.const 0x0f))
+              (i32.le_u (get_local $lNibble) (i32.const 0x09))
+              i32.and
+              i32.and
+              if
+                ;; Test if H flag is set
+                get_local $hFlag
+                i32.const 0
+                i32.ne
+                if
+                  i32.const 0x66
+                  set_local $diff
+                end
+                i32.const 1
+                set_local $cAfter
+              end
+            end
+          end
+        end
+      end
+    else
+      ;; C flag is 1
+      i32.const 1
+      set_local $cAfter
+
+      ;; Test if lNibble is 0..9 
+        (i32.le_u (get_local $lNibble) (i32.const 0x09))
+      if
+        i32.const 0x66
+        i32.const 0x60
+        get_local $hFlag
+        select
+        set_local $diff
+      else
+        ;; Test if lNibble is a..f
+        (i32.ge_u (get_local $lNibble) (i32.const 0x0a))
+        (i32.le_u (get_local $lNibble) (i32.const 0x0f))
+        i32.and
+        if
+          i32.const 0x66
+          set_local $diff
+        end
+      end
+    end
+
+    ;; Calculate the new value of H flag
+    i32.const 0
+    set_local $hAfter
+
+    ;; Test if lNibble is a..f and N is reset
+    (i32.ge_u (get_local $lNibble) (i32.const 0x0a))
+    (i32.le_u (get_local $lNibble) (i32.const 0x0f))
+    get_local $nFlag
+    i32.const 1
+    i32.shr_u   ;; Conver N to 0 or 1
+    i32.const 1
+    i32.xor
+    i32.and
+    i32.and
+    if
+      i32.const 0x10
+      set_local $hAfter
+    else
+      ;; Test if lNibble is 0..5 and N is set and H is set
+      (i32.le_u (get_local $lNibble) (i32.const 0x05))
+      get_local $nFlag
+      i32.const 1
+      i32.shr_u   ;; Conver N to 0 or 1
+      get_local $hFlag
+      i32.const 4
+      i32.shr_u   ;; Conver H to 0 or 1
+      i32.and
+      i32.and
+      if
+        i32.const 0x10
+        set_local $hAfter
+      end
+    end
+
+    ;; Calculate the new value of A
+    get_local $a
+    get_local $diff
+    i32.sub
+    call $getA
+    get_local $diff
+    i32.add
+    get_local $nFlag
+    select
+    tee_local $a
+    call $setA
+
+    ;; Calculate parity
+    i32.const 0x04 ;; PV flag mask
+    set_local $pvAfter
+    get_local $a
+    i32.const 0xff00
+    i32.or
+    set_local $a
+    loop $parity
+      ;; Test exit criterium
+      get_local $a
+      i32.const 0x100
+      i32.and
+      if
+        get_local $a
+        i32.const 0x01
+        i32.and
+        if
+          get_local $pvAfter
+          i32.const 0x04
+          i32.xor
+          set_local $pvAfter
+        end
+        get_local $a
+        i32.const 1
+        i32.shr_u
+        set_local $a
+        br $parity
+      end
+    end
+
+    ;; Calculate F value
+    ;; Z flag
+    i32.const 0x00
+    i32.const 0x40
+    call $getA
+    tee_local $a
+    select   ;; Z is on top
+    ;; S, R3, R5 flag
+    get_local $a
+    i32.const 0xA8 ;; Mask for S, R3, R5 
+    i32.and  ;; Z, S|R3|R5
+    i32.or   ;; Z|S|R3|R5
+    get_local $pvAfter
+    i32.or
+    get_local $nFlag
+    i32.or
+    get_local $hAfter
+    i32.or
+    get_local $cAfter
+    i32.or
+
+    ;; Done
+    call $setF
+  )
+
+  ;; jr z,NN (0x28)
+  (func $JrZ
+    (local $e i32)
+    call $readCodeMemory
+    set_local $e
+
+    ;; Decrement B
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.eq
+    if
+      ;; Z condition is false, return
+      return
+    end
+
+    ;; Jump
+    get_local $e
+    call $relativeJump
+  )
+
+  ;; jr nc,NN (0x30)
+  (func $JrNc
+    (local $e i32)
+    call $readCodeMemory
+    set_local $e
+
+    ;; Decrement B
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.ne
+    if
+      ;; NC condition is false, return
+      return
+    end
+
+    ;; Jump
+    get_local $e
+    call $relativeJump
+  )
+
+  ;; jr c,NN (0x38)
+  (func $JrC
+    (local $e i32)
+    call $readCodeMemory
+    set_local $e
+
+    ;; Decrement B
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.eq
+    if
+      ;; C condition is false, return
+      return
+    end
+
+    ;; Jump
+    get_local $e
+    call $relativeJump
   )
 )
 

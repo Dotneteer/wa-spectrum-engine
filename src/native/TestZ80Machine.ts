@@ -12,32 +12,32 @@ import { RunMode } from "../shared/RunMode";
 /**
  * Start of the register are in the memory
  */
-const REG_AREA_INDEX = 0x1_6000;
+const REG_AREA_INDEX = 0x1_0000;
 
 /**
  * Start of the CPU state transfer area in the memory
  */
-const STATE_TRANSFER_BUFF = 0x1_6040;
+const STATE_TRANSFER_BUFF = 0x1_0040;
 
 /**
  * Buffer for the test CPU I/O input
  */
-const TEST_INPUT_BUFF = 0x1_6100;
+const TEST_INPUT_BUFF = 0x1_0100;
 
 /**
  * The start of the memory access log
  */
-const TEST_MEM_LOG_OFFS = 0x1_6200;
+const TEST_MEM_LOG_OFFS = 0x1_0200;
 
 /**
  * The start of the I/O access log
  */
-const TEST_IO_LOG_OFFS = 0x1_6600;
+const TEST_IO_LOG_OFFS = 0x1_0600;
 
 /**
  * The start of the TBBLUE access log
  */
-const TEST_TBBLUE_LOG_OFFS = 0x1_6a00;
+const TEST_TBBLUE_LOG_OFFS = 0x1_0a00;
 
 /**
  * This class represents a test machine that can be used for testing the WA machine

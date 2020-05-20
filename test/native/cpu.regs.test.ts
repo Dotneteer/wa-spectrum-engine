@@ -2,7 +2,7 @@ import "mocha";
 import * as expect from "expect";
 import * as fs from "fs";
 import { CpuApi } from "../../src/native/api";
-import { Z80StateFlags } from "../../src/shared/cpu-enums";
+import { Z80StateFlags, FlagsSetMask } from "../../src/native/cpu-helpers";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: CpuApi;
@@ -389,22 +389,30 @@ describe("Z80 CPU register access", () => {
     expect(api.getWZ()).toBe(0xac12);
   });
 
-  it("Generate NOOP table", () => {
-    let startIndex = 30;
-    let result = `  (elem (i32.const ${startIndex})\r\n`;
-    for (let i = 0; i < 32; i++) {
-      const start = i * 8;
-      const end = start + 7;
-      result += `    ;; 0x${(start < 16 ? "0" : "") + start.toString(16)}-0x${
-        (end < 16 ? "0" : "") + end.toString(16)
-      }\r\n`;
-      result += "    ";
-      for (let j = 0; j < 8; j++) {
-        result += "$NOOP".padEnd(10, " ");
-      }
-      result += "\r\n";
+  it("Generate decOpTable table", () => {
+    const decOpFlags = [];
+    for (let b = 0; b < 0x100; b++) {
+      const oldVal = b;
+      const newVal = (oldVal - 1) & 0xff;
+      decOpFlags[b] = (
+        ((newVal & FlagsSetMask.R3) |
+          (newVal & FlagsSetMask.R5) |
+          ((newVal & 0x80) !== 0 ? FlagsSetMask.S : 0) |
+          (newVal === 0 ? FlagsSetMask.Z : 0) |
+          ((oldVal & 0x0f) === 0x00 ? FlagsSetMask.H : 0) |
+          (oldVal === 0x80 ? FlagsSetMask.PV : 0) |
+          FlagsSetMask.N)
+      ) & 0xff;
     }
-    result += "  )\r\n";
+    console.log(decOpFlags)
+    let vals = "";
+    for (let i=0; i < decOpFlags.length; i++) {
+      const val = decOpFlags[i]
+      vals += `\\${(val < 16 ? "0" : "") + val.toString(16)}`;
+    }
+    let result = `(data (i32.const 0x1_0c00) "${vals}")`
     console.log(result);
   });
+
+
 });
