@@ -563,11 +563,11 @@
     ;; 0x20-0x27
     $JrNz     $LdQQNN   $LdNNiHL  $IncQQ    $IncQ     $DecQ     $LdQN     $Daa     
     ;; 0x28-0x2f
-    $JrZ      $AddHLQQ  $NOOP     $DecQQ    $IncQ     $DecQ     $LdQN     $NOOP     
+    $JrZ      $AddHLQQ  $LdHLNNi  $DecQQ    $IncQ     $DecQ     $LdQN     $Cpl     
     ;; 0x30-0x37
-    $JrNc     $LdQQNN   $NOOP     $IncQQ    $IncQ     $DecQ     $LdQN     $NOOP     
+    $JrNc     $LdQQNN   $LdNNiA   $IncQQ    $IncHLi   $DecHLi   $LdHLiN   $Scf     
     ;; 0x38-0x3f
-    $JrC      $AddHLQQ  $NOOP     $DecQQ    $IncQ     $DecQ     $LdQN     $NOOP     
+    $JrC      $AddHLQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf     
     ;; 0x40-0x47
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
     ;; 0x48-0x4f
@@ -2723,34 +2723,17 @@
     call $setA
 
     ;; Calculate parity
-    i32.const 0x04 ;; PV flag mask
-    set_local $pvAfter
     get_local $a
-    i32.const 0xff00
-    i32.or
-    set_local $a
-    loop $parity
-      ;; Test exit criterium
-      get_local $a
-      i32.const 0x100
-      i32.and
-      if
-        get_local $a
-        i32.const 0x01
-        i32.and
-        if
-          get_local $pvAfter
-          i32.const 0x04
-          i32.xor
-          set_local $pvAfter
-        end
-        get_local $a
-        i32.const 1
-        i32.shr_u
-        set_local $a
-        br $parity
-      end
-    end
+    i32.const 0xff
+    i32.and
+    i32.popcnt
+    i32.const 2
+    i32.rem_u
+    i32.const 2
+    i32.shl
+    i32.const 0x04 ;; PV flag mask
+    i32.xor
+    set_local $pvAfter
 
     ;; Calculate F value
     ;; Z flag
@@ -2801,6 +2784,48 @@
     call $relativeJump
   )
 
+  ;; ld hl,(NN) (0x2a)
+  (func $LdHLNNi
+    (local $addr i32)
+    ;; Read the address
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    tee_local $addr
+
+    ;; Set WZ to addr + 1
+    i32.const 1
+    i32.add
+    call $setWZ
+    
+    ;; Read HL from memory
+    get_local $addr
+    call $readMemory
+    call $setL
+    call $getWZ
+    call $readMemory
+    call $setH
+  )
+
+  ;; cpl (0x2f)
+  (func $Cpl
+    ;; New value of A
+    call $getA
+    i32.const 0xff
+    i32.xor
+    call $setA
+
+    ;; New F
+    call $getF
+    i32.const 0xed ;; Keep S, Z, R3, R3, PV, C
+    i32.and
+    i32.const 0x12 ;; Set H and N
+    i32.or
+    call $setF
+  )
+
   ;; jr nc,NN (0x30)
   (func $JrNc
     (local $e i32)
@@ -2825,6 +2850,129 @@
     call $relativeJump
   )
 
+  ;; ld (NN),a (0x32)
+  (func $LdNNiA
+    (local $addr i32)
+
+    ;; Read the address
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    tee_local $addr
+
+    ;; Set WZ to addr + 1
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Store A
+    get_local $addr
+    call $getA
+    call $writeMemory
+    call $getA
+    call $setWH
+  )
+
+  ;; inc (hl) (0x34)
+  (func $IncHLi
+    (local $v i32)
+
+    ;; Get the value from the memory
+    call $getHL
+    call $readMemory  
+    set_local $v
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getHL
+      call $memoryDelay
+    end
+    i32.const 1
+    call $incTacts
+
+    ;; Increment value
+    call $getHL
+    get_local $v
+    i32.const 1
+    i32.add
+    call $writeMemory
+
+    ;; Adjust flags
+    get_global $INC_FLAGS
+    get_local $v
+    i32.add
+    i32.load8_u
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
+)
+
+  ;; dec (hl) (0x35)
+  (func $DecHLi
+    (local $v i32)
+
+    ;; Get the value from the memory
+    call $getHL
+    call $readMemory  
+    set_local $v
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getHL
+      call $memoryDelay
+    end
+    i32.const 1
+    call $incTacts
+
+    ;; Increment value
+    call $getHL
+    get_local $v
+    i32.const 1
+    i32.sub
+    call $writeMemory
+
+    ;; Adjust flags
+    get_global $DEC_FLAGS
+    get_local $v
+    i32.add
+    i32.load8_u
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
+  )
+
+  ;; ld (hl),n
+  (func $LdHLiN
+    (local $v i32)
+    call $readCodeMemory
+    set_local $v
+    call $getHL
+    get_local $v
+    call $writeMemory
+  )
+
+  ;; scf (0x37)
+  (func $Scf
+    (i32.and (call $getA) (i32.const 0x28)) ;; Mask for R5, R3
+    (i32.and (call $getF) (i32.const 0xc4)) ;; Mask for S, Z, PV
+    i32.or
+    i32.const 0x01 ;; Mask for C flag
+    i32.or
+    call $setF
+  )
+
   ;; jr c,NN (0x38)
   (func $JrC
     (local $e i32)
@@ -2847,6 +2995,42 @@
     ;; Jump
     get_local $e
     call $relativeJump
+  )
+
+  ;; ld a,(NN) (0x3a)
+  (func $LdANNi
+    (local $addr i32)
+
+    ;; Read the address
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    tee_local $addr
+
+    ;; Set WZ to addr + 1
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Read A from memory
+    get_local $addr
+    call $readMemory
+    call $setA
+  )
+
+  ;; ccf (0x3f)
+  (func $Ccf
+    (i32.and (call $getA) (i32.const 0x28)) ;; Mask for R5, R3
+    (i32.and (call $getF) (i32.const 0xc4)) ;; Mask for S, Z, PV
+    i32.or
+    (i32.and (call $getF) (i32.const 0x01)) ;; Mask for C flag
+    i32.const 0x01 ;; Complement C flag
+    i32.xor
+    i32.or
+    call $setF
+
   )
 )
 
