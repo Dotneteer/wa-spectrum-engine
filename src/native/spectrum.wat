@@ -16,6 +16,7 @@
   (export "getF" (func $getF))
   (export "setF" (func $setF))
   (export "getAF" (func $getAF))
+  (export "setAF" (func $setAF))
   (export "getB" (func $getB))
   (export "setB" (func $setB))
   (export "getC" (func $getC))
@@ -601,25 +602,25 @@
     ;; 0xa8-0xaf
     $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAHLi  $XorAQ     
     ;; 0xb0-0xb7
-    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAHLi    $OrAQ     
+    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAHLi   $OrAQ     
     ;; 0xb8-0xbf
-    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAHLi    $CpAQ     
+    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAHLi   $CpAQ     
     ;; 0xc0-0xc7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $NOOP     $NOOP     
     ;; 0xc8-0xcf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $NOOP     $NOOP     
     ;; 0xd0-0xd7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetNc    $PopDE    $JpNc     $NOOP     $CallNc   $PushDE   $NOOP     $NOOP     
     ;; 0xd8-0xdf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetC     $NOOP     $JpC      $NOOP     $CallC    $NOOP     $NOOP     $NOOP     
     ;; 0xe0-0xe7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetPo    $PopHL    $JpPo     $NOOP     $CallPo   $PushHL   $NOOP     $NOOP     
     ;; 0xe8-0xef
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetPe    $NOOP     $JpPe     $NOOP     $CallPe   $NOOP     $NOOP     $NOOP     
     ;; 0xf0-0xf7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetP     $PopAF    $JpP      $NOOP     $CallP    $PushAF   $NOOP     $NOOP     
     ;; 0xf8-0xff
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $RetM     $NOOP     $JpM      $NOOP     $CallM    $NOOP     $NOOP     $NOOP     
   )
 
 ;; Table of indexed instructions
@@ -930,6 +931,13 @@
   (func $getAF (result i32)
     get_global $REG_AREA_INDEX
     i32.load16_u offset=0
+  )
+
+  ;; Sets the value of AFC
+  (func $setAF (param $v i32)
+    get_global $REG_AREA_INDEX
+    get_local $v
+    i32.store16 offset=0
   )
 
   ;; Gets the value of B
@@ -1928,6 +1936,14 @@
     call $setSP
   )
 
+  ;; Increments the value of SP
+  (func $incSP
+    call $getSP
+    i32.const 1
+    i32.add
+    call $setSP
+  )
+
   ;; Pushes the value to the stack
   (func $pushValue (param $v i32)
     call $decSP
@@ -1938,14 +1954,23 @@
     i32.const 8
     i32.shr_u
     call $writeMemory
-    i32.const 3
-    call $incTacts
     call $decSP
     call $getSP
     get_local $v
     call $writeMemory
-    i32.const 3
-    call $incTacts
+  )
+
+  ;; Pops a value to the stack
+  (func $popValue (result i32)
+    call $getSP
+    call $readMemory
+    call $incSP
+    call $getSP
+    call $readMemory
+    call $incSP
+    i32.const 8
+    i32.shl
+    i32.or
   )
 
   ;; Reads the memory location at PC
@@ -2765,7 +2790,6 @@
     call $readCodeMemory
     set_local $e
 
-    ;; Decrement B
     call $getF
     i32.const 0x40 ;; Mask for Z flag
     i32.and
@@ -3599,4 +3623,800 @@
     call $AluCp8
   )
 
+  ;; ret nz (0xc0)
+  (func $RetNz
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.ne
+    if
+      ;; NZ condition is false, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; pop bc (0xc1)
+  (func $PopBC
+    call $popValue
+    call $setBC
+  )
+
+  ;; jp nz (0xc2)
+  (func $JpNz
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.ne
+    if
+      ;; NZ condition is false, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; jp (0xc3)
+  (func $Jp
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call nz (0xc4)
+  (func $CallNz
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.ne
+    if
+      ;; NZ condition is false, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; push bc (0xc5)
+  (func $PushBC
+    call $getBC
+    call $pushValue
+  )
+
+  ;; ret nz (0xc8)
+  (func $RetZ
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.eq
+    if
+      ;; Z condition is false, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; ret (0xc9)
+  (func $Ret
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; jp z (0xca)
+  (func $JpZ
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.eq
+    if
+      ;; NZ condition is false, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call z (0xcc)
+  (func $CallZ
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x40 ;; Mask for Z flag
+    i32.and
+    i32.const 0
+    
+    ;; Z Flag set?
+    i32.eq
+    if
+      ;; Z condition is false, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call (0xcd)
+  (func $CallNN
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; ret nc (0xd0)
+  (func $RetNc
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.ne
+    if
+      ;; NC condition is false, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; pop de (0xd1)
+  (func $PopDE
+    call $popValue
+    call $setDE
+  )
+
+  ;; jp nc (0xd2)
+  (func $JpNc
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.ne
+    if
+      ;; NC condition is false, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call nc (0xd4)
+  (func $CallNc
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.ne
+    if
+      ;; NC condition is false, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; push de (0xd5)
+  (func $PushDE
+    call $getDE
+    call $pushValue
+  )
+
+  ;; ret c (0xd8)
+  (func $RetC
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.eq
+    if
+      ;; C condition is false, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; jp c (0xda)
+  (func $JpC
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.eq
+    if
+      ;; C condition is false, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call c (0xdc)
+  (func $CallC
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.const 0
+    
+    ;; C Flag set?
+    i32.eq
+    if
+      ;; C condition is false, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; ret po (0xe0)
+  (func $RetPo
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x04 ;; Mask for PV flag
+    i32.and
+    i32.const 0
+    
+    ;; PV Flag set?
+    i32.ne
+    if
+      ;; PV condition is set, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; pop hl (0xe1)
+  (func $PopHL
+    call $popValue
+    call $setHL
+  )
+
+  ;; jp po (0xe2)
+  (func $JpPo
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x04 ;; Mask for PV flag
+    i32.and
+    i32.const 0
+    
+    ;; PV Flag set?
+    i32.ne
+    if
+      ;; PV flag is reset, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call po (0xe4)
+  (func $CallPo
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x04 ;; Mask for PV flag
+    i32.and
+    i32.const 0
+    
+    ;; PV Flag set?
+    i32.ne
+    if
+      ;; PV flag is reset, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; push hl (0xe5)
+  (func $PushHL
+    call $getHL
+    call $pushValue
+  )
+
+  ;; ret pe (0xe8)
+  (func $RetPe
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x04 ;; Mask for PV flag
+    i32.and
+    i32.const 0
+    
+    ;; PV Flag set?
+    i32.eq
+    if
+      ;; PV flag is reset, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; jp po (0xea)
+  (func $JpPe
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x04 ;; Mask for PV flag
+    i32.and
+    i32.const 0
+    
+    ;; PV Flag set?
+    i32.eq
+    if
+      ;; PV flag is set, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call pe (0xec)
+  (func $CallPe
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x04 ;; Mask for PV flag
+    i32.and
+    i32.const 0
+    
+    ;; PV Flag set?
+    i32.eq
+    if
+      ;; PV flag is reset, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; ret p (0xf0)
+  (func $RetP
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x80 ;; Mask for S flag
+    i32.and
+    i32.const 0
+    
+    ;; S Flag set?
+    i32.ne
+    if
+      ;; S condition is set, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; pop af (0xf1)
+  (func $PopAF
+    call $popValue
+    call $setAF
+  )
+
+  ;; jp p (0xf2)
+  (func $JpP
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x80 ;; Mask for S flag
+    i32.and
+    i32.const 0
+    
+    ;; S Flag set?
+    i32.ne
+    if
+      ;; S flag is set, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call p (0xf4)
+  (func $CallP
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x80 ;; Mask for S flag
+    i32.and
+    i32.const 0
+    
+    ;; S Flag set?
+    i32.ne
+    if
+      ;; S flag is set, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
+
+  ;; push af (0xf5)
+  (func $PushAF
+    call $getAF
+    call $pushValue
+  )
+
+  ;; ret m (0xf8)
+  (func $RetM
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Test condition
+    call $getF
+    i32.const 0x80 ;; Mask for S flag
+    i32.and
+    i32.const 0
+    
+    ;; S Flag set?
+    i32.eq
+    if
+      ;; S condition is reset, return
+      return
+    end
+
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; jp m (0xfa)
+  (func $JpM
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x80 ;; Mask for S flag
+    i32.and
+    i32.const 0
+    
+    ;; S Flag set?
+    i32.eq
+    if
+      ;; S flag is reset, return
+      return
+    end
+
+    call $getWZ
+    call $setPC
+  )
+
+  ;; call m (0xfc)
+  (func $CallM
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+    call $setWZ
+
+    ;; Test condition
+    call $getF
+    i32.const 0x80 ;; Mask for S flag
+    i32.and
+    i32.const 0
+    
+    ;; S Flag set?
+    i32.eq
+    if
+      ;; S flag is set, return
+      return
+    end
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getPC
+      call $memoryDelay
+    end
+
+    call $getPC
+    call $pushValue
+    call $getWZ
+    call $setPC
+  )
 )

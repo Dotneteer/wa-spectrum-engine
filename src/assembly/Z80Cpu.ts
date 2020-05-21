@@ -4399,7 +4399,7 @@ function RetNz(cpu: Z80Cpu): void {
 // loaded to the high-order portion of RR and the SP is now incremented
 // again.
 // =================================
-// | 1 | 1 | Q| Q | 0 | 0 | 0 | 1 | 0xc1, 0xd1, 0xe1, 0xf1
+// | 1 | 1 | Q| Q | 0 | 0 | 0 | 1 | 0xc1
 // =================================
 // T-States: 4, 3, 3 (10)
 // Contention breakdown: pc:4,sp:3,sp+1:3

@@ -13,6 +13,7 @@ export interface CpuApi {
   getF(): number;
   setF(val: number): void;
   getAF(): number;
+  setAF(val: number): number;
   getB(): number;
   setB(val: number): void;
   getC(): number;
