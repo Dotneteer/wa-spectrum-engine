@@ -4306,8 +4306,8 @@ function OrAHli(cpu: Z80Cpu): void {
 //
 // The contents of B are compared with the contents of A.
 // If there is a true compare, the Z flag is set. The execution of
-// Q: B, C, D, E, H, L, A
 // this instruction does not affect A.
+// Q: B, C, D, E, H, L, A
 // S is set if result is negative; otherwise, it is reset.
 // Z is set if result is 0; otherwise, it is reset.
 // H is set if borrow from bit 4; otherwise, it is reset.

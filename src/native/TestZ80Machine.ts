@@ -58,6 +58,7 @@ export class TestZ80Machine {
    * Resets the test machine
    */
   reset(): void {
+    this.cpuApi.turnOnCpu();
     this.cpuApi.resetCpu();
     this.cpuApi.enableExtendedInstructions(false);
   }

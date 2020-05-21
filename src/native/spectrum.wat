@@ -141,7 +141,11 @@
   (global $DEC_FLAGS i32 (i32.const 0x1_0c00))
   (data (i32.const 0x1_0c00) "\ba\42\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3e\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa")
 
-  ;; Next slot: 0x1_0d00
+  ;; 8-bit ALU logical operation flags table
+  (global $LOG_FLAGS i32 (i32.const 0x1_0d00))
+  (data (i32.const 0x1_0d00) "\44\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\04\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac")
+
+  ;; Next slot: 0x1_0e00
 
   ;; Z80 State flags
   (global $Z80_STATE_INT i32 (i32.const 0x01))
@@ -569,37 +573,37 @@
     ;; 0x38-0x3f
     $JrC      $AddHLQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf     
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQHLi   $LdQW     
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQHLi   $LdQW     
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQHLi   $LdQW     
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ     
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $NOOP     
     ;; 0x80-0x87
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ     
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAHLi  $AdcAQ     
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAHLi  $SubAQ      
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAHLi  $SbcAQ       
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAHLi  $AndAQ     
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAHLi  $XorAQ     
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAHLi    $OrAQ     
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAHLi    $CpAQ     
     ;; 0xc0-0xc7
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
     ;; 0xc8-0xcf
@@ -2061,6 +2065,280 @@
     call $setWZ
   )
 
+  ;; Executes ALU 8-add addition; sets A and F
+  ;; $a: Value of A
+  ;; $arg: other argument
+  ;; $c: Value of the C flag
+  (func $AluAdd8 (param $a i32) (param $arg i32) (param $c i32)
+    (local $res i32)
+    (local $pv i32)
+    ;; Add values (+carry) and store in A
+    get_local $a
+    get_local $arg
+    i32.add
+    get_local $c
+    i32.add
+    tee_local $res
+    call $setA
+
+    ;; Put Z on stack
+    i32.const 0x00 ;; NZ
+    i32.const 0x40 ;; Z
+    get_local $res
+    i32.const 0xff
+    i32.and
+    select         ;; Z
+
+    ;; Get S, R5, and R3 from result
+    get_local $res
+    i32.const 0xa8
+    i32.and        ;; Z, S|R5|R3
+
+    ;; Get C flag
+    get_local $res
+    i32.const 0x100
+    i32.and
+    i32.const 8
+    i32.shr_u      ;; Z, S|R5|R3, C
+
+    ;; Calculate H flag
+    i32.const 0x10
+    i32.const 0x00
+    (i32.and (get_local $a) (i32.const 0x0f))
+    (i32.and (get_local $arg) (i32.const 0x0f))
+    i32.add
+    get_local $c
+    i32.add
+    i32.const 0x10
+    i32.and
+    select        ;; Z, S|R5|R3, C, H
+
+    ;; <i32>$arg + <i32>$a + C
+    get_local $a
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    tee_local $pv
+    get_local $arg
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    i32.add
+    get_local $c
+    i32.add
+    tee_local $pv
+
+    ;; Calculate PV flag
+    i32.const 0x80
+    i32.ge_s
+    if (result i32)
+      i32.const 0x04
+    else
+      get_local $pv
+      i32.const -0x81
+      i32.le_s
+      if (result i32)
+        i32.const 0x04
+      else
+        i32.const 0x00
+      end
+    end
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    call $setF
+  )
+
+  ;; Executes ALU 8-add subtraction; sets A and F
+  ;; $a: Value of A
+  ;; $arg: other argument
+  ;; $c: Value of the C flag
+  (func $AluSub8 (param $a i32) (param $arg i32) (param $c i32)
+    (local $res i32)
+    (local $pv i32)
+    ;; Subtract values (-carry) and store in A
+    get_local $a
+    get_local $arg
+    i32.sub
+    get_local $c
+    i32.sub
+    tee_local $res
+    call $setA
+
+    ;; Put Z on stack
+    i32.const 0x00 ;; NZ
+    i32.const 0x40 ;; Z
+    get_local $res
+    i32.const 0xff
+    i32.and
+    select         ;; Z
+
+    ;; Get S, R5, and R3 from result
+    get_local $res
+    i32.const 0xa8
+    i32.and        ;; Z, S|R5|R3
+
+    ;; Get C flag
+    get_local $res
+    i32.const 0x100
+    i32.and
+    i32.const 8
+    i32.shr_u      ;; Z, S|R5|R3, C
+
+    ;; Calculate H flag
+    i32.const 0x10
+    i32.const 0x00
+    (i32.and (get_local $a) (i32.const 0x0f))
+    (i32.and (get_local $arg) (i32.const 0x0f))
+    i32.sub
+    get_local $c
+    i32.sub
+    i32.const 0x10
+    i32.and
+    select        ;; Z, S|R5|R3, C, H
+
+    ;; <i32>$a - <i32>$arg - C
+    get_local $a
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    tee_local $pv
+    get_local $arg
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    i32.sub
+    get_local $c
+    i32.sub
+    tee_local $pv
+
+    ;; Calculate PV flag
+    i32.const 0x80
+    i32.ge_s
+    if (result i32)
+      i32.const 0x04
+    else
+      get_local $pv
+      i32.const -0x81
+      i32.le_s
+      if (result i32)
+        i32.const 0x04
+      else
+        i32.const 0x00
+      end
+    end
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+
+    ;; Set N
+    i32.const 0x02 ;; N flag mask
+    i32.or
+    call $setF
+  )
+
+  ;; Executes ALU 8-add compare; sets F
+  ;; $a: Value of A
+  ;; $arg: other argument
+  (func $AluCp8 (param $a i32) (param $arg i32)
+    (local $res i32)
+    (local $pv i32)
+    ;; Subtract values (-carry) and store in A
+    get_local $a
+    get_local $arg
+    i32.sub
+    set_local $res
+
+    ;; Put Z on stack
+    i32.const 0x00 ;; NZ
+    i32.const 0x40 ;; Z
+    get_local $res
+    i32.const 0xff
+    i32.and
+    select         ;; Z
+
+    ;; Get S from result
+    get_local $res
+    i32.const 0x80
+    i32.and        ;; Z, S
+
+    ;; Get R5 and R3 from $arg
+    get_local $arg
+    i32.const 0x28
+    i32.and
+
+    ;; Get C flag
+    get_local $res
+    i32.const 0x100
+    i32.and
+    i32.const 8
+    i32.shr_u      ;; Z, S|R5|R3, C
+
+    ;; Calculate H flag
+    i32.const 0x10
+    i32.const 0x00
+    (i32.and (get_local $a) (i32.const 0x0f))
+    (i32.and (get_local $arg) (i32.const 0x0f))
+    i32.sub
+    i32.const 0x10
+    i32.and
+    select        ;; Z, S|R5|R3, C, H
+
+    ;; <i32>$a - <i32>$arg - C
+    get_local $a
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    tee_local $pv
+    get_local $arg
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    i32.sub
+    tee_local $pv
+
+    ;; Calculate PV flag
+    i32.const 0x80
+    i32.ge_s
+    if (result i32)
+      i32.const 0x04
+    else
+      get_local $pv
+      i32.const -0x81
+      i32.le_s
+      if (result i32)
+        i32.const 0x04
+      else
+        i32.const 0x00
+      end
+    end
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+
+    ;; Set N
+    i32.const 0x02 ;; N flag mask
+    i32.or
+    call $setF
+  )
+
+
   ;; ==========================================================================
   ;; Standard operations
 
@@ -3030,8 +3308,295 @@
     i32.xor
     i32.or
     call $setF
-
   )
+
+  ;; ld Q,W
+  ;; Q, W: B, C, D, E, H, L, A
+  (func $LdQW
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u  ;; Stack: Q
+
+    ;; Get 8-bit W reg index
+    get_global $opCode
+    i32.const 0x07
+    i32.and    ;; Stack: Q, W
+
+    ;; Get source value
+    call $getReg8 ;; Stack W, regVal
+    call $setReg8
+  )
+
+  ;; ld Q,(hl) 
+  ;; Q: B, C, D, E, H, L, A
+  (func $LdQHLi
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u
+
+    ;; Get data from memory and store it
+    call $getHL
+    call $readMemory
+    call $setReg8
+  )
+
+  ;; ld (hl),Q
+  ;; Q: B, C, D, E, H, L, A
+  (func $LdHLiQ
+    call $getHL
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+
+    ;; Get reg value and store it
+    call $getReg8
+    call $writeMemory
+  )
+
+  ;; halt (0x76)
+  (func $Halt
+    ;; Set the HLT flag
+    get_global $stateFlags
+    get_global $Z80_STATE_HLT
+    i32.or
+    set_global $stateFlags
+
+    ;; Decrement PC
+    call $getPC
+    i32.const 1
+    i32.sub
+    call $setPC
+  )
+
+  ;; add a,Q (0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87)
+  ;; Q: B, C, D, E, H, L, A
+  (func $AddAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    i32.const 0
+    call $AluAdd8
+  )
+
+  ;; add a,(hl) (0x86)
+  (func $AddAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    i32.const 0
+    call $AluAdd8
+  )
+
+  ;; add a,Q (0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f)
+  ;; Q: B, C, D, E, H, L, A
+  (func $AdcAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    call $AluAdd8
+  )
+
+  ;; adc a,(hl) (0x8e)
+  (func $AdcAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    call $AluAdd8
+  )
+
+  ;; sub Q (0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97)
+  ;; Q: B, C, D, E, H, L, A
+  (func $SubAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    i32.const 0
+    call $AluSub8
+  )
+
+  ;; sub (hl) (0x96)
+  (func $SubAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    i32.const 0
+    call $AluSub8
+  )
+
+  ;; sbc a,Q (0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f)
+  ;; Q: B, C, D, E, H, L, A
+  (func $SbcAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    call $AluSub8
+  )
+
+  ;; sbc a,(hl) (0x9e)
+  (func $SbcAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    call $AluSub8
+  )
+
+  ;; and Q (0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7)
+  ;; Q: B, C, D, E, H, L, A
+  (func $AndAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    i32.and
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+
+    ;; Set H
+    i32.const 0x10 ;; H flag mask
+    i32.or
+    call $setF
+  )
+
+  ;; and (hl) (0xa6)
+  (func $AndAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    i32.and
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+
+    ;; Set H
+    i32.const 0x10 ;; H flag mask
+    i32.or
+    call $setF
+  )
+
+  ;; xor Q (0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf)
+  ;; Q: B, C, D, E, H, L, A
+  (func $XorAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    i32.xor
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+    call $setF
+  )
+
+  ;; xor (hl) (0xae)
+  (func $XorAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    i32.xor
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+    call $setF
+  )
+
+  ;; or Q (0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7)
+  ;; Q: B, C, D, E, H, L, A
+  (func $OrAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    i32.or
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+    call $setF
+  )
+
+  ;; or (hl) (0xb6)
+  (func $OrAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    i32.or
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+    call $setF
+  )
+
+  ;; cp Q (0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf)
+  ;; Q: B, C, D, E, H, L, A
+  (func $CpAQ
+    call $getA
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    call $getReg8
+    call $AluCp8
+  )
+
+  ;; cp (hl) (0xbe)
+  (func $CpAHLi
+    call $getA
+    call $getHL
+    call $readMemory
+    call $AluCp8
+  )
+
 )
-
-

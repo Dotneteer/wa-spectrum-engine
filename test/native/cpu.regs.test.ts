@@ -9,7 +9,9 @@ let api: CpuApi;
 
 describe("Z80 CPU register access", () => {
   before(async () => {
-    const wasm = await WebAssembly.instantiate(buffer);
+    const wasm = await WebAssembly.instantiate(buffer, {
+        imports: { trace: (arg: number) => console.log(arg) }
+    });
     api = (wasm.instance.exports as unknown) as CpuApi;
   });
 
@@ -389,28 +391,26 @@ describe("Z80 CPU register access", () => {
     expect(api.getWZ()).toBe(0xac12);
   });
 
-  it("Generate decOpTable table", () => {
-    const decOpFlags = [];
+  it("Generate aluLogOpFlags table", () => {
+    const aluLogOpFlags: number[] = [];
     for (let b = 0; b < 0x100; b++) {
-      const oldVal = b;
-      const newVal = (oldVal - 1) & 0xff;
-      decOpFlags[b] = (
-        ((newVal & FlagsSetMask.R3) |
-          (newVal & FlagsSetMask.R5) |
-          ((newVal & 0x80) !== 0 ? FlagsSetMask.S : 0) |
-          (newVal === 0 ? FlagsSetMask.Z : 0) |
-          ((oldVal & 0x0f) === 0x00 ? FlagsSetMask.H : 0) |
-          (oldVal === 0x80 ? FlagsSetMask.PV : 0) |
-          FlagsSetMask.N)
-      ) & 0xff;
+      const fl = b & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S);
+      let p = FlagsSetMask.PV;
+      for (let i = 0x80; i !== 0; i /= 2) {
+        if ((b & i) !== 0) {
+          p ^= FlagsSetMask.PV;
+        }
+      }
+      aluLogOpFlags[b] = (fl | p) & 0xff;
     }
-    console.log(decOpFlags)
+    aluLogOpFlags[0] |= FlagsSetMask.Z;
+    console.log(aluLogOpFlags)
     let vals = "";
-    for (let i=0; i < decOpFlags.length; i++) {
-      const val = decOpFlags[i]
+    for (let i=0; i < aluLogOpFlags.length; i++) {
+      const val = aluLogOpFlags[i]
       vals += `\\${(val < 16 ? "0" : "") + val.toString(16)}`;
     }
-    let result = `(data (i32.const 0x1_0c00) "${vals}")`
+    let result = `(data (i32.const 0x1_0d00) "${vals}")`
     console.log(result);
   });
 
