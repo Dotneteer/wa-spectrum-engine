@@ -484,7 +484,7 @@ describe("N: Standard ops c0-ff", () => {
     expect(s.tactsL).toBe(45);
   });
 
-  it("ce: adc a,N", () => {
+  it("ce: adc a,N #1", () => {
     let s = testMachine.initCode([
       0xce,
       0x24, // ADC A,#24
@@ -493,6 +493,28 @@ describe("N: Standard ops c0-ff", () => {
     s.f |= FlagsSetMask.C;
     s = testMachine.run(s);
     expect(s.a).toBe(0x37);
+    testMachine.shouldKeepRegisters("AF");
+    testMachine.shouldKeepMemory("");
+    expect(s.f & FlagsSetMask.S).toBeFalsy();
+    expect(s.f & FlagsSetMask.Z).toBeFalsy();
+    expect(s.f & FlagsSetMask.H).toBeFalsy();
+    expect(s.f & FlagsSetMask.PV).toBeFalsy();
+    expect(s.f & FlagsSetMask.S).toBeFalsy();
+    expect(s.f & FlagsSetMask.N).toBeFalsy();
+
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(7);
+  });
+
+  it("ce: adc a,N #2", () => {
+    let s = testMachine.initCode([
+      0xce,
+      0x24, // ADC A,#24
+    ]);
+    s.a = 0x12;
+    s.f &= 0xfe;
+    s = testMachine.run(s);
+    expect(s.a).toBe(0x36);
     testMachine.shouldKeepRegisters("AF");
     testMachine.shouldKeepMemory("");
     expect(s.f & FlagsSetMask.S).toBeFalsy();
@@ -984,7 +1006,7 @@ describe("N: Standard ops c0-ff", () => {
     expect(s.tactsL).toBe(25);
   });
 
-  it("de: sbc a,N", () => {
+  it("de: sbc a,N #1", () => {
     let s = testMachine.initCode([
       0xde,
       0x24, // SBC #24
@@ -993,6 +1015,28 @@ describe("N: Standard ops c0-ff", () => {
     s.f |= FlagsSetMask.C;
     s = testMachine.run(s);
     expect(s.a).toBe(0x11);
+    testMachine.shouldKeepRegisters("AF");
+    testMachine.shouldKeepMemory("");
+    expect(s.f & FlagsSetMask.S).toBeFalsy();
+    expect(s.f & FlagsSetMask.Z).toBeFalsy();
+    expect(s.f & FlagsSetMask.H).toBeFalsy();
+    expect(s.f & FlagsSetMask.PV).toBeFalsy();
+    expect(s.f & FlagsSetMask.S).toBeFalsy();
+    expect(s.f & FlagsSetMask.N).toBeTruthy();
+
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(7);
+  });
+
+  it("de: sbc a,N #2", () => {
+    let s = testMachine.initCode([
+      0xde,
+      0x24, // SBC #24
+    ]);
+    s.a = 0x36;
+    s.f &= 0xfe;
+    s = testMachine.run(s);
+    expect(s.a).toBe(0x12);
     testMachine.shouldKeepRegisters("AF");
     testMachine.shouldKeepMemory("");
     expect(s.f & FlagsSetMask.S).toBeFalsy();

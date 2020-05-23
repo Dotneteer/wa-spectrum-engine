@@ -5189,6 +5189,7 @@ function ExSpiHl(cpu: Z80Cpu): void {
     cpu.readMemory(tmpSp);
     cpu.incTact(1);
   }
+  
   cpu.writeMemory(tmpSp, cpu.h);
   tmpSp--;
   cpu.incTact(3);
