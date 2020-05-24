@@ -507,8 +507,7 @@
     get_global $nextTestInput
     i32.add
     i32.load8_u
-    tee_local $value
-    call $trace
+    set_local $value
 
     ;; Move to the next input element
     get_global $nextTestInput
@@ -662,21 +661,21 @@
     ;; 0x38-0x3f
     $JrC      $AddHLQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf     
     ;; 0x40-0x47
-    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW    $LdQW     $LdQHLi   $LdQW     
     ;; 0x48-0x4f
-    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW    $LdQW     $LdQHLi   $LdQW     
     ;; 0x50-0x57
-    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW    $LdQW     $LdQHLi   $LdQW     
     ;; 0x58-0x5f
-    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW    $LdQW     $LdQHLi   $LdQW     
     ;; 0x60-0x67
     $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQHLi   $LdQW     
     ;; 0x68-0x6f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW    $NOOP     $LdQHLi   $LdQW     
     ;; 0x70-0x77
     $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ     
     ;; 0x78-0x7f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW    $LdQW     $LdQHLi   $NOOP     
     ;; 0x80-0x87
     $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ     
     ;; 0x88-0x8f
@@ -730,21 +729,21 @@
     ;; 0x38-0x3f
     $JrC      $AddIXQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf     
     ;; 0x40-0x47
-    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $NOOP     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
     ;; 0x48-0x4f
-    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $NOOP     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
     ;; 0x50-0x57
-    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $NOOP     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
     ;; 0x58-0x5f
-    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $NOOP     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
     ;; 0x60-0x67
-    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQXL    $LdQIXi   $LdQW     
     ;; 0x68-0x6f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQXH    $NOOP     $LdQIXi   $LdQW     
     ;; 0x70-0x77
-    $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ     
+    $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $Halt     $LdIXiQ     
     ;; 0x78-0x7f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $NOOP     
     ;; 0x80-0x87
     $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ     
     ;; 0x88-0x8f
@@ -4933,4 +4932,138 @@
     call $writeMemory
   )
 
+  ;; ld Q,xh (0x44)
+  ;; Q, W: B, C, D, E, H, L, A
+  (func $LdQXH
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u 
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $setReg8
+  )
+
+  ;; ld Q,xl (0x45)
+  ;; Q, W: B, C, D, E, H, L, A
+  (func $LdQXL
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u 
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $setReg8
+  )
+
+    ;; ld Q,(ix+d) 
+  ;; Q: B, C, D, E, H, L, A
+  (func $LdQIXi
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x38
+    i32.and
+    i32.const 3
+    i32.shr_u
+
+    ;; Get address
+    call $getIndexReg
+    call $readCodeMemory
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    i32.add
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.ne
+    if
+      i32.const 5
+      call $incTacts
+    else
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    ;; Get data from memory and store it
+    call $readMemory
+    call $setReg8
+  )
+
+  ;; ld (ix+d),Q
+  ;; Q: B, C, D, E, H, L, A
+  (func $LdIXiQ
+    call $getIndexReg
+    call $readCodeMemory
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    i32.add
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.ne
+    if
+      i32.const 5
+      call $incTacts
+    else
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      call $getPC
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    ;; Get 8-bit Q reg index
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+
+    ;; Get reg value and store it
+    call $getReg8
+    call $writeMemory
+  )
 )
