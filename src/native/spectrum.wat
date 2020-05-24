@@ -96,6 +96,8 @@
 
   (type $MemReadFunc (func (param $addr i32) (result i32)))
   (type $MemWriteFunc (func (param $addr i32) (param $v i32)))
+  (type $PortReadFunc (func (param $addr i32) (result i32)))
+  (type $PortWriteFunc (func (param $addr i32) (param $v i32)))
   (type $OpFunc (func))
 
   ;; ==========================================================================
@@ -420,7 +422,6 @@
 
   ;; Test machine memory read operation; logs the memory access
   ;; $addr: 16-bit memory address
-  ;; $suppCont: Suppress memory contention flag
   ;; returns: Memory contents
   (func $testMachineRead (param $addr i32) (result i32)
     (local $value i32)
@@ -461,7 +462,6 @@
   ;; Default memory write operation
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
-  ;; $suppCont: Suppress memory contention flag
   (func $testMachineWrite (param $addr i32) (param $v i32)
     (local $logAddr i32)
 
@@ -495,6 +495,94 @@
     set_global $memLogLength
   )
 
+  ;; Test machine I/O read operation; logs the I/O access
+  ;; $addr: 16-bit port address
+  ;; returns: Port value
+  (func $testMachineIoRead (param $addr i32) (result i32)
+    (local $value i32)
+    (local $logAddr i32)
+    
+    ;; Read the next port value from the input buffer
+    get_global $TEST_INPUT_OFFS
+    get_global $nextTestInput
+    i32.add
+    i32.load8_u
+    tee_local $value
+    call $trace
+
+    ;; Move to the next input element
+    get_global $nextTestInput
+    i32.const 1
+    i32.add
+    set_global $nextTestInput
+    get_global $nextTestInput
+    get_global $testInputLength
+    i32.ge_u
+    if
+     i32.const 0
+     set_global $nextTestInput
+    end
+
+    ;; Calculate the address in the I/O log
+    (i32.add (get_global $TEST_IO_LOG_OFFS)
+      (i32.mul (get_global $ioLogLength) (i32.const 4))
+    )
+    tee_local $logAddr
+
+    ;; Store address in the log
+    get_local $addr
+    i32.store16 offset=0
+
+    ;; Store value in the log
+    get_local $logAddr
+    get_local $value
+    i32.store8 offset=2
+
+    ;; Store "read" flag
+    get_local $logAddr
+    i32.const 0
+    i32.store8 offset=3
+    
+    ;; Increment log length
+    (i32.add (get_global $ioLogLength) (i32.const 1))
+    set_global $ioLogLength
+
+    ;; Done, return the memory value
+    get_local $value
+  )
+
+  ;; Default memory write operation
+  ;; $addr: 16-bit memory address
+  ;; $v: 8-bit value to write
+  ;; $suppCont: Suppress memory contention flag
+  (func $testMachineIoWrite (param $addr i32) (param $v i32)
+    (local $logAddr i32)
+
+    ;; Calculate the address in the I/O log
+    (i32.add (get_global $TEST_IO_LOG_OFFS)
+      (i32.mul (get_global $ioLogLength) (i32.const 4))
+    )
+    tee_local $logAddr
+
+    ;; Store address in the log
+    get_local $addr
+    i32.store16 offset=0
+
+    ;; Store value in the log
+    get_local $logAddr
+    get_local $v
+    i32.store8 offset=2
+
+    ;; Store "write" flag
+    get_local $logAddr
+    i32.const 1
+    i32.store8 offset=3
+    
+    ;; Increment log length
+    (i32.add (get_global $ioLogLength) (i32.const 1))
+    set_global $ioLogLength
+  )
+
   ;; ==========================================================================
   ;; Function jump table
 
@@ -517,40 +605,40 @@
     ;; Index 0: Machine type #0
     $defaultRead
     $defaultWrite
-    $NOOP
-    $NOOP
+    $defaultIoRead
+    $defaultIoWrite
     $NOOP
     $NOOP
 
     ;; Index 6: Machine type #1
     $defaultRead
     $defaultWrite
-    $NOOP
-    $NOOP
+    $defaultIoRead
+    $defaultIoWrite
     $NOOP
     $NOOP
 
     ;; Index 12: Machine type #2
     $defaultRead
     $defaultWrite
-    $NOOP
-    $NOOP
+    $defaultIoRead
+    $defaultIoWrite
     $NOOP
     $NOOP
 
     ;; Index 18: Machine type #3
     $defaultRead
     $defaultWrite
-    $NOOP
-    $NOOP
+    $defaultIoRead
+    $defaultIoWrite
     $NOOP
     $NOOP
 
     ;; Index 18: Test Z80 CPU Machine (type #4)
     $testMachineRead
     $testMachineWrite
-    $NOOP
-    $NOOP
+    $testMachineIoRead
+    $testMachineIoWrite
     $NOOP
     $NOOP
   )
@@ -610,17 +698,17 @@
     ;; 0xc8-0xcf
     $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN     
     ;; 0xd0-0xd7
-    $RetNc    $PopDE    $JpNc     $NOOP     $CallNc   $PushDE   $SubAN    $RstN     
+    $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN     
     ;; 0xd8-0xdf
-    $RetC     $Exx      $JpC      $NOOP     $CallC    $NOOP     $SbcAN    $RstN     
+    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN     
     ;; 0xe0-0xe7
-    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $NOOP     $RstN     
+    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN     
     ;; 0xe8-0xef
-    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $NOOP     $RstN     
+    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN     
     ;; 0xf0-0xf7
-    $RetP     $PopAF    $JpP      $NOOP     $CallP    $PushAF   $NOOP $RstN     
+    $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN     
     ;; 0xf8-0xff
-    $RetM     $NOOP     $JpM      $NOOP     $CallM    $NOOP     $NOOP     $RstN     
+    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN     
   )
 
 ;; Table of indexed instructions
@@ -1502,6 +1590,20 @@
     i32.store8
   )
 
+  ;; Default I/O read operation
+  ;; $addr: 16-bit memory address
+  ;; returns: Memory contents
+  (func $defaultIoRead (param $addr i32) (result i32)
+    i32.const 0xff
+  )
+
+  ;; Default I/O write operation
+  ;; $addr: 16-bit memory address
+  ;; $v: 8-bit value to write
+  (func $defaultIoWrite (param $addr i32) (param $v i32)
+    ;; This function in intentionally empty
+  )
+
   ;; Reads the specified memory location of the current machine type
   ;; $addr: 16-bit memory address
   ;; returns: Memory contents
@@ -1535,6 +1637,35 @@
     )
     call_indirect (type $MemWriteFunc)
     i32.const 3
+    call $incTacts
+  )
+
+  ;; Reads the specified I/O port of the current machine type
+  ;; $addr: 16-bit port address
+  ;; returns: Port value
+  (func $readPort (param $addr i32) (result i32)
+    get_local $addr
+    (i32.add 
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 2)
+    )
+    call_indirect (type $PortReadFunc)
+    i32.const 4
+    call $incTacts
+  )
+
+  ;; Writes the specified port of the current machine type
+  ;; $addr: 16-bit port address
+  ;; $v: 8-bit value to write
+  (func $writePort (param $addr i32) (param $v i32)
+    get_local $addr
+    get_local $v
+    (i32.add 
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 3)
+    )
+    call_indirect (type $PortWriteFunc)
+    i32.const 4
     call $incTacts
   )
 
@@ -2094,7 +2225,7 @@
   ;; ;; $a: Value of A
   ;; ;; $arg: other argument
   ;; ;; $c: Value of the C flag
-  ;; (func $AluAdd8a (param $arg i32) (param $c i32)
+  ;; (func $AluAdda (param $arg i32) (param $c i32)
   ;;   (local $a i32)
   ;;   (local $cf i32)
   ;;   (local $res i32)
@@ -2172,11 +2303,10 @@
   ;;   call $setF
   ;; )
 
-  ;; Executes ALU 8-add addition; sets A and F
-  ;; $a: Value of A
+  ;; Executes ALU addition; sets A and F
   ;; $arg: other argument
   ;; $c: Value of the C flag
-  (func $AluAdd8 (param $arg i32) (param $c i32)
+  (func $AluAdd (param $arg i32) (param $c i32)
     (local $a i32)
     (local $res i32)
     (local $pv i32)
@@ -2263,11 +2393,10 @@
     call $setF
   )
 
-  ;; Executes ALU 8-add subtraction; sets A and F
-  ;; $a: Value of A
+  ;; Executes ALU subtraction; sets A and F
   ;; $arg: other argument
   ;; $c: Value of the C flag
-  (func $AluSub8 (param $arg i32) (param $c i32)
+  (func $AluSub (param $arg i32) (param $c i32)
     (local $a i32)
     (local $res i32)
     (local $pv i32)
@@ -2358,14 +2487,67 @@
     call $setF
   )
 
-  ;; Executes ALU 8-add compare; sets F
-  ;; $a: Value of A
+  ;; Executes ALU AND operations; sets A and F
   ;; $arg: other argument
-  (func $AluCp8 (param $a i32) (param $arg i32)
+  (func $AluAnd (param $arg i32)
+    call $getA
+    get_local $arg
+    i32.and
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+
+    ;; Set H
+    i32.const 0x10 ;; H flag mask
+    i32.or
+    call $setF
+  )
+
+  ;; Executes ALU XOR operation; sets A and F
+  ;; $arg: other argument
+  (func $AluXor (param $arg i32)
+    call $getA
+    get_local $arg
+    i32.xor
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+    call $setF
+  )
+
+  ;; Executes ALU OOR operation; sets A and F
+  ;; $arg: other argument
+  (func $AluOr (param $arg i32)
+    call $getA
+    get_local $arg
+    i32.or
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+    call $setF
+  )
+
+  ;; Executes ALU 8-add compare; sets F
+  ;; $arg: other argument
+  (func $AluCp (param $arg i32)
+    (local $a i32)
     (local $res i32)
     (local $pv i32)
     ;; Subtract values (-carry) and store in A
-    get_local $a
+    call $getA
+    tee_local $a
     get_local $arg
     i32.sub
     set_local $res
@@ -3531,7 +3713,7 @@
     i32.and
     call $getReg8
     i32.const 0
-    call $AluAdd8
+    call $AluAdd
   )
 
   ;; add a,(hl) (0x86)
@@ -3539,7 +3721,7 @@
     call $getHL
     call $readMemory
     i32.const 0
-    call $AluAdd8
+    call $AluAdd
   )
 
   ;; add a,Q (0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f)
@@ -3552,7 +3734,7 @@
     call $getF
     i32.const 0x01 ;; C flag mask
     i32.and
-    call $AluAdd8
+    call $AluAdd
   )
 
   ;; adc a,(hl) (0x8e)
@@ -3562,7 +3744,7 @@
     call $getF
     i32.const 0x01 ;; C flag mask
     i32.and
-    call $AluAdd8
+    call $AluAdd
   )
 
   ;; sub Q (0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97)
@@ -3573,7 +3755,7 @@
     i32.and
     call $getReg8
     i32.const 0
-    call $AluSub8
+    call $AluSub
   )
 
   ;; sub (hl) (0x96)
@@ -3581,7 +3763,7 @@
     call $getHL
     call $readMemory
     i32.const 0
-    call $AluSub8
+    call $AluSub
   )
 
   ;; sbc a,Q (0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f)
@@ -3594,7 +3776,7 @@
     call $getF
     i32.const 0x01 ;; C flag mask
     i32.and
-    call $AluSub8
+    call $AluSub
   )
 
   ;; sbc a,(hl) (0x9e)
@@ -3604,139 +3786,75 @@
     call $getF
     i32.const 0x01 ;; C flag mask
     i32.and
-    call $AluSub8
+    call $AluSub
   )
 
   ;; and Q (0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7)
   ;; Q: B, C, D, E, H, L, A
   (func $AndAQ
-    call $getA
     get_global $opCode
     i32.const 0x07
     i32.and
     call $getReg8
-    i32.and
-    call $setA
-
-    ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
-    i32.load8_u
-
-    ;; Set H
-    i32.const 0x10 ;; H flag mask
-    i32.or
-    call $setF
+    call $AluAnd
   )
 
   ;; and (hl) (0xa6)
   (func $AndAHLi
-    call $getA
     call $getHL
     call $readMemory
-    i32.and
-    call $setA
-
-    ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
-    i32.load8_u
-
-    ;; Set H
-    i32.const 0x10 ;; H flag mask
-    i32.or
-    call $setF
+    call $AluAnd
   )
 
   ;; xor Q (0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf)
   ;; Q: B, C, D, E, H, L, A
   (func $XorAQ
-    call $getA
     get_global $opCode
     i32.const 0x07
     i32.and
     call $getReg8
-    i32.xor
-    call $setA
-
-    ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
-    i32.load8_u
-    call $setF
+    call $AluXor
   )
 
   ;; xor (hl) (0xae)
   (func $XorAHLi
-    call $getA
     call $getHL
     call $readMemory
-    i32.xor
-    call $setA
-
-    ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
-    i32.load8_u
-    call $setF
+    call $AluXor
   )
 
   ;; or Q (0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7)
   ;; Q: B, C, D, E, H, L, A
   (func $OrAQ
-    call $getA
     get_global $opCode
     i32.const 0x07
     i32.and
     call $getReg8
-    i32.or
-    call $setA
-
-    ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
-    i32.load8_u
-    call $setF
+    call $AluOr
   )
 
   ;; or (hl) (0xb6)
   (func $OrAHLi
-    call $getA
     call $getHL
     call $readMemory
-    i32.or
-    call $setA
-
-    ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
-    i32.load8_u
-    call $setF
+    call $AluOr
   )
 
   ;; cp Q (0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf)
   ;; Q: B, C, D, E, H, L, A
   (func $CpAQ
-    call $getA
     get_global $opCode
     i32.const 0x07
     i32.and
     call $getReg8
-    call $AluCp8
+    call $AluCp
   )
 
   ;; cp (hl) (0xbe)
   (func $CpAHLi
-    call $getA
     call $getHL
     call $readMemory
-    call $AluCp8
+    call $AluCp
   )
 
   ;; ret nz (0xc0)
@@ -3807,7 +3925,7 @@
   (func $AddAN
     call $readCodeMemory
     i32.const 0 ;; No carry
-    call $AluAdd8
+    call $AluAdd
   )
 
   ;; rst N (0xc7, 0xcf, 0xd7, 0xdf, 0xe7, 0xef, 0xf7, 0xff)
@@ -3901,7 +4019,7 @@
     call $getF
     i32.const 1  ;; Get C flag
     i32.and
-    call $AluAdd8
+    call $AluAdd
   )
 
   ;; ret nc (0xd0)
@@ -3935,6 +4053,23 @@
     call $setPC
   )
 
+  ;; out (N),a (0xd3)
+  (func $OutNA
+    (local $port i32)
+    call $readCodeMemory
+    call $getA
+    i32.const 8
+    i32.shl
+    i32.add
+    tee_local $port
+    call $getA
+    call $writePort
+    get_local $port
+    i32.const 1
+    i32.add
+    call $setWZ
+  )
+
   ;; call nc (0xd4)
   (func $CallNc
     call $readAddrToWZ
@@ -3966,7 +4101,7 @@
   (func $SubAN
     call $readCodeMemory
     i32.const 0 ;; No carry
-    call $AluSub8
+    call $AluSub
   )
 
   ;; ret c (0xd8)
@@ -4034,6 +4169,24 @@
     call $setPC
   )
 
+  ;; in a,(N) (0xdb)
+  (func $InAN
+    (local $port i32)
+    call $readCodeMemory
+    call $getA
+    i32.const 8
+    i32.shl
+    i32.add
+    tee_local $port
+    call $readPort
+    call $setA
+    
+    get_local $port
+    i32.const 1
+    i32.add
+    call $setWZ
+  )
+
   ;; call c (0xdc)
   (func $CallC
     call $readAddrToWZ
@@ -4061,7 +4214,7 @@
     call $getF
     i32.const 1  ;; Get C flag
     i32.and
-    call $AluSub8
+    call $AluSub
   )
 
   ;; ret po (0xe0)
@@ -4095,7 +4248,7 @@
     call $setPC
   )
 
-  ;; ex (sp),hl
+  ;; ex (sp),hl (0xe3)
   (func $ExSPiHL
     (local $tmpSp i32)
     call $getSP
@@ -4188,6 +4341,12 @@
     call $pushValue
   )
 
+  ;; and a,N (0xe6)
+  (func $AndAN
+    call $readCodeMemory
+    call $AluAnd
+  )
+
   ;; ret pe (0xe8)
   (func $RetPe
     ;; Adjust tacts
@@ -4251,6 +4410,12 @@
     call $setPC
   )
 
+  ;; xor a,N (0xee)
+  (func $XorAN
+    call $readCodeMemory
+    call $AluXor
+  )
+
   ;; ret p (0xf0)
   (func $RetP
     ;; Adjust tacts
@@ -4282,6 +4447,14 @@
     call $setPC
   )
 
+  ;; di (0xf3)
+  (func $Di
+    i32.const 0
+    set_global $iff1
+    i32.const 0
+    set_global $iff2
+  )
+
   ;; call p (0xf4)
   (func $CallP
     call $readAddrToWZ
@@ -4309,6 +4482,12 @@
     call $pushValue
   )
 
+  ;; or A,N (0xf6)
+  (func $OrAN
+    call $readCodeMemory
+    call $AluOr
+  )
+
   ;; ret m (0xf8)
   (func $RetM
     ;; Adjust tacts
@@ -4324,6 +4503,14 @@
     call $setPC
   )
 
+  ;; ld sp,hl
+  (func $LdSPHL
+    call $getHL
+    call $setSP
+    i32.const 2
+    call $incTacts
+  )
+
   ;; jp m (0xfa)
   (func $JpM
     call $readAddrToWZ
@@ -4332,6 +4519,16 @@
 
     call $getWZ
     call $setPC
+  )
+
+  ;; ei (0xfb)
+  (func $Ei
+    i32.const 1
+    set_global $isInterruptBlocked
+    i32.const 1
+    set_global $iff1
+    i32.const 1
+    set_global $iff2
   )
 
   ;; call m (0xfc)
@@ -4353,5 +4550,11 @@
     call $pushValue
     call $getWZ
     call $setPC
+  )
+
+  ;; call cp N (0xfe)
+  (func $CpAN
+    call $readCodeMemory
+    call $AluCp
   )
 )

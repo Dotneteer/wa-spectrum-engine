@@ -98,9 +98,9 @@ export class TestZ80Machine {
    * @param input List of input byte values
    */
   initInput(input: number[]): void {
-    const mem = new Uint8Array(this.cpuApi.memory.buffer, 0, 0x1_0000);
+    const mh = new MemoryHelper(this.cpuApi, TEST_INPUT_BUFF)
     for (let i = 0; i < input.length; i++) {
-      mem[TEST_INPUT_BUFF + i] = input[i];
+      mh.writeByte(i, input[i])
     }
     this.cpuApi.setTestInputLength(input.length);
   }
@@ -238,24 +238,6 @@ export class TestZ80Machine {
   /**
    * Gets the memory access log of the test machine
    */
-  get memoryAccessLog(): MemoryOp[] {
-    const mh = new MemoryHelper(this.cpuApi, TEST_MEM_LOG_OFFS);
-    const length = this.cpuApi.getMemLogLength();
-    const result: MemoryOp[] = [];
-    for (let i = 0; i < length; i++) {
-      const l = mh.readUint32(i * 4);
-      result.push({
-        address: (l >> 16) & 0xffff,
-        value: (l >> 8) & 0xff,
-        isWrite: (l & 0xff) !== 0,
-      });
-    }
-    return result;
-  }
-
-  /**
-   * Gets the memory access log of the test machine
-   */
   get ioAccessLog(): IoOp[] {
     const mh = new MemoryHelper(this.cpuApi, TEST_IO_LOG_OFFS);
     const length = this.cpuApi.getIoLogLength();
@@ -263,9 +245,9 @@ export class TestZ80Machine {
     for (let i = 0; i < length; i++) {
       const l = mh.readUint32(i * 4);
       result.push({
-        address: (l >> 16) & 0xffff,
-        value: (l >> 8) & 0xff,
-        isOutput: (l & 0xff) !== 0,
+        address: l & 0xffff,
+        value: (l >> 16) & 0xff,
+        isOutput: ((l >> 24) & 0xff) !== 0,
       });
     }
     return result;
