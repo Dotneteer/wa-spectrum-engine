@@ -769,13 +769,13 @@
     ;; 0xd8-0xdf
     $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN
     ;; 0xe0-0xe7
-    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN
+    $RetPo    $PopIX    $JpPo     $ExSPiIX  $CallPo   $PushIX   $AndAN    $RstN
     ;; 0xe8-0xef
-    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN
+    $RetPe    $JpIX     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN
     ;; 0xf0-0xf7
     $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN
     ;; 0xf8-0xff
-    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN
+    $RetM     $LdSPIX   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN
   )
 
 ;; Table of extended instructions
@@ -5144,5 +5144,101 @@
     call $AdjustIXTact
     call $readMemory
     call $AluCp
+  )
+
+  ;; pop ix (0xe1)
+  (func $PopIX
+    call $popValue
+    call $setIndexReg
+  )
+
+    ;; ex (sp),ix (0xe3)
+  (func $ExSPiIX
+    (local $tmpSp i32)
+    call $getSP
+    tee_local $tmpSp
+    call $readMemory
+    get_local $tmpSp
+    i32.const 1
+    i32.add
+    tee_local $tmpSp
+    call $readMemory
+    i32.const 8
+    i32.shl
+    i32.add
+    call $setWZ
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.ne
+    if
+      i32.const 1
+      call $incTacts
+    else
+      get_local $tmpSp
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    ;; Write H to stack
+    get_local $tmpSp
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $writeMemory
+
+    ;; Write L to stack
+    get_local $tmpSp
+    i32.const 1
+    i32.sub
+    tee_local $tmpSp
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $writeMemory
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.ne
+    if
+      i32.const 2
+      call $incTacts
+    else
+      get_local $tmpSp
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $tmpSp
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    ;; Copy WZ to IX
+    call $getWZ
+    call $setIndexReg
+  )
+
+  ;; push ix (0xe5)
+  (func $PushIX
+    call $getIndexReg
+    call $pushValue
+  )
+
+  ;; jp (ix) (0xe9)
+  (func $JpIX
+    call $getIndexReg
+    call $setPC
+  )
+
+  ;; ld sp,ix (0xf9)
+  (func $LdSPIX
+    call $getIndexReg
+    call $setSP
+    i32.const 2
+    call $incTacts
   )
 )
