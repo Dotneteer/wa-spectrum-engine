@@ -1,7 +1,7 @@
 (module
   (func $trace (import "imports" "trace") (param i32))
 
-  ;; We keep 512 KB of memory 
+  ;; We keep 512 KB of memory
   (memory (export "memory") 8)
 
 
@@ -123,7 +123,7 @@
 
   ;; State transfer buffer (length: 0xc0)
   (global $STATE_TRANSFER_BUFF i32 (i32.const 0x1_0040))
-  
+
   ;; The offset of the test input stream (length: 0x0100)
   (global $TEST_INPUT_OFFS i32 (i32.const 0x1_0100))
 
@@ -300,13 +300,13 @@
 
   ;; The length of the memory access log
   (global $memLogLength (mut i32) (i32.const 0x0000))
-  
+
   ;; The length of the I/O access log
   (global $ioLogLength (mut i32) (i32.const 0x0000))
-  
+
   ;; The length of the TBBLUE access log
   (global $tbBlueLogLength (mut i32) (i32.const 0x0000))
-  
+
   ;; Prepares the test code to run
   (func $prepareTest (param $mode i32) (param $codeEnds i32)
     get_local $mode
@@ -336,23 +336,23 @@
   ;; Gets the length of the memory access log
   (func $getMemLogLength (result i32)
     get_global $memLogLength
-  ) 
+  )
 
   ;; Gets the length of the I/O access log
   (func $getIoLogLength (result i32)
     get_global $ioLogLength
-  ) 
+  )
 
   ;; Gets the length of the TBBLUE access log
   (func $getTbBlueLogLength (result i32)
     get_global $tbBlueLogLength
-  ) 
+  )
 
   ;; Runs the test code. Stops according to the specified $testRunMode
   (func $runTestCode
     loop $codeExec
       call $executeCpuCycle
-      
+
       ;; Check the run mode
       ;; Test for Normal or OneCycle
       get_global $testRunMode
@@ -375,7 +375,7 @@
           ;; Stop if operation execution completed
           return
         else
-          ;; continue        
+          ;; continue
           br $codeExec
         end
       end
@@ -395,7 +395,7 @@
           ;; Stop if CPU halted
           return
         else
-          ;; continue        
+          ;; continue
           br $codeExec
         end
       end
@@ -450,7 +450,7 @@
     get_local $logAddr
     i32.const 0
     i32.store8 offset=3
-    
+
     ;; Increment log length
     (i32.add (get_global $memLogLength) (i32.const 1))
     set_global $memLogLength
@@ -489,7 +489,7 @@
     get_local $logAddr
     i32.const 1
     i32.store8 offset=3
-    
+
     ;; Increment log length
     (i32.add (get_global $memLogLength) (i32.const 1))
     set_global $memLogLength
@@ -501,7 +501,7 @@
   (func $testMachineIoRead (param $addr i32) (result i32)
     (local $value i32)
     (local $logAddr i32)
-    
+
     ;; Read the next port value from the input buffer
     get_global $TEST_INPUT_OFFS
     get_global $nextTestInput
@@ -541,7 +541,7 @@
     get_local $logAddr
     i32.const 0
     i32.store8 offset=3
-    
+
     ;; Increment log length
     (i32.add (get_global $ioLogLength) (i32.const 1))
     set_global $ioLogLength
@@ -576,7 +576,7 @@
     get_local $logAddr
     i32.const 1
     i32.store8 offset=3
-    
+
     ;; Increment log length
     (i32.add (get_global $ioLogLength) (i32.const 1))
     set_global $ioLogLength
@@ -600,7 +600,7 @@
   ;; 256: Indexed bit operations
 
   (table $dispatch 1310 anyfunc)
-  (elem (i32.const 0) 
+  (elem (i32.const 0)
     ;; Index 0: Machine type #0
     $defaultRead
     $defaultWrite
@@ -645,341 +645,341 @@
 ;; Table of standard instructions
 (elem (i32.const 30)
     ;; 0x00-0x07
-    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca     
+    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca
     ;; 0x08-0x0f
-    $ExAf     $AddHLQQ  $LdABCi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rrca     
+    $ExAf     $AddHLQQ  $LdABCi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rrca
     ;; 0x10-0x17
-    $Djnz     $LdQQNN   $LdDEiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rla     
+    $Djnz     $LdQQNN   $LdDEiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rla
     ;; 0x18-0x1f
-    $JrE      $AddHLQQ  $LdADEi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rra     
+    $JrE      $AddHLQQ  $LdADEi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rra
     ;; 0x20-0x27
-    $JrNz     $LdQQNN   $LdNNiHL  $IncQQ    $IncQ     $DecQ     $LdQN     $Daa     
+    $JrNz     $LdQQNN   $LdNNiHL  $IncQQ    $IncQ     $DecQ     $LdQN     $Daa
     ;; 0x28-0x2f
-    $JrZ      $AddHLQQ  $LdHLNNi  $DecQQ    $IncQ     $DecQ     $LdQN     $Cpl     
+    $JrZ      $AddHLQQ  $LdHLNNi  $DecQQ    $IncQ     $DecQ     $LdQN     $Cpl
     ;; 0x30-0x37
-    $JrNc     $LdQQNN   $LdNNiA   $IncQQ    $IncHLi   $DecHLi   $LdHLiN   $Scf     
+    $JrNc     $LdQQNN   $LdNNiA   $IncQQ    $IncHLi   $DecHLi   $LdHLiN   $Scf
     ;; 0x38-0x3f
-    $JrC      $AddHLQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf     
+    $JrC      $AddHLQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf
     ;; 0x40-0x47
-    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW    $LdQW     $LdQHLi   $LdQW     
+    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW
     ;; 0x48-0x4f
-    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW    $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW
     ;; 0x50-0x57
-    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW    $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW
     ;; 0x58-0x5f
-    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW    $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQHLi   $LdQW
     ;; 0x60-0x67
-    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQHLi   $LdQW
     ;; 0x68-0x6f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW    $NOOP     $LdQHLi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQHLi   $LdQW
     ;; 0x70-0x77
-    $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ     
+    $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ
     ;; 0x78-0x7f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW    $LdQW     $LdQHLi   $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $NOOP
     ;; 0x80-0x87
-    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ     
+    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ
     ;; 0x88-0x8f
-    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAHLi  $AdcAQ     
+    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAHLi  $AdcAQ
     ;; 0x90-0x97
-    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAHLi  $SubAQ      
+    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAHLi  $SubAQ
     ;; 0x98-0x9f
-    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAHLi  $SbcAQ       
+    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAHLi  $SbcAQ
     ;; 0xa0-0xa7
-    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAHLi  $AndAQ     
+    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAHLi  $AndAQ
     ;; 0xa8-0xaf
-    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAHLi  $XorAQ     
+    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAHLi  $XorAQ
     ;; 0xb0-0xb7
-    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAHLi   $OrAQ     
+    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAHLi   $OrAQ
     ;; 0xb8-0xbf
-    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAHLi   $CpAQ     
+    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAHLi   $CpAQ
     ;; 0xc0-0xc7
-    $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $AddAN    $RstN     
+    $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $AddAN    $RstN
     ;; 0xc8-0xcf
-    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN     
+    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN
     ;; 0xd0-0xd7
-    $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN     
+    $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN
     ;; 0xd8-0xdf
-    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN     
+    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN
     ;; 0xe0-0xe7
-    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN     
+    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN
     ;; 0xe8-0xef
-    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN     
+    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN
     ;; 0xf0-0xf7
-    $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN     
+    $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN
     ;; 0xf8-0xff
-    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN     
+    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN
   )
 
 ;; Table of indexed instructions
 (elem (i32.const 286)
     ;; 0x00-0x07
-    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca     
+    $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca
     ;; 0x08-0x0f
-    $ExAf     $AddIXQQ  $LdABCi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rrca     
+    $ExAf     $AddIXQQ  $LdABCi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rrca
     ;; 0x10-0x17
-    $Djnz     $LdQQNN   $LdDEiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rla     
+    $Djnz     $LdQQNN   $LdDEiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rla
     ;; 0x18-0x1f
-    $JrE      $AddIXQQ  $LdADEi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rra     
+    $JrE      $AddIXQQ  $LdADEi   $DecQQ    $IncQ     $DecQ     $LdQN     $Rra
     ;; 0x20-0x27
-    $JrNz     $LdIXNN   $LdNNiIX  $IncIX    $IncXH    $DecXH    $LdXHN    $Daa     
+    $JrNz     $LdIXNN   $LdNNiIX  $IncIX    $IncXH    $DecXH    $LdXHN    $Daa
     ;; 0x28-0x2f
-    $JrZ      $AddIXQQ  $LdIXNNi  $DecIX    $IncXL    $DecXL    $LdXLN    $Cpl     
+    $JrZ      $AddIXQQ  $LdIXNNi  $DecIX    $IncXL    $DecXL    $LdXLN    $Cpl
     ;; 0x30-0x37
-    $JrNc     $LdQQNN   $LdNNiA   $IncQQ    $IncIXi   $DecIXi   $LdIXiN   $Scf     
+    $JrNc     $LdQQNN   $LdNNiA   $IncQQ    $IncIXi   $DecIXi   $LdIXiN   $Scf
     ;; 0x38-0x3f
-    $JrC      $AddIXQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf     
+    $JrC      $AddIXQQ  $LdANNi   $DecQQ    $IncQ     $DecQ     $LdQN     $Ccf
     ;; 0x40-0x47
-    $NOOP     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
+    $NOOP     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW
     ;; 0x48-0x4f
-    $LdQW     $NOOP     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
+    $LdQW     $NOOP     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW
     ;; 0x50-0x57
-    $LdQW     $LdQW     $NOOP     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
+    $LdQW     $LdQW     $NOOP     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW
     ;; 0x58-0x5f
-    $LdQW     $LdQW     $LdQW     $NOOP     $LdQXH    $LdQXL    $LdQIXi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $NOOP     $LdQXH    $LdQXL    $LdQIXi   $LdQW
     ;; 0x60-0x67
-    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQXL    $LdQIXi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQXL    $LdQIXi   $LdQW
     ;; 0x68-0x6f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQXH    $NOOP     $LdQIXi   $LdQW     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQXH    $NOOP     $LdQIXi   $LdQW
     ;; 0x70-0x77
-    $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $Halt     $LdIXiQ     
+    $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $Halt     $LdIXiQ
     ;; 0x78-0x7f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $NOOP     
+    $LdQW     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $NOOP
     ;; 0x80-0x87
-    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ     
+    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAXH   $AddAXL   $AddAIXi  $AddAQ
     ;; 0x88-0x8f
-    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAHLi  $AdcAQ     
+    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAQ    $AdcAXH   $AdcAXL   $AdcAIXi  $AdcAQ
     ;; 0x90-0x97
-    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAHLi  $SubAQ      
+    $SubAQ    $SubAQ    $SubAQ    $SubAQ    $SubAXH   $SubAXL   $SubAIXi  $SubAQ
     ;; 0x98-0x9f
-    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAHLi  $SbcAQ       
+    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAQ    $SbcAXH   $SbcAXL   $SbcAIXi  $SbcAQ
     ;; 0xa0-0xa7
-    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAHLi  $AndAQ     
+    $AndAQ    $AndAQ    $AndAQ    $AndAQ    $AndAXH   $AndAXL   $AndAIXi  $AndAQ
     ;; 0xa8-0xaf
-    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAHLi  $XorAQ     
+    $XorAQ    $XorAQ    $XorAQ    $XorAQ    $XorAXH   $XorAXL   $XorAIXi  $XorAQ
     ;; 0xb0-0xb7
-    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAHLi   $OrAQ     
+    $OrAQ     $OrAQ     $OrAQ     $OrAQ     $OrAXH    $OrAXL    $OrAIXi   $OrAQ
     ;; 0xb8-0xbf
-    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAHLi   $CpAQ     
+    $CpAQ     $CpAQ     $CpAQ     $CpAQ     $CpAXH    $CpAXL    $CpAIXi   $CpAQ
     ;; 0xc0-0xc7
-    $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $AddAN    $RstN     
+    $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $AddAN    $RstN
     ;; 0xc8-0xcf
-    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN     
+    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN
     ;; 0xd0-0xd7
-    $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN     
+    $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN
     ;; 0xd8-0xdf
-    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN     
+    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN
     ;; 0xe0-0xe7
-    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN     
+    $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN
     ;; 0xe8-0xef
-    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN     
+    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN
     ;; 0xf0-0xf7
-    $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN     
+    $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN
     ;; 0xf8-0xff
-    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN     
+    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN
   )
 
 ;; Table of extended instructions
 (elem (i32.const 542)
     ;; 0x00-0x07
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x08-0x0f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x10-0x17
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x18-0x1f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x20-0x27
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x30-0x37
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x38-0x3f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x80-0x87
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc0-0xc7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc8-0xcf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xd0-0xd7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xd8-0xdf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xe0-0xe7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xe8-0xef
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xf0-0xf7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xf8-0xff
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
   )
 
 ;; Table of bit instructions
 (elem (i32.const 798)
     ;; 0x00-0x07
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x08-0x0f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x10-0x17
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x18-0x1f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x20-0x27
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x30-0x37
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x38-0x3f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x80-0x87
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc0-0xc7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc8-0xcf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xd0-0xd7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xd8-0xdf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xe0-0xe7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xe8-0xef
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xf0-0xf7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xf8-0xff
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
   )
 
 ;; Table of indexed bit instructions
 (elem (i32.const 1054)
     ;; 0x00-0x07
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x08-0x0f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x10-0x17
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x18-0x1f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x20-0x27
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x30-0x37
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x38-0x3f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x80-0x87
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc0-0xc7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc8-0xcf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xd0-0xd7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xd8-0xdf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xe0-0xe7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xe8-0xef
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xf0-0xf7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xf8-0xff
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     
+    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
   )
 
   ;; Represents a no-operation function
@@ -995,12 +995,12 @@
   )
 
   ;; Sets the value of A
-  (func $setA (param $v i32) 
+  (func $setA (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
-    i32.store8 offset=1    
+    i32.store8 offset=1
   )
- 
+
   ;; Gets the value of F
   (func $getF (result i32)
     get_global $REG_AREA_INDEX
@@ -1008,7 +1008,7 @@
   )
 
   ;; Sets the value of F
-  (func $setF (param $v i32) 
+  (func $setF (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=0
@@ -1034,12 +1034,12 @@
   )
 
   ;; Sets the value of B
-  (func $setB (param $v i32) 
+  (func $setB (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=3
   )
- 
+
   ;; Gets the value of C
   (func $getC (result i32)
     get_global $REG_AREA_INDEX
@@ -1047,7 +1047,7 @@
   )
 
   ;; Sets the value of C
-  (func $setC (param $v i32) 
+  (func $setC (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=2
@@ -1073,12 +1073,12 @@
   )
 
   ;; Sets the value of D
-  (func $setD (param $v i32) 
+  (func $setD (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=5
   )
- 
+
   ;; Gets the value of E
   (func $getE (result i32)
     get_global $REG_AREA_INDEX
@@ -1086,7 +1086,7 @@
   )
 
   ;; Sets the value of E
-  (func $setE (param $v i32) 
+  (func $setE (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=4
@@ -1112,12 +1112,12 @@
   )
 
   ;; Sets the value of H
-  (func $setH (param $v i32) 
+  (func $setH (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=7
   )
- 
+
   ;; Gets the value of L
   (func $getL (result i32)
     get_global $REG_AREA_INDEX
@@ -1125,7 +1125,7 @@
   )
 
   ;; Sets the value of L
-  (func $setL (param $v i32) 
+  (func $setL (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=6
@@ -1151,7 +1151,7 @@
   )
 
   ;; Sets the value of I
-  (func $setI (param $v i32) 
+  (func $setI (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=16
@@ -1164,7 +1164,7 @@
   )
 
   ;; Sets the value of R
-  (func $setR (param $v i32) 
+  (func $setR (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=17
@@ -1203,12 +1203,12 @@
   )
 
   ;; Sets the value of XH
-  (func $setXH (param $v i32) 
+  (func $setXH (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=23
   )
- 
+
   ;; Gets the value of XL
   (func $getXL (result i32)
     get_global $REG_AREA_INDEX
@@ -1216,7 +1216,7 @@
   )
 
   ;; Sets the value of XL
-  (func $setXL (param $v i32) 
+  (func $setXL (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=22
@@ -1242,12 +1242,12 @@
   )
 
   ;; Sets the value of YH
-  (func $setYH (param $v i32) 
+  (func $setYH (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=25
   )
- 
+
   ;; Gets the value of YL
   (func $getYL (result i32)
     get_global $REG_AREA_INDEX
@@ -1255,7 +1255,7 @@
   )
 
   ;; Sets the value of YL
-  (func $setYL (param $v i32) 
+  (func $setYL (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=24
@@ -1281,12 +1281,12 @@
   )
 
   ;; Sets the value of WH
-  (func $setWH (param $v i32) 
+  (func $setWH (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=27
   )
- 
+
   ;; Gets the value of WL
   (func $getWL (result i32)
     get_global $REG_AREA_INDEX
@@ -1294,7 +1294,7 @@
   )
 
   ;; Sets the value of WL
-  (func $setWL (param $v i32) 
+  (func $setWL (param $v i32)
     get_global $REG_AREA_INDEX
     get_local $v
     i32.store8 offset=26
@@ -1321,7 +1321,7 @@
     get_global $REG8_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x07))
     i32.add
-    i32.load8_u 
+    i32.load8_u
     i32.add
     i32.load8_u
   )
@@ -1333,7 +1333,7 @@
     get_global $REG8_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x07))
     i32.add
-    i32.load8_u 
+    i32.load8_u
     i32.add
     get_local $v
     i32.store8
@@ -1347,7 +1347,7 @@
     get_global $REG16_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x03))
     i32.add
-    i32.load8_u 
+    i32.load8_u
     i32.add
     i32.load16_u
   )
@@ -1359,7 +1359,7 @@
     get_global $REG16_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x03))
     i32.add
-    i32.load8_u 
+    i32.load8_u
     i32.add
     get_local $v
     i32.store16
@@ -1426,7 +1426,7 @@
     get_global $frameTacts
     get_global $tactsInFrame
     i32.ge_u
-    if 
+    if
       get_global $frameTacts
       get_global $tactsInFrame
       i32.sub
@@ -1630,7 +1630,7 @@
   (func $writeMemory (param $addr i32) (param $v i32)
     get_local $addr
     get_local $v
-    (i32.add 
+    (i32.add
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 1)
     )
@@ -1644,7 +1644,7 @@
   ;; returns: Port value
   (func $readPort (param $addr i32) (result i32)
     get_local $addr
-    (i32.add 
+    (i32.add
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 2)
     )
@@ -1659,7 +1659,7 @@
   (func $writePort (param $addr i32) (param $v i32)
     get_local $addr
     get_local $v
-    (i32.add 
+    (i32.add
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 3)
     )
@@ -1675,13 +1675,13 @@
   (func $executeCpuCycle
     ;; Is there any CPU signal raised?
     (i32.ne (get_global $stateFlags) (i32.const 0))
-    if 
+    if
       ;; Yes, process them
       call $processCpuSignals
       ;; Processed any signal?
       i32.const 0
       i32.ne
-      if 
+      if
         ;; Yes, nothing to do in this cycle
         return
       end
@@ -2173,6 +2173,27 @@
   ;; Carries out a relative jump
   ;; $e: 8-bit distance value
   (func $relativeJump (param $e i32)
+    call $AdjustIXTact
+
+    ;; Convert the 8-bit distance to i32
+    get_local $e
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+
+    ;; Calculate the destination address
+    call $getPC
+    i32.add
+    call $setPC
+
+    ;; Copy to WZ
+    call $getPC
+    call $setWZ
+  )
+
+  ;; Adjust tacts for IX-indirect addressing
+  (func $AdjustIXTact
     ;; Adjust tacts
     get_global $useGateArrayContention
     i32.const 0
@@ -2202,22 +2223,17 @@
       i32.const 1
       call $incTacts
     end
+  )
 
-    ;; Convert the 8-bit distance to i32
-    get_local $e
+  ;; Gets the index address for an operation
+  (func $getIndexedAddress (result i32)
+    call $getIndexReg
+    call $readCodeMemory
     i32.const 24
     i32.shl
     i32.const 24
     i32.shr_s
-    
-    ;; Calculate the destination address
-    call $getPC
     i32.add
-    call $setPC
-
-    ;; Copy to WZ
-    call $getPC
-    call $setWZ
   )
 
   ;; Executes ALU addition; sets A and F
@@ -2555,7 +2571,7 @@
     i32.and
     i32.const 0
     i32.ne
-  ) 
+  )
 
   ;; Tests the NZ condition
   (func $testNZ (result i32)
@@ -2564,7 +2580,7 @@
     i32.and
     i32.const 0
     i32.eq
-  ) 
+  )
 
   ;; Tests the C condition
   (func $testC (result i32)
@@ -2573,7 +2589,7 @@
     i32.and
     i32.const 0
     i32.ne
-  ) 
+  )
 
   ;; Tests the NC condition
   (func $testNC (result i32)
@@ -2582,7 +2598,7 @@
     i32.and
     i32.const 0
     i32.eq
-  ) 
+  )
 
   ;; Tests the PE condition
   (func $testPE (result i32)
@@ -2591,7 +2607,7 @@
     i32.and
     i32.const 0
     i32.ne
-  ) 
+  )
 
   ;; Tests the PO condition
   (func $testPO (result i32)
@@ -2600,7 +2616,7 @@
     i32.and
     i32.const 0
     i32.eq
-  ) 
+  )
 
   ;; Tests the M condition
   (func $testM (result i32)
@@ -2609,7 +2625,7 @@
     i32.and
     i32.const 0
     i32.ne
-  ) 
+  )
 
   ;; Tests the P condition
   (func $testP (result i32)
@@ -2618,7 +2634,7 @@
     i32.and
     i32.const 0
     i32.eq
-  ) 
+  )
 
   ;; Read address to WZ
   (func $readAddrToWZ
@@ -3099,7 +3115,7 @@
     (local $nFlag i32)
     (local $hAfter i32)
     (local $pvAfter i32)
-    
+
     ;; Get A and store nibbles
     call $getA
     tee_local $a
@@ -3138,7 +3154,7 @@
     if
       ;; C flag is 0
       ;; Test if hNibble is 0..9 and lNibble is 0..9
-      (i32.and 
+      (i32.and
         (i32.le_u (get_local $hNibble) (i32.const 9))
         (i32.le_u (get_local $lNibble) (i32.const 9))
       )
@@ -3214,7 +3230,7 @@
       i32.const 1
       set_local $cAfter
 
-      ;; Test if lNibble is 0..9 
+      ;; Test if lNibble is 0..9
         (i32.le_u (get_local $lNibble) (i32.const 0x09))
       if
         i32.const 0x66
@@ -3302,7 +3318,7 @@
     select   ;; Z is on top
     ;; S, R3, R5 flag
     get_local $a
-    i32.const 0xA8 ;; Mask for S, R3, R5 
+    i32.const 0xA8 ;; Mask for S, R3, R5
     i32.and  ;; Z, S|R3|R5
     i32.or   ;; Z|S|R3|R5
     get_local $pvAfter
@@ -3346,7 +3362,7 @@
     i32.const 1
     i32.add
     call $setWZ
-    
+
     ;; Read HL from memory
     get_local $addr
     call $readMemory
@@ -3417,7 +3433,7 @@
 
     ;; Get the value from the memory
     call $getHL
-    call $readMemory  
+    call $readMemory
     set_local $v
 
     ;; Adjust tacts
@@ -3456,7 +3472,7 @@
 
     ;; Get the value from the memory
     call $getHL
-    call $readMemory  
+    call $readMemory
     set_local $v
 
     ;; Adjust tacts
@@ -3577,7 +3593,7 @@
     call $setReg8
   )
 
-  ;; ld Q,(hl) 
+  ;; ld Q,(hl)
   ;; Q: B, C, D, E, H, L, A
   (func $LdQHLi
     ;; Get 8-bit Q reg index
@@ -3862,7 +3878,7 @@
     ;; Adjust tacts
     i32.const 1
     call $incTacts
-    
+
     call $testNZ
     if return end
 
@@ -4047,7 +4063,7 @@
     get_global $REG_AREA_INDEX
     get_local $tmp
     i32.store16 offset=8
-    
+
     call $getBC
     set_local $tmp
     get_global $REG_AREA_INDEX
@@ -4199,7 +4215,7 @@
     get_local $tmpSp
     call $getH
     call $writeMemory
-    
+
     ;; Write L to stack
     get_local $tmpSp
     i32.const 1
@@ -4663,7 +4679,7 @@
     i32.const 1
     i32.add
     call $setWZ
-    
+
     ;; Read HL from memory
     get_local $addr
     call $readMemory
@@ -4763,50 +4779,11 @@
   (func $IncIXi
     (local $v i32)
     (local $addr i32)
-
-    ;; Get offset
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
-    
-    ;; Get the value from the memory
-    call $getIndexReg
-    i32.add
+    call $getIndexedAddress
     tee_local $addr
-    call $readMemory  
+    call $readMemory
     set_local $v
-
-    ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
-    if
-      i32.const 5
-      call $incTacts
-    else
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
+    call $AdjustIXTact
 
     ;; Increment value
     get_local $addr
@@ -4834,49 +4811,11 @@
     (local $v i32)
     (local $addr i32)
 
-    ;; Get offset
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
-    
-    ;; Get the value from the memory
-    call $getIndexReg
-    i32.add
+    call $getIndexedAddress
     tee_local $addr
-    call $readMemory  
+    call $readMemory
     set_local $v
-
-    ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
-    if
-      i32.const 5
-      call $incTacts
-    else
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
+    call $AdjustIXTact
 
     ;; Increment value
     get_local $addr
@@ -4901,13 +4840,7 @@
 
   ;; ld (ix+d),B (0x36)
   (func $LdIXiN
-    call $getIndexReg
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
-    i32.add
+    call $getIndexedAddress
     call $readCodeMemory
 
     ;; Adjust tacts
@@ -4928,7 +4861,7 @@
       call $incTacts
     end
 
-    ;; Store value    
+    ;; Store value
     call $writeMemory
   )
 
@@ -4940,7 +4873,7 @@
     i32.const 0x38
     i32.and
     i32.const 3
-    i32.shr_u 
+    i32.shr_u
     call $getIndexReg
     i32.const 8
     i32.shr_u
@@ -4955,14 +4888,14 @@
     i32.const 0x38
     i32.and
     i32.const 3
-    i32.shr_u 
+    i32.shr_u
     call $getIndexReg
     i32.const 0xff
     i32.and
     call $setReg8
   )
 
-    ;; ld Q,(ix+d) 
+  ;; ld Q,(ix+d)
   ;; Q: B, C, D, E, H, L, A
   (func $LdQIXi
     ;; Get 8-bit Q reg index
@@ -4973,43 +4906,8 @@
     i32.shr_u
 
     ;; Get address
-    call $getIndexReg
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
-    i32.add
-
-    ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
-    if
-      i32.const 5
-      call $incTacts
-    else
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
+    call $getIndexedAddress
+    call $AdjustIXTact
 
     ;; Get data from memory and store it
     call $readMemory
@@ -5019,43 +4917,8 @@
   ;; ld (ix+d),Q
   ;; Q: B, C, D, E, H, L, A
   (func $LdIXiQ
-    call $getIndexReg
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
-    i32.add
-
-    ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
-    if
-      i32.const 5
-      call $incTacts
-    else
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
+    call $getIndexedAddress
+    call $AdjustIXTact
 
     ;; Get 8-bit Q reg index
     get_global $opCode
@@ -5065,5 +4928,221 @@
     ;; Get reg value and store it
     call $getReg8
     call $writeMemory
+  )
+
+  ;; add a,xh (0x84)
+  (func $AddAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    i32.const 0
+    call $AluAdd
+  )
+
+  ;; add a,xl (0x85)
+  (func $AddAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    i32.const 0
+    call $AluAdd
+  )
+
+  ;; add a,(ix+d) (0x86)
+  (func $AddAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    i32.const 0
+    call $AluAdd
+  )
+
+  ;; adc a,xh (0x8c)
+  (func $AdcAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $getF
+    i32.const 1
+    i32.and
+    call $AluAdd
+  )
+
+  ;; adc a,xl (0x8d)
+  (func $AdcAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $getF
+    i32.const 1
+    i32.and
+    call $AluAdd
+  )
+
+  ;; adc a,(ix+d) (0x8e)
+  (func $AdcAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    call $getF
+    i32.const 1
+    i32.and
+    call $AluAdd
+  )
+
+  ;; sub a,xh (0x94)
+  (func $SubAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    i32.const 0
+    call $AluSub
+  )
+
+  ;; sub a,xl (0x95)
+  (func $SubAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    i32.const 0
+    call $AluSub
+  )
+
+  ;; sub a,(ix+d) (0x96)
+  (func $SubAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    i32.const 0
+    call $AluSub
+  )
+
+  ;; sbc a,xh (0x9c)
+  (func $SbcAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $getF
+    i32.const 1
+    i32.and
+    call $AluSub
+  )
+
+  ;; sbc a,xl (0x9d)
+  (func $SbcAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $getF
+    i32.const 1
+    i32.and
+    call $AluSub
+  )
+
+  ;; sub a,(ix+d) (0x9e)
+  (func $SbcAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    call $getF
+    i32.const 1
+    i32.and
+    call $AluSub
+  )
+
+  ;; and a,xh (0xa4)
+  (func $AndAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $AluAnd
+  )
+
+  ;; and a,xl (0xa5)
+  (func $AndAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $AluAnd
+  )
+
+  ;; and a,(ix+d) (0x9e)
+  (func $AndAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    call $AluAnd
+  )
+
+  ;; xor a,xh (0xac)
+  (func $XorAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $AluXor
+  )
+
+  ;; xor a,xl (0xad)
+  (func $XorAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $AluXor
+  )
+
+  ;; xor a,(ix+d) (0xae)
+  (func $XorAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    call $AluXor
+  )
+
+  ;; or a,xh (0xb4)
+  (func $OrAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $AluOr
+  )
+
+  ;; or a,xl (0xb5)
+  (func $OrAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $AluOr
+  )
+
+  ;; or a,(ix+d) (0xb6)
+  (func $OrAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    call $AluOr
+  )
+
+  ;; cp xh (0xbc)
+  (func $CpAXH
+    call $getIndexReg
+    i32.const 8
+    i32.shr_u
+    call $AluCp
+  )
+
+  ;; cp xl (0xbd)
+  (func $CpAXL
+    call $getIndexReg
+    i32.const 0xff
+    i32.and
+    call $AluCp
+  )
+
+  ;; cp (ix+d) (0xbe)
+  (func $CpAIXi
+    call $getIndexedAddress
+    call $AdjustIXTact
+    call $readMemory
+    call $AluCp
   )
 )
