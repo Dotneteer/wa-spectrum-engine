@@ -789,11 +789,11 @@
     ;; 0x18-0x1f
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x20-0x27
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $NOOP     $NOOP     $NOOP     $SwapNib  $Mirror   $NOOP     $NOOP     $TestN
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $Bsla     $Bsra     $Bsrl     $Bsrf     $Brlc     $NOOP     $NOOP     $NOOP
     ;; 0x30-0x37
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $Mul      $AddHLA   $AddDEA   $AddBCA   $AddHLNN  $AddDENN  $AddBCNN  $NOOP
     ;; 0x38-0x3f
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x40-0x47
@@ -2045,7 +2045,12 @@
   (func $processBitOperations)
 
   ;; Processes extended operations
-  (func $processExtendedOperations)
+  (func $processExtendedOperations
+    get_global $EXTENDED_JT
+    get_global $opCode
+    i32.add
+    call_indirect (type $OpFunc)
+  )
 
   ;; ==========================================================================
   ;; Instruction helpers
@@ -5238,6 +5243,289 @@
   (func $LdSPIX
     call $getIndexReg
     call $setSP
+    i32.const 2
+    call $incTacts
+  )
+
+  ;; ==========================================================================
+  ;; Extended instructions
+
+  ;; swapnib (0x23)
+  (func $SwapNib
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getA
+    i32.const 4
+    i32.shl
+    call $getA
+    i32.const 4
+    i32.shr_u
+    i32.or
+    call $setA
+  )
+
+  ;; mirror (0x24)
+  (func $Mirror
+    (local $a i32)
+    (local $newA i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    i32.const 0
+    set_local $newA
+    call $getA
+    i32.const 0xff00
+    i32.or
+    set_local $a
+    loop $mirror_loop
+      ;; Get the rightmost bit of A
+      get_local $a
+      i32.const 0x01
+      i32.and
+
+      ;; Pull it into new A from right
+      get_local $newA
+      i32.const 1
+      i32.shl
+      i32.or
+      set_local $newA
+
+      ;; Shift A
+      get_local $a
+      i32.const 1
+      i32.shr_u
+      tee_local $a
+
+      ;; Test branch condition
+      i32.const 0xff00
+      i32.and
+      br_if $mirror_loop
+    end
+
+    get_local $newA
+    call $setA
+  )
+
+  ;; test N (0x27)
+  (func $TestN
+    (local $a i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getA
+    set_local $a
+
+    call $readCodeMemory
+    call $AluAnd
+
+    get_local $a
+    call $setA
+  )
+
+  ;; bsla de,b (0x28)
+  (func $Bsla
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    call $getB
+    i32.const 0x07
+    i32.and
+    i32.shl
+    call $setDE
+  )
+
+  ;; bsra de,b (0x29)
+  (func $Bsra
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    i32.const 0x8000
+    i32.and
+    call $getDE
+    call $getB
+    i32.const 0x07
+    i32.and
+    i32.shr_u
+    i32.or
+    call $setDE
+  )
+
+  ;; bsrl de,b (0x2a)
+  (func $Bsrl
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    call $getB
+    i32.const 0x07
+    i32.and
+    i32.shr_u
+    call $setDE
+  )
+
+  ;; bsrf de,b (0x2b)
+  (func $Bsrf
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    i32.const 0xffff
+    i32.xor
+    call $getB
+    i32.const 0x0f
+    i32.and
+    i32.shr_u
+    i32.const 0xffff
+    i32.xor
+    call $setDE
+  )
+
+  ;; brlc de,b (0x2c)
+  (func $Brlc
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    call $getB
+    i32.const 0x0f
+    i32.and
+    i32.shl
+
+    call $getDE
+    i32.const 16
+    call $getB
+    i32.const 0x0f
+    i32.and
+    i32.sub
+    i32.shr_u
+    i32.or
+    call $setDE
+  )
+
+  ;; mul (0x30)
+  (func $Mul
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getD
+    call $getE
+    i32.mul
+    call $setDE
+  )
+
+  ;; add hl,a (0x31)
+  (func $AddHLA
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getHL
+    call $getA
+    i32.add
+    call $setHL
+  )
+
+  ;; add de,a (0x32)
+  (func $AddDEA
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    call $getA
+    i32.add
+    call $setDE
+  )
+
+  ;; add bc,a (0x33)
+  (func $AddBCA
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getBC
+    call $getA
+    i32.add
+    call $setBC
+  )
+
+  ;; add hl,NN (0x34)
+  (func $AddHLNN
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getHL
+    call $readCodeMemory
+    i32.add
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.add
+    call $setHL
+    i32.const 2
+    call $incTacts
+  )
+
+  ;; add de,NN (0x35)
+  (func $AddDENN
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getDE
+    call $readCodeMemory
+    i32.add
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.add
+    call $setDE
+    i32.const 2
+    call $incTacts
+  )
+
+  ;; add bc,NN (0x36)
+  (func $AddBCNN
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $getBC
+    call $readCodeMemory
+    i32.add
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.add
+    call $setBC
     i32.const 2
     call $incTacts
   )

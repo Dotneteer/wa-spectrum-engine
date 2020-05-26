@@ -6652,7 +6652,6 @@ function BsrfDeB(cpu: Z80Cpu): void {
 // brlc de,b
 //
 // Rotates DE left by the number of bits determined by bit 0..3 of B.
-// Shifts in 1s from the left
 // No flags are modified.
 // =================================
 // | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | ED 2a
