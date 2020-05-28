@@ -797,21 +797,21 @@
     ;; 0x38-0x3f
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $SbcHLQQ  $LdNNiQQ  $Neg      $Retn     $ImN      $LdIA
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $AdcHLQQ  $LdQQNNi  $Neg      $Retn     $ImN      $LdRA
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $SbcHLQQ  $LdNNiQQ  $Neg      $Retn     $ImN      $LdAXr
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $AdcHLQQ  $LdQQNNi  $Neg      $Retn     $ImN      $LdAXr
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $SbcHLQQ  $LdNNiQQ  $Neg      $Retn     $ImN      $Rrd
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $AdcHLQQ  $LdQQNNi  $Neg      $Retn     $ImN      $Rld
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $SbcHLQQ  $LdNNiQQ  $Neg      $Retn     $ImN      $NOOP
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $InQC     $OutCQ    $AdcHLQQ  $LdQQNNi  $Neg      $Retn     $ImN      $NOOP
     ;; 0x80-0x87
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x88-0x8f
@@ -2116,8 +2116,8 @@
     call $incPC
   )
 
-  ;; Add two 16-bit values followinf the add hl,NN logic
-  (func $AluAddHl (param $regHL i32) (param $other i32) (result i32)
+  ;; Add two 16-bit values following the add hl,NN logic
+  (func $AluAddHL (param $regHL i32) (param $other i32) (result i32)
     (local $f i32)
     (local $res i32)
 
@@ -2175,6 +2175,190 @@
     get_local $res
   )
 
+  ;; Add two 16-bit values following the sbc hl,NN logic
+  (func $AluAdcHL (param $other i32)
+    (local $res i32)
+    (local $f i32)
+    (local $signed i32)
+
+    ;; Calculate result
+    call $getHL
+    get_local $other
+    i32.add
+    tee_local $res
+    call $getF
+    i32.const 0x01
+    i32.and
+    tee_local $f
+    i32.add
+    tee_local $res
+
+    ;; Calculate Z
+    i32.const 0xffff
+    i32.and
+    if (result i32)  ;; (Z)
+      i32.const 0x00
+    else
+      i32.const 0x40
+    end
+
+    ;; Calculate H
+    (i32.and (call $getHL) (i32.const 0x0fff))
+    (i32.and (get_local $other) (i32.const 0x0fff))
+    i32.add
+    get_local $f
+    i32.add
+    i32.const 8
+    i32.shr_u
+    i32.const 0x10 ;; Mask for H
+    i32.and ;; (Z, H)
+
+    ;; Calculate C
+    i32.const 0x01
+    i32.const 0x00
+    get_local $res
+    i32.const 0x1_0000
+    i32.and
+    select ;; (Z, H, C)
+
+    ;; Calculate PV
+    call $getHL
+    i32.const 16
+    i32.shl
+    i32.const 16
+    i32.shr_s
+    get_local $other
+    i32.const 16
+    i32.shl
+    i32.const 16
+    i32.shr_s
+    i32.add
+    get_local $f
+    i32.add
+    tee_local $signed
+    i32.const -0x8000
+    i32.lt_s
+    get_local $signed
+    i32.const 0x8000
+    i32.ge_s
+    i32.or
+    if (result i32) ;; (Z, H, C, PV)
+      i32.const 0x04
+    else
+      i32.const 0x00
+    end
+
+    ;; Store the result
+    get_local $res
+    call $setHL
+
+    ;; Calculate S, R5, R3
+    call $getH
+    i32.const 0xA8 ;; Mask for S|R5|R3
+    i32.and
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    call $setF
+  )
+
+  ;; Subtract two 16-bit values following the sbc hl,NN logic
+  (func $AluSbcHL (param $other i32)
+    (local $res i32)
+    (local $f i32)
+    (local $signed i32)
+
+    ;; Calculate result
+    call $getHL
+    get_local $other
+    i32.sub
+    tee_local $res
+    call $getF
+    i32.const 0x01
+    i32.and
+    tee_local $f
+    i32.sub
+    tee_local $res
+
+    ;; Calculate Z
+    i32.const 0xffff
+    i32.and
+    if (result i32)  ;; (Z)
+      i32.const 0x00
+    else
+      i32.const 0x40
+    end
+
+    ;; Set N
+    i32.const 0x02 ;; (Z, N)
+
+    ;; Calculate H
+    (i32.and (call $getHL) (i32.const 0x0fff))
+    (i32.and (get_local $other) (i32.const 0x0fff))
+    i32.sub
+    get_local $f
+    i32.sub
+    i32.const 8
+    i32.shr_u
+    i32.const 0x10 ;; Mask for H
+    i32.and ;; (Z, N, H)
+
+    ;; Calculate C
+    i32.const 0x01
+    i32.const 0x00
+    get_local $res
+    i32.const 0x1_0000
+    i32.and
+    select ;; (Z, N, H, C)
+
+    ;; Calculate PV
+    call $getHL
+    i32.const 16
+    i32.shl
+    i32.const 16
+    i32.shr_s
+    get_local $other
+    i32.const 16
+    i32.shl
+    i32.const 16
+    i32.shr_s
+    i32.sub
+    get_local $f
+    i32.sub
+    tee_local $signed
+    i32.const -0x8000
+    i32.lt_s
+    get_local $signed
+    i32.const 0x8000
+    i32.ge_s
+    i32.or
+    if (result i32) ;; (Z, N, H, C, PV)
+      i32.const 0x04
+    else
+      i32.const 0x00
+    end
+
+    ;; Store the result
+    get_local $res
+    call $setHL
+
+    ;; Calculate S, R5, R3
+    call $getH
+    i32.const 0xA8 ;; Mask for S|R5|R3
+    i32.and
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    call $setF
+  )
+
   ;; Carries out a relative jump
   ;; $e: 8-bit distance value
   (func $relativeJump (param $e i32)
@@ -2201,8 +2385,6 @@
   (func $AdjustIXTact
     ;; Adjust tacts
     get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
     if
       i32.const 5
       call $incTacts
@@ -2651,6 +2833,16 @@
     call $setWZ
   )
 
+  ;; Read address from code
+  (func $readAddrFromCode (result i32)
+    call $readCodeMemory
+    call $readCodeMemory
+    i32.const 8
+    i32.shl
+    i32.or
+  )
+
+
   ;; ==========================================================================
   ;; Standard operations
 
@@ -2665,11 +2857,7 @@
     i32.shr_u
 
     ;; Get value to put into the reg
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.add
+    call $readAddrFromCode
 
     ;; Store value
     call $setReg16
@@ -2857,7 +3045,7 @@
     call $getHL
     get_local $qq
     call $getReg16
-    call $AluAddHl
+    call $AluAddHL
     call $setHL
 
     ;; Adjust tacts
@@ -3088,11 +3276,7 @@
   (func $LdNNiHL
     (local $addr i32)
     ;; Obtain the address to store HL
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.or
+    call $readAddrFromCode
     tee_local $addr
 
     ;; Set WZ to addr + 1
@@ -3356,11 +3540,7 @@
   (func $LdHLNNi
     (local $addr i32)
     ;; Read the address
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.or
+    call $readAddrFromCode
     tee_local $addr
 
     ;; Set WZ to addr + 1
@@ -3412,11 +3592,7 @@
     (local $addr i32)
 
     ;; Read the address
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.or
+    call $readAddrFromCode
     tee_local $addr
 
     ;; Set WZ to addr + 1
@@ -3548,11 +3724,7 @@
     (local $addr i32)
 
     ;; Read the address
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.or
+    call $readAddrFromCode
     tee_local $addr
 
     ;; Set WZ to addr + 1
@@ -4204,8 +4376,6 @@
 
     ;; Adjust tacts
     get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
     if
       i32.const 1
       call $incTacts
@@ -4231,8 +4401,6 @@
 
     ;; Adjust tacts
     get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
     if
       i32.const 2
       call $incTacts
@@ -4533,7 +4701,7 @@
     end
 
     ;; Add values
-    call $AluAddHl
+    call $AluAddHL
     call $setIndexReg
 
     ;; Adjust tacts
@@ -4543,11 +4711,7 @@
 
   ;; ld ix,NN (0x21)
   (func $LdIXNN
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.add
+    call $readAddrFromCode
     call $setIndexReg
   )
 
@@ -4555,11 +4719,7 @@
     (local $addr i32)
     (local $ix i32)
     ;; Obtain the address to store HL
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.or
+    call $readAddrFromCode
     tee_local $addr
 
     ;; Set WZ to addr + 1
@@ -4673,11 +4833,7 @@
   (func $LdIXNNi
     (local $addr i32)
     ;; Read the address
-    call $readCodeMemory
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
-    i32.or
+    call $readAddrFromCode
     tee_local $addr
 
     ;; Set WZ to addr + 1
@@ -4850,8 +5006,6 @@
 
     ;; Adjust tacts
     get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
     if
       i32.const 2
       call $incTacts
@@ -5175,8 +5329,6 @@
 
     ;; Adjust tacts
     get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
     if
       i32.const 1
       call $incTacts
@@ -5206,8 +5358,6 @@
 
     ;; Adjust tacts
     get_global $useGateArrayContention
-    i32.const 0
-    i32.ne
     if
       i32.const 2
       call $incTacts
@@ -5481,11 +5631,7 @@
     if return end    
 
     call $getHL
-    call $readCodeMemory
-    i32.add
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
+    call $readAddrFromCode
     i32.add
     call $setHL
     i32.const 2
@@ -5500,11 +5646,7 @@
     if return end    
 
     call $getDE
-    call $readCodeMemory
-    i32.add
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
+    call $readAddrFromCode
     i32.add
     call $setDE
     i32.const 2
@@ -5519,14 +5661,503 @@
     if return end    
 
     call $getBC
-    call $readCodeMemory
-    i32.add
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
+    call $readAddrFromCode
     i32.add
     call $setBC
     i32.const 2
     call $incTacts
+  )
+
+  ;; in Q,(c) (0x40)
+  (func $InQC
+    (local $q i32)
+    (local $pval i32)
+    ;; WZ := BC +1
+    call $getBC
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Get reg index
+    get_global $opCode
+    i32.const 3
+    i32.shr_u
+    i32.const 0x07
+    i32.and
+    set_local $q
+
+    ;; Read the port
+    call $getBC
+    call $readPort
+    set_local $pval
+
+    ;; Should store?
+    get_local $q
+    i32.const 6
+    i32.ne
+    if
+      get_local $q
+      get_local $pval
+      call $setReg8
+    end
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    get_local $pval
+    i32.add
+    i32.load8_u
+    call $getF
+    i32.const 0x01 ;; Mask for C flag
+    i32.and
+    i32.or
+    call $setF
+  )
+
+  ;; out (c),Q (0x41)
+  (func $OutCQ
+    (local $q i32)
+    ;; WZ := BC +1
+    call $getBC
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Port number
+    call $getBC
+
+    ;; Get reg index
+    get_global $opCode
+    i32.const 3
+    i32.shr_u
+    i32.const 0x07
+    i32.and
+    tee_local $q
+
+    ;; Should output?
+    i32.const 6
+    i32.eq
+    if (result i32)
+      i32.const 0
+    else
+      get_local $q
+      call $getReg8
+    end
+    
+    call $writePort
+  )
+
+  ;; sbc hl,QQ
+  (func $SbcHLQQ
+    ;; WZ := HL + 1
+    call $getHL
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Calculate HL
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+    call $getReg16
+    call $AluSbcHL
+
+    ;; Adjust tacts
+    i32.const 7
+    call $incTacts
+  )
+
+  ;; ld (NN),QQ 
+  (func $LdNNiQQ
+    (local $qq i32)
+    (local $addr i32)
+
+    ;; Obtain address
+    call $readAddrFromCode
+    tee_local $addr
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Obtain reg value
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+    call $getReg16
+    set_local $qq
+
+    get_local $addr
+    get_local $qq
+    i32.const 0xff
+    i32.and
+    call $writeMemory
+    call $getWZ
+    get_local $qq
+    i32.const 8
+    i32.shr_u
+    call $writeMemory
+  )
+
+  ;; neg
+  (func $Neg
+    (local $a i32)
+    ;; Calc the new value of A
+    i32.const 0
+    call $getA
+    i32.sub
+    i32.const 0xff
+    i32.and
+    tee_local $a
+
+    ;; Keep S, R5, R3
+    i32.const 0xA8 ;; Mask for S|R5|R3
+    i32.and ;; (S|R5|R3)
+    ;; Set N
+    i32.const 0x02 ;; (S|R5|R3, N)
+
+    ;; Calculate Z
+    i32.const 0x00
+    i32.const 0x40
+    get_local $a
+    i32.const 0
+    i32.ne
+    select ;; (S|R5|R3, N, Z)
+
+    ;; Calculate C
+    i32.const 0x01
+    i32.const 0x00
+    get_local $a
+    i32.const 0
+    i32.ne
+    select ;; (S|R5|R3, N, Z, C)
+
+    ;; Calculate PV
+    i32.const 0x04
+    i32.const 0x00
+    get_local $a
+    i32.const 0x80
+    i32.eq
+    select ;; (S|R5|R3, N, Z, C, PV)
+
+    ;; Calculate H
+    i32.const 0
+    call $getA
+    i32.const 0x0f
+    i32.and
+    i32.const 24
+    i32.shl
+    i32.const 24
+    i32.shr_s
+    i32.sub
+    i32.const 0x10
+    i32.and ;; (S|R5|R3, N, Z, C, PV, H)
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    call $setF
+
+    ;; Store the result
+    get_local $a
+    call $setA
+  )
+
+  ;; retn/reti
+  (func $Retn
+    get_global $iff2
+    set_global $iff1
+    call $popValue
+    call $setWZ
+    call $getWZ
+    call $setPC
+  )
+
+  ;; im N
+  (func $ImN
+    (local $mode i32)
+    get_global $opCode
+    i32.const 0x18
+    i32.and
+    i32.const 3
+    i32.shr_u
+    tee_local $mode
+    i32.const 2
+    i32.lt_u
+    if (result i32)
+      i32.const 1
+    else
+      get_local $mode
+    end
+    i32.const 1
+    i32.sub
+    set_global $interruptMode
+  )
+
+  ;; ld i,a 0x47
+  (func $LdIA
+    call $getA
+    call $setI    
+    i32.const 1
+    call $incTacts
+  )
+
+  ;; adc hl,QQ
+  (func $AdcHLQQ
+    ;; WZ := HL + 1
+    call $getHL
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Calculate HL
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u
+    call $getReg16
+    call $AluAdcHL
+
+    ;; Adjust tacts
+    i32.const 7
+    call $incTacts
+  )
+
+  ;; ld bc,(NN) (0x4b)
+  (func $LdQQNNi
+    (local $addr i32)
+    (local $reg i32)
+    ;; Get the mamory address
+    call $readAddrFromCode
+    tee_local $addr
+
+    ;; WZ := addr + 1
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Get reg value
+    get_global $opCode
+    i32.const 0x30
+    i32.and
+    i32.const 4
+    i32.shr_u ;; (16-bit reg_index)
+
+    get_local $addr
+    call $readMemory
+    call $getWZ
+    call $readMemory
+    i32.const 8
+    i32.shl
+    i32.or
+
+    ;; Store value
+    call $setReg16
+  )
+
+  ;; ld r,a 0x4f
+  (func $LdRA
+    call $getA
+    call $setR    
+    i32.const 1
+    call $incTacts
+  )
+
+  ;; ld a,i (0x57)
+  (func $LdAXr
+    (local $xr i32)
+    get_global $opCode
+    i32.const 0x08
+    i32.and
+    if (result i32)
+      call $getR
+    else
+      call $getI
+    end
+    tee_local $xr
+    call $setA
+
+    ;; Set flags
+    call $getF
+    i32.const 0x01 ;; Mask for C
+    i32.and ;; (C)
+
+    get_local $xr
+    i32.const 0xa8 ;; S|R5|R3
+    i32.and  ;; (C, S|R5|R3)
+
+    i32.const 0x04
+    i32.const 0x00
+    get_global $iff2
+    select  ;; (C, S|R5|R3, PV)
+
+    i32.const 0x00
+    i32.const 0x40
+    get_local $xr
+    select  ;; (C, S|R5|R3, PV, Z)
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    call $setF
+
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+  )
+
+  ;; rrd (0x67)
+  (func $Rrd
+    (local $hl i32)
+    (local $tmp i32)
+    call $getHL
+    tee_local $hl
+    call $readMemory
+    set_local $tmp
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    if
+      i32.const 4
+      call $incTacts
+    else
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+  
+    ;; WZ := HL + 1
+    get_local $hl
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Write back to memory
+    call $getHL
+    call $getA
+    i32.const 4
+    i32.shl
+    get_local $tmp
+    i32.const 4
+    i32.shr_u
+    i32.or
+    call $writeMemory
+
+    ;; Set A
+    call $getA
+    i32.const 0xf0
+    i32.and
+    get_local $tmp
+    i32.const 0x0f
+    i32.and
+    i32.or
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+
+    ;; Keep C
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
+  )
+
+  ;; rld (0x6f)
+  (func $Rld
+    (local $hl i32)
+    (local $tmp i32)
+    call $getHL
+    tee_local $hl
+    call $readMemory
+    set_local $tmp
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    if
+      i32.const 4
+      call $incTacts
+    else
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $hl
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+  
+    ;; WZ := HL + 1
+    get_local $hl
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; Write back to memory
+    call $getHL
+    call $getA
+    i32.const 0x0f
+    i32.and
+    get_local $tmp
+    i32.const 4
+    i32.shl
+    i32.or
+    call $writeMemory
+
+    ;; Set A
+    call $getA
+    i32.const 0xf0
+    i32.and
+    get_local $tmp
+    i32.const 4
+    i32.shr_u
+    i32.or
+    call $setA
+
+    ;; Adjust flags
+    get_global $LOG_FLAGS
+    call $getA
+    i32.add
+    i32.load8_u
+
+    ;; Keep C
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
   )
 )
