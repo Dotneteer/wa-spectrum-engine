@@ -100,6 +100,8 @@
   (type $PortWriteFunc (func (param $addr i32) (param $v i32)))
   (type $TbBlueWriteFunc (func (param $addr i32)))
   (type $OpFunc (func))
+  (type $IndexedBitFunc (func (param $addr i32)))
+  (type $BitOpFunc (func (param $a i32) (result i32)))
 
   ;; ==========================================================================
   ;; Constant values
@@ -666,6 +668,8 @@
   (global $EXTENDED_JT i32 (i32.const 542))
   (global $BIT_JT i32 (i32.const 798))
   (global $INDEXED_BIT_JT i32 (i32.const 1054))
+  (global $BOP_JT i32 (i32.const 1310))
+
 
   ;; 30: 5 machine types (6 function for each)
   ;; 256: Standard operations
@@ -674,7 +678,7 @@
   ;; 256: Bit operations
   ;; 256: Indexed bit operations
 
-  (table $dispatch 1310 anyfunc)
+  (table $dispatch 1318 anyfunc)
   (elem (i32.const 0)
     ;; Index 0: Machine type #0
     $defaultRead
@@ -924,21 +928,21 @@
 ;; Table of bit instructions
 (elem (i32.const 798)
     ;; 0x00-0x07
-    $RlcQ     $RlcQ     $RlcQ     $RlcQ     $RlcQ     $RlcQ     $RlcHLi   $RlcQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x08-0x0f
-    $RrcQ     $RrcQ     $RrcQ     $RrcQ     $RrcQ     $RrcQ     $RrcHLi   $RrcQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x10-0x17
-    $RlQ      $RlQ      $RlQ      $RlQ      $RlQ      $RlQ      $RlHLi    $RlQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x18-0x1f
-    $RrQ      $RrQ      $RrQ      $RrQ      $RrQ      $RrQ      $RrHLi    $RrQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x20-0x27
-    $SlaQ     $SlaQ     $SlaQ     $SlaQ     $SlaQ     $SlaQ     $SlaHLi   $SlaQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x28-0x2f
-    $SraQ     $SraQ     $SraQ     $SraQ     $SraQ     $SraQ     $SraHLi   $SraQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x30-0x37
-    $SllQ     $SllQ     $SllQ     $SllQ     $SllQ     $SllQ     $SllHLi   $SllQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x38-0x3f
-    $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlHLi   $SrlQ
+    $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x40-0x47
     $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x48-0x4f
@@ -992,69 +996,81 @@
 ;; Table of indexed bit instructions
 (elem (i32.const 1054)
     ;; 0x00-0x07
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x08-0x0f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x10-0x17
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x18-0x1f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x20-0x27
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x30-0x37
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x38-0x3f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ   $XBitNQ
     ;; 0x80-0x87
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ   $XResNQ
     ;; 0xc0-0xc7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xc8-0xcf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xd0-0xd7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xd8-0xdf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xe0-0xe7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xe8-0xef
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xf0-0xf7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
     ;; 0xf8-0xff
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ   $XSetNQ
+  )
+
+  ;; Table of bit operations
+  (elem (i32.const 1310)
+    $Rlc
+    $Rrc
+    $Rl
+    $Rr
+    $Sla
+    $Sra
+    $Sll
+    $Srl
   )
 
   ;; Represents a no-operation function
@@ -2147,12 +2163,10 @@
   ;; Processes standard or indexed operations
   (func $processStandardOrIndexedOperations
     get_global $indexMode
-    i32.const 0
-    i32.eq
     if (result i32)
-      get_global $STANDARD_JT
-    else
       get_global $INDEXED_JT
+    else
+      get_global $STANDARD_JT
     end
     get_global $opCode
     i32.add
@@ -2161,10 +2175,44 @@
 
   ;; Processes bit operations
   (func $processBitOperations
-    get_global $BIT_JT
-    get_global $opCode
-    i32.add
-    call_indirect (type $OpFunc)
+    get_global $indexMode
+    if
+      ;; indexed bit operations
+      ;; WZ := IX + opCode
+      call $getIndexReg
+      get_global $opCode
+      i32.const 24
+      i32.shl
+      i32.const 24
+      i32.shr_s
+      i32.add
+      call $setWZ
+
+      ;; Adjust tacts
+      get_global $useGateArrayContention
+      i32.const 0
+      i32.eq
+      if
+        call $getPC
+        call $memoryDelay
+      end
+      i32.const 1
+      call $incTacts
+
+      call $getWZ
+      get_global $INDEXED_BIT_JT
+      call $readCodeMemory
+      set_global $opCode
+      get_global $opCode
+      i32.add
+      call_indirect (type $IndexedBitFunc)
+    else
+      ;; Normal bit operations
+      get_global $BIT_JT
+      get_global $opCode
+      i32.add
+      call_indirect (type $OpFunc)
+    end
   )
 
   ;; Processes extended operations
@@ -7454,18 +7502,28 @@
   ;; ==========================================================================
   ;; Bit operations
 
-  ;; rlc Q (0x00-0x07)
-  (func $RlcQ
+  ;; Bop Q
+  (func $BopQ
     (local $q i32)
     (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
     get_local $q
     call $getReg8
-    call $Rlc
+
+    ;; Call the bit operation
+    get_global $BOP_JT
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
+    i32.add
+    call_indirect (type $BitOpFunc)
+
+    ;; Store result
     call $setReg8
   )
 
-  ;; rlc (hl) (0x06)
-  (func $RlcHLi
+  ;; Bop (hl)
+  (func $BopHLi
     call $getHL
     call $getHL
     call $readMemory
@@ -7479,210 +7537,17 @@
       i32.const 1
       call $incTacts
     end
-    call $Rlc
-    call $writeMemory
-  )
 
-  ;; rrc Q (0x08-0x0f)
-  (func $RrcQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Rrc
-    call $setReg8
-  )
+    ;; Call the bit operation
+    get_global $BOP_JT
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
+    i32.add
+    call_indirect (type $BitOpFunc)
 
-  ;; rrc (hl) (0x0e)
-  (func $RrcHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Rrc
-    call $writeMemory
-  )
-
-  ;; rl Q (0x10-0x17)
-  (func $RlQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Rl
-    call $setReg8
-  )
-
-  ;; rl (hl) (0x16)
-  (func $RlHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Rl
-    call $writeMemory
-  )
-
-  ;; rr Q (0x18-0x1f)
-  (func $RrQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Rr
-    call $setReg8
-  )
-
-  ;; rr (hl) (0x1e)
-  (func $RrHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Rr
-    call $writeMemory
-  )
-
-  ;; sla Q (0x20-0x27)
-  (func $SlaQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Sla
-    call $setReg8
-  )
-
-  ;; sla (hl) (0x26)
-  (func $SlaHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Sla
-    call $writeMemory
-  )
-
-  ;; sra Q (0x28-0x2f)
-  (func $SraQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Sra
-    call $setReg8
-  )
-
-  ;; sra (hl) (0x2e)
-  (func $SraHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Sra
-    call $writeMemory
-  )
-
-  ;; sll Q (0x30-0x37)
-  (func $SllQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Sll
-    call $setReg8
-  )
-
-  ;; sll (hl) (0x36)
-  (func $SllHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Sll
-    call $writeMemory
-  )
-
-  ;; srl Q (0x38-0x3f)
-  (func $SrlQ
-    (local $q i32)
-    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
-    get_local $q
-    call $getReg8
-    call $Srl
-    call $setReg8
-  )
-
-  ;; srl (hl) (0x3e)
-  (func $SrlHLi
-    call $getHL
-    call $getHL
-    call $readMemory
-    get_global $useGateArrayContention
-    if
-      i32.const 1
-      call $incTacts
-    else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-    end
-    call $Srl
+    ;; Store the result
     call $writeMemory
   )
 
@@ -7706,15 +7571,15 @@
     call $Bit
 
     get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
     if
-      i32.const 1
-      call $incTacts
-    else
       call $getHL
       call $memoryDelay
-      i32.const 1
-      call $incTacts
     end
+
+    i32.const 1
+    call $incTacts
   )
 
   ;; res N,Q (0x80-bf)
@@ -7814,4 +7679,61 @@
       call $incTacts
     end
   )
+
+  ;; ==========================================================================
+  ;; Indexed bit operations
+
+  ;; rlc (ix+d),Q
+  (func $XBopQ (param $addr i32)
+    (local $q i32)
+    (local $res i32)
+    (i32.and (get_global $opCode) (i32.const 0x07))
+    set_local $q
+
+    ;; Read the operand
+    get_local $addr
+    call $readMemory
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      get_local $addr
+      call $memoryDelay
+    end
+    i32.const 1
+    call $incTacts
+
+    ;; Get the type of operation
+    get_global $BOP_JT
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
+    i32.add
+    call_indirect (type $BitOpFunc)
+    set_local $res
+
+    ;; Write back to memory
+    get_local $addr
+    get_local $res
+    call $writeMemory
+
+    ;; Store conditionally to reg
+    get_local $q
+    i32.const 6
+    i32.ne
+    if
+      get_local $q
+      get_local $res
+      call $setReg8
+    end
+  )
+
+  (func $XBitNQ (param $addr i32))
+
+  (func $XResNQ (param $addr i32))
+
+  (func $XSetNQ (param $addr i32))
 )
