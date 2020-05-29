@@ -940,53 +940,53 @@
     ;; 0x38-0x3f
     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlHLi   $SrlQ
     ;; 0x40-0x47
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x48-0x4f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x50-0x57
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x58-0x5f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x60-0x67
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x68-0x6f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x70-0x77
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x78-0x7f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNQ    $BitNHLi  $BitNQ
     ;; 0x80-0x87
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNQ    $ResNHLi  $ResNQ
     ;; 0xc0-0xc7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xc8-0xcf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xd0-0xd7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xd8-0xdf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xe0-0xe7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xe8-0xef
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xf0-0xf7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
     ;; 0xf8-0xff
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNQ    $SetNHLi  $SetNQ
   )
 
 ;; Table of indexed bit instructions
@@ -7407,6 +7407,50 @@
     i32.shr_u
   )
 
+  ;; Bit logic - sets flags
+  ;; $a: argument
+  ;; $n: bit index
+  (func $Bit (param $a i32) (param $n i32)
+    (local $val i32)
+    get_local $a
+    i32.const 0x01
+    get_local $n
+    i32.shl
+    i32.and
+    tee_local $val
+
+    ;; Z and PV
+    if (result i32) ;; (Z|PV|S)
+      i32.const 0x80
+      i32.const 0x00
+      get_local $n
+      i32.const 7
+      i32.eq
+      select
+    else
+      i32.const 0x44
+    end
+
+    ;; Keep C
+    call $getF
+    i32.const 0x01
+    i32.and ;; (Z|PV|s, C)
+
+    ;; Calculate R3, R5
+    get_local $val
+    i32.const 0x28
+    i32.and ;; (Z|PV|S, C, R3|R5)
+
+    ;; Set H
+    i32.const 0x10 ;; (Z|PV|S, C, R3|R5, H)
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    call $setF
+  )
+
   ;; ==========================================================================
   ;; Bit operations
 
@@ -7640,5 +7684,134 @@
     end
     call $Srl
     call $writeMemory
+  )
+
+  ;; Bit N,Q (0x40-7f)
+  (func $BitNQ
+    (i32.and (get_global $opCode) (i32.const 0x07)) ;;
+    call $getReg8
+    (i32.and (get_global $opCode) (i32.const 0x38))
+    i32.const 3
+    i32.shr_u
+    call $Bit
+  )
+
+  ;; bit N,(hl)
+  (func $BitNHLi
+    call $getHL
+    call $readMemory
+    (i32.and (get_global $opCode) (i32.const 0x38))
+    i32.const 3
+    i32.shr_u
+    call $Bit
+
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+  )
+
+  ;; res N,Q (0x80-bf)
+  (func $ResNQ
+    (local $q i32)
+    (i32.and (get_global $opCode) (i32.const 0x07))
+    tee_local $q  ;; (Q)
+    get_local $q
+    call $getReg8 ;; (Q,regQ)
+
+    (i32.shl 
+      (i32.const 1)
+      (i32.shr_u
+        (i32.and (get_global $opCode) (i32.const 0x38))
+        (i32.const 3)
+      )
+    )
+    i32.const 0xff
+    i32.xor
+    i32.and
+    call $setReg8
+  )
+
+  ;; res N,(hl)
+  (func $ResNHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+
+    (i32.shl 
+      (i32.const 1)
+      (i32.shr_u
+        (i32.and (get_global $opCode) (i32.const 0x38))
+        (i32.const 3)
+      )
+    )
+    i32.const 0xff
+    i32.xor
+    i32.and
+    call $writeMemory
+
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+  )
+
+  ;; set N,Q (0xc0-ff)
+  (func $SetNQ
+    (local $q i32)
+    (i32.and (get_global $opCode) (i32.const 0x07))
+    tee_local $q  ;; (Q)
+    get_local $q
+    call $getReg8 ;; (Q,regQ)
+
+    (i32.shl 
+      (i32.const 1)
+      (i32.shr_u
+        (i32.and (get_global $opCode) (i32.const 0x38))
+        (i32.const 3)
+      )
+    )
+    i32.or
+    call $setReg8
+  )
+
+  ;; set N,(hl)
+  (func $SetNHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+
+    (i32.shl 
+      (i32.const 1)
+      (i32.shr_u
+        (i32.and (get_global $opCode) (i32.const 0x38))
+        (i32.const 3)
+      )
+    )
+    i32.or
+    call $writeMemory
+
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
   )
 )
