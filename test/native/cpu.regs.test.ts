@@ -391,28 +391,34 @@ describe("Z80 CPU register access", () => {
     expect(api.getWZ()).toBe(0xac12);
   });
 
-  it("Generate aluLogOpFlags table", () => {
-    const aluLogOpFlags: number[] = [];
+  it("Generate flags table", () => {
+    const sraFlags: number[] = [];
     for (let b = 0; b < 0x100; b++) {
-      const fl = b & (FlagsSetMask.R3 | FlagsSetMask.R5 | FlagsSetMask.S);
+      let sraVal = b;
+      let cf = (sraVal & 0x01) !== 0 ? FlagsSetMask.C : 0;
+      sraVal = (sraVal >> 1) + (sraVal & 0x80);
       let p = FlagsSetMask.PV;
       for (let i = 0x80; i !== 0; i /= 2) {
-        if ((b & i) !== 0) {
+        if ((sraVal & i) !== 0) {
           p ^= FlagsSetMask.PV;
         }
       }
-      aluLogOpFlags[b] = (fl | p) & 0xff;
+      let flags =
+        ((sraVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3)) | p | cf) &
+        0xff;
+      if ((sraVal & 0xff) === 0) {
+        flags |= FlagsSetMask.Z;
+      }
+      sraFlags[b] = flags & 0xff;
     }
-    aluLogOpFlags[0] |= FlagsSetMask.Z;
-    console.log(aluLogOpFlags)
+                        
+    console.log(sraFlags)
     let vals = "";
-    for (let i=0; i < aluLogOpFlags.length; i++) {
-      const val = aluLogOpFlags[i]
+    for (let i=0; i < sraFlags.length; i++) {
+      const val = sraFlags[i]
       vals += `\\${(val < 16 ? "0" : "") + val.toString(16)}`;
     }
-    let result = `(data (i32.const 0x1_0d00) "${vals}")`
+    let result = `(data (i32.const 0x1_1400) "${vals}")`
     console.log(result);
   });
-
-
 });

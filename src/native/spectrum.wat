@@ -149,7 +149,35 @@
   (global $LOG_FLAGS i32 (i32.const 0x1_0d00))
   (data (i32.const 0x1_0d00) "\44\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\04\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac")
 
-  ;; Next slot: 0x1_0e00
+  ;; 8-bit RLC operation flags table
+  (global $RLC_FLAGS i32 (i32.const 0x1_0e00))
+  (data (i32.const 0x1_0e00) "\44\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\05\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad")
+
+  ;; 8-bit RRC operation flags table
+  (global $RRC_FLAGS i32 (i32.const 0x1_0f00))
+  (data (i32.const 0x1_0f00) "\44\81\00\85\00\85\04\81\00\85\04\81\04\81\00\85\08\8d\0c\89\0c\89\08\8d\0c\89\08\8d\08\8d\0c\89\00\85\04\81\04\81\00\85\04\81\00\85\00\85\04\81\0c\89\08\8d\08\8d\0c\89\08\8d\0c\89\0c\89\08\8d\20\a5\24\a1\24\a1\20\a5\24\a1\20\a5\20\a5\24\a1\2c\a9\28\ad\28\ad\2c\a9\28\ad\2c\a9\2c\a9\28\ad\24\a1\20\a5\20\a5\24\a1\20\a5\24\a1\24\a1\20\a5\28\ad\2c\a9\2c\a9\28\ad\2c\a9\28\ad\28\ad\2c\a9\00\85\04\81\04\81\00\85\04\81\00\85\00\85\04\81\0c\89\08\8d\08\8d\0c\89\08\8d\0c\89\0c\89\08\8d\04\81\00\85\00\85\04\81\00\85\04\81\04\81\00\85\08\8d\0c\89\0c\89\08\8d\0c\89\08\8d\08\8d\0c\89\24\a1\20\a5\20\a5\24\a1\20\a5\24\a1\24\a1\20\a5\28\ad\2c\a9\2c\a9\28\ad\2c\a9\28\ad\28\ad\2c\a9\20\a5\24\a1\24\a1\20\a5\24\a1\20\a5\20\a5\24\a1\2c\a9\28\ad\28\ad\2c\a9\28\ad\2c\a9\2c\a9\28\ad")
+
+  ;; 8-bit RL operation flags with no carry table
+  (global $RL0_FLAGS i32 (i32.const 0x1_1000))
+  (data (i32.const 0x1_1000) "\44\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\45\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9")
+
+  ;; 8-bit RL operation flags with carry table
+  (global $RL1_FLAGS i32 (i32.const 0x1_1100))
+  (data (i32.const 0x1_1100) "\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\04\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\05\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad")
+
+  ;; 8-bit RR operation flags with no carry table
+  (global $RR0_FLAGS i32 (i32.const 0x1_1200))
+  (data (i32.const 0x1_1200) "\44\45\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\04\05\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29")
+
+  ;; 8-bit RL operation flags with carry table
+  (global $RR1_FLAGS i32 (i32.const 0x1_1300))
+  (data (i32.const 0x1_1300) "\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad")
+
+  ;; 8-bit SRA operation flags table
+  (global $SRA_FLAGS i32 (i32.const 0x1_1400))
+  (data (i32.const 0x1_1400) "\44\45\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad")
+
+  ;; Next slot: 0x1_1500
 
   ;; Z80 State flags
   (global $Z80_STATE_INT i32 (i32.const 0x01))
@@ -896,21 +924,21 @@
 ;; Table of bit instructions
 (elem (i32.const 798)
     ;; 0x00-0x07
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $RlcQ     $RlcQ     $RlcQ     $RlcQ     $RlcQ     $RlcQ     $RlcHLi   $RlcQ
     ;; 0x08-0x0f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $RrcQ     $RrcQ     $RrcQ     $RrcQ     $RrcQ     $RrcQ     $RrcHLi   $RrcQ
     ;; 0x10-0x17
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $RlQ      $RlQ      $RlQ      $RlQ      $RlQ      $RlQ      $RlHLi    $RlQ
     ;; 0x18-0x1f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $RrQ      $RrQ      $RrQ      $RrQ      $RrQ      $RrQ      $RrHLi    $RrQ
     ;; 0x20-0x27
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SlaQ     $SlaQ     $SlaQ     $SlaQ     $SlaQ     $SlaQ     $SlaHLi   $SlaQ
     ;; 0x28-0x2f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SraQ     $SraQ     $SraQ     $SraQ     $SraQ     $SraQ     $SraHLi   $SraQ
     ;; 0x30-0x37
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SllQ     $SllQ     $SllQ     $SllQ     $SllQ     $SllQ     $SllHLi   $SllQ
     ;; 0x38-0x3f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlQ     $SrlHLi   $SrlQ
     ;; 0x40-0x47
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x48-0x4f
@@ -2132,7 +2160,12 @@
   )
 
   ;; Processes bit operations
-  (func $processBitOperations)
+  (func $processBitOperations
+    get_global $BIT_JT
+    get_global $opCode
+    i32.add
+    call_indirect (type $OpFunc)
+  )
 
   ;; Processes extended operations
   (func $processExtendedOperations
@@ -7231,5 +7264,381 @@
     i32.const -1
     call $LdxBase
     call $LdrxTail
+  )
+
+  ;; ==========================================================================
+  ;; Bit operation helpers
+
+  ;; RLC logic - sets flags
+  ;; $a: argument
+  (func $Rlc (param $a i32) (result i32)
+    (local $res i32)
+    (i32.shl (get_local $a) (i32.const 1))
+    (i32.shr_u (get_local $a) (i32.const 7))
+    i32.or
+    i32.const 0xff
+    i32.and
+    set_local $res
+    (i32.load8_u (i32.add (get_global $RLC_FLAGS) (get_local $a)))
+    call $setF
+    get_local $res
+  )
+
+  ;; RRC logic - sets flags
+  ;; $a: argument
+  (func $Rrc (param $a i32) (result i32)
+    (local $res i32)
+    (i32.shl (get_local $a) (i32.const 7))
+    (i32.shr_u (get_local $a) (i32.const 1))
+    i32.or
+    i32.const 0xff
+    i32.and
+    set_local $res
+    (i32.load8_u (i32.add (get_global $RRC_FLAGS) (get_local $a)))
+    call $setF
+    get_local $res
+  )
+
+  ;; RL logic - sets flags
+  ;; $a: argument
+  (func $Rl (param $a i32) (result i32)
+    (local $c i32)
+    (i32.and (call $getF) (i32.const 0x01))
+    tee_local $c
+    if (result i32)
+      get_global $RL1_FLAGS
+    else
+      get_global $RL0_FLAGS
+    end
+    get_local $a
+    i32.add
+    i32.load8_u
+    call $setF
+    get_local $a
+    i32.const 1
+    i32.shl
+    get_local $c
+    i32.or
+  )
+
+  ;; RR logic - sets flags
+  ;; $a: argument
+  (func $Rr (param $a i32) (result i32)
+    (local $c i32)
+    (i32.and (call $getF) (i32.const 0x01))
+    i32.const 7
+    i32.shl
+    tee_local $c
+    if (result i32)
+      get_global $RR1_FLAGS
+    else
+      get_global $RR0_FLAGS
+    end
+    get_local $a
+    i32.add
+    i32.load8_u
+    call $setF
+    get_local $a
+    i32.const 1
+    i32.shr_u
+    get_local $c
+    i32.or
+  )
+
+  ;; SLA logic - sets flags
+  ;; $a: argument
+  (func $Sla (param $a i32) (result i32)
+    get_global $RL0_FLAGS
+    get_local $a
+    i32.add
+    i32.load8_u
+    call $setF
+
+    get_local $a
+    i32.const 1
+    i32.shl
+  )
+
+  ;; SRA logic - sets flags
+  ;; $a: argument
+  (func $Sra (param $a i32) (result i32)
+    get_global $SRA_FLAGS
+    get_local $a
+    i32.add
+    i32.load8_u
+    call $setF
+
+    get_local $a
+    i32.const 1
+    i32.shr_u
+    get_local $a
+    i32.const 0x80
+    i32.and
+    i32.or
+  )
+
+  ;; SLL logic - sets flags
+  ;; $a: argument
+  (func $Sll (param $a i32) (result i32)
+    get_global $RL1_FLAGS
+    get_local $a
+    i32.add
+    i32.load8_u
+    call $setF
+
+    get_local $a
+    i32.const 1
+    i32.shl
+    i32.const 1
+    i32.or
+  )
+
+  ;; SRL logic - sets flags
+  ;; $a: argument
+  (func $Srl (param $a i32) (result i32)
+    get_global $RR0_FLAGS
+    get_local $a
+    i32.add
+    i32.load8_u
+    call $setF
+
+    get_local $a
+    i32.const 1
+    i32.shr_u
+  )
+
+  ;; ==========================================================================
+  ;; Bit operations
+
+  ;; rlc Q (0x00-0x07)
+  (func $RlcQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Rlc
+    call $setReg8
+  )
+
+  ;; rlc (hl) (0x06)
+  (func $RlcHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Rlc
+    call $writeMemory
+  )
+
+  ;; rrc Q (0x08-0x0f)
+  (func $RrcQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Rrc
+    call $setReg8
+  )
+
+  ;; rrc (hl) (0x0e)
+  (func $RrcHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Rrc
+    call $writeMemory
+  )
+
+  ;; rl Q (0x10-0x17)
+  (func $RlQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Rl
+    call $setReg8
+  )
+
+  ;; rl (hl) (0x16)
+  (func $RlHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Rl
+    call $writeMemory
+  )
+
+  ;; rr Q (0x18-0x1f)
+  (func $RrQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Rr
+    call $setReg8
+  )
+
+  ;; rr (hl) (0x1e)
+  (func $RrHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Rr
+    call $writeMemory
+  )
+
+  ;; sla Q (0x20-0x27)
+  (func $SlaQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Sla
+    call $setReg8
+  )
+
+  ;; sla (hl) (0x26)
+  (func $SlaHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Sla
+    call $writeMemory
+  )
+
+  ;; sra Q (0x28-0x2f)
+  (func $SraQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Sra
+    call $setReg8
+  )
+
+  ;; sra (hl) (0x2e)
+  (func $SraHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Sra
+    call $writeMemory
+  )
+
+  ;; sll Q (0x30-0x37)
+  (func $SllQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Sll
+    call $setReg8
+  )
+
+  ;; sll (hl) (0x36)
+  (func $SllHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Sll
+    call $writeMemory
+  )
+
+  ;; srl Q (0x38-0x3f)
+  (func $SrlQ
+    (local $q i32)
+    (tee_local $q (i32.and (get_global $opCode) (i32.const 0x07)))
+    get_local $q
+    call $getReg8
+    call $Srl
+    call $setReg8
+  )
+
+  ;; srl (hl) (0x3e)
+  (func $SrlHLi
+    call $getHL
+    call $getHL
+    call $readMemory
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+    call $Srl
+    call $writeMemory
   )
 )
