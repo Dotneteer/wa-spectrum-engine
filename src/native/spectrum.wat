@@ -98,6 +98,7 @@
   (type $MemWriteFunc (func (param $addr i32) (param $v i32)))
   (type $PortReadFunc (func (param $addr i32) (result i32)))
   (type $PortWriteFunc (func (param $addr i32) (param $v i32)))
+  (type $TbBlueWriteFunc (func (param $addr i32)))
   (type $OpFunc (func))
 
   ;; ==========================================================================
@@ -550,7 +551,7 @@
     get_local $value
   )
 
-  ;; Default memory write operation
+  ;; Test machine memory write operation
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
   ;; $suppCont: Suppress memory contention flag
@@ -580,6 +581,52 @@
     ;; Increment log length
     (i32.add (get_global $ioLogLength) (i32.const 1))
     set_global $ioLogLength
+  )
+
+  ;; Test machine TBBLUE register index write operation
+  ;; $val: 8-bit index vlaue
+  (func $testMachineTbBlueIndexWrite (param $val i32)
+    (local $logAddr i32)
+
+    ;; Calculate the address in the I/O log
+    (i32.add (get_global $TEST_TBBLUE_LOG_OFFS)
+      (i32.mul (get_global $tbBlueLogLength) (i32.const 2))
+    )
+    tee_local $logAddr
+
+    ;; Store value in the log
+    i32.const 1
+    i32.store8 offset=0
+    get_local $logAddr
+    get_local $val
+    i32.store8 offset=1
+
+    ;; Increment log length
+    (i32.add (get_global $tbBlueLogLength) (i32.const 1))
+    set_global $tbBlueLogLength
+  )
+
+  ;; Test machine TBBLUE value write operation
+  ;; $val: 8-bit index vlaue
+  (func $testMachineTbBlueValueWrite (param $val i32)
+    (local $logAddr i32)
+
+    ;; Calculate the address in the I/O log
+    (i32.add (get_global $TEST_TBBLUE_LOG_OFFS)
+      (i32.mul (get_global $tbBlueLogLength) (i32.const 2))
+    )
+    tee_local $logAddr
+
+    ;; Store value in the log
+    i32.const 0
+    i32.store8 offset=0
+    get_local $logAddr
+    get_local $val
+    i32.store8 offset=1
+
+    ;; Increment log length
+    (i32.add (get_global $tbBlueLogLength) (i32.const 1))
+    set_global $tbBlueLogLength
   )
 
   ;; ==========================================================================
@@ -638,8 +685,8 @@
     $testMachineWrite
     $testMachineIoRead
     $testMachineIoWrite
-    $NOOP
-    $NOOP
+    $testMachineTbBlueIndexWrite
+    $testMachineTbBlueValueWrite
   )
 
 ;; Table of standard instructions
@@ -815,19 +862,19 @@
     ;; 0x80-0x87
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x88-0x8f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $NOOP     $NOOP     $PushNN   $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x90-0x97
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $OutInB   $NextReg  $NextRegA $PixelDn  $PixelAd  $SetAE    $NOOP     $NOOP
     ;; 0x98-0x9f
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $JpInC    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xa0-0xa7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $Ldi      $Cpi      $Ini      $Outi     $Ldix     $Ldws     $NOOP     $NOOP
     ;; 0xa8-0xaf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $Ldd      $Cpd      $Ind      $Outd     $Lddx     $NOOP     $NOOP     $NOOP
     ;; 0xb0-0xb7
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $Ldir     $Cpir     $Inir     $Otir     $Ldirx    $NOOP     $NOOP     $Ldpirx
     ;; 0xb8-0xbf
-    $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
+    $Lddr     $Cpdr     $Indr     $Otdr     $Lddrx    $NOOP     $NOOP     $NOOP
     ;; 0xc0-0xc7
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0xc8-0xcf
@@ -1668,6 +1715,49 @@
     call $incTacts
   )
 
+  ;; Writes the specified TBBLUE index of the current machine type
+  ;; $idx: 8-bit index register value
+  (func $writeTbBlueIndex (param $idx i32)
+    i32.const 0x243b
+    get_local $idx
+    (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 3)
+    )
+    call_indirect (type $PortWriteFunc)
+    i32.const 3
+    call $incTacts
+
+    ;; Allow to write the log
+    get_local $idx
+    (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 4)
+    )
+    call_indirect (type $TbBlueWriteFunc)
+  )
+
+  ;; Writes the specified TBBLUE value of the current machine type
+  ;; $idx: 8-bit index register value
+  (func $writeTbBlueValue (param $idx i32)
+    i32.const 0x253b
+    get_local $idx
+    (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 3)
+    )
+    call_indirect (type $PortWriteFunc)
+    i32.const 3
+    call $incTacts
+
+    get_local $idx
+    (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 5)
+    )
+    call_indirect (type $TbBlueWriteFunc)
+  )
+
   ;; ==========================================================================
   ;; Execution cycle methods
 
@@ -2383,29 +2473,35 @@
 
   ;; Adjust tacts for IX-indirect addressing
   (func $AdjustIXTact
+    call $getPC
+    call $Adjust5Tacts
+  )
+
+  ;; Adjust tacts for IX-indirect addressing
+  (func $Adjust5Tacts (param $addr i32)
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
       i32.const 5
       call $incTacts
     else
-      call $getPC
+      get_local $addr
       call $memoryDelay
       i32.const 1
       call $incTacts
-      call $getPC
+      get_local $addr
       call $memoryDelay
       i32.const 1
       call $incTacts
-      call $getPC
+      get_local $addr
       call $memoryDelay
       i32.const 1
       call $incTacts
-      call $getPC
+      get_local $addr
       call $memoryDelay
       i32.const 1
       call $incTacts
-      call $getPC
+      get_local $addr
       call $memoryDelay
       i32.const 1
       call $incTacts
@@ -6159,5 +6255,981 @@
     i32.and
     i32.or
     call $setF
+  )
+
+  ;; push NN (0x8a)
+  (func $PushNN
+    (local $v i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end    
+
+    call $readAddrFromCode
+    set_local $v
+    call $decSP
+    call $getSP
+    get_local $v
+    i32.const 8
+    i32.shr_u
+    call $writeMemory
+    call $decSP
+    call $getSP
+    get_local $v
+    call $writeMemory
+  )
+
+  ;; outinb (0x90)
+  (func $OutInB
+    (local $hl i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    ;; Adjust tacts
+    i32.const 1
+    call $incTacts
+
+    ;; Write (HL) to port BC
+    call $getBC
+    call $getHL
+    tee_local $hl
+    call $readMemory
+    call $writePort
+
+    ;; Increment HL
+    get_local $hl
+    i32.const 1
+    i32.add
+    call $setHL
+  )
+
+  ;; nextreg (0x91)
+  (func $NextReg
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    ;; Write TBBLUE index register
+    call $readCodeMemory
+    call $writeTbBlueIndex
+
+    ;; Write TBBLUE value register
+    call $readCodeMemory
+    call $writeTbBlueValue
+  )
+
+  ;; nextreg A (0x92)
+  (func $NextRegA
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    ;; Write TBBLUE index register
+    call $readCodeMemory
+    call $writeTbBlueIndex
+
+    ;; Write TBBLUE value register
+    call $getA
+    call $writeTbBlueValue
+  )
+
+  ;; pixeldn (0x93)
+  (func $PixelDn
+    (local $hl i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    call $getHL
+    tee_local $hl
+    i32.const 0x0700
+    i32.and
+    i32.const 0x0700
+    i32.ne
+    if (result i32)
+      ;; Next pixel row within a character row
+      get_local $hl
+      i32.const 0x100
+      i32.add
+    else
+     get_local $hl
+     i32.const 0xe0
+     i32.and
+     i32.const 0xe0
+     i32.ne
+     if (result i32)
+       ;; The start of next character row
+       get_local $hl
+       i32.const 0xf8ff
+       i32.and
+       i32.const 0x20
+       i32.add
+     else
+       ;; The start of the next screen-third
+       get_local $hl
+       i32.const 0xf81f
+       i32.and
+       i32.const 0x0800
+       i32.add
+     end
+    end
+
+    ;; Done
+    call $setHL
+  )
+
+  ;; pixelad (0x94)
+  (func $PixelAd
+    (local $d i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    call $getD
+
+    ;; (D & 0xc0) << 5
+    tee_local $d
+    i32.const 0xc0
+    i32.and
+    i32.const 5
+    i32.shl
+
+    ;; (D & 0x07) << 8
+    get_local $d
+    i32.const 0x07
+    i32.and
+    i32.const 8
+    i32.shl
+
+    ;; (D & 0x38) << 2
+    get_local $d
+    i32.const 0x38
+    i32.and
+    i32.const 2
+    i32.shl
+
+    ;; E >> 3
+    call $getE
+    i32.const 3
+    i32.shr_u
+
+    ;; Calculate the address
+    i32.const 0x4000
+    i32.add
+    i32.add
+    i32.add
+    i32.add
+    call $setHL
+  )
+
+  ;; setae (0x96)
+  (func $SetAE
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    i32.const 0x80
+    call $getE
+    i32.const 0x07
+    i32.and
+    i32.shr_u
+    call $setA
+  )
+
+  ;; jp (c) (0x98)
+  (func $JpInC
+    (local $bc i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    call $getBC
+    tee_local $bc
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    get_local $bc
+    call $readPort
+    i32.const 6
+    i32.shl
+
+    call $getPC
+    i32.const 0xc000
+    i32.and
+    i32.add
+    call $setPC
+
+    i32.const 1
+    call $incTacts
+  )
+
+  ;; Implements the core of the ldi/ldd/ldir/lddr operations
+  ;; $step: direction (1 or -1)
+  ;; result: the value of flags
+  (func $LdBase (param $step i32) (result i32)
+    (local $de i32)
+    (local $hl i32)
+    (local $memVal i32)
+    
+    ;; (DE) := (HL)
+    call $getDE
+    tee_local $de
+    call $getHL
+    tee_local $hl
+    call $readMemory
+    tee_local $memVal
+    call $writeMemory
+
+    ;; Increment/decrement HL
+    get_local $hl
+    get_local $step
+    i32.add
+    call $setHL
+
+    ;; Adjust tacts
+    get_global $useGateArrayContention
+    if
+      i32.const 2
+      call $incTacts
+    else
+      get_local $de
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+      get_local $de
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    ;; Increment/decrement DE
+    get_local $de
+    get_local $step
+    i32.add
+    call $setDE
+
+    ;; Keep S, Z, and C
+    call $getF
+    i32.const 0xc1 ;; Mask for S, Z, C
+    i32.and ;; (S|Z|C)
+
+    get_local $memVal
+    call $getA
+    i32.add
+    tee_local $memVal
+    i32.const 0x08 ;; Mask for R3
+    i32.and
+    get_local $memVal
+    i32.const 4
+    i32.shl
+    i32.const 0x20 ;; Mask for R5
+    i32.and
+    i32.or ;; (S|Z|C, R5|R3)
+    i32.or
+
+    ;; Decrement BC
+    call $getBC
+    i32.const 1
+    i32.sub
+    call $setBC
+  )
+
+  ;; ldi (0xa0)
+  (func $Ldi
+    i32.const 1
+    call $LdBase
+    
+    ;; Calc PV
+    i32.const 0x04
+    i32.const 0x00
+    call $getBC
+    i32.const 0
+    i32.ne
+    select
+
+    ;; Merge flags
+    i32.or
+    call $setF
+  )
+
+  (func $CpBase (param $step i32) (result i32)
+    (local $hl i32)
+    (local $compRes i32)
+    (local $r3r5 i32)
+    call $getA
+    call $getHL
+    tee_local $hl
+    call $readMemory
+
+    ;; Calc compRes
+    i32.sub
+    tee_local $compRes
+    set_local $r3r5
+    
+    ;; Keep C 
+    call $getF
+    i32.const 0x01
+    i32.and ;; (C)
+
+    ;; Set N
+    i32.const 0x02 ;; (C, N)
+
+    ;; Calculate H
+    call $getA
+    i32.const 0x0f
+    i32.and
+    get_local $compRes
+    i32.const 0x0f
+    i32.and
+    i32.sub
+    i32.const 0x10
+    i32.and
+    if (result i32) ;; (C, N, H)
+      get_local $compRes
+      i32.const 1
+      i32.sub
+      set_local $r3r5
+      i32.const 0x10
+    else
+      i32.const 0x00
+    end
+
+    ;; Calculate Z
+    i32.const 0x00
+    i32.const 0x40
+    get_local $compRes
+    i32.const 0xff
+    i32.and
+    select ;; (C, N, H, Z)
+
+    ;; Calculate S
+    get_local $compRes
+    i32.const 0x80
+    i32.and ;; (C, N, H, Z, S)
+
+    ;; Calc R3
+    get_local $r3r5
+    i32.const 0x08
+    i32.and ;; (C, N, H, Z, S, R3)
+
+    ;; Calc R5
+    get_local $r3r5
+    i32.const 4
+    i32.shl
+    i32.const 0x20
+    i32.and ;; (C, N, H, Z, S, R3,R5)
+
+    ;; Adjust tacts
+    get_local $hl
+    call $Adjust5Tacts
+
+    ;; Increment/decrement HL
+    get_local $hl
+    get_local $step
+    i32.add
+    call $setHL
+
+    ;; Decrement BC
+    call $getBC
+    i32.const 1
+    i32.sub
+    call $setBC
+
+    ;; Merge flags
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+    i32.or
+  )
+  
+  ;; cpi (0xa1)
+  (func $Cpi
+    i32.const 1
+    call $CpBase
+
+    ;; Calc PV
+    i32.const 0x04
+    i32.const 0x00
+    call $getBC
+    i32.const 0
+    i32.ne
+    select
+
+    ;; Merge flags
+    i32.or
+    call $setF
+
+    call $getHL
+    call $setWZ
+  )
+
+  (func $InBase (param $step i32)
+    (local $bc i32)
+    (local $hl i32)
+    i32.const 1
+    call $incTacts
+    call $getBC
+    tee_local $bc
+    i32.const 1
+    i32.add
+    call $setWZ
+
+    ;; (HL) := in(BC)
+    call $getHL
+    tee_local $hl
+    get_local $bc
+    call $readPort
+    call $writeMemory
+
+    ;; Set N
+    call $getF
+    i32.const 0x02
+    i32.or
+    call $setF
+
+    ;; Decrement B
+    call $getB
+    i32.const 1
+    i32.sub
+    tee_local $bc
+    call $setB
+
+    ;; Set or reset Z
+    get_local $bc
+    i32.const 0
+    i32.eq
+    if (result i32)
+      call $getF
+      i32.const 0x40
+      i32.or
+    else
+      call $getF
+      i32.const 0xbf
+      i32.and
+    end
+    call $setF
+
+    ;; Increment or decrement HL
+    call $getHL
+    get_local $step
+    i32.add
+    call $setHL
+  )
+
+  ;; ini (0xa2)
+  (func $Ini
+    i32.const 1
+    call $InBase
+  )
+
+  (func $OutBase (param $step i32)
+    (local $f i32)
+    (local $b i32)
+    (local $hl i32)
+    i32.const 1
+    call $incTacts
+
+    ;; Set N
+    call $getF
+    tee_local $f
+    i32.const 0x02
+    i32.or
+    set_local $f
+
+    ;; Decrement B
+    call $getB
+    i32.const 1
+    i32.sub
+    tee_local $b
+    call $setB
+    get_local $b
+
+    ;; Set or reset Z
+    i32.const 0
+    i32.eq
+    if (result i32)
+      get_local $f
+      i32.const 0x40
+      i32.or
+    else
+      get_local $f
+      i32.const 0xbf
+      i32.and
+    end
+    call $setF
+
+    ;; Write port
+    call $getBC
+    tee_local $b
+    call $getHL
+    tee_local $hl
+    call $readMemory
+    call $writePort
+
+    ;; Increment/decrement HL
+    get_local $hl
+    get_local $step
+    i32.add
+    call $setHL
+
+    ;; WZ := BC + 1
+    get_local $b
+    i32.const 1
+    i32.add
+    call $setWZ
+  )
+
+  ;; outi (0xa3)
+  (func $Outi
+    i32.const 1
+    call $OutBase
+  )
+
+  (func $LdxBase (param $step i32)
+    (local $de i32)
+    (local $hl i32)
+    (local $memVal i32)
+
+    ;; Obtain DE
+    call $getDE
+    set_local $de
+
+    ;; Conditional copy from (HL) to (DE)
+    call $getHL
+    tee_local $hl
+    call $readMemory
+    tee_local $memVal
+    call $getA
+    i32.ne
+    if
+      get_local $de
+      get_local $memVal
+      call $writeMemory
+      i32.const 2
+      call $incTacts
+    else
+      i32.const 5
+      call $incTacts
+    end
+
+    ;; Prepare for loop
+    get_local $hl
+    get_local $step
+    i32.add
+    call $setHL
+
+    get_local $de
+    get_local $step
+    i32.add
+    call $setDE
+
+    call $getBC
+    i32.const 1
+    i32.sub
+    call $setBC
+  )
+
+  ;; ldix (0x0a4)
+  (func $Ldix
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    i32.const 1
+    call $LdxBase
+  )
+
+  ;; ldws
+  (func $Ldws
+    (local $v i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    ;; (HL) := (DE)
+    call $getDE
+    call $getHL
+    call $readMemory
+    call $writeMemory
+
+    ;; Increment L
+    call $getL
+    i32.const 1
+    i32.add
+    call $setL
+
+    ;; Increment D
+    call $getD
+    tee_local $v
+    i32.const 1
+    i32.add
+    call $setD
+
+    ;; Adjust flags
+    get_global $INC_FLAGS
+    get_local $v
+    i32.add
+    i32.load8_u
+    call $getF
+    i32.const 0x01 ;; C flag mask
+    i32.and
+    i32.or
+    call $setF
+  )
+
+  ;; ldd (0xa8)
+  (func $Ldd
+    i32.const -1
+    call $LdBase
+    
+    ;; Calc PV
+    i32.const 0x04
+    i32.const 0x00
+    call $getBC
+    i32.const 0
+    i32.ne
+    select
+
+    ;; Merge flags
+    i32.or
+    call $setF
+  )
+
+  ;; cpd (0xa9)
+  (func $Cpd
+    i32.const -1
+    call $CpBase
+
+    ;; Calc PV
+    i32.const 0x04
+    i32.const 0x00
+    call $getBC
+    i32.const 0
+    i32.ne
+    select
+
+    ;; Merge flags
+    i32.or
+    call $setF
+
+    call $getHL
+    call $setWZ
+  )
+
+  ;; ind (0xaa)
+  (func $Ind
+    i32.const -1
+    call $InBase
+  )
+
+  ;; outd (0xab)
+  (func $Outd
+    i32.const -1
+    call $OutBase
+  )
+
+  ;; lddx (0x0ac)
+  (func $Lddx
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    i32.const -1
+    call $LdxBase
+  )
+
+  (func $LdrTail
+    (local $pc i32)
+
+    ;; Test exit
+    call $getBC
+    i32.const 0
+    i32.eq
+    if return end
+
+    ;; Set PV
+    call $getF
+    i32.const 0x04 ;; PV flag
+    i32.or
+    call $setF
+
+    ;; PC := PC - 2
+    call $getPC
+    i32.const 2
+    i32.sub
+    tee_local $pc
+    call $setPC
+
+    ;; Adjust tacts
+    call $getDE
+    i32.const 1
+    i32.sub
+    call $Adjust5Tacts
+
+    ;; WZ := PC + 1
+    get_local $pc
+    i32.const 1
+    i32.add
+    call $setWZ
+  )
+
+  ;; ldir (0xb0)
+  (func $Ldir
+    i32.const 1
+    call $LdBase
+    call $setF
+    call $LdrTail
+  )
+
+  (func $CprTail
+    (local $f i32)
+    (local $pc i32)
+    call $getBC
+    if
+      ;; Set PV
+      call $getF
+      tee_local $f
+      i32.const 0x04
+      i32.or
+      call $setF
+      get_local $f
+      i32.const 0x40 ;; Mask for Z
+      i32.and
+      i32.const 0
+      i32.eq
+      if
+        ;; Value not found yet
+        ;; PC := PC - 2
+        call $getPC
+        i32.const 2
+        i32.sub
+        tee_local $pc
+        call $setPC
+
+        ;; Adjust tacts
+        call $getHL
+        i32.const 1
+        i32.sub
+        call $Adjust5Tacts
+
+        ;; WZ := PC + 1
+        get_local $pc
+        i32.const 1
+        i32.add
+        call $setWZ
+      end
+    end
+  )
+
+  ;; cpir (0xb1)
+  (func $Cpir
+    i32.const 1
+    call $CpBase
+    call $setF
+    call $CprTail
+  )
+
+  (func $IndTail
+    call $getB
+    i32.const 0
+    i32.ne
+    if
+      ;; Set PV
+      call $getF
+      i32.const 0x04
+      i32.or
+      call $setF
+
+      ;; PC := PC - 2
+      call $getPC
+      i32.const 2
+      i32.sub
+      call $setPC
+
+      ;; Adjust tacts
+      call $getHL
+      i32.const 1
+      i32.sub
+      call $Adjust5Tacts
+    else
+      ;; Reset PV
+      call $getF
+      i32.const 0xfb
+      i32.and
+      call $setF
+    end
+  )
+
+  ;; Inir (0xb2)
+  (func $Inir
+    i32.const 1
+    call $InBase
+    call $IndTail
+  )
+
+  (func $OutdTail
+    call $getB
+    i32.const 0
+    i32.ne
+    if
+      ;; Set PV
+      call $getF
+      i32.const 0x04
+      i32.or
+      call $setF
+
+      ;; PC := PC - 2
+      call $getPC
+      i32.const 2
+      i32.sub
+      call $setPC
+
+      ;; Adjust tacts
+      call $getBC
+      call $Adjust5Tacts
+    else
+      ;; Reset PV
+      call $getF
+      i32.const 0xfb
+      i32.and
+      call $setF
+    end
+  )
+
+  ;; Otir (0xb3)
+  (func $Otir
+    i32.const 1
+    call $OutBase
+    call $OutdTail
+  )
+
+  (func $LdrxTail
+    call $getBC
+    i32.const 0
+    i32.eq
+    if return end
+
+    call $getPC
+    i32.const 2
+    i32.sub
+    call $setPC
+
+    i32.const 5
+    call $incTacts
+  )
+
+  ;; ldirx
+  (func $Ldirx
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    i32.const 1
+    call $LdxBase
+    call $LdrxTail
+  )
+
+  ;; ldpirx
+  (func $Ldpirx
+    (local $memVal i32)
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    ;; Read (HL & 0xfff8 + E & 0x07)
+    call $getHL
+    i32.const 0xfff8
+    i32.and
+    call $getE
+    i32.const 0x07
+    i32.and
+    i32.add
+    call $readMemory
+    tee_local $memVal
+
+    ;; Conditional copy
+    call $getA
+    i32.ne
+    if
+      call $getDE
+      get_local $memVal
+      call $writeMemory
+      i32.const 2
+      call $incTacts
+    else
+      i32.const 5
+      call $incTacts
+    end
+
+    ;; Inc DE
+    call $getDE
+    i32.const 1
+    i32.add
+    call $setDE
+
+    ;; Decrement BC
+    call $getBC
+    i32.const 1
+    i32.sub
+    call $setBC
+    call $LdrxTail
+  )
+
+  ;; lddr (0xb8)
+  (func $Lddr
+    i32.const -1
+    call $LdBase
+    call $setF
+    call $LdrTail
+  )
+
+  ;; cpdr (0xb9)
+  (func $Cpdr
+    i32.const -1
+    call $CpBase
+    call $setF
+    call $CprTail
+  )
+
+  ;; Indr (0xba)
+  (func $Indr
+    i32.const -1
+    call $InBase
+    call $IndTail
+  )
+
+  ;; Otdr (0xbb)
+  (func $Otdr
+    i32.const -1
+    call $OutBase
+    call $OutdTail
+  )
+
+  ;; lddrx
+  (func $Lddrx
+    get_global $allowExtendedSet
+    i32.const 0
+    i32.eq
+    if return end
+
+    i32.const -1
+    call $LdxBase
+    call $LdrxTail
   )
 )
