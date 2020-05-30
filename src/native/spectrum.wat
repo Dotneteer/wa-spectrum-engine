@@ -4,80 +4,11 @@
   ;; We keep 512 KB of memory
   (memory (export "memory") 8)
 
-
   ;; ==========================================================================
   ;; CPU API
 
   (export "turnOnCpu" (func $turnOnCpu))
-  (export "resetMemory" (func $resetMemory))
   (export "resetCpu" (func $resetCpu))
-  (export "getA" (func $getA))
-  (export "setA" (func $setA))
-  (export "getF" (func $getF))
-  (export "setF" (func $setF))
-  (export "getAF" (func $getAF))
-  (export "setAF" (func $setAF))
-  (export "getB" (func $getB))
-  (export "setB" (func $setB))
-  (export "getC" (func $getC))
-  (export "setC" (func $setC))
-  (export "getBC" (func $getBC))
-  (export "setBC" (func $setBC))
-  (export "getD" (func $getD))
-  (export "setD" (func $setD))
-  (export "getE" (func $getE))
-  (export "setE" (func $setE))
-  (export "getDE" (func $getDE))
-  (export "setDE" (func $setDE))
-  (export "getH" (func $getH))
-  (export "setH" (func $setH))
-  (export "getL" (func $getL))
-  (export "setL" (func $setL))
-  (export "getHL" (func $getHL))
-  (export "setHL" (func $setHL))
-  (export "getI" (func $getI))
-  (export "setI" (func $setI))
-  (export "getR" (func $getR))
-  (export "setR" (func $setR))
-  (export "getPC" (func $getPC))
-  (export "setPC" (func $setPC))
-  (export "getSP" (func $getSP))
-  (export "setSP" (func $setSP))
-  (export "getXH" (func $getXH))
-  (export "setXH" (func $setXH))
-  (export "getXL" (func $getXL))
-  (export "setXL" (func $setXL))
-  (export "getIX" (func $getIX))
-  (export "setIX" (func $setIX))
-  (export "getYH" (func $getYH))
-  (export "setYH" (func $setYH))
-  (export "getYL" (func $getYL))
-  (export "setYL" (func $setYL))
-  (export "getIY" (func $getIY))
-  (export "setIY" (func $setIY))
-  (export "getWH" (func $getWH))
-  (export "setWH" (func $setWH))
-  (export "getWL" (func $getWL))
-  (export "setWL" (func $setWL))
-  (export "getWZ" (func $getWZ))
-  (export "setWZ" (func $setWZ))
-  (export "getReg8" (func $getReg8))
-  (export "setReg8" (func $setReg8))
-  (export "getReg16" (func $getReg16))
-  (export "setReg16" (func $setReg16))
-  (export "setIndexMode" (func $setIndexMode))
-  (export "getIndexReg" (func $getIndexReg))
-  (export "setIndexReg" (func $setIndexReg))
-  (export "setTactsInFrame" (func $setTactsInFrame))
-  (export "getFrameCount" (func $getFrameCount))
-  (export "getFrameTacts" (func $getFrameTacts))
-  (export "incTacts" (func $incTacts))
-  (export "setCpuSignals" (func $setCpuSignals))
-  (export "setInterruptBlocked" (func $setInterruptBlocked))
-  (export "setInterruptMode" (func $setInterruptMode))
-  (export "setIff1" (func $setIff1))
-  (export "processCpuSignals" (func $processCpuSignals))
-  (export "executeCpuCycle" (func $executeCpuCycle))
   (export "getCpuState" (func $getCpuState))
   (export "updateCpuState" (func $updateCpuState))
   (export "enableExtendedInstructions" (func $enableExtendedInstructions))
@@ -104,7 +35,26 @@
   (type $BitOpFunc (func (param $a i32) (result i32)))
 
   ;; ==========================================================================
-  ;; Constant values
+  ;; Memory map
+  ;; 0x00_0000 (64K): Memory for the Z80 CPU test machine/ZX Spectrum 48K
+  ;; 0x01_0000 (28 bytes): Z80 registers
+  ;; 0x01_0020 (8 bytes): Z80 8-bit register index conversion table
+  ;; 0x01_0028 (4 bytes): Z80 16-bit register index conversion table
+  ;; 0x01_0040 (192 bytes): State transfer buffer (between WA and JS)
+  ;; 0x01_0100 (256 bytes): Test I/O input buffer
+  ;; 0x01_0200 (1024 bytes): Test memory access log
+  ;; 0x01_0600 (1024 bytes): Test I/O access log
+  ;; 0x01_0a00 (1024 bytes): Test TbBlue access log
+  ;; 0x01_0e00 (256 bytes): INC flags table
+  ;; 0x01_0f00 (256 bytes): DEC flags table
+  ;; 0x01_1000 (256 bytes): Logic operations flags table
+  ;; 0x01_1100 (256 bytes): RLC flags table
+  ;; 0x01_1200 (256 bytes): RRC flags table
+  ;; 0x01_1300 (256 bytes): RL flags (no carry) table
+  ;; 0x01_1400 (256 bytes): RL flags (carry set) table
+  ;; 0x01_1500 (256 bytes): RR flags (no carry) table
+  ;; 0x01_1600 (256 bytes): RR flags (carry set) table
+  ;; 0x01_1700 (256 bytes): SRA flags table
 
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
@@ -116,86 +66,8 @@
   ;; The index of the register area (length: 0x1c)
   (global $REG_AREA_INDEX i32 (i32.const 0x1_0000))
 
-  ;; Reg8 index conversion table
-  (global $REG8_TAB_OFFS i32 (i32.const 0x1_0020))
-  (data (i32.const 0x1_0020) "\03\02\05\04\07\06\00\01")
-
-  ;; Reg16 index conversion table
-  (global $REG16_TAB_OFFS i32 (i32.const 0x1_0028))
-  (data (i32.const 0x1_0028) "\02\04\06\14")
-
   ;; State transfer buffer (length: 0xc0)
   (global $STATE_TRANSFER_BUFF i32 (i32.const 0x1_0040))
-
-  ;; The offset of the test input stream (length: 0x0100)
-  (global $TEST_INPUT_OFFS i32 (i32.const 0x1_0100))
-
-  ;; The offset of the test memory access log stream stream (length: 0x0400)
-  (global $TEST_MEM_LOG_OFFS i32 (i32.const 0x1_0200))
-
-  ;; The offset of the test I/O access log stream stream (length: 0x0400)
-  (global $TEST_IO_LOG_OFFS i32 (i32.const 0x1_0600))
-
-  ;; The offset of the test TBBlue access log stream stream (length: 0x0400)
-  (global $TEST_TBBLUE_LOG_OFFS i32 (i32.const 0x1_0A00))
-
-  ;; 8-bit INC operation flags table
-  (global $INC_FLAGS i32 (i32.const 0x1_0b00))
-  (data (i32.const 0x1_0b00) "\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\94\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\50")
-
-  ;; 8-bit DEC operation flags table
-  (global $DEC_FLAGS i32 (i32.const 0x1_0c00))
-  (data (i32.const 0x1_0c00) "\ba\42\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3e\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa")
-
-  ;; 8-bit ALU logical operation flags table
-  (global $LOG_FLAGS i32 (i32.const 0x1_0d00))
-  (data (i32.const 0x1_0d00) "\44\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\04\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac")
-
-  ;; 8-bit RLC operation flags table
-  (global $RLC_FLAGS i32 (i32.const 0x1_0e00))
-  (data (i32.const 0x1_0e00) "\44\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\05\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad")
-
-  ;; 8-bit RRC operation flags table
-  (global $RRC_FLAGS i32 (i32.const 0x1_0f00))
-  (data (i32.const 0x1_0f00) "\44\81\00\85\00\85\04\81\00\85\04\81\04\81\00\85\08\8d\0c\89\0c\89\08\8d\0c\89\08\8d\08\8d\0c\89\00\85\04\81\04\81\00\85\04\81\00\85\00\85\04\81\0c\89\08\8d\08\8d\0c\89\08\8d\0c\89\0c\89\08\8d\20\a5\24\a1\24\a1\20\a5\24\a1\20\a5\20\a5\24\a1\2c\a9\28\ad\28\ad\2c\a9\28\ad\2c\a9\2c\a9\28\ad\24\a1\20\a5\20\a5\24\a1\20\a5\24\a1\24\a1\20\a5\28\ad\2c\a9\2c\a9\28\ad\2c\a9\28\ad\28\ad\2c\a9\00\85\04\81\04\81\00\85\04\81\00\85\00\85\04\81\0c\89\08\8d\08\8d\0c\89\08\8d\0c\89\0c\89\08\8d\04\81\00\85\00\85\04\81\00\85\04\81\04\81\00\85\08\8d\0c\89\0c\89\08\8d\0c\89\08\8d\08\8d\0c\89\24\a1\20\a5\20\a5\24\a1\20\a5\24\a1\24\a1\20\a5\28\ad\2c\a9\2c\a9\28\ad\2c\a9\28\ad\28\ad\2c\a9\20\a5\24\a1\24\a1\20\a5\24\a1\20\a5\20\a5\24\a1\2c\a9\28\ad\28\ad\2c\a9\28\ad\2c\a9\2c\a9\28\ad")
-
-  ;; 8-bit RL operation flags with no carry table
-  (global $RL0_FLAGS i32 (i32.const 0x1_1000))
-  (data (i32.const 0x1_1000) "\44\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\45\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9")
-
-  ;; 8-bit RL operation flags with carry table
-  (global $RL1_FLAGS i32 (i32.const 0x1_1100))
-  (data (i32.const 0x1_1100) "\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\04\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\05\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad")
-
-  ;; 8-bit RR operation flags with no carry table
-  (global $RR0_FLAGS i32 (i32.const 0x1_1200))
-  (data (i32.const 0x1_1200) "\44\45\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\04\05\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29")
-
-  ;; 8-bit RL operation flags with carry table
-  (global $RR1_FLAGS i32 (i32.const 0x1_1300))
-  (data (i32.const 0x1_1300) "\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad")
-
-  ;; 8-bit SRA operation flags table
-  (global $SRA_FLAGS i32 (i32.const 0x1_1400))
-  (data (i32.const 0x1_1400) "\44\45\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad")
-
-  ;; Next slot: 0x1_1500
-
-  ;; Z80 State flags
-  (global $Z80_STATE_INT i32 (i32.const 0x01))
-  (global $Z80_STATE_INT_INV i32 (i32.const 0xfe))
-  (global $Z80_STATE_NMI i32 (i32.const 0x02))
-  (global $Z80_STATE_NMI_INV i32 (i32.const 0xfd))
-  (global $Z80_STATE_RST i32 (i32.const 0x04))
-  (global $Z80_STATE_RST_INV i32 (i32.const 0xfb))
-  (global $Z80_STATE_HLT i32 (i32.const 0x08))
-  (global $Z80_STATE_HLT_INV i32 (i32.const 0xf7))
-
-  ;; Machine type discriminator
-  (global $MACHINE_TYPE (mut i32) (i32.const 0x00))
-
-  ;; Number of functions per machine types
-  (global $MACHINE_FUNC_COUNT i32 (i32.const 0x06))
 
   ;; Once-set
   (global $tactsInFrame (mut i32) (i32.const 1_000_000)) ;; Number of tacts within a frame
@@ -218,104 +90,56 @@
 
   ;; Writes the CPU state to the transfer area
   (func $getCpuState
-    get_global $STATE_TRANSFER_BUFF
-    get_global $tactsInFrame
-    i32.store offset=0
-    get_global $STATE_TRANSFER_BUFF
-    get_global $allowExtendedSet
-    i32.store8 offset=4
-    get_global $STATE_TRANSFER_BUFF
-    get_global $frameCount
-    i32.store offset=5
-    get_global $STATE_TRANSFER_BUFF
-    get_global $frameTacts
-    i32.store offset=9
-    get_global $STATE_TRANSFER_BUFF
-    get_global $stateFlags
-    i32.store8 offset=13
-    get_global $STATE_TRANSFER_BUFF
-    get_global $useGateArrayContention
-    i32.store8 offset=14
-    get_global $STATE_TRANSFER_BUFF
-    get_global $iff1
-    i32.store8 offset=15
-    get_global $STATE_TRANSFER_BUFF
-    get_global $iff2
-    i32.store8 offset=16
-    get_global $STATE_TRANSFER_BUFF
-    get_global $interruptMode
-    i32.store8 offset=17
-    get_global $STATE_TRANSFER_BUFF
-    get_global $isInterruptBlocked
-    i32.store8 offset=18
-    get_global $STATE_TRANSFER_BUFF
-    get_global $isInOpExecution
-    i32.store8 offset=19
-    get_global $STATE_TRANSFER_BUFF
-    get_global $prefixMode
-    i32.store8 offset=20
-    get_global $STATE_TRANSFER_BUFF
-    get_global $indexMode
-    i32.store8 offset=21
-    get_global $STATE_TRANSFER_BUFF
-    get_global $maskableInterruptModeEntered
-    i32.store8 offset=22
-    get_global $STATE_TRANSFER_BUFF
-    get_global $opCode
-    i32.store8 offset=23
+    (i32.store offset=0 (get_global $STATE_TRANSFER_BUFF) (get_global $tactsInFrame))
+    (i32.store8 offset=4 (get_global $STATE_TRANSFER_BUFF) (get_global $allowExtendedSet))
+    (i32.store offset=5 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCount))
+    (i32.store offset=9 (get_global $STATE_TRANSFER_BUFF) (get_global $frameTacts))
+    (i32.store8 offset=13 (get_global $STATE_TRANSFER_BUFF) (get_global $stateFlags))
+    (i32.store8 offset=14 (get_global $STATE_TRANSFER_BUFF) (get_global $useGateArrayContention))
+    (i32.store8 offset=15 (get_global $STATE_TRANSFER_BUFF) (get_global $iff1))
+    (i32.store8 offset=16 (get_global $STATE_TRANSFER_BUFF) (get_global $iff2))
+    (i32.store8 offset=17 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptMode))
+    (i32.store8 offset=18 (get_global $STATE_TRANSFER_BUFF) (get_global $isInterruptBlocked))
+    (i32.store8 offset=19 (get_global $STATE_TRANSFER_BUFF) (get_global $isInOpExecution))
+    (i32.store8 offset=20 (get_global $STATE_TRANSFER_BUFF) (get_global $prefixMode))
+    (i32.store8 offset=21 (get_global $STATE_TRANSFER_BUFF) (get_global $indexMode))
+    (i32.store8 offset=22 (get_global $STATE_TRANSFER_BUFF) (get_global $maskableInterruptModeEntered))
+    (i32.store8 offset=23 (get_global $STATE_TRANSFER_BUFF) (get_global $opCode))
   )
 
   ;; Restores the CPU state from the transfer area
   (func $updateCpuState
-    get_global $STATE_TRANSFER_BUFF
-    i32.load offset=0
-    set_global $tactsInFrame
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=4
-    set_global $allowExtendedSet
-    get_global $STATE_TRANSFER_BUFF
-    i32.load offset=5
-    set_global $frameCount
-    get_global $STATE_TRANSFER_BUFF
-    i32.load offset=9
-    set_global $frameTacts
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=13
-    set_global $stateFlags
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=14
-    set_global $useGateArrayContention
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=15
-    set_global $iff1
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=16
-    set_global $iff2
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=17
-    set_global $interruptMode
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=18
-    set_global $isInterruptBlocked
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=19
-    set_global $isInOpExecution
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=20
-    set_global $prefixMode
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=21
-    set_global $indexMode
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=22
-    set_global $maskableInterruptModeEntered
-    get_global $STATE_TRANSFER_BUFF
-    i32.load8_u offset=23
-    set_global $opCode
+    (set_global $tactsInFrame (get_global $STATE_TRANSFER_BUFF) (i32.load offset=0))
+    (set_global $allowExtendedSet (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=4))
+    (set_global $frameCount (get_global $STATE_TRANSFER_BUFF) (i32.load offset=5))
+    (set_global $frameTacts (get_global $STATE_TRANSFER_BUFF) (i32.load offset=9))
+    (set_global $stateFlags (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=13))
+    (set_global $useGateArrayContention (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=14))
+    (set_global $iff1 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=15))
+    (set_global $iff2 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=16))
+    (set_global $interruptMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=17))
+    (set_global $isInterruptBlocked (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=18))
+    (set_global $isInOpExecution (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=19))
+    (set_global $prefixMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=20))
+    (set_global $indexMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=21))
+    (set_global $maskableInterruptModeEntered (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=22))
+    (set_global $opCode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=23))
   )
 
   ;; ==========================================================================
   ;; Helpers for testing the Z80 CPU
+
+  ;; The offset of the test input stream (length: 0x0100)
+  (global $TEST_INPUT_OFFS i32 (i32.const 0x1_0100))
+
+  ;; The offset of the test memory access log stream (length: 0x0400)
+  (global $TEST_MEM_LOG_OFFS i32 (i32.const 0x1_0200))
+
+  ;; The offset of the test I/O access log stream stream (length: 0x0400)
+  (global $TEST_IO_LOG_OFFS i32 (i32.const 0x1_0600))
+
+  ;; The offset of the test TBBlue access log stream stream (length: 0x0400)
+  (global $TEST_TBBLUE_LOG_OFFS i32 (i32.const 0x1_0A00))
 
   ;; The mode to run tests
   (global $testRunMode (mut i32) (i32.const 0x0000))
@@ -340,28 +164,20 @@
 
   ;; Prepares the test code to run
   (func $prepareTest (param $mode i32) (param $codeEnds i32)
-    get_local $mode
-    set_global $testRunMode
-    get_local $codeEnds
-    set_global $testCodeEndsAt
-    i32.const 0
-    set_global $nextTestInput
-    i32.const 0
-    set_global $memLogLength
-    i32.const 0
-    set_global $ioLogLength
-    i32.const 0
-    set_global $tbBlueLogLength
+    get_local $mode set_global $testRunMode
+    get_local $codeEnds set_global $testCodeEndsAt
+    i32.const 0 set_global $nextTestInput
+    i32.const 0 set_global $memLogLength
+    i32.const 0 set_global $ioLogLength
+    i32.const 0 set_global $tbBlueLogLength
 
     ;; Set the machine type to Z80 CPU test machine
-    i32.const 4
-    set_global $MACHINE_TYPE
+    i32.const 4 set_global $MACHINE_TYPE
   )
 
   ;; Sets the length of the test input
   (func $setTestInputLength (param $l i32)
-    get_local $l
-    set_global $testInputLength
+    get_local $l set_global $testInputLength
   )
 
   ;; Gets the length of the memory access log
@@ -380,30 +196,26 @@
   )
 
   ;; Runs the test code. Stops according to the specified $testRunMode
+  ;; Run mode values:
+  ;; 0: Normal
+  ;; 1: One cycle
+  ;; 2: One instruction
+  ;; 3: Until halt
+  ;; 4: Until end
   (func $runTestCode
     loop $codeExec
       call $executeCpuCycle
 
       ;; Check the run mode
-      ;; Test for Normal or OneCycle
-      get_global $testRunMode
-      i32.const 1
-      i32.le_u
-      if
-        ;; Stop immediately
-        return
-      end
+      ;; Test for normal or one cycle
+      (i32.le_u (get_global $testRunMode) (i32.const 1))
+      if return end
 
-      ;; Test for OneInstruction
-      get_global $testRunMode
-      i32.const 2
-      i32.eq
+      ;; Test for one instruction
+      (i32.eq (get_global $testRunMode) (i32.const 2))
       if
-        get_global $isInOpExecution
-        i32.const 0
-        i32.eq
+        (i32.eq (get_global $isInOpExecution) (i32.const 0))
         if
-          ;; Stop if operation execution completed
           return
         else
           ;; continue
@@ -412,18 +224,14 @@
       end
 
       ;; Test for UntilHalt
-      get_global $testRunMode
-      i32.const 3
-      i32.eq
+      (i32.eq (get_global $testRunMode) (i32.const 3))
       if
         ;; Stop if HLT flag set
-        get_global $stateFlags
-        get_global $Z80_STATE_HLT
-        i32.and
-        i32.const 0
-        i32.ne
+        (i32.ne
+          (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;)))
+          (i32.const 0)
+        )
         if
-          ;; Stop if CPU halted
           return
         else
           ;; continue
@@ -432,13 +240,8 @@
       end
 
       ;; Run until code ends
-      call $getPC
-      get_global $testCodeEndsAt
-      i32.ge_u
-      if
-        ;; Reached the end of the code
-        return
-      end
+      (i32.ge_u (call $getPC) (get_global $testCodeEndsAt))
+      if return end
 
       ;; Go on with code execution
       br $codeExec
@@ -447,8 +250,7 @@
 
   ;; Sets the machine type to the default Z80 machine
   (func $resetMachineType
-    i32.const 0
-    set_global $MACHINE_TYPE
+    i32.const 0 set_global $MACHINE_TYPE
   )
 
   ;; Test machine memory read operation; logs the memory access
@@ -662,6 +464,17 @@
   ;; ==========================================================================
   ;; Function jump table
 
+  ;; Machine type discriminator
+  ;; 0x00: ZX Spectrum 48K
+  ;; 0x01: ZX Spectrum 128K
+  ;; 0x02: ZX Spectrum +3
+  ;; 0x03: ZX Spectrum Next
+  ;; 0x04: Z80 Test machine
+  (global $MACHINE_TYPE (mut i32) (i32.const 0x00))
+
+  ;; Number of functions per machine types
+  (global $MACHINE_FUNC_COUNT i32 (i32.const 0x06))
+
   ;; Jump table start indices
   (global $STANDARD_JT i32 (i32.const 30))
   (global $INDEXED_JT i32 (i32.const 286))
@@ -670,13 +483,13 @@
   (global $INDEXED_BIT_JT i32 (i32.const 1054))
   (global $BOP_JT i32 (i32.const 1310))
 
-
   ;; 30: 5 machine types (6 function for each)
   ;; 256: Standard operations
   ;; 256: Indexed operations
   ;; 256: Extended operations
   ;; 256: Bit operations
   ;; 256: Indexed bit operations
+  ;; 8: ALU bit operations
 
   (table $dispatch 1318 anyfunc)
   (elem (i32.const 0)
@@ -1072,6 +885,58 @@
     $Sll
     $Srl
   )
+
+  ;; ALU tables
+
+  ;; 8-bit INC operation flags table
+  (global $INC_FLAGS i32 (i32.const 0x1_0e00))
+  (data (i32.const 0x1_0e00) "\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\10\00\00\00\00\00\00\00\08\08\08\08\08\08\08\08\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\30\20\20\20\20\20\20\20\28\28\28\28\28\28\28\28\94\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\90\80\80\80\80\80\80\80\88\88\88\88\88\88\88\88\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\b0\a0\a0\a0\a0\a0\a0\a0\a8\a8\a8\a8\a8\a8\a8\a8\50")
+
+  ;; 8-bit DEC operation flags table
+  (global $DEC_FLAGS i32 (i32.const 0x1_0f00))
+  (data (i32.const 0x1_0f00) "\ba\42\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\02\02\02\02\02\02\02\02\0a\0a\0a\0a\0a\0a\0a\1a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3a\22\22\22\22\22\22\22\22\2a\2a\2a\2a\2a\2a\2a\3e\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\82\82\82\82\82\82\82\82\8a\8a\8a\8a\8a\8a\8a\9a\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa\ba\a2\a2\a2\a2\a2\a2\a2\a2\aa\aa\aa\aa\aa\aa\aa")
+
+  ;; 8-bit ALU logical operation flags table
+  (global $LOG_FLAGS i32 (i32.const 0x1_1000))
+  (data (i32.const 0x1_1000) "\44\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\00\04\04\00\04\00\00\04\0c\08\08\0c\08\0c\0c\08\04\00\00\04\00\04\04\00\08\0c\0c\08\0c\08\08\0c\24\20\20\24\20\24\24\20\28\2c\2c\28\2c\28\28\2c\20\24\24\20\24\20\20\24\2c\28\28\2c\28\2c\2c\28\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\84\80\80\84\80\84\84\80\88\8c\8c\88\8c\88\88\8c\80\84\84\80\84\80\80\84\8c\88\88\8c\88\8c\8c\88\a0\a4\a4\a0\a4\a0\a0\a4\ac\a8\a8\ac\a8\ac\ac\a8\a4\a0\a0\a4\a0\a4\a4\a0\a8\ac\ac\a8\ac\a8\a8\ac")
+
+  ;; 8-bit RLC operation flags table
+  (global $RLC_FLAGS i32 (i32.const 0x1_1100))
+  (data (i32.const 0x1_1100) "\44\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\05\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad")
+
+  ;; 8-bit RRC operation flags table
+  (global $RRC_FLAGS i32 (i32.const 0x1_1200))
+  (data (i32.const 0x1_1200) "\44\81\00\85\00\85\04\81\00\85\04\81\04\81\00\85\08\8d\0c\89\0c\89\08\8d\0c\89\08\8d\08\8d\0c\89\00\85\04\81\04\81\00\85\04\81\00\85\00\85\04\81\0c\89\08\8d\08\8d\0c\89\08\8d\0c\89\0c\89\08\8d\20\a5\24\a1\24\a1\20\a5\24\a1\20\a5\20\a5\24\a1\2c\a9\28\ad\28\ad\2c\a9\28\ad\2c\a9\2c\a9\28\ad\24\a1\20\a5\20\a5\24\a1\20\a5\24\a1\24\a1\20\a5\28\ad\2c\a9\2c\a9\28\ad\2c\a9\28\ad\28\ad\2c\a9\00\85\04\81\04\81\00\85\04\81\00\85\00\85\04\81\0c\89\08\8d\08\8d\0c\89\08\8d\0c\89\0c\89\08\8d\04\81\00\85\00\85\04\81\00\85\04\81\04\81\00\85\08\8d\0c\89\0c\89\08\8d\0c\89\08\8d\08\8d\0c\89\24\a1\20\a5\20\a5\24\a1\20\a5\24\a1\24\a1\20\a5\28\ad\2c\a9\2c\a9\28\ad\2c\a9\28\ad\28\ad\2c\a9\20\a5\24\a1\24\a1\20\a5\24\a1\20\a5\20\a5\24\a1\2c\a9\28\ad\28\ad\2c\a9\28\ad\2c\a9\2c\a9\28\ad")
+
+  ;; 8-bit RL operation flags with no carry table
+  (global $RL0_FLAGS i32 (i32.const 0x1_1300))
+  (data (i32.const 0x1_1300) "\44\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\45\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9")
+
+  ;; 8-bit RL operation flags with carry table
+  (global $RL1_FLAGS i32 (i32.const 0x1_1400))
+  (data (i32.const 0x1_1400) "\00\04\04\00\0c\08\08\0c\04\00\00\04\08\0c\0c\08\24\20\20\24\28\2c\2c\28\20\24\24\20\2c\28\28\2c\04\00\00\04\08\0c\0c\08\00\04\04\00\0c\08\08\0c\20\24\24\20\2c\28\28\2c\24\20\20\24\28\2c\2c\28\84\80\80\84\88\8c\8c\88\80\84\84\80\8c\88\88\8c\a0\a4\a4\a0\ac\a8\a8\ac\a4\a0\a0\a4\a8\ac\ac\a8\80\84\84\80\8c\88\88\8c\84\80\80\84\88\8c\8c\88\a4\a0\a0\a4\a8\ac\ac\a8\a0\a4\a4\a0\ac\a8\a8\ac\01\05\05\01\0d\09\09\0d\05\01\01\05\09\0d\0d\09\25\21\21\25\29\2d\2d\29\21\25\25\21\2d\29\29\2d\05\01\01\05\09\0d\0d\09\01\05\05\01\0d\09\09\0d\21\25\25\21\2d\29\29\2d\25\21\21\25\29\2d\2d\29\85\81\81\85\89\8d\8d\89\81\85\85\81\8d\89\89\8d\a1\a5\a5\a1\ad\a9\a9\ad\a5\a1\a1\a5\a9\ad\ad\a9\81\85\85\81\8d\89\89\8d\85\81\81\85\89\8d\8d\89\a5\a1\a1\a5\a9\ad\ad\a9\a1\a5\a5\a1\ad\a9\a9\ad")
+
+  ;; 8-bit RR operation flags with no carry table
+  (global $RR0_FLAGS i32 (i32.const 0x1_1500))
+  (data (i32.const 0x1_1500) "\44\45\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\04\05\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29")
+
+  ;; 8-bit RL operation flags with carry table
+  (global $RR1_FLAGS i32 (i32.const 0x1_1600))
+  (data (i32.const 0x1_1600) "\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad")
+
+  ;; 8-bit SRA operation flags table
+  (global $SRA_FLAGS i32 (i32.const 0x1_1700))
+  (data (i32.const 0x1_1700) "\44\45\00\01\00\01\04\05\00\01\04\05\04\05\00\01\08\09\0c\0d\0c\0d\08\09\0c\0d\08\09\08\09\0c\0d\00\01\04\05\04\05\00\01\04\05\00\01\00\01\04\05\0c\0d\08\09\08\09\0c\0d\08\09\0c\0d\0c\0d\08\09\20\21\24\25\24\25\20\21\24\25\20\21\20\21\24\25\2c\2d\28\29\28\29\2c\2d\28\29\2c\2d\2c\2d\28\29\24\25\20\21\20\21\24\25\20\21\24\25\24\25\20\21\28\29\2c\2d\2c\2d\28\29\2c\2d\28\29\28\29\2c\2d\84\85\80\81\80\81\84\85\80\81\84\85\84\85\80\81\88\89\8c\8d\8c\8d\88\89\8c\8d\88\89\88\89\8c\8d\80\81\84\85\84\85\80\81\84\85\80\81\80\81\84\85\8c\8d\88\89\88\89\8c\8d\88\89\8c\8d\8c\8d\88\89\a0\a1\a4\a5\a4\a5\a0\a1\a4\a5\a0\a1\a0\a1\a4\a5\ac\ad\a8\a9\a8\a9\ac\ad\a8\a9\ac\ad\ac\ad\a8\a9\a4\a5\a0\a1\a0\a1\a4\a5\a0\a1\a4\a5\a4\a5\a0\a1\a8\a9\ac\ad\ac\ad\a8\a9\ac\ad\a8\a9\a8\a9\ac\ad")
+
+  ;; Reg8 index conversion table
+  (global $REG8_TAB_OFFS i32 (i32.const 0x1_0020))
+  (data (i32.const 0x1_0020) "\03\02\05\04\07\06\00\01")
+
+  ;; Reg16 index conversion table
+  (global $REG16_TAB_OFFS i32 (i32.const 0x1_0028))
+  (data (i32.const 0x1_0028) "\02\04\06\14")
+
+  ;; Next slot: 0x1_1800
 
   ;; Represents a no-operation function
   (func $NOOP)
@@ -1968,7 +1833,7 @@
   ;; Process the CPU signals
   (func $processCpuSignals (result i32)
     ;; Test for INT
-    (i32.and (get_global $stateFlags) (get_global $Z80_STATE_INT))
+    (i32.and (get_global $stateFlags) (i32.const 0x01 (; INT signal ;)))
     if
       ;; Test for unblocked interrupt
       (i32.eq (get_global $isInterruptBlocked) (i32.const 0))
@@ -1985,7 +1850,7 @@
     end
 
     ;; Test for NMI
-    (i32.and (get_global $stateFlags) (get_global $Z80_STATE_NMI))
+    (i32.and (get_global $stateFlags) (i32.const 0x02 (; NMI signal ;)))
     if
       call $executeNMI
       ;; Done
@@ -1994,7 +1859,7 @@
     end
 
     ;; Test for HLT
-    (i32.and (get_global $stateFlags) (get_global $Z80_STATE_HLT))
+    (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;)))
     if
       ;; Wait for 3 tacts
       i32.const 3
@@ -2006,7 +1871,7 @@
     end
 
     ;; Test for RST
-    (i32.and (get_global $stateFlags) (get_global $Z80_STATE_RST))
+    (i32.and (get_global $stateFlags) (i32.const 0x04 (; RST signal ;)))
     if
       call $resetCpu
       ;; Done
@@ -2072,10 +1937,10 @@
   ;; Executes the NMI request
   (func $executeNMI
      ;; Test for HLT
-    (i32.and (get_global $stateFlags) (get_global $Z80_STATE_HLT))
+    (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;) ))
     if
       call $incPC
-      (i32.and (get_global $stateFlags) (get_global $Z80_STATE_HLT_INV))
+      (i32.and (get_global $stateFlags) (i32.const 0xf7 (; ~HLT mask ;) ))
       set_global $stateFlags
     end
     ;; iff2 := iff1
@@ -2098,10 +1963,10 @@
   (func $executeInterrupt
     (local $addr i32)
     ;; Test for HLT
-    (i32.and (get_global $stateFlags) (get_global $Z80_STATE_HLT))
+    (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;) ))
     if
       call $incPC
-      (i32.and (get_global $stateFlags) (get_global $Z80_STATE_HLT_INV))
+      (i32.and (get_global $stateFlags) (i32.const 0xf7 (; ~HLT mask ;) ))
       set_global $stateFlags
     end
 
@@ -3981,7 +3846,7 @@
   (func $Halt
     ;; Set the HLT flag
     get_global $stateFlags
-    get_global $Z80_STATE_HLT
+    i32.const 0x08 (; HLT signal ;)
     i32.or
     set_global $stateFlags
 
