@@ -259,6 +259,7 @@
   (func $testMachineRead (param $addr i32) (result i32)
     (local $value i32)
     (local $logAddr i32)
+    
     ;; Read the memory value
     (i32.add (get_local $addr) (get_global $SP_MEM_OFFS))
     i32.load8_u
@@ -271,18 +272,13 @@
     tee_local $logAddr
 
     ;; Store address in the log
-    get_local $addr
-    i32.store16 offset=0
+    get_local $addr i32.store16 offset=0
 
     ;; Store value in the log
-    get_local $logAddr
-    get_local $value
-    i32.store8 offset=2
+    (i32.store8 offset=2 (get_local $logAddr) (get_local $value))
 
     ;; Store "read" flag
-    get_local $logAddr
-    i32.const 0
-    i32.store8 offset=3
+    (i32.store8 offset=3 (get_local $logAddr) (i32.const 0))
 
     ;; Increment log length
     (i32.add (get_global $memLogLength) (i32.const 1))
@@ -310,18 +306,13 @@
     tee_local $logAddr
 
     ;; Store address in the log
-    get_local $addr
-    i32.store16 offset=0
+    get_local $addr i32.store16 offset=0
 
     ;; Store value in the log
-    get_local $logAddr
-    get_local $v
-    i32.store8 offset=2
+    (i32.store8 offset=2 (get_local $logAddr) (get_local $v))
 
     ;; Store "write" flag
-    get_local $logAddr
-    i32.const 1
-    i32.store8 offset=3
+    (i32.store8 offset=3 (get_local $logAddr) (i32.const 1))
 
     ;; Increment log length
     (i32.add (get_global $memLogLength) (i32.const 1))
@@ -343,16 +334,11 @@
     set_local $value
 
     ;; Move to the next input element
-    get_global $nextTestInput
-    i32.const 1
-    i32.add
+    (i32.add (get_global $nextTestInput) (i32.const 1))
     set_global $nextTestInput
-    get_global $nextTestInput
-    get_global $testInputLength
-    i32.ge_u
+    (i32.ge_u (get_global $nextTestInput) (get_global $testInputLength))
     if
-     i32.const 0
-     set_global $nextTestInput
+     i32.const 0 set_global $nextTestInput
     end
 
     ;; Calculate the address in the I/O log
@@ -362,18 +348,13 @@
     tee_local $logAddr
 
     ;; Store address in the log
-    get_local $addr
-    i32.store16 offset=0
+    get_local $addr i32.store16 offset=0
 
     ;; Store value in the log
-    get_local $logAddr
-    get_local $value
-    i32.store8 offset=2
+    (i32.store8 offset=2 (get_local $logAddr) (get_local $value))
 
     ;; Store "read" flag
-    get_local $logAddr
-    i32.const 0
-    i32.store8 offset=3
+    (i32.store8 offset=3 (get_local $logAddr) (i32.const 0))
 
     ;; Increment log length
     (i32.add (get_global $ioLogLength) (i32.const 1))
@@ -397,18 +378,13 @@
     tee_local $logAddr
 
     ;; Store address in the log
-    get_local $addr
-    i32.store16 offset=0
+    get_local $addr i32.store16 offset=0
 
     ;; Store value in the log
-    get_local $logAddr
-    get_local $v
-    i32.store8 offset=2
+    (i32.store8 offset=2 (get_local $logAddr) (get_local $v))
 
     ;; Store "write" flag
-    get_local $logAddr
-    i32.const 1
-    i32.store8 offset=3
+    (i32.store8 offset=3 (get_local $logAddr) (i32.const 1))
 
     ;; Increment log length
     (i32.add (get_global $ioLogLength) (i32.const 1))
@@ -429,9 +405,7 @@
     ;; Store value in the log
     i32.const 1
     i32.store8 offset=0
-    get_local $logAddr
-    get_local $val
-    i32.store8 offset=1
+    (i32.store8 offset=1 (get_local $logAddr) (get_local $val))
 
     ;; Increment log length
     (i32.add (get_global $tbBlueLogLength) (i32.const 1))
@@ -452,9 +426,7 @@
     ;; Store value in the log
     i32.const 0
     i32.store8 offset=0
-    get_local $logAddr
-    get_local $val
-    i32.store8 offset=1
+    (i32.store8 offset=1 (get_local $logAddr) (get_local $val))
 
     ;; Increment log length
     (i32.add (get_global $tbBlueLogLength) (i32.const 1))
@@ -946,327 +918,252 @@
 
   ;; Gets the value of A
   (func $getA (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=1
+    get_global $REG_AREA_INDEX i32.load8_u offset=1
   )
 
   ;; Sets the value of A
   (func $setA (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=1
+    (i32.store8 offset=1 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of F
   (func $getF (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=0
+    get_global $REG_AREA_INDEX i32.load8_u offset=0
   )
 
   ;; Sets the value of F
   (func $setF (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=0
+    (i32.store8 offset=0 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of AF
   (func $getAF (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=0
+    get_global $REG_AREA_INDEX i32.load16_u offset=0
   )
 
   ;; Sets the value of AFC
   (func $setAF (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=0
+    (i32.store16 offset=0 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of B
   (func $getB (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=3
+    get_global $REG_AREA_INDEX i32.load8_u offset=3
   )
 
   ;; Sets the value of B
   (func $setB (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=3
+    (i32.store8 offset=3 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of C
   (func $getC (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=2
+    get_global $REG_AREA_INDEX i32.load8_u offset=2
   )
 
   ;; Sets the value of C
   (func $setC (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=2
+    (i32.store8 offset=2 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of BC
   (func $getBC (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=2
+    get_global $REG_AREA_INDEX i32.load16_u offset=2
   )
 
   ;; Sets the value of BC
   (func $setBC (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=2
+    (i32.store16 offset=2 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of D
   (func $getD (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=5
+    get_global $REG_AREA_INDEX i32.load8_u offset=5
   )
 
   ;; Sets the value of D
   (func $setD (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=5
+    (i32.store8 offset=5 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of E
   (func $getE (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=4
+    get_global $REG_AREA_INDEX i32.load8_u offset=4
   )
 
   ;; Sets the value of E
   (func $setE (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=4
+    (i32.store8 offset=4 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of DE
   (func $getDE (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=4
+    get_global $REG_AREA_INDEX i32.load16_u offset=4
   )
 
   ;; Sets the value of DE
   (func $setDE (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=4
+    (i32.store16 offset=4 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of H
   (func $getH (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=7
+    get_global $REG_AREA_INDEX i32.load8_u offset=7
   )
 
   ;; Sets the value of H
   (func $setH (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=7
+    (i32.store8 offset=7 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of L
   (func $getL (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=6
+    get_global $REG_AREA_INDEX i32.load8_u offset=6
   )
 
   ;; Sets the value of L
   (func $setL (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=6
+    (i32.store8 offset=6 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of HL
   (func $getHL (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=6
+    get_global $REG_AREA_INDEX i32.load16_u offset=6
   )
 
   ;; Sets the value of HL
   (func $setHL (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=6
+    (i32.store16 offset=6 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of I
   (func $getI (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=16
+    get_global $REG_AREA_INDEX i32.load8_u offset=16
   )
 
   ;; Sets the value of I
   (func $setI (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=16
+    (i32.store8 offset=16 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of R
   (func $getR (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=17
+    get_global $REG_AREA_INDEX i32.load8_u offset=17
   )
 
   ;; Sets the value of R
   (func $setR (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=17
+    (i32.store8 offset=17 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of PC
   (func $getPC (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=18
+    get_global $REG_AREA_INDEX i32.load16_u offset=18
   )
 
   ;; Sets the value of PC
   (func $setPC (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=18
+    (i32.store16 offset=18 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of SP
   (func $getSP (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=20
+    get_global $REG_AREA_INDEX i32.load16_u offset=20
   )
 
   ;; Sets the value of SP
   (func $setSP (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=20
+    (i32.store16 offset=20 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of XH
   (func $getXH (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=23
+    get_global $REG_AREA_INDEX i32.load8_u offset=23
   )
 
   ;; Sets the value of XH
   (func $setXH (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=23
+    (i32.store8 offset=23 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of XL
   (func $getXL (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=22
+    get_global $REG_AREA_INDEX i32.load8_u offset=22
   )
 
   ;; Sets the value of XL
   (func $setXL (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=22
+    (i32.store8 offset=22 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of IX
   (func $getIX (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=22
+    get_global $REG_AREA_INDEX i32.load16_u offset=22
   )
 
   ;; Sets the value of IX
   (func $setIX (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=22
+    (i32.store16 offset=22 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of YH
   (func $getYH (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=25
+    get_global $REG_AREA_INDEX i32.load8_u offset=25
   )
 
   ;; Sets the value of YH
   (func $setYH (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=25
+    (i32.store8 offset=25 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of YL
   (func $getYL (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=24
+    get_global $REG_AREA_INDEX i32.load8_u offset=24
   )
 
   ;; Sets the value of YL
   (func $setYL (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=24
+    (i32.store8 offset=24 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of IY
   (func $getIY (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=24
+    get_global $REG_AREA_INDEX i32.load16_u offset=24
   )
 
   ;; Sets the value of IY
   (func $setIY (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=24
+    (i32.store16 offset=24 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of WH
   (func $getWH (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=27
+    get_global $REG_AREA_INDEX i32.load8_u offset=27
   )
 
   ;; Sets the value of WH
   (func $setWH (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=27
+    (i32.store8 offset=27 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of WL
   (func $getWL (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load8_u offset=26
+    get_global $REG_AREA_INDEX i32.load8_u offset=26
   )
 
   ;; Sets the value of WL
   (func $setWL (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store8 offset=26
+    (i32.store8 offset=26 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the value of WZ
   (func $getWZ (result i32)
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=26
+    get_global $REG_AREA_INDEX i32.load16_u offset=26
   )
 
   ;; Sets the value of WZ
   (func $setWZ (param $v i32)
-    get_global $REG_AREA_INDEX
-    get_local $v
-    i32.store16 offset=26
+    (i32.store16 offset=26 (get_global $REG_AREA_INDEX) (get_local $v))
   )
 
   ;; Gets the specified 8-bit register
@@ -1274,10 +1171,14 @@
   ;; returns: 8-bit register value
   (func $getReg8 (param $r i32) (result i32)
     get_global $REG_AREA_INDEX
+
+    ;; Convert 8-bit register index to offset
     get_global $REG8_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x07))
     i32.add
     i32.load8_u
+
+    ;; Load 8-bit register from memory
     i32.add
     i32.load8_u
   )
@@ -1286,10 +1187,14 @@
   ;; $r: Register index from 0-7: B, C, D, E, H, L, F, A
   (func $setReg8 (param $r i32) (param $v i32)
     get_global $REG_AREA_INDEX
+
+    ;; Convert 8-bit register index to offset
     get_global $REG8_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x07))
     i32.add
     i32.load8_u
+
+    ;; Store register to memory
     i32.add
     get_local $v
     i32.store8
@@ -1300,10 +1205,14 @@
   ;; returns: 8-bit register value
   (func $getReg16 (param $r i32) (result i32)
     get_global $REG_AREA_INDEX
+    
+    ;; Convert 16-bit register index to offset
     get_global $REG16_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x03))
     i32.add
     i32.load8_u
+
+    ;; Load register from memory
     i32.add
     i32.load16_u
   )
@@ -1312,10 +1221,14 @@
   ;; $r: Register index from 0-3: BC, DE, HL, SP
   (func $setReg16 (param $r i32) (param $v i32)
     get_global $REG_AREA_INDEX
+    
+    ;; Convert 16-bit register index to offset
     get_global $REG16_TAB_OFFS
     (i32.and (get_local $r) (i32.const 0x03))
     i32.add
     i32.load8_u
+
+    ;; Store register tomemory
     i32.add
     get_local $v
     i32.store16
@@ -1334,11 +1247,9 @@
     i32.const 1
     i32.eq
     if (result i32)
-      get_global $REG_AREA_INDEX
-      i32.load16_u offset=22
+      get_global $REG_AREA_INDEX i32.load16_u offset=22 ;; IX
     else
-      get_global $REG_AREA_INDEX
-      i32.load16_u offset=24
+      get_global $REG_AREA_INDEX i32.load16_u offset=24 ;; IY
     end
   )
 
@@ -1349,13 +1260,9 @@
     i32.const 1
     i32.eq
     if
-      get_global $REG_AREA_INDEX
-      get_local $v
-      i32.store16 offset=22
+      (i32.store16 offset=22 (get_global $REG_AREA_INDEX) (get_local $v)) ;; IX
     else
-      get_global $REG_AREA_INDEX
-      get_local $v
-      i32.store16 offset=24
+      (i32.store16 offset=24 (get_global $REG_AREA_INDEX) (get_local $v)) ;; IY
     end
   )
 
@@ -1375,131 +1282,49 @@
   ;; Increments the current frame tact with the specified value
   ;; $inc: Increment
   (func $incTacts (param $inc i32)
-    get_global $frameTacts
-    get_local $inc
-    i32.add
+    (i32.add (get_global $frameTacts) (get_local $inc))
     set_global $frameTacts
-    get_global $frameTacts
-    get_global $tactsInFrame
-    i32.ge_u
+    (i32.ge_u (get_global $frameTacts) (get_global $tactsInFrame))
     if
-      get_global $frameTacts
-      get_global $tactsInFrame
-      i32.sub
+      (i32.sub (get_global $frameTacts) (get_global $tactsInFrame))
       set_global $frameTacts
-      get_global $frameCount
-      i32.const 1
-      i32.add
+      (i32.add (get_global $frameCount) (i32.const 1))
       set_global $frameCount
     end
   )
-
 
   ;; ==========================================================================
   ;; Z80 CPU life cycle methods
 
   ;; Turns on the CPU
   (func $turnOnCpu
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=0
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=2
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=4
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=6
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=8
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=10
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=12
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=14
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=16
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=18
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=20
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=22
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=24
-    get_global $REG_AREA_INDEX
-    i32.const 0xffff
-    i32.store16 offset=26
-    i32.const 0x0000
-    set_global $frameCount
-    i32.const 0x0000
-    set_global $frameTacts
-    i32.const 0x0000
-    set_global $stateFlags
-    i32.const 0x0000
-    set_global $useGateArrayContention
-    i32.const 0x0000
-    set_global $iff1
-    i32.const 0x0000
-    set_global $iff2
-    i32.const 0x0000
-    set_global $interruptMode
-    i32.const 0x0000
-    set_global $isInterruptBlocked
-    i32.const 0x0000
-    set_global $isInOpExecution
-    i32.const 0x0000
-    set_global $prefixMode
-    i32.const 0x0000
-    set_global $indexMode
-    i32.const 0x0000
-    set_global $maskableInterruptModeEntered
-    i32.const 0x0000
-    set_global $opCode
-  )
-
-  ;; Sets the number of tacts in a frame
-  ;; $tact: #of tacts in a frame
-  (func $setTactsInFrame (param $tact i32)
-    get_local $tact
-    set_global $tactsInFrame
-  )
-
-  ;; Sets the CPU state flags to the specified value
-  ;; $s: CPU state flags
-  (func $setCpuSignals (param $s i32)
-    get_local $s
-    set_global $stateFlags
-  )
-
-  ;; Sets the isInterruptBlocked flag
-  (func $setInterruptBlocked (param $f i32)
-    get_local $f
-    set_global $isInterruptBlocked
-  )
-
-  ;; Sets the isInterruptMode value
-  (func $setInterruptMode (param $f i32)
-    get_local $f
-    set_global $interruptMode
-  )
-
-  ;; Sets the iff1 flag
-  (func $setIff1 (param $f i32)
-    get_local $f
-    set_global $iff1
+    (i32.store16 offset=0 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=2 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=4 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=6 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=8 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=10 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=12 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=14 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=16 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=18 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=20 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=22 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=24 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    (i32.store16 offset=26 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
+    i32.const 0x0000 set_global $frameCount
+    i32.const 0x0000 set_global $frameTacts
+    i32.const 0x0000 set_global $stateFlags
+    i32.const 0x0000 set_global $useGateArrayContention
+    i32.const 0x0000 set_global $iff1
+    i32.const 0x0000 set_global $iff2
+    i32.const 0x0000 set_global $interruptMode
+    i32.const 0x0000 set_global $isInterruptBlocked
+    i32.const 0x0000 set_global $isInOpExecution
+    i32.const 0x0000 set_global $prefixMode
+    i32.const 0x0000 set_global $indexMode
+    i32.const 0x0000 set_global $maskableInterruptModeEntered
+    i32.const 0x0000 set_global $opCode
   )
 
   ;; Enables/disables extended instruction set
@@ -1511,22 +1336,6 @@
 
   ;; ==========================================================================
   ;; Z80 Memory access
-
-  (func $resetMemory
-    (local $i i32)
-    i32.const 0
-    set_local $i
-    (loop $loop
-      get_local $i   ;; addr
-      i32.const 0x00 ;; v
-      call $writeMemory
-      (i32.add (get_local $i) (i32.const 1))
-      tee_local $i
-      i32.const 0xffff
-      i32.le_u
-      br_if $loop
-    )
-  )
 
   ;; Default memory read operation
   ;; $addr: 16-bit memory address
@@ -1566,8 +1375,7 @@
     get_local $addr
     (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
     call_indirect (type $MemReadFunc)
-    i32.const 3
-    call $incTacts
+    (call $incTacts (i32.const 3))
   )
 
   ;; Reads the specified memory location of the current machine type
@@ -1591,8 +1399,7 @@
       (i32.const 1)
     )
     call_indirect (type $MemWriteFunc)
-    i32.const 3
-    call $incTacts
+    (call $incTacts (i32.const 3))
   )
 
   ;; Reads the specified I/O port of the current machine type
@@ -1605,8 +1412,7 @@
       (i32.const 2)
     )
     call_indirect (type $PortReadFunc)
-    i32.const 4
-    call $incTacts
+    (call $incTacts (i32.const 4))
   )
 
   ;; Writes the specified port of the current machine type
@@ -1620,8 +1426,7 @@
       (i32.const 3)
     )
     call_indirect (type $PortWriteFunc)
-    i32.const 4
-    call $incTacts
+    (call $incTacts (i32.const 4))
   )
 
   ;; Writes the specified TBBLUE index of the current machine type
@@ -1634,8 +1439,7 @@
       (i32.const 3)
     )
     call_indirect (type $PortWriteFunc)
-    i32.const 3
-    call $incTacts
+    (call $incTacts (i32.const 3))
 
     ;; Allow to write the log
     get_local $idx
@@ -1656,8 +1460,7 @@
       (i32.const 3)
     )
     call_indirect (type $PortWriteFunc)
-    i32.const 3
-    call $incTacts
+    (call $incTacts (i32.const 3))
 
     get_local $idx
     (i32.add
@@ -1676,14 +1479,8 @@
     (i32.ne (get_global $stateFlags) (i32.const 0))
     if
       ;; Yes, process them
-      call $processCpuSignals
-      ;; Processed any signal?
-      i32.const 0
-      i32.ne
-      if
-        ;; Yes, nothing to do in this cycle
-        return
-      end
+      (i32.ne (call $processCpuSignals) (i32.const 0))
+      if return end
     end
 
     ;; It's time to process the next op code
@@ -1694,143 +1491,82 @@
     ;; Execute a memory refresh
     call $refreshMemory
 
-    ;; Branch according to prefix modes
     ;; Test for no prefix
-    get_global $prefixMode
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $prefixMode) (i32.const 0))
     if
       ;; No prefix, test opcode prefixes
       ;; Test for extended operations
-      get_global $opCode
-      i32.const 0xed
-      i32.eq
+      (i32.eq (get_global $opCode) (i32.const 0xed))
       if
-        ;; prefixMode := extended
-        i32.const 1
-        set_global $prefixMode
-        ;; isInOpExecution := true
-        i32.const 1
-        set_global $isInOpExecution
-        ;; isInterruptBlocked := true;
-        i32.const 1
-        set_global $isInterruptBlocked
+        i32.const 1 set_global $prefixMode
+        i32.const 1 set_global $isInOpExecution
+        i32.const 1 set_global $isInterruptBlocked
         return
       end
 
-      ;; Test for bit operations
-      get_global $opCode
-      i32.const 0xcb
-      i32.eq
+      ;; Test for bit operations prefix
+      (i32.eq (get_global $opCode) (i32.const 0xcb))
       if
-        ;; prefixMode := bit
-        i32.const 2
-        set_global $prefixMode
-        ;; isInOpExecution := true
-        i32.const 1
-        set_global $isInOpExecution
-        ;; isInterruptBlocked := true;
-        i32.const 1
-        set_global $isInterruptBlocked
+        i32.const 2 set_global $prefixMode
+        i32.const 1 set_global $isInOpExecution
+        i32.const 1 set_global $isInterruptBlocked
         return
       end
 
       ;; Test for IY prefix
-      get_global $opCode
-      i32.const 0xfd
-      i32.eq
+      (i32.eq (get_global $opCode) (i32.const 0xfd))
       if
-        ;; indexMode := IY
-        i32.const 2
-        set_global $indexMode
-        ;; isInOpExecution := true
-        i32.const 1
-        set_global $isInOpExecution
-        ;; isInterruptBlocked := true;
-        i32.const 1
-        set_global $isInterruptBlocked
+        i32.const 2 set_global $indexMode
+        i32.const 1 set_global $isInOpExecution
+        i32.const 1 set_global $isInterruptBlocked
         return
       end
 
       ;; Test for IX prefix
-      get_global $opCode
-      i32.const 0xdd
-      i32.eq
+      (i32.eq (get_global $opCode) (i32.const 0xdd))
       if
-        ;; indexMode := IX
-        i32.const 1
-        set_global $indexMode
-        ;; isInOpExecution := true
-        i32.const 1
-        set_global $isInOpExecution
-        ;; isInterruptBlocked := true;
-        i32.const 1
-        set_global $isInterruptBlocked
+        i32.const 1 set_global $indexMode
+        i32.const 1 set_global $isInOpExecution
+        i32.const 1 set_global $isInterruptBlocked
         return
       end
 
-      ;; isInterruptBlocked := false;
-      i32.const 0
-      set_global $isInterruptBlocked
+      ;; Execute the current operation
+      i32.const 0 set_global $isInterruptBlocked
       call $processStandardOrIndexedOperations
-      ;; indexMode := 0
-      i32.const 0
-      set_global $indexMode
-      ;; prefixMode := 0
-      i32.const 0
-      set_global $prefixMode
-      ;; isInOpExecution := 0
-      i32.const 0
-      set_global $isInOpExecution
+      i32.const 0 set_global $indexMode
+      i32.const 0 set_global $prefixMode
+      i32.const 0 set_global $isInOpExecution
       return
     end
 
     ;; Branch according to prefix modes
-    ;; Test for no extended mode
-    get_global $prefixMode
-    i32.const 1
-    i32.eq
+    ;; Test for extended mode
+    (i32.eq (get_global $prefixMode) (i32.const 1))
     if
-      ;; isInterruptBlocked := false;
-      i32.const 0
-      set_global $isInterruptBlocked
+      i32.const 0 set_global $isInterruptBlocked
       call $processExtendedOperations
-      ;; indexMode := 0
-      i32.const 0
-      set_global $indexMode
-      ;; prefixMode := 0
-      i32.const 0
-      set_global $prefixMode
-      ;; isInOpExecution := 0
-      i32.const 0
-      set_global $isInOpExecution
+      i32.const 0 set_global $indexMode
+      i32.const 0 set_global $prefixMode
+      i32.const 0 set_global $isInOpExecution
       return
     end
 
     ;; Branch according to prefix modes
     ;; Test for bit mode
-    get_global $prefixMode
-    i32.const 2
-    i32.eq
+    (i32.eq (get_global $prefixMode) (i32.const 2))
     if
-      ;; isInterruptBlocked := false;
-      i32.const 0
-      set_global $isInterruptBlocked
+      i32.const 0 set_global $isInterruptBlocked
       call $processBitOperations
-      ;; indexMode := 0
-      i32.const 0
-      set_global $indexMode
-      ;; prefixMode := 0
-      i32.const 0
-      set_global $prefixMode
-      ;; isInOpExecution := 0
-      i32.const 0
-      set_global $isInOpExecution
+      i32.const 0 set_global $indexMode
+      i32.const 0 set_global $prefixMode
+      i32.const 0 set_global $isInOpExecution
       return
     end
   )
 
   ;; Process the CPU signals
+  ;; Returns true, if the signal has been processed; otherwise, false
   (func $processCpuSignals (result i32)
     ;; Test for INT
     (i32.and (get_global $stateFlags) (i32.const 0x01 (; INT signal ;)))
@@ -1838,11 +1574,9 @@
       ;; Test for unblocked interrupt
       (i32.eq (get_global $isInterruptBlocked) (i32.const 0))
       if
-        ;; Test the iff1 flip-flop
         (i32.ne (get_global $iff1) (i32.const 0))
         if
           call $executeInterrupt
-          ;; Done
           i32.const 1
           return
         end
@@ -1853,7 +1587,6 @@
     (i32.and (get_global $stateFlags) (i32.const 0x02 (; NMI signal ;)))
     if
       call $executeNMI
-      ;; Done
       i32.const 1
       return
     end
@@ -1861,11 +1594,8 @@
     ;; Test for HLT
     (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;)))
     if
-      ;; Wait for 3 tacts
-      i32.const 3
-      call $incTacts
+      (call $incTacts (i32.const 3))
       call $refreshMemory
-      ;; Done
       i32.const 1
       return
     end
@@ -1874,7 +1604,6 @@
     (i32.and (get_global $stateFlags) (i32.const 0x04 (; RST signal ;)))
     if
       call $resetCpu
-      ;; Done
       i32.const 1
       return
     end
@@ -1898,40 +1627,24 @@
     i32.and
     i32.or
     call $setR
-
-    ;; Add +1 tact
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
 
   ;; Resets the CPU
   (func $resetCpu
-    i32.const 0
-    set_global $iff1
-    i32.const 0
-    set_global $iff2
-    i32.const 0
-    set_global $interruptMode
-    i32.const 0
-    set_global $isInterruptBlocked
-    i32.const 0
-    set_global $stateFlags
-    i32.const 0
-    set_global $prefixMode
-    i32.const 0
-    set_global $indexMode
-    i32.const 0
-    call $setPC
-    i32.const 0
-    call $setI
-    i32.const 0
-    call $setR
-    i32.const 0x0000
-    set_global $isInOpExecution
-    i32.const 0x0000
-    set_global $frameCount
-    i32.const 0x0000
-    set_global $frameTacts
+    i32.const 0 set_global $iff1
+    i32.const 0 set_global $iff2
+    i32.const 0 set_global $interruptMode
+    i32.const 0 set_global $isInterruptBlocked
+    i32.const 0 set_global $stateFlags
+    i32.const 0 set_global $prefixMode
+    i32.const 0 set_global $indexMode
+    (call $setPC (i32.const 0))
+    (call $setI (i32.const 0))
+    (call $setR (i32.const 0))
+    i32.const 0x0000 set_global $isInOpExecution
+    i32.const 0x0000 set_global $frameCount
+    i32.const 0x0000 set_global $frameTacts
   )
 
   ;; Executes the NMI request
@@ -1943,20 +1656,15 @@
       (i32.and (get_global $stateFlags) (i32.const 0xf7 (; ~HLT mask ;) ))
       set_global $stateFlags
     end
-    ;; iff2 := iff1
-    get_global $iff1
-    set_global $iff2
-    ;; iff1 := false
-    i32.const 0
-    set_global $iff1
+    get_global $iff1 set_global $iff2
+    i32.const 0 set_global $iff1
 
     ;; Push PC
     call $getPC
     call $pushValue
 
     ;; Set NMI routione address
-    i32.const 0x0066
-    call $setPC
+    (call $setPC (i32.const 0x0066))
   )
 
   ;; Executes the NMI request
@@ -1970,23 +1678,19 @@
       set_global $stateFlags
     end
 
-    ;; iif1 := false
-    i32.const 0
-    set_global $iff1
-    ;; iff2 := false
-    i32.const 0
-    set_global $iff2
+    i32.const 0 set_global $iff1
+    i32.const 0 set_global $iff2
+    
     ;; Push PC
     call $getPC
     call $pushValue
+    
     ;; Test interrupt mode 0
-    get_global $interruptMode
-    i32.const 2
-    i32.eq
+    (i32.eq (get_global $interruptMode) (i32.const 2))
     if
       ;; Interrupt mode 2
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
+      
       ;; Let's assume, the device retrieves 0xff (the least significant bit is ignored)
       ;; addr = i << 8 | 0xfe;
       call $getI
@@ -1995,29 +1699,19 @@
       i32.const 0xfe
       i32.or
       tee_local $addr
-      i32.const 5
-      call $incTacts
-      call $readMemory ;;  l
-      i32.const 3
-      call $incTacts
-      get_local $addr
-      i32.const 1
-      i32.add
-      call $readMemory ;; h, l
-      i32.const 3
-      call $incTacts
+      (call $incTacts (i32.const 5))
+      call $readMemory
+      (i32.add (get_local $addr) (i32.const 1))
+      call $readMemory
       i32.const 8
-      i32.shl         ;; h << 8, l
-      i32.or          ;; h << 8 | l
+      i32.shl
+      i32.or
       call $setWZ
-      i32.const 6
-      call $incTacts
+      (call $incTacts (i32.const 6))
     else
       ;; Interrupt mode 0 or 1
-      i32.const 0x0038
-      call $setWZ
-      i32.const 5
-      call $incTacts
+      (call $setWZ (i32.const 0x0038))
+      (call $incTacts (i32.const 5))
     end
 
     ;; pc := wz
@@ -2027,12 +1721,10 @@
 
   ;; Processes standard or indexed operations
   (func $processStandardOrIndexedOperations
+    get_global $INDEXED_JT
+    get_global $STANDARD_JT
     get_global $indexMode
-    if (result i32)
-      get_global $INDEXED_JT
-    else
-      get_global $STANDARD_JT
-    end
+    select
     get_global $opCode
     i32.add
     call_indirect (type $OpFunc)
@@ -2054,17 +1746,15 @@
       call $setWZ
 
       ;; Adjust tacts
-      get_global $useGateArrayContention
-      i32.const 0
-      i32.eq
+      (i32.eq (get_global $useGateArrayContention) (i32.const 0))
       if
         call $getPC
         call $memoryDelay
       end
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
+      call $getWZ ;; The address to use with the indexed bit operation
 
-      call $getWZ
+      ;; Get operation function
       get_global $INDEXED_BIT_JT
       call $readCodeMemory
       set_global $opCode
@@ -2073,9 +1763,7 @@
       call_indirect (type $IndexedBitFunc)
     else
       ;; Normal bit operations
-      get_global $BIT_JT
-      get_global $opCode
-      i32.add
+      (i32.add (get_global $BIT_JT) (get_global $opCode))
       call_indirect (type $OpFunc)
     end
   )
@@ -2093,63 +1781,98 @@
 
   ;; Increments the value of PC
   (func $incPC
-    call $getPC
-    i32.const 1
-    i32.add
-    call $setPC
+    (i32.store16 offset=18
+      (get_global $REG_AREA_INDEX)
+      (i32.add (i32.load16_u offset=18 (get_global $REG_AREA_INDEX)) (i32.const 1))
+    )
   )
 
   ;; Decrements the value of SP
   (func $decSP
-    call $getSP
-    i32.const 1
-    i32.sub
-    call $setSP
+    (i32.store16 offset=20
+      (get_global $REG_AREA_INDEX)
+      (i32.sub (i32.load16_u offset=20 (get_global $REG_AREA_INDEX)) (i32.const 1))
+    )
   )
 
   ;; Increments the value of SP
   (func $incSP
-    call $getSP
-    i32.const 1
-    i32.add
-    call $setSP
+    (i32.store16 offset=20
+      (get_global $REG_AREA_INDEX)
+      (i32.add (i32.load16_u offset=20 (get_global $REG_AREA_INDEX)) (i32.const 1))
+    )
   )
 
   ;; Pushes the value to the stack
   (func $pushValue (param $v i32)
-    call $decSP
-    i32.const 1
-    call $incTacts
-    call $getSP
-    get_local $v
-    i32.const 8
-    i32.shr_u
+    (local $sp i32)
+    ;; Decrement SP
+    (i32.sub (i32.load16_u offset=20 (get_global $REG_AREA_INDEX)) (i32.const 1))
+    i32.const 0xffff
+    i32.and
+    tee_local $sp
+
+    ;; Adjust tacts
+    (call $incTacts (i32.const 1))
+
+    ;; Store high byte
+    (i32.shr_u (get_local $v) (i32.const 8))
     call $writeMemory
-    call $decSP
-    call $getSP
+
+    ;; Decrement SP
+    (i32.sub (get_local $sp) (i32.const 1))
+    i32.const 0xffff
+    i32.and
+    tee_local $sp
+
+    ;; Store low byte
     get_local $v
     call $writeMemory
+
+    ;; Store new value of SP
+    (i32.store16 offset=20 (get_global $REG_AREA_INDEX) (get_local $sp))
   )
 
   ;; Pops a value to the stack
   (func $popValue (result i32)
-    call $getSP
+    (local $sp i32)
+
+    ;; Read low byte from stack
+    (i32.load16_u offset=20 (get_global $REG_AREA_INDEX))
+    tee_local $sp
     call $readMemory
-    call $incSP
-    call $getSP
+
+    ;; Increment SP and read high byte from stack
+    (i32.add (get_local $sp) (i32.const 1))
+    i32.const 0xffff
+    i32.and
+    tee_local $sp
     call $readMemory
-    call $incSP
     i32.const 8
     i32.shl
     i32.or
+
+    ;; Increment SP and store it
+    get_global $REG_AREA_INDEX
+    (i32.add (get_local $sp) (i32.const 1))
+    i32.const 0xffff
+    i32.and
+    i32.store16 offset=20
   )
 
   ;; Reads the memory location at PC
   (func $readCodeMemory (result i32)
-    (local $result i32)
-    call $getPC
-    call $readMemory
-    call $incPC
+    (local $pc i32)
+    (i32.load16_u offset=18 (get_global $REG_AREA_INDEX))
+    tee_local $pc
+    call $readMemory ;; we'll return this value
+
+    ;; Increment PC
+    get_global $REG_AREA_INDEX
+    (i32.add (get_local $pc) (i32.const 1))
+    i32.const 0xffff
+    i32.and
+    i32.store16 offset=18
   )
 
   ;; Add two 16-bit values following the add hl,NN logic
@@ -2179,9 +1902,7 @@
     set_local $f
 
     ;; Calculate result
-    get_local $regHL
-    get_local $other
-    i32.add
+    (i32.add (get_local $regHL) (get_local $other))
     tee_local $res
 
     ;; Test for C flag
@@ -2189,16 +1910,12 @@
     i32.ge_u
     if
       ;; Set C
-      get_local $f
-      i32.const 0x01
-      i32.or
+      (i32.or (get_local $f) (i32.const 0x01))
       set_local $f
     end
 
     ;; Calculate R3 and R5 flags
-    get_local $res
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (get_local $res) (i32.const 8))
     i32.const 0x28 ;; Mask for R3, R5
     i32.and
 
@@ -2218,13 +1935,9 @@
     (local $signed i32)
 
     ;; Calculate result
-    call $getHL
-    get_local $other
-    i32.add
+    (i32.add (call $getHL) (get_local $other))
     tee_local $res
-    call $getF
-    i32.const 0x01
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     tee_local $f
     i32.add
     tee_local $res
@@ -2252,22 +1965,18 @@
     ;; Calculate C
     i32.const 0x01
     i32.const 0x00
-    get_local $res
-    i32.const 0x1_0000
-    i32.and
+    (i32.and (get_local $res) (i32.const 0x1_0000))
     select ;; (Z, H, C)
 
     ;; Calculate PV
-    call $getHL
-    i32.const 16
-    i32.shl
-    i32.const 16
-    i32.shr_s
-    get_local $other
-    i32.const 16
-    i32.shl
-    i32.const 16
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (call $getHL) (i32.const 16))
+      (i32.const 16)
+    )
+    (i32.shr_s 
+      (i32.shl (get_local $other) (i32.const 16))
+      (i32.const 16)
+    )
     i32.add
     get_local $f
     i32.add
@@ -2308,13 +2017,9 @@
     (local $signed i32)
 
     ;; Calculate result
-    call $getHL
-    get_local $other
-    i32.sub
+    (i32.sub (call $getHL) (get_local $other))
     tee_local $res
-    call $getF
-    i32.const 0x01
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     tee_local $f
     i32.sub
     tee_local $res
@@ -2345,22 +2050,18 @@
     ;; Calculate C
     i32.const 0x01
     i32.const 0x00
-    get_local $res
-    i32.const 0x1_0000
-    i32.and
+    (i32.and (get_local $res) (i32.const 0x1_0000))
     select ;; (Z, N, H, C)
 
     ;; Calculate PV
-    call $getHL
-    i32.const 16
-    i32.shl
-    i32.const 16
-    i32.shr_s
-    get_local $other
-    i32.const 16
-    i32.shl
-    i32.const 16
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (call $getHL) (i32.const 16))
+      (i32.const 16)
+    )
+    (i32.shr_s 
+      (i32.shl (get_local $other) (i32.const 16))
+      (i32.const 16)
+    )
     i32.sub
     get_local $f
     i32.sub
@@ -2401,11 +2102,10 @@
     call $AdjustIXTact
 
     ;; Convert the 8-bit distance to i32
-    get_local $e
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (get_local $e) (i32.const 24))
+      (i32.const 24)
+    )
 
     ;; Calculate the destination address
     call $getPC
@@ -2428,40 +2128,28 @@
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 5
-      call $incTacts
+      (call $incTacts (i32.const 5))
     else
-      get_local $addr
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $addr
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $addr
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $addr
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $addr
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $addr))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $addr))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $addr))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $addr))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $addr))
+      (call $incTacts (i32.const 1))
     end
   )
 
   ;; Gets the index address for an operation
   (func $getIndexedAddress (result i32)
     call $getIndexReg
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (call $readCodeMemory) (i32.const 24))
+      (i32.const 24)
+    )
     i32.add
   )
 
@@ -2485,9 +2173,7 @@
     ;; Put Z on stack
     i32.const 0x00 ;; NZ
     i32.const 0x40 ;; Z
-    get_local $res
-    i32.const 0xff
-    i32.and
+    (i32.and (get_local $res) (i32.const 0xff))
     select         ;; Z
 
     ;; Get S, R5, and R3 from result
@@ -2509,23 +2195,19 @@
     (i32.and (get_local $arg) (i32.const 0x0f))
     i32.add
     get_local $c
-    i32.add
-    i32.const 0x10
-    i32.and
+    (i32.and (i32.add) (i32.const 0x10))
     select        ;; Z, S|R5|R3, C, H
 
     ;; <i32>$arg + <i32>$a + C
-    get_local $a
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (get_local $a) (i32.const 24))
+      (i32.const 24)
+    )
     tee_local $pv
-    get_local $arg
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (get_local $arg) (i32.const 24))
+      (i32.const 24)
+    )
     i32.add
     get_local $c
     i32.add
@@ -2575,9 +2257,7 @@
     ;; Put Z on stack
     i32.const 0x00 ;; NZ
     i32.const 0x40 ;; Z
-    get_local $res
-    i32.const 0xff
-    i32.and
+    (i32.and (get_local $res) (i32.const 0xff))
     select         ;; Z
 
     ;; Get S, R5, and R3 from result
@@ -2605,17 +2285,15 @@
     select        ;; Z, S|R5|R3, C, H
 
     ;; <i32>$a - <i32>$arg - C
-    get_local $a
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (get_local $a) (i32.const 24))
+      (i32.const 24)
+    )
     tee_local $pv
-    get_local $arg
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (get_local $arg) (i32.const 24))
+      (i32.const 24)
+    )
     i32.sub
     get_local $c
     i32.sub
@@ -2652,15 +2330,11 @@
   ;; Executes ALU AND operations; sets A and F
   ;; $arg: other argument
   (func $AluAnd (param $arg i32)
-    call $getA
-    get_local $arg
-    i32.and
+    (i32.and (call $getA) (get_local $arg))
     call $setA
 
     ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
+    (i32.add (get_global $LOG_FLAGS) (call $getA))
     i32.load8_u
 
     ;; Set H
@@ -2672,15 +2346,11 @@
   ;; Executes ALU XOR operation; sets A and F
   ;; $arg: other argument
   (func $AluXor (param $arg i32)
-    call $getA
-    get_local $arg
-    i32.xor
+    (i32.xor (call $getA) (get_local $arg))
     call $setA
 
     ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
+    (i32.add (get_global $LOG_FLAGS) (call $getA))
     i32.load8_u
     call $setF
   )
@@ -2688,15 +2358,11 @@
   ;; Executes ALU OOR operation; sets A and F
   ;; $arg: other argument
   (func $AluOr (param $arg i32)
-    call $getA
-    get_local $arg
-    i32.or
+    (i32.or (call $getA) (get_local $arg))
     call $setA
 
     ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
+    (i32.add (get_global $LOG_FLAGS) (call $getA))
     i32.load8_u
     call $setF
   )
@@ -2717,9 +2383,7 @@
     ;; Put Z on stack
     i32.const 0x00 ;; NZ
     i32.const 0x40 ;; Z
-    get_local $res
-    i32.const 0xff
-    i32.and
+    (i32.and (get_local $res) (i32.const 0xff))
     select         ;; Z
 
     ;; Get S from result
@@ -2750,17 +2414,15 @@
     select        ;; Z, S|R5|R3, C, H
 
     ;; <i32>$a - <i32>$arg - C
-    get_local $a
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s
+      (i32.shl (get_local $a) (i32.const 24))
+      (i32.const 24)
+    )
     tee_local $pv
-    get_local $arg
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s
+      (i32.shl (get_local $arg) (i32.const 24))
+      (i32.const 24)
+    )
     i32.sub
     tee_local $pv
 
@@ -2795,74 +2457,66 @@
 
   ;; Tests the Z condition
   (func $testZ (result i32)
-    call $getF
-    i32.const 0x40 ;; Mask for Z flag
-    i32.and
-    i32.const 0
-    i32.ne
+    (i32.ne 
+      (i32.and (call $getF) (i32.const 0x40))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the NZ condition
   (func $testNZ (result i32)
-    call $getF
-    i32.const 0x40 ;; Mask for Z flag
-    i32.and
-    i32.const 0
-    i32.eq
+    (i32.eq
+      (i32.and (call $getF) (i32.const 0x40))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the C condition
   (func $testC (result i32)
-    call $getF
-    i32.const 0x01 ;; Mask for C flag
-    i32.and
-    i32.const 0
-    i32.ne
+    (i32.ne
+      (i32.and (call $getF) (i32.const 0x01))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the NC condition
   (func $testNC (result i32)
-    call $getF
-    i32.const 0x01 ;; Mask for C flag
-    i32.and
-    i32.const 0
-    i32.eq
+    (i32.eq
+      (i32.and (call $getF) (i32.const 0x01))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the PE condition
   (func $testPE (result i32)
-    call $getF
-    i32.const 0x04 ;; Mask for PV flag
-    i32.and
-    i32.const 0
-    i32.ne
+    (i32.ne
+      (i32.and (call $getF) (i32.const 0x04))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the PO condition
   (func $testPO (result i32)
-    call $getF
-    i32.const 0x04 ;; Mask for PV flag
-    i32.and
-    i32.const 0
-    i32.eq
+    (i32.eq
+      (i32.and (call $getF) (i32.const 0x04))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the M condition
   (func $testM (result i32)
-    call $getF
-    i32.const 0x80 ;; Mask for S flag
-    i32.and
-    i32.const 0
-    i32.ne
+    (i32.ne
+      (i32.and (call $getF) (i32.const 0x80))
+      (i32.const 0)
+    )
   )
 
   ;; Tests the P condition
   (func $testP (result i32)
-    call $getF
-    i32.const 0x80 ;; Mask for S flag
-    i32.and
-    i32.const 0
-    i32.eq
+    (i32.eq
+      (i32.and (call $getF) (i32.const 0x80))
+      (i32.const 0)
+    )
   )
 
   ;; Read address to WZ
@@ -2892,16 +2546,11 @@
   ;; QQ: BC, DE, HL, SP
   (func $LdQQNN
     ;; Get 16-bit reg index
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
-
-    ;; Get value to put into the reg
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     call $readAddrFromCode
-
-    ;; Store value
     call $setReg16
   )
 
@@ -2917,38 +2566,28 @@
   (func $IncQQ
     (local $qq i32)
     ;; Get 16-bit reg index
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     tee_local $qq
     get_local $qq
-
-    ;; Increment reg value
-    call $getReg16
-    i32.const 1
-    i32.add
-
-    ;; Store value
+    (i32.add (call $getReg16) (i32.const 1))
     call $setReg16
-
-    ;; Adjust clock
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; inc Q (0x04, 0x0c, 0x14, 0x1c, 0x24, 0x2c, 0x34, 0x3c)
+  ;; Q: B, C, D, E, H, L, A
   (func $IncQ
     (local $q i32)
     (local $v i32)
 
     ;; Get 8-bit reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
     tee_local $q
     get_local $q
 
@@ -2962,9 +2601,7 @@
     call $setReg8
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
     call $getF
     i32.const 0x01 ;; C flag mask
@@ -2979,11 +2616,10 @@
     (local $v i32)
 
     ;; Get 8-bit reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
     tee_local $q
     get_local $q
 
@@ -2997,9 +2633,7 @@
     call $setReg8
 
     ;; Adjust flags
-    get_global $DEC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $DEC_FLAGS) (get_local $v))
     i32.load8_u
     call $getF
     i32.const 0x01 ;; C flag mask
@@ -3013,11 +2647,10 @@
     (local $q i32)
 
     ;; Get 8-bit reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
     tee_local $q
 
     ;; Fetch data and store it
@@ -3029,12 +2662,9 @@
   (func $Rlca
     (local $res i32)
     (local $newC i32)
-    call $getA
-    i32.const 1
-    i32.shl
-    tee_local $res
-    i32.const 0x100
-    i32.ge_u
+    (i32.shl (call $getA) (i32.const 1))
+    
+    (i32.ge_u (tee_local $res) (i32.const 0x100))
     if (result i32)
       i32.const 0x01
     else
@@ -3070,17 +2700,14 @@
   (func $AddHLQQ
     (local $qq i32)
     ;; Get 16-bit reg index
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     set_local $qq
 
     ;; Calculate WZ
-    call $getHL
-    i32.const 1
-    i32.add
+    (i32.add (call $getHL) (i32.const 1))
     call $setWZ
 
     ;; Calc the new HL value
@@ -3090,17 +2717,13 @@
     call $AluAddHL
     call $setHL
 
-    ;; Adjust tacts
-    i32.const 7
-    call $incTacts
+    (call $incTacts (i32.const 7))
   )
 
   ;; ld a,(bc) (0x0a)
   (func $LdABCi
     ;; Calculate WZ
-    call $getBC
-    i32.const 1
-    i32.add
+    (i32.add (call $getBC) (i32.const 1))
     call $setWZ
 
     ;; Read A from (BC)
@@ -3114,40 +2737,30 @@
   (func $DecQQ
     (local $qq i32)
     ;; Get 16-bit reg index
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     tee_local $qq
     get_local $qq
 
     ;; Decrement reg value
-    call $getReg16
-    i32.const 1
-    i32.sub
-
-    ;; Store value
+    (i32.sub (call $getReg16) (i32.const 1))
     call $setReg16
 
     ;; Adjust clock
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; rrca (0x0f)
   (func $Rrca
     (local $newC i32)
     ;; Calc new C flag
-    call $getA
-    i32.const 1
-    i32.and
+    (i32.and (call $getA) (i32.const 1))
     set_local $newC
 
     ;; Shift value
-    call $getA
-    i32.const 1
-    i32.shr_u
+    (i32.shr_u (call $getA) (i32.const 1))
 
     ;; Combine with C flag
     get_local $newC
@@ -3168,28 +2781,20 @@
   ;; djnz (0x10)
   (func $Djnz
     (local $e i32)
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
     call $readCodeMemory
     set_local $e
 
     ;; Decrement B
-    call $getB
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getB) (i32.const 1))
     call $setB
 
     ;; Reached 0?
-    call $getB
-    i32.const 0
-    i32.eq
-    if
-      return
-    end
+    (i32.eq (call $getB) (i32.const 0))
+    if return end
 
     ;; Jump
-    get_local $e
-    call $relativeJump
+    (call $relativeJump (get_local $e))
   )
 
   ;; ld (de),a (0x12)
@@ -3204,9 +2809,7 @@
     (local $res i32)
     (local $newC i32)
     ;; Shift left
-    call $getA
-    i32.const 1
-    i32.shl
+    (i32.shl (call $getA) (i32.const 1))
     tee_local $res
 
     ;; Calculate new C flag
@@ -3236,11 +2839,10 @@
   ;; jr NN (0x18)
   (func $JrE
     ;; Calculate new address
-    call $readCodeMemory
-    i32.const 24
-    i32.shl
-    i32.const 24
-    i32.shr_s
+    (i32.shr_s 
+      (i32.shl (call $readCodeMemory) (i32.const 24))
+      (i32.const 24)
+    )
     call $getPC
     i32.add
     call $setPC
@@ -3249,17 +2851,13 @@
     call $getPC
     call $setWZ
 
-    ;; Adjust tacts
-    i32.const 5
-    call $incTacts
+    (call $incTacts (i32.const 5))
   )
 
   ;; ld a,(de) (0x1a)
   (func $LdADEi
     ;; Calculate WZ
-    call $getDE
-    i32.const 1
-    i32.add
+    (i32.add (call $getDE) (i32.const 1))
     call $setWZ
 
     ;; Read A from (DE)
@@ -3273,15 +2871,11 @@
     (local $newC i32)
 
     ;; Calculate the new C flag
-    call $getA
-    i32.const 1
-    i32.and
+    (i32.and (call $getA) (i32.const 1))
     set_local $newC
 
     ;; Shift right
-    call $getA
-    i32.const 1
-    i32.shr_u
+    (i32.shr_u (call $getA) (i32.const 1))
 
     ;; Adjust with current C flag
     call $getF
@@ -3377,11 +2971,10 @@
     set_local $cAfter
 
     ;; Calculate the diff value
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
-    i32.const 0
-    i32.eq
+    (i32.eq 
+      (i32.and (call $getF) (i32.const 0x01))
+      (i32.const 0)
+    )
     if
       ;; C flag is 0
       ;; Test if hNibble is 0..9 and lNibble is 0..9
@@ -3602,9 +3195,7 @@
   ;; cpl (0x2f)
   (func $Cpl
     ;; New value of A
-    call $getA
-    i32.const 0xff
-    i32.xor
+    (i32.xor (call $getA) (i32.const 0xff))
     call $setA
 
     ;; New F
@@ -3660,28 +3251,22 @@
     set_local $v
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getHL
       call $memoryDelay
     end
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
 
     ;; Increment value
     call $getHL
-    get_local $v
-    i32.const 1
-    i32.add
+    (i32.add (get_local $v) (i32.const 1))
     call $writeMemory
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
+
     call $getF
     i32.const 0x01 ;; C flag mask
     i32.and
@@ -3699,28 +3284,22 @@
     set_local $v
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getHL
       call $memoryDelay
     end
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
 
     ;; Increment value
     call $getHL
-    get_local $v
-    i32.const 1
-    i32.sub
+    (i32.sub (get_local $v) (i32.const 1))
     call $writeMemory
 
     ;; Adjust flags
-    get_global $DEC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $DEC_FLAGS) (get_local $v))
     i32.load8_u
+
     call $getF
     i32.const 0x01 ;; C flag mask
     i32.and
@@ -3796,19 +3375,12 @@
   ;; Q, W: B, C, D, E, H, L, A
   (func $LdQW
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u  ;; Stack: Q
-
-    ;; Get 8-bit W reg index
-    get_global $opCode
-    i32.const 0x07
-    i32.and    ;; Stack: Q, W
-
-    ;; Get source value
-    call $getReg8 ;; Stack W, regVal
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
+    (i32.and (get_global $opCode) (i32.const 0x07))
+    call $getReg8 
     call $setReg8
   )
 
@@ -3816,11 +3388,10 @@
   ;; Q: B, C, D, E, H, L, A
   (func $LdQHLi
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
 
     ;; Get data from memory and store it
     call $getHL
@@ -3833,9 +3404,7 @@
   (func $LdHLiQ
     call $getHL
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
 
     ;; Get reg value and store it
     call $getReg8
@@ -3845,24 +3414,18 @@
   ;; halt (0x76)
   (func $Halt
     ;; Set the HLT flag
-    get_global $stateFlags
-    i32.const 0x08 (; HLT signal ;)
-    i32.or
+    (i32.or (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;)))
     set_global $stateFlags
 
     ;; Decrement PC
-    call $getPC
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getPC) (i32.const 1))
     call $setPC
   )
 
   ;; add a,Q (0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87)
   ;; Q: B, C, D, E, H, L, A
   (func $AddAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
     i32.const 0
     call $AluAdd
@@ -3879,13 +3442,9 @@
   ;; add a,Q (0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8f)
   ;; Q: B, C, D, E, H, L, A
   (func $AdcAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     call $AluAdd
   )
 
@@ -3893,18 +3452,14 @@
   (func $AdcAHLi
     call $getHL
     call $readMemory
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     call $AluAdd
   )
 
   ;; sub Q (0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97)
   ;; Q: B, C, D, E, H, L, A
   (func $SubAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
     i32.const 0
     call $AluSub
@@ -3921,13 +3476,9 @@
   ;; sbc a,Q (0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9f)
   ;; Q: B, C, D, E, H, L, A
   (func $SbcAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     call $AluSub
   )
 
@@ -3935,18 +3486,14 @@
   (func $SbcAHLi
     call $getHL
     call $readMemory
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     call $AluSub
   )
 
   ;; and Q (0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa7)
   ;; Q: B, C, D, E, H, L, A
   (func $AndAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
     call $AluAnd
   )
@@ -3961,9 +3508,7 @@
   ;; xor Q (0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xaf)
   ;; Q: B, C, D, E, H, L, A
   (func $XorAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
     call $AluXor
   )
@@ -3978,9 +3523,7 @@
   ;; or Q (0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb7)
   ;; Q: B, C, D, E, H, L, A
   (func $OrAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
     call $AluOr
   )
@@ -3995,9 +3538,7 @@
   ;; cp Q (0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbf)
   ;; Q: B, C, D, E, H, L, A
   (func $CpAQ
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
     call $getReg8
     call $AluCp
   )
@@ -4011,9 +3552,7 @@
 
   ;; ret nz (0xc0)
   (func $RetNz
-    ;; Adjust tacts
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
     call $testZ
     if return end
 
@@ -4053,9 +3592,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4084,9 +3621,7 @@
   (func $RstN
     call $getPC
     call $pushValue
-    get_global $opCode
-    i32.const 0x38
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x38))
     call $setWZ
     call $getWZ
     call $setPC
@@ -4094,10 +3629,7 @@
 
   ;; ret nz (0xc8)
   (func $RetZ
-    ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testNZ
     if return end
 
@@ -4132,9 +3664,7 @@
     if return  end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4151,9 +3681,7 @@
     call $readAddrToWZ
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4168,18 +3696,14 @@
   ;; adc a,N (0xce)
   (func $AdcAN
     call $readCodeMemory
-    call $getF
-    i32.const 1  ;; Get C flag
-    i32.and
+    (i32.and (call $getF) (i32.const 1))
     call $AluAdd
   )
 
   ;; ret nc (0xd0)
   (func $RetNc
     ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testC
     if return end
 
@@ -4209,16 +3733,12 @@
   (func $OutNA
     (local $port i32)
     call $readCodeMemory
-    call $getA
-    i32.const 8
-    i32.shl
+    (i32.shl (call $getA) (i32.const 8))
     i32.add
     tee_local $port
     call $getA
     call $writePort
-    get_local $port
-    i32.const 1
-    i32.add
+    (i32.add (get_local $port) (i32.const 1))
     call $setWZ
   )
 
@@ -4229,9 +3749,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4259,9 +3777,7 @@
   ;; ret c (0xd8)
   (func $RetC
     ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testNC
     if return  end
 
@@ -4325,17 +3841,13 @@
   (func $InAN
     (local $port i32)
     call $readCodeMemory
-    call $getA
-    i32.const 8
-    i32.shl
+    (i32.shl (call $getA) (i32.const 8))
     i32.add
     tee_local $port
     call $readPort
     call $setA
 
-    get_local $port
-    i32.const 1
-    i32.add
+    (i32.add (get_local $port) (i32.const 1))
     call $setWZ
   )
 
@@ -4346,9 +3858,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4363,18 +3873,14 @@
   ;;  sbc N (0xde)
   (func $SbcAN
     call $readCodeMemory
-    call $getF
-    i32.const 1  ;; Get C flag
-    i32.and
+    (i32.and (call $getF) (i32.const 1))
     call $AluSub
   )
 
   ;; ret po (0xe0)
   (func $RetPo
     ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testPE
     if return end
 
@@ -4406,26 +3912,20 @@
     call $getSP
     tee_local $tmpSp
     call $readMemory
-    get_local $tmpSp
-    i32.const 1
-    i32.add
+    (i32.add (get_local $tmpSp) (i32.const 1))
     tee_local $tmpSp
-    call $readMemory
-    i32.const 8
-    i32.shl
+    (i32.shl (call $readMemory) (i32.const 8))
     i32.add
     call $setWZ
 
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
+      
     else
-      get_local $tmpSp
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $tmpSp))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Write H to stack
@@ -4434,9 +3934,7 @@
     call $writeMemory
 
     ;; Write L to stack
-    get_local $tmpSp
-    i32.const 1
-    i32.sub
+    (i32.sub (get_local $tmpSp) (i32.const 1))
     tee_local $tmpSp
     call $getL
     call $writeMemory
@@ -4444,17 +3942,12 @@
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
     else
-      get_local $tmpSp
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $tmpSp
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $tmpSp))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $tmpSp))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Copy WZ to HL
@@ -4469,9 +3962,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4497,10 +3988,7 @@
 
   ;; ret pe (0xe8)
   (func $RetPe
-    ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testPO
     if return end
 
@@ -4544,9 +4032,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4566,10 +4052,7 @@
 
   ;; ret p (0xf0)
   (func $RetP
-    ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testM
     if return end
 
@@ -4597,10 +4080,8 @@
 
   ;; di (0xf3)
   (func $Di
-    i32.const 0
-    set_global $iff1
-    i32.const 0
-    set_global $iff2
+    i32.const 0 set_global $iff1
+    i32.const 0 set_global $iff2
   )
 
   ;; call p (0xf4)
@@ -4610,9 +4091,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4638,10 +4117,7 @@
 
   ;; ret m (0xf8)
   (func $RetM
-    ;; Adjust tacts
-    i32.const 1
-    call $incTacts
-
+    (call $incTacts (i32.const 1))
     call $testP
     if return end
 
@@ -4655,8 +4131,7 @@
   (func $LdSPHL
     call $getHL
     call $setSP
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; jp m (0xfa)
@@ -4671,12 +4146,9 @@
 
   ;; ei (0xfb)
   (func $Ei
-    i32.const 1
-    set_global $isInterruptBlocked
-    i32.const 1
-    set_global $iff1
-    i32.const 1
-    set_global $iff2
+    i32.const 1 set_global $isInterruptBlocked
+    i32.const 1 set_global $iff1
+    i32.const 1 set_global $iff2
   )
 
   ;; call m (0xfc)
@@ -4686,9 +4158,7 @@
     if return end
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
       call $getPC
       call $memoryDelay
@@ -4707,7 +4177,7 @@
   )
 
   ;; ==========================================================================
-  ;; Standard operations
+  ;; Indexed operations
 
   ;; add ix,QQ (0x09)
   (func $AddIXQQ
@@ -4727,14 +4197,12 @@
     get_local $indReg
 
     ;; Get second operand
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
-    tee_local $qq
-    i32.const 2
-    i32.eq
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
+
+    (i32.eq (tee_local $qq) (i32.const 2))
     if (result i32)
       get_local $indReg
     else
@@ -4745,10 +4213,7 @@
     ;; Add values
     call $AluAddHL
     call $setIndexReg
-
-    ;; Adjust tacts
-    i32.const 7
-    call $incTacts
+    (call $incTacts (i32.const 7))
   )
 
   ;; ld ix,NN (0x21)
@@ -4775,20 +4240,15 @@
     tee_local $ix
     call $writeMemory
     call $getWZ
-    get_local $ix
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (get_local $ix) (i32.const 8))
     call $writeMemory
   )
 
   ;; inc ix (0x23)
   (func $IncIX
-    call $getIndexReg
-    i32.const 1
-    i32.add
+    (i32.add (call $getIndexReg) (i32.const 1))
     call $setIndexReg
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; inc xh (0x24)
@@ -4796,9 +4256,7 @@
     (local $ix i32)
     (local $v i32)
     ;; Get register value
-    call $getIndexReg
-    tee_local $ix
-    i32.const 8
+    (i32.const 8 (call $getIndexReg) (tee_local $ix))
     i32.shr_u
     tee_local $v
 
@@ -4814,13 +4272,9 @@
     call $setIndexReg
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -4831,9 +4285,7 @@
     (local $v i32)
     ;; Get register value
     call $getIndexReg
-    tee_local $ix
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (tee_local $ix) (i32.const 8))
     tee_local $v
 
     ;; Decrement register value
@@ -4848,25 +4300,17 @@
     call $setIndexReg
 
     ;; Adjust flags
-    get_global $DEC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $DEC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
 
   ;; ld xh,N (0x26)
   (func $LdXHN
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
-    call $readCodeMemory
-    i32.const 8
-    i32.shl
+    (i32.and (call $getIndexReg) (i32.const 0xff))
+    (i32.shl (call $readCodeMemory) (i32.const 8))
     i32.or
     call $setIndexReg
   )
@@ -4896,12 +4340,9 @@
 
   ;; dec ix (0x2b)
   (func $DecIX
-    call $getIndexReg
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getIndexReg) (i32.const 1))
     call $setIndexReg
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; inc xl (0x2c)
@@ -4910,9 +4351,7 @@
     (local $v i32)
     ;; Get register value
     call $getIndexReg
-    tee_local $ix
-    i32.const 0xff
-    i32.and
+    (i32.and (tee_local $ix) (i32.const 0xff))
     tee_local $v
 
     ;; Increment register value
@@ -4925,13 +4364,9 @@
     call $setIndexReg
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -4942,9 +4377,7 @@
     (local $v i32)
     ;; Get register value
     call $getIndexReg
-    tee_local $ix
-    i32.const 0xff
-    i32.and
+    (i32.and (tee_local $ix) (i32.const 0xff))
     tee_local $v
 
     ;; Increment register value
@@ -4957,22 +4390,16 @@
     call $setIndexReg
 
     ;; Adjust flags
-    get_global $DEC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $DEC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
 
   ;; ld xl,N (0x2e)
   (func $LdXLN
-    call $getIndexReg
-    i32.const 0xff00
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff00))
     call $readCodeMemory
     i32.or
     call $setIndexReg
@@ -4985,26 +4412,18 @@
     call $getIndexedAddress
     tee_local $addr
     call $readMemory
-    set_local $v
-    call $AdjustIXTact
+    (call $AdjustIXTact (set_local $v))
 
     ;; Increment value
     get_local $addr
-    get_local $v
-    i32.const 1
-    i32.add
+    (i32.add (get_local $v) (i32.const 1))
     call $writeMemory
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -5017,26 +4436,18 @@
     call $getIndexedAddress
     tee_local $addr
     call $readMemory
-    set_local $v
-    call $AdjustIXTact
+    (call $AdjustIXTact (set_local $v))
 
     ;; Increment value
     get_local $addr
-    get_local $v
-    i32.const 1
-    i32.sub
+    (i32.sub (get_local $v) (i32.const 1))
     call $writeMemory
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -5049,17 +4460,12 @@
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
     else
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      call $getPC
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (call $getPC))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (call $getPC))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Store value
@@ -5070,14 +4476,11 @@
   ;; Q, W: B, C, D, E, H, L, A
   (func $LdQXH
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     call $setReg8
   )
 
@@ -5085,14 +4488,11 @@
   ;; Q, W: B, C, D, E, H, L, A
   (func $LdQXL
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     call $setReg8
   )
 
@@ -5100,15 +4500,13 @@
   ;; Q: B, C, D, E, H, L, A
   (func $LdQIXi
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x38
-    i32.and
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
 
     ;; Get address
-    call $getIndexedAddress
-    call $AdjustIXTact
+    (call $AdjustIXTact (call $getIndexedAddress))
 
     ;; Get data from memory and store it
     call $readMemory
@@ -5122,9 +4520,7 @@
     call $AdjustIXTact
 
     ;; Get 8-bit Q reg index
-    get_global $opCode
-    i32.const 0x07
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x07))
 
     ;; Get reg value and store it
     call $getReg8
@@ -5133,18 +4529,14 @@
 
   ;; add a,xh (0x84)
   (func $AddAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     i32.const 0
     call $AluAdd
   )
 
   ;; add a,xl (0x85)
   (func $AddAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     i32.const 0
     call $AluAdd
   )
@@ -5160,23 +4552,15 @@
 
   ;; adc a,xh (0x8c)
   (func $AdcAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
-    call $getF
-    i32.const 1
-    i32.and
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
+    (i32.and (call $getF) (i32.const 1))
     call $AluAdd
   )
 
   ;; adc a,xl (0x8d)
   (func $AdcAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
-    call $getF
-    i32.const 1
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
+    (i32.and (call $getF) (i32.const 1))
     call $AluAdd
   )
 
@@ -5185,26 +4569,20 @@
     call $getIndexedAddress
     call $AdjustIXTact
     call $readMemory
-    call $getF
-    i32.const 1
-    i32.and
+    (i32.and (call $getF) (i32.const 1))
     call $AluAdd
   )
 
   ;; sub a,xh (0x94)
   (func $SubAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     i32.const 0
     call $AluSub
   )
 
   ;; sub a,xl (0x95)
   (func $SubAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     i32.const 0
     call $AluSub
   )
@@ -5220,23 +4598,15 @@
 
   ;; sbc a,xh (0x9c)
   (func $SbcAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
-    call $getF
-    i32.const 1
-    i32.and
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
+    (i32.and (call $getF) (i32.const 1))
     call $AluSub
   )
 
   ;; sbc a,xl (0x9d)
   (func $SbcAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
-    call $getF
-    i32.const 1
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
+    (i32.and (call $getF) (i32.const 1))
     call $AluSub
   )
 
@@ -5245,25 +4615,19 @@
     call $getIndexedAddress
     call $AdjustIXTact
     call $readMemory
-    call $getF
-    i32.const 1
-    i32.and
+    (i32.and (call $getF) (i32.const 1))
     call $AluSub
   )
 
   ;; and a,xh (0xa4)
   (func $AndAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     call $AluAnd
   )
 
   ;; and a,xl (0xa5)
   (func $AndAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     call $AluAnd
   )
 
@@ -5277,17 +4641,13 @@
 
   ;; xor a,xh (0xac)
   (func $XorAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     call $AluXor
   )
 
   ;; xor a,xl (0xad)
   (func $XorAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     call $AluXor
   )
 
@@ -5301,17 +4661,13 @@
 
   ;; or a,xh (0xb4)
   (func $OrAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     call $AluOr
   )
 
   ;; or a,xl (0xb5)
   (func $OrAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     call $AluOr
   )
 
@@ -5325,17 +4681,13 @@
 
   ;; cp xh (0xbc)
   (func $CpAXH
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     call $AluCp
   )
 
   ;; cp xl (0xbd)
   (func $CpAXL
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     call $AluCp
   )
 
@@ -5359,59 +4711,41 @@
     call $getSP
     tee_local $tmpSp
     call $readMemory
-    get_local $tmpSp
-    i32.const 1
-    i32.add
+    (i32.add (get_local $tmpSp) (i32.const 1))
     tee_local $tmpSp
-    call $readMemory
-    i32.const 8
-    i32.shl
+    (i32.shl (call $readMemory) (i32.const 8))
     i32.add
     call $setWZ
 
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
     else
-      get_local $tmpSp
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $tmpSp))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Write H to stack
     get_local $tmpSp
-    call $getIndexReg
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (call $getIndexReg) (i32.const 8))
     call $writeMemory
 
     ;; Write L to stack
-    get_local $tmpSp
-    i32.const 1
-    i32.sub
+    (i32.sub (get_local $tmpSp) (i32.const 1))
     tee_local $tmpSp
-    call $getIndexReg
-    i32.const 0xff
-    i32.and
+    (i32.and (call $getIndexReg) (i32.const 0xff))
     call $writeMemory
 
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
     else
-      get_local $tmpSp
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $tmpSp
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $tmpSp))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $tmpSp))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Copy WZ to IX
@@ -5444,17 +4778,11 @@
 
   ;; swapnib (0x23)
   (func $SwapNib
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getA
-    i32.const 4
-    i32.shl
-    call $getA
-    i32.const 4
-    i32.shr_u
+    (i32.shl (call $getA) (i32.const 4))
+    (i32.shr_u (call $getA) (i32.const 4))
     i32.or
     call $setA
   )
@@ -5463,34 +4791,24 @@
   (func $Mirror
     (local $a i32)
     (local $newA i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
     i32.const 0
     set_local $newA
-    call $getA
-    i32.const 0xff00
-    i32.or
+    (i32.or (call $getA) (i32.const 0xff00))
     set_local $a
     loop $mirror_loop
       ;; Get the rightmost bit of A
-      get_local $a
-      i32.const 0x01
-      i32.and
+      (i32.and (get_local $a) (i32.const 0x01))
 
       ;; Pull it into new A from right
-      get_local $newA
-      i32.const 1
-      i32.shl
+      (i32.shl (get_local $newA) (i32.const 1))
       i32.or
       set_local $newA
 
       ;; Shift A
-      get_local $a
-      i32.const 1
-      i32.shr_u
+      (i32.shr_u (get_local $a) (i32.const 1))
       tee_local $a
 
       ;; Test branch condition
@@ -5499,16 +4817,13 @@
       br_if $mirror_loop
     end
 
-    get_local $newA
-    call $setA
+    (call $setA (get_local $newA))
   )
 
   ;; test N (0x27)
   (func $TestN
     (local $a i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
     call $getA
@@ -5523,33 +4838,23 @@
 
   ;; bsla de,b (0x28)
   (func $Bsla
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
     call $getDE
-    call $getB
-    i32.const 0x07
-    i32.and
+    (i32.and (call $getB) (i32.const 0x07))
     i32.shl
     call $setDE
   )
 
   ;; bsra de,b (0x29)
   (func $Bsra
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
+    (i32.and (call $getDE) (i32.const 0x8000))
     call $getDE
-    i32.const 0x8000
-    i32.and
-    call $getDE
-    call $getB
-    i32.const 0x07
-    i32.and
+    (i32.and (call $getB) (i32.const 0x07))
     i32.shr_u
     i32.or
     call $setDE
@@ -5557,32 +4862,22 @@
 
   ;; bsrl de,b (0x2a)
   (func $Bsrl
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
     call $getDE
-    call $getB
-    i32.const 0x07
-    i32.and
+    (i32.and (call $getB) (i32.const 0x07))
     i32.shr_u
     call $setDE
   )
 
   ;; bsrf de,b (0x2b)
   (func $Bsrf
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getDE
-    i32.const 0xffff
-    i32.xor
-    call $getB
-    i32.const 0x0f
-    i32.and
+    (i32.xor (call $getDE) (i32.const 0xffff))
+    (i32.and (call $getB) (i32.const 0x0f))
     i32.shr_u
     i32.const 0xffff
     i32.xor
@@ -5591,22 +4886,16 @@
 
   ;; brlc de,b (0x2c)
   (func $Brlc
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
     call $getDE
-    call $getB
-    i32.const 0x0f
-    i32.and
+    (i32.and (call $getB) (i32.const 0x0f))
     i32.shl
 
     call $getDE
     i32.const 16
-    call $getB
-    i32.const 0x0f
-    i32.and
+    (i32.and (call $getB) (i32.const 0x0f))
     i32.sub
     i32.shr_u
     i32.or
@@ -5615,99 +4904,68 @@
 
   ;; mul (0x30)
   (func $Mul
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getD
-    call $getE
-    i32.mul
+    (i32.mul (call $getD) (call $getE))
     call $setDE
   )
 
   ;; add hl,a (0x31)
   (func $AddHLA
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getHL
-    call $getA
-    i32.add
+    (i32.add (call $getHL) (call $getA))
     call $setHL
   )
 
   ;; add de,a (0x32)
   (func $AddDEA
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getDE
-    call $getA
-    i32.add
+    (i32.add (call $getDE) (call $getA))
     call $setDE
   )
 
   ;; add bc,a (0x33)
   (func $AddBCA
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getBC
-    call $getA
-    i32.add
+    (i32.add (call $getBC) (call $getA))
     call $setBC
   )
 
   ;; add hl,NN (0x34)
   (func $AddHLNN
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getHL
-    call $readAddrFromCode
-    i32.add
+    (i32.add (call $getHL) (call $readAddrFromCode))
     call $setHL
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; add de,NN (0x35)
   (func $AddDENN
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getDE
-    call $readAddrFromCode
-    i32.add
+    (i32.add (call $getDE) (call $readAddrFromCode))
     call $setDE
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; add bc,NN (0x36)
   (func $AddBCNN
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
-    call $getBC
-    call $readAddrFromCode
-    i32.add
+    (i32.add (call $getBC) (call $readAddrFromCode))
     call $setBC
-    i32.const 2
-    call $incTacts
+    (call $incTacts (i32.const 2))
   )
 
   ;; in Q,(c) (0x40)
@@ -5715,17 +4973,14 @@
     (local $q i32)
     (local $pval i32)
     ;; WZ := BC +1
-    call $getBC
-    i32.const 1
-    i32.add
+    (i32.add (call $getBC) (i32.const 1))
     call $setWZ
 
     ;; Get reg index
-    get_global $opCode
-    i32.const 3
-    i32.shr_u
-    i32.const 0x07
-    i32.and
+    (i32.and 
+      (i32.shr_u (get_global $opCode) (i32.const 3))
+      (i32.const 0x07)
+    )
     set_local $q
 
     ;; Read the port
@@ -5734,9 +4989,7 @@
     set_local $pval
 
     ;; Should store?
-    get_local $q
-    i32.const 6
-    i32.ne
+    (i32.ne (get_local $q) (i32.const 6))
     if
       get_local $q
       get_local $pval
@@ -5744,13 +4997,9 @@
     end
 
     ;; Adjust flags
-    get_global $LOG_FLAGS
-    get_local $pval
-    i32.add
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; Mask for C flag
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -5759,20 +5008,17 @@
   (func $OutCQ
     (local $q i32)
     ;; WZ := BC +1
-    call $getBC
-    i32.const 1
-    i32.add
+    (i32.add (call $getBC) (i32.const 1))
     call $setWZ
 
     ;; Port number
     call $getBC
 
     ;; Get reg index
-    get_global $opCode
-    i32.const 3
-    i32.shr_u
-    i32.const 0x07
-    i32.and
+    (i32.and 
+      (i32.shr_u (get_global $opCode) (i32.const 3))
+      (i32.const 0x07)
+    )
     tee_local $q
 
     ;; Should output?
@@ -5791,23 +5037,17 @@
   ;; sbc hl,QQ
   (func $SbcHLQQ
     ;; WZ := HL + 1
-    call $getHL
-    i32.const 1
-    i32.add
+    (i32.add (call $getHL) (i32.const 1))
     call $setWZ
 
     ;; Calculate HL
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     call $getReg16
     call $AluSbcHL
-
-    ;; Adjust tacts
-    i32.const 7
-    call $incTacts
+    (call $incTacts (i32.const 7))
   )
 
   ;; ld (NN),QQ 
@@ -5817,29 +5057,22 @@
 
     ;; Obtain address
     call $readAddrFromCode
-    tee_local $addr
-    i32.const 1
-    i32.add
+    (i32.add (tee_local $addr) (i32.const 1))
     call $setWZ
 
     ;; Obtain reg value
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     call $getReg16
     set_local $qq
 
     get_local $addr
-    get_local $qq
-    i32.const 0xff
-    i32.and
+    (i32.and (get_local $qq) (i32.const 0xff))
     call $writeMemory
     call $getWZ
-    get_local $qq
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (get_local $qq) (i32.const 8))
     call $writeMemory
   )
 
@@ -5847,9 +5080,7 @@
   (func $Neg
     (local $a i32)
     ;; Calc the new value of A
-    i32.const 0
-    call $getA
-    i32.sub
+    (i32.sub (i32.const 0) (call $getA))
     i32.const 0xff
     i32.and
     tee_local $a
@@ -5863,25 +5094,19 @@
     ;; Calculate Z
     i32.const 0x00
     i32.const 0x40
-    get_local $a
-    i32.const 0
-    i32.ne
+    (i32.ne (get_local $a) (i32.const 0))
     select ;; (S|R5|R3, N, Z)
 
     ;; Calculate C
     i32.const 0x01
     i32.const 0x00
-    get_local $a
-    i32.const 0
-    i32.ne
+    (i32.ne (get_local $a) (i32.const 0))
     select ;; (S|R5|R3, N, Z, C)
 
     ;; Calculate PV
     i32.const 0x04
     i32.const 0x00
-    get_local $a
-    i32.const 0x80
-    i32.eq
+    (i32.eq (get_local $a) (i32.const 0x80))
     select ;; (S|R5|R3, N, Z, C, PV)
 
     ;; Calculate H
@@ -5923,14 +5148,11 @@
   ;; im N
   (func $ImN
     (local $mode i32)
-    get_global $opCode
-    i32.const 0x18
-    i32.and
-    i32.const 3
-    i32.shr_u
-    tee_local $mode
-    i32.const 2
-    i32.lt_u
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x18))
+      (i32.const 3)
+    )
+    (i32.lt_u (tee_local $mode) (i32.const 2))
     if (result i32)
       i32.const 1
     else
@@ -5945,30 +5167,23 @@
   (func $LdIA
     call $getA
     call $setI    
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
 
   ;; adc hl,QQ
   (func $AdcHLQQ
     ;; WZ := HL + 1
-    call $getHL
-    i32.const 1
-    i32.add
+    (i32.add (call $getHL) (i32.const 1))
     call $setWZ
 
     ;; Calculate HL
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     call $getReg16
     call $AluAdcHL
-
-    ;; Adjust tacts
-    i32.const 7
-    call $incTacts
+    (call $incTacts (i32.const 7))
   )
 
   ;; ld bc,(NN) (0x4b)
@@ -5985,12 +5200,10 @@
     call $setWZ
 
     ;; Get reg value
-    get_global $opCode
-    i32.const 0x30
-    i32.and
-    i32.const 4
-    i32.shr_u ;; (16-bit reg_index)
-
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x30))
+      (i32.const 4)
+    )
     get_local $addr
     call $readMemory
     call $getWZ
@@ -6007,16 +5220,13 @@
   (func $LdRA
     call $getA
     call $setR    
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
 
   ;; ld a,i (0x57)
   (func $LdAXr
     (local $xr i32)
-    get_global $opCode
-    i32.const 0x08
-    i32.and
+    (i32.and (get_global $opCode) (i32.const 0x08))
     if (result i32)
       call $getR
     else
@@ -6026,13 +5236,8 @@
     call $setA
 
     ;; Set flags
-    call $getF
-    i32.const 0x01 ;; Mask for C
-    i32.and ;; (C)
-
-    get_local $xr
-    i32.const 0xa8 ;; S|R5|R3
-    i32.and  ;; (C, S|R5|R3)
+    (i32.and (call $getF) (i32.const 0x01)) ;; (C)
+    (i32.and (get_local $xr) (i32.const 0xa8)) ;; (C, S|R5|R3)
 
     i32.const 0x04
     i32.const 0x00
@@ -6049,10 +5254,7 @@
     i32.or
     i32.or
     call $setF
-
-    ;; Adjust tacts
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
 
   ;; rrd (0x67)
@@ -6067,64 +5269,41 @@
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 4
-      call $incTacts
+      (call $incTacts (i32.const 4))
     else
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
     end
   
     ;; WZ := HL + 1
-    get_local $hl
-    i32.const 1
-    i32.add
+    (i32.add (get_local $hl) (i32.const 1))
     call $setWZ
 
     ;; Write back to memory
     call $getHL
-    call $getA
-    i32.const 4
-    i32.shl
-    get_local $tmp
-    i32.const 4
-    i32.shr_u
+    (i32.shl (call $getA) (i32.const 4))
+    (i32.shr_u (get_local $tmp) (i32.const 4))
     i32.or
     call $writeMemory
 
     ;; Set A
-    call $getA
-    i32.const 0xf0
-    i32.and
-    get_local $tmp
-    i32.const 0x0f
-    i32.and
+    (i32.and (call $getA) (i32.const 0xf0))
+    (i32.and (get_local $tmp) (i32.const 0x0f))
     i32.or
     call $setA
 
     ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
+    (i32.add (get_global $LOG_FLAGS) (call $getA))
     i32.load8_u
 
     ;; Keep C
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -6141,64 +5320,41 @@
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 4
-      call $incTacts
+      (call $incTacts (i32.const 4))
     else
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $hl
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $hl))
+      (call $incTacts (i32.const 1))
     end
   
     ;; WZ := HL + 1
-    get_local $hl
-    i32.const 1
-    i32.add
+    (i32.add (get_local $hl) (i32.const 1))
     call $setWZ
 
     ;; Write back to memory
     call $getHL
-    call $getA
-    i32.const 0x0f
-    i32.and
-    get_local $tmp
-    i32.const 4
-    i32.shl
+    (i32.and (call $getA) (i32.const 0x0f))
+    (i32.shl (get_local $tmp) (i32.const 4))
     i32.or
     call $writeMemory
 
     ;; Set A
-    call $getA
-    i32.const 0xf0
-    i32.and
-    get_local $tmp
-    i32.const 4
-    i32.shr_u
+    (i32.and (call $getA) (i32.const 0xf0))
+    (i32.shr_u (get_local $tmp) (i32.const 4))
     i32.or
     call $setA
 
     ;; Adjust flags
-    get_global $LOG_FLAGS
-    call $getA
-    i32.add
+    (i32.add (get_global $LOG_FLAGS) (call $getA))
     i32.load8_u
 
     ;; Keep C
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
@@ -6206,18 +5362,14 @@
   ;; push NN (0x8a)
   (func $PushNN
     (local $v i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end    
 
     call $readAddrFromCode
     set_local $v
     call $decSP
     call $getSP
-    get_local $v
-    i32.const 8
-    i32.shr_u
+    (i32.shr_u (get_local $v) (i32.const 8))
     call $writeMemory
     call $decSP
     call $getSP
@@ -6228,9 +5380,7 @@
   ;; outinb (0x90)
   (func $OutInB
     (local $hl i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     ;; Adjust tacts
@@ -6245,17 +5395,13 @@
     call $writePort
 
     ;; Increment HL
-    get_local $hl
-    i32.const 1
-    i32.add
+    (i32.add (get_local $hl) (i32.const 1))
     call $setHL
   )
 
   ;; nextreg (0x91)
   (func $NextReg
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     ;; Write TBBLUE index register
@@ -6269,9 +5415,7 @@
 
   ;; nextreg A (0x92)
   (func $NextRegA
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     ;; Write TBBLUE index register
@@ -6286,43 +5430,33 @@
   ;; pixeldn (0x93)
   (func $PixelDn
     (local $hl i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     call $getHL
-    tee_local $hl
-    i32.const 0x0700
-    i32.and
-    i32.const 0x0700
-    i32.ne
+    (i32.ne 
+      (i32.and (tee_local $hl) (i32.const 0x0700))
+      (i32.const 0x0700)
+    )
     if (result i32)
       ;; Next pixel row within a character row
-      get_local $hl
-      i32.const 0x100
-      i32.add
+      (i32.add (get_local $hl) (i32.const 0x100))
     else
-     get_local $hl
-     i32.const 0xe0
-     i32.and
-     i32.const 0xe0
-     i32.ne
-     if (result i32)
-       ;; The start of next character row
-       get_local $hl
-       i32.const 0xf8ff
-       i32.and
-       i32.const 0x20
-       i32.add
-     else
-       ;; The start of the next screen-third
-       get_local $hl
-       i32.const 0xf81f
-       i32.and
-       i32.const 0x0800
-       i32.add
-     end
+      (i32.ne 
+        (i32.and (get_local $hl) (i32.const 0xe0))
+        (i32.const 0xe0)
+      )
+      if (result i32)
+        ;; The start of next character row
+        (i32.and (get_local $hl) (i32.const 0xf8ff))
+        i32.const 0x20
+        i32.add
+      else
+        ;; The start of the next screen-third
+        (i32.and (get_local $hl) (i32.const 0xf81f))
+        i32.const 0x0800
+        i32.add
+      end
     end
 
     ;; Done
@@ -6332,38 +5466,27 @@
   ;; pixelad (0x94)
   (func $PixelAd
     (local $d i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     call $getD
-
     ;; (D & 0xc0) << 5
-    tee_local $d
-    i32.const 0xc0
-    i32.and
+    (i32.and (tee_local $d) (i32.const 0xc0))
     i32.const 5
     i32.shl
 
     ;; (D & 0x07) << 8
-    get_local $d
-    i32.const 0x07
-    i32.and
+    (i32.and (get_local $d) (i32.const 0x07))
     i32.const 8
     i32.shl
 
     ;; (D & 0x38) << 2
-    get_local $d
-    i32.const 0x38
-    i32.and
+    (i32.and (get_local $d) (i32.const 0x38))
     i32.const 2
     i32.shl
 
     ;; E >> 3
-    call $getE
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u (call $getE) (i32.const 3))
 
     ;; Calculate the address
     i32.const 0x4000
@@ -6376,15 +5499,11 @@
 
   ;; setae (0x96)
   (func $SetAE
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     i32.const 0x80
-    call $getE
-    i32.const 0x07
-    i32.and
+    (i32.and (call $getE) (i32.const 0x07))
     i32.shr_u
     call $setA
   )
@@ -6392,31 +5511,24 @@
   ;; jp (c) (0x98)
   (func $JpInC
     (local $bc i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     call $getBC
-    tee_local $bc
-    i32.const 1
-    i32.add
+    (i32.add (tee_local $bc) (i32.const 1))
     call $setWZ
 
     get_local $bc
-    call $readPort
-    i32.const 6
-    i32.shl
+    (i32.shl (call $readPort) (i32.const 6))
 
-    call $getPC
-    i32.const 0xc000
-    i32.and
+    (i32.and (call $getPC) (i32.const 0xc000))
     i32.add
     call $setPC
-
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
+
+  ;; ==========================================================================
+  ;; Helpers for block operations
 
   ;; Implements the core of the ldi/ldd/ldir/lddr operations
   ;; $step: direction (1 or -1)
@@ -6436,77 +5548,42 @@
     call $writeMemory
 
     ;; Increment/decrement HL
-    get_local $hl
-    get_local $step
-    i32.add
+    (i32.add (get_local $hl) (get_local $step))
     call $setHL
 
     ;; Adjust tacts
     get_global $useGateArrayContention
     if
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
     else
-      get_local $de
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
-      get_local $de
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (get_local $de))
+      (call $incTacts (i32.const 1))
+      (call $memoryDelay (get_local $de))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Increment/decrement DE
-    get_local $de
-    get_local $step
-    i32.add
+    (i32.add (get_local $de) (get_local $step))
     call $setDE
 
     ;; Keep S, Z, and C
-    call $getF
-    i32.const 0xc1 ;; Mask for S, Z, C
-    i32.and ;; (S|Z|C)
-
-    get_local $memVal
-    call $getA
-    i32.add
-    tee_local $memVal
-    i32.const 0x08 ;; Mask for R3
-    i32.and
-    get_local $memVal
-    i32.const 4
-    i32.shl
+    (i32.and (call $getF) (i32.const 0xc1)) ;; (S|Z|C)
+    (i32.add (get_local $memVal) (call $getA))
+    (i32.and (tee_local $memVal) (i32.const 0x08))
+    (i32.shl (get_local $memVal) (i32.const 4))
+    
     i32.const 0x20 ;; Mask for R5
     i32.and
     i32.or ;; (S|Z|C, R5|R3)
     i32.or
 
     ;; Decrement BC
-    call $getBC
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getBC) (i32.const 1))
     call $setBC
   )
 
-  ;; ldi (0xa0)
-  (func $Ldi
-    i32.const 1
-    call $LdBase
-    
-    ;; Calc PV
-    i32.const 0x04
-    i32.const 0x00
-    call $getBC
-    i32.const 0
-    i32.ne
-    select
-
-    ;; Merge flags
-    i32.or
-    call $setF
-  )
-
+  ;; Base of the cpi/cpd/cpir/cpdr operations
+  ;; $step: direction, 1/-1
   (func $CpBase (param $step i32) (result i32)
     (local $hl i32)
     (local $compRes i32)
@@ -6522,27 +5599,19 @@
     set_local $r3r5
     
     ;; Keep C 
-    call $getF
-    i32.const 0x01
-    i32.and ;; (C)
+    (i32.and (call $getF) (i32.const 0x01))
 
     ;; Set N
     i32.const 0x02 ;; (C, N)
 
     ;; Calculate H
-    call $getA
-    i32.const 0x0f
-    i32.and
-    get_local $compRes
-    i32.const 0x0f
-    i32.and
+    (i32.and (call $getA) (i32.const 0x0f))
+    (i32.and (get_local $compRes) (i32.const 0x0f))
     i32.sub
     i32.const 0x10
     i32.and
     if (result i32) ;; (C, N, H)
-      get_local $compRes
-      i32.const 1
-      i32.sub
+      (i32.sub (get_local $compRes) (i32.const 1))
       set_local $r3r5
       i32.const 0x10
     else
@@ -6552,42 +5621,24 @@
     ;; Calculate Z
     i32.const 0x00
     i32.const 0x40
-    get_local $compRes
-    i32.const 0xff
-    i32.and
+    (i32.and (get_local $compRes) (i32.const 0xff))
     select ;; (C, N, H, Z)
 
-    ;; Calculate S
-    get_local $compRes
-    i32.const 0x80
-    i32.and ;; (C, N, H, Z, S)
-
-    ;; Calc R3
-    get_local $r3r5
-    i32.const 0x08
-    i32.and ;; (C, N, H, Z, S, R3)
-
-    ;; Calc R5
-    get_local $r3r5
-    i32.const 4
-    i32.shl
+    (i32.and (get_local $compRes) (i32.const 0x80)) ;; (C, N, H, Z, S)
+    (i32.and (get_local $r3r5) (i32.const 0x08)) ;; (C, N, H, Z, S, R3)
+    (i32.shl (get_local $r3r5) (i32.const 4))
     i32.const 0x20
     i32.and ;; (C, N, H, Z, S, R3,R5)
 
     ;; Adjust tacts
-    get_local $hl
-    call $Adjust5Tacts
+    (call $Adjust5Tacts (get_local $hl))
 
     ;; Increment/decrement HL
-    get_local $hl
-    get_local $step
-    i32.add
+    (i32.add (get_local $hl) (get_local $step))
     call $setHL
 
     ;; Decrement BC
-    call $getBC
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getBC) (i32.const 1))
     call $setBC
 
     ;; Merge flags
@@ -6598,37 +5649,14 @@
     i32.or
     i32.or
   )
-  
-  ;; cpi (0xa1)
-  (func $Cpi
-    i32.const 1
-    call $CpBase
 
-    ;; Calc PV
-    i32.const 0x04
-    i32.const 0x00
-    call $getBC
-    i32.const 0
-    i32.ne
-    select
-
-    ;; Merge flags
-    i32.or
-    call $setF
-
-    call $getHL
-    call $setWZ
-  )
-
+  ;; Base of ini/id/inir/indr operations
   (func $InBase (param $step i32)
     (local $bc i32)
     (local $hl i32)
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
     call $getBC
-    tee_local $bc
-    i32.const 1
-    i32.add
+    (i32.add (tee_local $bc) (i32.const 1))
     call $setWZ
 
     ;; (HL) := in(BC)
@@ -6639,64 +5667,42 @@
     call $writeMemory
 
     ;; Set N
-    call $getF
-    i32.const 0x02
-    i32.or
+    (i32.or (call $getF) (i32.const 0x02))
     call $setF
 
     ;; Decrement B
-    call $getB
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getB) (i32.const 1))
     tee_local $bc
     call $setB
 
     ;; Set or reset Z
-    get_local $bc
-    i32.const 0
-    i32.eq
+    (i32.eq (get_local $bc) (i32.const 0))
     if (result i32)
-      call $getF
-      i32.const 0x40
-      i32.or
+      (i32.or (call $getF) (i32.const 0x40))
     else
-      call $getF
-      i32.const 0xbf
-      i32.and
+      (i32.and (call $getF) (i32.const 0xbf))
     end
     call $setF
 
     ;; Increment or decrement HL
-    call $getHL
-    get_local $step
-    i32.add
+    (i32.add (call $getHL) (get_local $step))
     call $setHL
   )
 
-  ;; ini (0xa2)
-  (func $Ini
-    i32.const 1
-    call $InBase
-  )
-
+  ;; Base of outi/outd/otir/otdr operations
   (func $OutBase (param $step i32)
     (local $f i32)
     (local $b i32)
     (local $hl i32)
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
 
     ;; Set N
-    call $getF
-    tee_local $f
-    i32.const 0x02
+    (i32.const 0x02 (call $getF) (tee_local $f))
     i32.or
     set_local $f
 
     ;; Decrement B
-    call $getB
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getB) (i32.const 1))
     tee_local $b
     call $setB
     get_local $b
@@ -6705,13 +5711,9 @@
     i32.const 0
     i32.eq
     if (result i32)
-      get_local $f
-      i32.const 0x40
-      i32.or
+      (i32.or (get_local $f) (i32.const 0x40))
     else
-      get_local $f
-      i32.const 0xbf
-      i32.and
+      (i32.and (get_local $f) (i32.const 0xbf))
     end
     call $setF
 
@@ -6724,24 +5726,15 @@
     call $writePort
 
     ;; Increment/decrement HL
-    get_local $hl
-    get_local $step
-    i32.add
+    (i32.add (get_local $hl) (get_local $step))
     call $setHL
 
     ;; WZ := BC + 1
-    get_local $b
-    i32.const 1
-    i32.add
+    (i32.add (get_local $b) (i32.const 1))
     call $setWZ
   )
 
-  ;; outi (0xa3)
-  (func $Outi
-    i32.const 1
-    call $OutBase
-  )
-
+  ;; Base of the ldix/lddx operations
   (func $LdxBase (param $step i32)
     (local $de i32)
     (local $hl i32)
@@ -6762,47 +5755,190 @@
       get_local $de
       get_local $memVal
       call $writeMemory
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
     else
-      i32.const 5
-      call $incTacts
+      (call $incTacts (i32.const 5))
     end
 
     ;; Prepare for loop
-    get_local $hl
-    get_local $step
-    i32.add
+    (i32.add (get_local $hl) (get_local $step))
     call $setHL
-
-    get_local $de
-    get_local $step
-    i32.add
+    (i32.add (get_local $de) (get_local $step))
     call $setDE
-
-    call $getBC
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getBC) (i32.const 1))
     call $setBC
+  )
+
+  ;; Tail of the ldir/lddr operations
+  (func $LdrTail
+    (local $pc i32)
+
+    ;; Test exit
+    (i32.eq (call $getBC) (i32.const 0))
+    if return end
+
+    ;; Set PV
+    (i32.or (call $getF) (i32.const 0x04))
+    call $setF
+
+    ;; PC := PC - 2
+    (i32.sub (call $getPC) (i32.const 2))
+    tee_local $pc
+    call $setPC
+
+    ;; Adjust tacts
+    (i32.sub (call $getDE) (i32.const 1))
+    call $Adjust5Tacts
+
+    ;; WZ := PC + 1
+    (i32.add (get_local $pc) (i32.const 1))
+    call $setWZ
+  )
+
+  ;; Tail of the cpir/cpdr operations
+  (func $CprTail
+    (local $f i32)
+    (local $pc i32)
+    call $getBC
+    if
+      ;; Set PV
+      call $getF
+      (i32.or (tee_local $f) (i32.const 0x04))
+      call $setF
+      (i32.eq
+        (i32.and (get_local $f) (i32.const 0x40))
+        (i32.const 0)
+      )
+      if
+        ;; Value not found yet
+        ;; PC := PC - 2
+        (i32.sub (call $getPC) (i32.const 2))
+        tee_local $pc
+        call $setPC
+
+        ;; Adjust tacts
+        (i32.sub (call $getHL) (i32.const 1))
+        call $Adjust5Tacts
+
+        ;; WZ := PC + 1
+        (i32.add (get_local $pc) (i32.const 1))
+        call $setWZ
+      end
+    end
+  )
+
+  ;; Tail of the inir/indr operations
+  (func $IndTail
+    (i32.ne (call $getB) (i32.const 0))
+    if
+      ;; Set PV
+      (i32.or (call $getF) (i32.const 0x04))
+      call $setF
+
+      ;; PC := PC - 2
+      (i32.sub (call $getPC) (i32.const 2))
+      call $setPC
+
+      ;; Adjust tacts
+      (i32.sub (call $getHL) (i32.const 1))
+      call $Adjust5Tacts
+    else
+      ;; Reset PV
+      (i32.and (call $getF) (i32.const 0xfb))
+      call $setF
+    end
+  )
+
+  ;; Tail of the otir/otdr instructions
+  (func $OutrTail
+    (i32.ne (call $getB) (i32.const 0))
+    if
+      ;; Set PV
+      (i32.or (call $getF) (i32.const 0x04))
+      call $setF
+
+      ;; PC := PC - 2
+      (i32.sub (call $getPC) (i32.const 2))
+      call $setPC
+
+      ;; Adjust tacts
+      call $getBC
+      call $Adjust5Tacts
+    else
+      ;; Reset PV
+      (i32.and (call $getF) (i32.const 0xfb))
+      call $setF
+    end
+  )
+
+  ;; Tail of the ldirx/lddrx operations
+  (func $LdrxTail
+    (i32.eq (call $getBC) (i32.const 0))
+    if return end
+
+    (i32.sub (call $getPC) (i32.const 2))
+    call $setPC
+    (call $incTacts (i32.const 5))
+  )
+
+  ;; ==========================================================================
+  ;; Block operations
+
+  ;; ldi (0xa0)
+  (func $Ldi
+    (call $LdBase (i32.const 1))
+    
+    ;; Calc PV
+    i32.const 0x04
+    i32.const 0x00
+    (i32.ne (call $getBC) (i32.const 0))
+    select
+
+    ;; Merge flags
+    i32.or
+    call $setF
+  )
+  
+  ;; cpi (0xa1)
+  (func $Cpi
+    (call $CpBase (i32.const 1))
+
+    ;; Calc PV
+    i32.const 0x04
+    i32.const 0x00
+    (i32.ne (call $getBC) (i32.const 0))
+    select
+
+    ;; Merge flags
+    i32.or
+    call $setF
+
+    call $getHL
+    call $setWZ
+  )
+
+  ;; ini (0xa2)
+  (func $Ini
+    (call $InBase (i32.const 1))
+  )
+
+  ;; outi (0xa3)
+  (func $Outi
+    (call $OutBase (i32.const 1))
   )
 
   ;; ldix (0x0a4)
   (func $Ldix
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
-    i32.const 1
-    call $LdxBase
+    (call $LdxBase (i32.const 1))
   )
 
   ;; ldws
   (func $Ldws
     (local $v i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     ;; (HL) := (DE)
@@ -6812,41 +5948,30 @@
     call $writeMemory
 
     ;; Increment L
-    call $getL
-    i32.const 1
-    i32.add
+    (i32.add (call $getL) (i32.const 1))
     call $setL
 
     ;; Increment D
     call $getD
-    tee_local $v
-    i32.const 1
-    i32.add
+    (i32.add (tee_local $v) (i32.const 1))
     call $setD
 
     ;; Adjust flags
-    get_global $INC_FLAGS
-    get_local $v
-    i32.add
+    (i32.add (get_global $INC_FLAGS) (get_local $v))
     i32.load8_u
-    call $getF
-    i32.const 0x01 ;; C flag mask
-    i32.and
+    (i32.and (call $getF) (i32.const 0x01))
     i32.or
     call $setF
   )
 
   ;; ldd (0xa8)
   (func $Ldd
-    i32.const -1
-    call $LdBase
+    (call $LdBase (i32.const -1))
     
     ;; Calc PV
     i32.const 0x04
     i32.const 0x00
-    call $getBC
-    i32.const 0
-    i32.ne
+    (i32.ne (call $getBC) (i32.const 0))
     select
 
     ;; Merge flags
@@ -6856,255 +5981,83 @@
 
   ;; cpd (0xa9)
   (func $Cpd
-    i32.const -1
-    call $CpBase
+    (call $CpBase (i32.const -1))
 
     ;; Calc PV
     i32.const 0x04
     i32.const 0x00
-    call $getBC
-    i32.const 0
-    i32.ne
+    (i32.ne (call $getBC) (i32.const 0))
     select
 
     ;; Merge flags
     i32.or
     call $setF
-
     call $getHL
     call $setWZ
   )
 
   ;; ind (0xaa)
   (func $Ind
-    i32.const -1
-    call $InBase
+    (call $InBase (i32.const -1))
   )
 
   ;; outd (0xab)
   (func $Outd
-    i32.const -1
-    call $OutBase
+    (call $OutBase (i32.const -1))
   )
 
   ;; lddx (0x0ac)
   (func $Lddx
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
-    i32.const -1
-    call $LdxBase
-  )
-
-  (func $LdrTail
-    (local $pc i32)
-
-    ;; Test exit
-    call $getBC
-    i32.const 0
-    i32.eq
-    if return end
-
-    ;; Set PV
-    call $getF
-    i32.const 0x04 ;; PV flag
-    i32.or
-    call $setF
-
-    ;; PC := PC - 2
-    call $getPC
-    i32.const 2
-    i32.sub
-    tee_local $pc
-    call $setPC
-
-    ;; Adjust tacts
-    call $getDE
-    i32.const 1
-    i32.sub
-    call $Adjust5Tacts
-
-    ;; WZ := PC + 1
-    get_local $pc
-    i32.const 1
-    i32.add
-    call $setWZ
+    (call $LdxBase (i32.const -1))
   )
 
   ;; ldir (0xb0)
   (func $Ldir
-    i32.const 1
-    call $LdBase
+    (call $LdBase (i32.const 1))
     call $setF
     call $LdrTail
   )
 
-  (func $CprTail
-    (local $f i32)
-    (local $pc i32)
-    call $getBC
-    if
-      ;; Set PV
-      call $getF
-      tee_local $f
-      i32.const 0x04
-      i32.or
-      call $setF
-      get_local $f
-      i32.const 0x40 ;; Mask for Z
-      i32.and
-      i32.const 0
-      i32.eq
-      if
-        ;; Value not found yet
-        ;; PC := PC - 2
-        call $getPC
-        i32.const 2
-        i32.sub
-        tee_local $pc
-        call $setPC
-
-        ;; Adjust tacts
-        call $getHL
-        i32.const 1
-        i32.sub
-        call $Adjust5Tacts
-
-        ;; WZ := PC + 1
-        get_local $pc
-        i32.const 1
-        i32.add
-        call $setWZ
-      end
-    end
-  )
-
   ;; cpir (0xb1)
   (func $Cpir
-    i32.const 1
-    call $CpBase
+    (call $CpBase (i32.const 1))
     call $setF
     call $CprTail
   )
 
-  (func $IndTail
-    call $getB
-    i32.const 0
-    i32.ne
-    if
-      ;; Set PV
-      call $getF
-      i32.const 0x04
-      i32.or
-      call $setF
-
-      ;; PC := PC - 2
-      call $getPC
-      i32.const 2
-      i32.sub
-      call $setPC
-
-      ;; Adjust tacts
-      call $getHL
-      i32.const 1
-      i32.sub
-      call $Adjust5Tacts
-    else
-      ;; Reset PV
-      call $getF
-      i32.const 0xfb
-      i32.and
-      call $setF
-    end
-  )
-
   ;; Inir (0xb2)
   (func $Inir
-    i32.const 1
-    call $InBase
+    (call $InBase (i32.const 1))
     call $IndTail
-  )
-
-  (func $OutdTail
-    call $getB
-    i32.const 0
-    i32.ne
-    if
-      ;; Set PV
-      call $getF
-      i32.const 0x04
-      i32.or
-      call $setF
-
-      ;; PC := PC - 2
-      call $getPC
-      i32.const 2
-      i32.sub
-      call $setPC
-
-      ;; Adjust tacts
-      call $getBC
-      call $Adjust5Tacts
-    else
-      ;; Reset PV
-      call $getF
-      i32.const 0xfb
-      i32.and
-      call $setF
-    end
   )
 
   ;; Otir (0xb3)
   (func $Otir
-    i32.const 1
-    call $OutBase
-    call $OutdTail
-  )
-
-  (func $LdrxTail
-    call $getBC
-    i32.const 0
-    i32.eq
-    if return end
-
-    call $getPC
-    i32.const 2
-    i32.sub
-    call $setPC
-
-    i32.const 5
-    call $incTacts
+    (call $OutBase (i32.const 1))
+    call $OutrTail
   )
 
   ;; ldirx
   (func $Ldirx
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
-    i32.const 1
-    call $LdxBase
+    (call $LdxBase (i32.const 1))
     call $LdrxTail
   )
 
   ;; ldpirx
   (func $Ldpirx
     (local $memVal i32)
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
     ;; Read (HL & 0xfff8 + E & 0x07)
-    call $getHL
-    i32.const 0xfff8
-    i32.and
-    call $getE
-    i32.const 0x07
-    i32.and
+    (i32.and (call $getHL) (i32.const 0xfff8))
+    (i32.and (call $getE) (i32.const 0x07))
     i32.add
     call $readMemory
     tee_local $memVal
@@ -7116,66 +6069,53 @@
       call $getDE
       get_local $memVal
       call $writeMemory
-      i32.const 2
-      call $incTacts
+      (call $incTacts (i32.const 2))
     else
-      i32.const 5
-      call $incTacts
+      (call $incTacts (i32.const 5))
     end
 
     ;; Inc DE
-    call $getDE
-    i32.const 1
-    i32.add
+    (i32.add (call $getDE) (i32.const 1))
     call $setDE
 
     ;; Decrement BC
-    call $getBC
-    i32.const 1
-    i32.sub
+    (i32.sub (call $getBC) (i32.const 1))
     call $setBC
     call $LdrxTail
   )
 
   ;; lddr (0xb8)
   (func $Lddr
-    i32.const -1
-    call $LdBase
+    (call $LdBase (i32.const -1))
     call $setF
     call $LdrTail
   )
 
   ;; cpdr (0xb9)
   (func $Cpdr
-    i32.const -1
-    call $CpBase
+    (call $CpBase (i32.const -1))
     call $setF
     call $CprTail
   )
 
   ;; Indr (0xba)
   (func $Indr
-    i32.const -1
-    call $InBase
+    (call $InBase (i32.const -1))
     call $IndTail
   )
 
   ;; Otdr (0xbb)
   (func $Otdr
-    i32.const -1
-    call $OutBase
-    call $OutdTail
+    (call $OutBase (i32.const -1))
+    call $OutrTail
   )
 
   ;; lddrx
   (func $Lddrx
-    get_global $allowExtendedSet
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $allowExtendedSet) (i32.const 0))
     if return end
 
-    i32.const -1
-    call $LdxBase
+    (call $LdxBase (i32.const -1))
     call $LdrxTail
   )
 
@@ -7227,9 +6167,7 @@
     i32.add
     i32.load8_u
     call $setF
-    get_local $a
-    i32.const 1
-    i32.shl
+    (i32.shl (get_local $a) (i32.const 1))
     get_local $c
     i32.or
   )
@@ -7251,9 +6189,7 @@
     i32.add
     i32.load8_u
     call $setF
-    get_local $a
-    i32.const 1
-    i32.shr_u
+    (i32.shr_u (get_local $a) (i32.const 1))
     get_local $c
     i32.or
   )
@@ -7261,47 +6197,32 @@
   ;; SLA logic - sets flags
   ;; $a: argument
   (func $Sla (param $a i32) (result i32)
-    get_global $RL0_FLAGS
-    get_local $a
-    i32.add
+    (i32.add (get_global $RL0_FLAGS) (get_local $a))
     i32.load8_u
     call $setF
-
-    get_local $a
-    i32.const 1
-    i32.shl
+    (i32.shl (get_local $a) (i32.const 1))
   )
 
   ;; SRA logic - sets flags
   ;; $a: argument
   (func $Sra (param $a i32) (result i32)
-    get_global $SRA_FLAGS
-    get_local $a
-    i32.add
+    (i32.add (get_global $SRA_FLAGS) (get_local $a))
     i32.load8_u
     call $setF
 
-    get_local $a
-    i32.const 1
-    i32.shr_u
-    get_local $a
-    i32.const 0x80
-    i32.and
+    (i32.shr_u (get_local $a) (i32.const 1))
+    (i32.and (get_local $a) (i32.const 0x80))
     i32.or
   )
 
   ;; SLL logic - sets flags
   ;; $a: argument
   (func $Sll (param $a i32) (result i32)
-    get_global $RL1_FLAGS
-    get_local $a
-    i32.add
+    (i32.add (get_global $RL1_FLAGS) (get_local $a))
     i32.load8_u
     call $setF
 
-    get_local $a
-    i32.const 1
-    i32.shl
+    (i32.shl (get_local $a) (i32.const 1))
     i32.const 1
     i32.or
   )
@@ -7309,15 +6230,11 @@
   ;; SRL logic - sets flags
   ;; $a: argument
   (func $Srl (param $a i32) (result i32)
-    get_global $RR0_FLAGS
-    get_local $a
-    i32.add
+    (i32.add (get_global $RR0_FLAGS) (get_local $a))
     i32.load8_u
     call $setF
 
-    get_local $a
-    i32.const 1
-    i32.shr_u
+    (i32.shr_u (get_local $a) (i32.const 1))
   )
 
   ;; Bit logic - sets flags
@@ -7326,9 +6243,7 @@
   (func $Bit (param $a i32) (param $n i32)
     (local $val i32)
     get_local $a
-    i32.const 0x01
-    get_local $n
-    i32.shl
+    (i32.shl (i32.const 0x01) (get_local $n))
     i32.and
     tee_local $val
 
@@ -7336,25 +6251,15 @@
     if (result i32) ;; (Z|PV|S)
       i32.const 0x80
       i32.const 0x00
-      get_local $n
-      i32.const 7
-      i32.eq
+      (i32.eq (get_local $n) (i32.const 7))
       select
     else
       i32.const 0x44
     end
 
     ;; Keep C
-    call $getF
-    i32.const 0x01
-    i32.and ;; (Z|PV|s, C)
-
-    ;; Calculate R3, R5
-    get_local $val
-    i32.const 0x28
-    i32.and ;; (Z|PV|S, C, R3|R5)
-
-    ;; Set H
+    (i32.and (call $getF) (i32.const 0x01))
+    (i32.and (get_local $val) (i32.const 0x28)) ;; (Z|PV|S, C, R3|R5)
     i32.const 0x10 ;; (Z|PV|S, C, R3|R5, H)
 
     ;; Merge flags
@@ -7394,13 +6299,10 @@
     call $readMemory
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
     else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (call $getHL))
+      (call $incTacts (i32.const 1))
     end
 
     ;; Call the bit operation
@@ -7420,9 +6322,10 @@
   (func $BitNQ
     (i32.and (get_global $opCode) (i32.const 0x07)) ;;
     call $getReg8
-    (i32.and (get_global $opCode) (i32.const 0x38))
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
     call $Bit
   )
 
@@ -7430,21 +6333,17 @@
   (func $BitNHLi
     call $getHL
     call $readMemory
-    (i32.and (get_global $opCode) (i32.const 0x38))
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
     call $Bit
 
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
-      call $getHL
-      call $memoryDelay
+      (call $memoryDelay (call $getHL))
     end
-
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
 
   ;; res N,Q (0x80-bf)
@@ -7488,13 +6387,10 @@
 
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
     else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (call $getHL))
+      (call $incTacts (i32.const 1))
     end
   )
 
@@ -7535,13 +6431,10 @@
 
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
     else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (call $getHL))
+      (call $incTacts (i32.const 1))
     end
   )
 
@@ -7560,15 +6453,12 @@
     call $readMemory
 
     ;; Adjust tacts
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
-      get_local $addr
-      call $memoryDelay
+      (call $memoryDelay (get_local $addr))
     end
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
+    
 
     ;; Get the type of operation
     get_global $BOP_JT
@@ -7586,36 +6476,30 @@
     call $writeMemory
 
     ;; Store conditionally to reg
-    get_local $q
-    i32.const 6
-    i32.ne
+    (i32.ne (get_local $q) (i32.const 6))
     if
-      get_local $q
-      get_local $res
-      call $setReg8
+      (call $setReg8 (get_local $q) (get_local $res))
     end
   )
 
+  ;; bit (ix+d),Q
   (func $XBitNQ (param $addr i32)
     get_local $addr
     call $readMemory
-    (i32.and (get_global $opCode) (i32.const 0x38))
-    i32.const 3
-    i32.shr_u
+    (i32.shr_u 
+      (i32.and (get_global $opCode) (i32.const 0x38))
+      (i32.const 3)
+    )
     call $Bit
 
-    get_global $useGateArrayContention
-    i32.const 0
-    i32.eq
+    (i32.eq (get_global $useGateArrayContention) (i32.const 0))
     if
-      call $getHL
-      call $memoryDelay
+      (call $memoryDelay (call $getHL))
     end
-
-    i32.const 1
-    call $incTacts
+    (call $incTacts (i32.const 1))
   )
 
+  ;; res (ix+d),Q
   (func $XResNQ (param $addr i32)
     (local $q i32)
     (local $res i32)
@@ -7638,28 +6522,20 @@
     
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
     else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (call $getHL))
+      (call $incTacts (i32.const 1))
     end
 
-    get_global $opCode
-    i32.const 0x07
-    i32.and
-    tee_local $q
-    i32.const 6
-    i32.ne
+    (i32.and (get_global $opCode) (i32.const 0x07))
+    (i32.ne (tee_local $q) (i32.const 6))
     if
-      get_local $q
-      get_local $res
-      call $setReg8
+      (call $setReg8 (get_local $q) (get_local $res))
     end
   )
 
+  ;; set (ix+d),Q
   (func $XSetNQ (param $addr i32)
     (local $q i32)
     (local $res i32)
@@ -7680,25 +6556,17 @@
     
     get_global $useGateArrayContention
     if
-      i32.const 1
-      call $incTacts
+      (call $incTacts (i32.const 1))
+      
     else
-      call $getHL
-      call $memoryDelay
-      i32.const 1
-      call $incTacts
+      (call $memoryDelay (call $getHL))
+      (call $incTacts (i32.const 1))
     end
 
-    get_global $opCode
-    i32.const 0x07
-    i32.and
-    tee_local $q
-    i32.const 6
-    i32.ne
+    (i32.and (get_global $opCode) (i32.const 0x07))
+    (i32.ne (tee_local $q) (i32.const 6))
     if
-      get_local $q
-      get_local $res
-      call $setReg8
+      (call $setReg8 (get_local $q) (get_local $res))
     end
   )
 )
