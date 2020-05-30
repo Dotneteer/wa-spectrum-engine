@@ -7731,9 +7731,109 @@
     end
   )
 
-  (func $XBitNQ (param $addr i32))
+  (func $XBitNQ (param $addr i32)
+    get_local $addr
+    call $readMemory
+    (i32.and (get_global $opCode) (i32.const 0x38))
+    i32.const 3
+    i32.shr_u
+    call $Bit
 
-  (func $XResNQ (param $addr i32))
+    get_global $useGateArrayContention
+    i32.const 0
+    i32.eq
+    if
+      call $getHL
+      call $memoryDelay
+    end
 
-  (func $XSetNQ (param $addr i32))
+    i32.const 1
+    call $incTacts
+  )
+
+  (func $XResNQ (param $addr i32)
+    (local $q i32)
+    (local $res i32)
+    get_local $addr
+    get_local $addr
+    call $readMemory
+    
+    (i32.shl 
+      (i32.const 1)
+      (i32.shr_u
+        (i32.and (get_global $opCode) (i32.const 0x38))
+        (i32.const 3)
+      )
+    )
+    i32.const 0xff
+    i32.xor
+    i32.and
+    tee_local $res
+    call $writeMemory
+    
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    tee_local $q
+    i32.const 6
+    i32.ne
+    if
+      get_local $q
+      get_local $res
+      call $setReg8
+    end
+  )
+
+  (func $XSetNQ (param $addr i32)
+    (local $q i32)
+    (local $res i32)
+    get_local $addr
+    get_local $addr
+    call $readMemory
+    
+    (i32.shl 
+      (i32.const 1)
+      (i32.shr_u
+        (i32.and (get_global $opCode) (i32.const 0x38))
+        (i32.const 3)
+      )
+    )
+    i32.or
+    tee_local $res
+    call $writeMemory
+    
+    get_global $useGateArrayContention
+    if
+      i32.const 1
+      call $incTacts
+    else
+      call $getHL
+      call $memoryDelay
+      i32.const 1
+      call $incTacts
+    end
+
+    get_global $opCode
+    i32.const 0x07
+    i32.and
+    tee_local $q
+    i32.const 6
+    i32.ne
+    if
+      get_local $q
+      get_local $res
+      call $setReg8
+    end
+  )
 )
