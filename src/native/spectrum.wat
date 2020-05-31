@@ -497,8 +497,8 @@
     $NOOP
     $NOOP
 
-    $NOOP
-    $NOOP
+    $setupSpectrum48
+    $getSpectrum48MachineState
     $NOOP
     $NOOP
     $NOOP
@@ -1327,16 +1327,6 @@
 
   ;; ==========================================================================
   ;; Z80 clock management
-
-  ;; Gets the current frame counter
-  (func $getFrameCount (result i32)
-    get_global $frameCount
-  )
-
-  ;; Get the current frame tact
-  (func $getFrameTacts (result i32)
-    get_global $frameTacts
-  )
 
   ;; Increments the current frame tact with the specified value
   ;; $inc: Increment
@@ -6741,11 +6731,69 @@
   ;; Total number of raster lines (including the non-visible ones)
   (global $rasterLines (mut i32) (i32.const 0x0000))
 
-  ;; Total number of frame tacts in a screen frame
-  (global $screenRenderingFrameTactCount (mut i32) (i32.const 0x0000))
+  ;; The tact in which the top left pixel should be displayed. Given in Z80 clock cycles.
+  (global $firstDisplayPixelTact (mut i32) (i32.const 0x0000))
 
   ;; The tact at which the first pixel is displayed
   (global $firstScreenPixelTact (mut i32) (i32.const 0x0000))
+  
+  ;; ==========================================================================
+  ;; ZX Spectrum execution engine state
+
+  ;; The ULA issue of the engine
+  (global $ulaIssue (mut i32) (i32.const 0x0000))
+
+  ;; The last rendered ULA tact
+  (global $lastRenderedUlaTact (mut i32) (i32.const 0x0000))
+
+  ;; Indicates that a screen frame has just completed
+  (global $frameCompleted (mut i32) (i32.const 0x0000))
+
+  ;; Overflow from the previous frame, given in #of tacts
+  (global $frameOverflow (mut i32) (i32.const 0x0000))
+
+  ;; Gets or sets the value of the contention accummulated since the start
+  ;; of the machine
+  (global $contentionAccummulated (mut i32) (i32.const 0x0000))
+
+  ;; Gets the value of the contention accummulated since the last execution
+  ;; cycle started
+  (global $lastExecutionContentionValue (mut i32) (i32.const 0x0000))
+
+  ;; The emulation mode to use with the execution cycle
+  ;; 0: Debugger
+  ;; 1: UntilHalt
+  ;; 2: UntilCpuFrameEnds
+  ;; 3: UntilUlaFrameEnds
+  ;; 4: UntilExecutionPoint
+  (global $emulationMode (mut i32) (i32.const 0x0000))
+
+  ;; The debug step mode to use with the execution cycle
+  ;; (only when $emulationMode is Debugger)
+  ;; 0: StopAtBreakPoints
+  ;; 1: StepInto
+  ;; 2: StepOver
+  ;; 3: StepOut
+  (global $debugStepMode (mut i32) (i32.const 0x0000))
+
+  ;; Indicates if fast tape mode is allowed
+  (global $fastTapeMode (mut i32) (i32.const 0x0000))
+
+  ;; The index of the ROM when a termination point is defined
+  (global $terminationRom (mut i32) (i32.const 0x0000))
+
+  ;; The value of the PC register to reach when a termination point 
+  ;; is defined
+  (global $terminationPoint (mut i32) (i32.const 0x0000))
+
+  ;; This flag shows that the virtual machine should run in hidden mode
+  ;; (no screen, no sound, no delays)
+  (global $fastVmMode (mut i32) (i32.const 0x0000))
+
+  ;; This flag shows whether the virtual machine should render the screen.
+  ;; True, renders the screen; false, does not render the screen.
+  ;; This flag overrides the $fastVmMode setting.
+  (global $disableScreenRendering (mut i32) (i32.const 0x0000))
 
   ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
@@ -6783,10 +6831,7 @@
   (func $getMachineState
     ;; Start with CPU state
     call $getCpuState
-
-    ;; TODO: Add ZX Spectrum configuration
-    ;; TODO: Add common ZX Spectrum state
-    ;; TODO: Add machine type specific state
+    call $getCommonSpectrumMachineState
     (i32.add
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 7)
@@ -6796,10 +6841,6 @@
 
   ;; Executes the ZX Spectrum machine cycle
   (func $executeMachineCycle)
-
-
-
-
 
   ;; ==========================================================================
   ;; Helper functions to manage a ZX Spectrum machine
@@ -6811,6 +6852,139 @@
       (i32.const 6)
     )
     call_indirect (type $ActionFunc)
+  )
+
+  ;; Calculates extra screen attributes from screen configuration parameters
+  (func $calcScreenAttributes
+    (i32.add 
+      (i32.add (get_global $borderTopLines) (get_global $displayLines))
+      (get_global $borderBottomLines)
+    )
+    set_global $screenLines
+
+    (i32.add 
+      (i32.add (get_global $verticalSyncLines) (get_global $nonVisibleBorderTopLines))
+      (get_global $borderTopLines)
+    )
+    set_global $firstDisplayLine
+
+    (i32.sub
+      (i32.add (get_global $firstDisplayLine) (get_global $displayLineTime))
+      (i32.const 1)
+    )
+    set_global $lastDisplayLine
+
+    (i32.mul (i32.const 2) (get_global $borderLeftTime))
+    set_global $borderLeftPixels
+
+    (i32.mul (i32.const 2) (get_global $borderRightTime))
+    set_global $borderRightPixels
+
+    (i32.mul (i32.const 2) (get_global $displayLineTime))
+    set_global $displayWidth
+
+    (i32.add 
+      (i32.add (get_global $borderLeftPixels) (get_global $displayWidth))
+      (get_global $borderRightPixels)
+    )
+    set_global $screenWidth
+
+    (i32.add (get_global $borderLeftTime) (get_global $displayLineTime))
+    (i32.add (get_global $borderRightTime) (get_global $nonVisibleBorderRightTime))
+    get_global $horizontalBlankingTime
+    i32.add
+    i32.add
+    set_global $screenLineTime
+
+    (i32.add (get_global $firstDisplayLine) (get_global $displayLines))
+    (i32.add (get_global $borderBottomLines) (get_global $nonVisibleBorderBottomLines))
+    i32.add
+    set_global $rasterLines
+
+    (i32.mul (get_global $rasterLines) (get_global $screenLineTime))
+    set_global $tactsInFrame
+
+    (i32.add 
+      (i32.mul (get_global $firstDisplayLine) (get_global $screenLineTime))
+      (get_global $borderLeftTime)
+    )
+    set_global $firstDisplayPixelTact
+
+    (i32.mul
+      (i32.add (get_global $verticalSyncLines) (get_global $nonVisibleBorderTopLines))
+      (get_global $screenLineTime)
+    )
+    set_global $firstScreenPixelTact
+  )
+
+  ;; Gets the ZX Spectrum 48 machine state
+  (func $getCommonSpectrumMachineState
+    (i32.store offset=24 (get_global $STATE_TRANSFER_BUFF) (get_global $baseClockFrequency))      
+    (i32.store8 offset=28 (get_global $STATE_TRANSFER_BUFF) (get_global $clockMultiplier))      
+    (i32.store8 offset=29 (get_global $STATE_TRANSFER_BUFF) (get_global $supportsNextOperation))      
+
+    (i32.store8 offset=30 (get_global $STATE_TRANSFER_BUFF) (get_global $numberOfRoms))      
+    (i32.store offset=31 (get_global $STATE_TRANSFER_BUFF) (get_global $romContentsAddress))      
+    (i32.store8 offset=35 (get_global $STATE_TRANSFER_BUFF) (get_global $spectrum48RomIndex))      
+    (i32.store8 offset=36 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionType))      
+    (i32.store8 offset=37 (get_global $STATE_TRANSFER_BUFF) (get_global $ramBanks))      
+    (i32.store8 offset=38 (get_global $STATE_TRANSFER_BUFF) (get_global $nextMemorySize))
+
+    (i32.store16 offset=39 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptTact))      
+    (i32.store16 offset=41 (get_global $STATE_TRANSFER_BUFF) (get_global $verticalSyncLines))      
+    (i32.store16 offset=43 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderTopLines))      
+    (i32.store16 offset=45 (get_global $STATE_TRANSFER_BUFF) (get_global $borderTopLines))      
+    (i32.store16 offset=47 (get_global $STATE_TRANSFER_BUFF) (get_global $displayLines))      
+    (i32.store16 offset=49 (get_global $STATE_TRANSFER_BUFF) (get_global $borderBottomLines))      
+    (i32.store16 offset=51 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderBottomLines))      
+    (i32.store16 offset=53 (get_global $STATE_TRANSFER_BUFF) (get_global $horizontalBlankingTime))      
+    (i32.store16 offset=55 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftTime))      
+    (i32.store16 offset=57 (get_global $STATE_TRANSFER_BUFF) (get_global $displayLineTime))      
+    (i32.store16 offset=59 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightTime))      
+    (i32.store16 offset=61 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderRightTime))      
+    (i32.store16 offset=63 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelDataPrefetchTime))      
+    (i32.store16 offset=65 (get_global $STATE_TRANSFER_BUFF) (get_global $attributeDataPrefetchTime))      
+
+    (i32.store offset=67 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLines))      
+    (i32.store offset=71 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayLine))      
+    (i32.store offset=75 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftPixels))      
+    (i32.store offset=79 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightPixels))      
+    (i32.store offset=83 (get_global $STATE_TRANSFER_BUFF) (get_global $displayWidth))      
+    (i32.store offset=87 (get_global $STATE_TRANSFER_BUFF) (get_global $screenWidth))      
+    (i32.store offset=91 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLineTime))      
+    (i32.store offset=95 (get_global $STATE_TRANSFER_BUFF) (get_global $rasterLines))      
+    (i32.store offset=99 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayPixelTact))      
+    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))      
+  )
+
+  ;; Copies a segment of memory
+  ;; $from: Source address
+  ;; $to: Destination address
+  ;; $count #of bytes to copy
+  (func $copyMemory (param $from i32) (param $to i32) (param $count i32)
+    loop $copy
+      (i32.gt_u (get_local $count) (i32.const 0))
+      if
+        ;; Copy a single byte
+        get_local $to
+        get_local $from
+        i32.load8_u
+        i32.store8
+
+        ;; Increment indexes
+        (i32.add (get_local $from) (i32.const 1))
+        set_local $from
+        (i32.add (get_local $to) (i32.const 1))
+        set_local $to
+
+        ;; Decrement counter
+        (i32.sub (get_local $count) (i32.const 1))
+        set_local $count
+        
+        ;; continue
+        br $copy
+      end
+    end
   )
 
   ;; ==========================================================================
@@ -6887,4 +7061,47 @@
   ;; ==========================================================================
   ;; ZX Spectrum 48K functions
 
+  (func $setupSpectrum48
+    ;; CPU configuration
+    i32.const 3_500_000 set_global $baseClockFrequency
+    i32.const 1 set_global $clockMultiplier
+    i32.const 0 set_global $supportsNextOperation
+    
+    ;; Memory configuration
+    i32.const 1 set_global $numberOfRoms
+    get_global $SPECTRUM_48_ROM_INDEX set_global $romContentsAddress
+    i32.const 0 set_global $spectrum48RomIndex
+    i32.const 1 set_global $contentionType
+    i32.const 0 set_global $ramBanks
+    i32.const 0 set_global $nextMemorySize
+
+    ;; Screen frame configuration
+    i32.const 11 set_global $interruptTact
+    i32.const 8 set_global $verticalSyncLines
+    i32.const 8 set_global $nonVisibleBorderTopLines
+    i32.const 48 set_global $borderTopLines
+    i32.const 48 set_global $borderBottomLines
+    i32.const 8 set_global $nonVisibleBorderBottomLines
+    i32.const 192 set_global $displayLines
+    i32.const 24 set_global $borderLeftTime
+    i32.const 24 set_global $borderRightTime
+    i32.const 128 set_global $displayLineTime
+    i32.const 40 set_global $horizontalBlankingTime
+    i32.const 8 set_global $nonVisibleBorderRightTime
+    i32.const 2 set_global $pixelDataPrefetchTime
+    i32.const 1 set_global $attributeDataPrefetchTime
+
+    call $calcScreenAttributes
+
+    ;; Setup ROM
+    (call $copyMemory 
+      (get_global $SPECTRUM_48_ROM_INDEX)
+      (get_global $SP_MEM_OFFS)
+      (i32.const 0x1_4000)
+    )
+  )
+
+  ;; Gets the ZX Spectrum 48 machine state
+  (func $getSpectrum48MachineState
+  )
 )

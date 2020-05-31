@@ -20,7 +20,7 @@ class DaaSample {
   ) {}
 }
 
-describe("N: Indexed ops (ix) 00-3f", () => {
+describe("Indexed ops (ix) 00-3f", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
         imports: { trace: (arg: number) => console.log(arg) }

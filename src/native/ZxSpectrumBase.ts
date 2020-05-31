@@ -1,5 +1,5 @@
 import { MachineApi } from "./api";
-import { SpectrumMachineState } from "./machine-state";
+import { SpectrumMachineState, MemoryContentionType } from "./machine-state";
 import { MemoryHelper } from "./memory-helpers";
 
 /**
@@ -36,7 +36,7 @@ export abstract class ZxSpectrumBase {
   /**
    * Resets the machine
    */
-  resetMachine(): void {
+  reset(): void {
     this.api.resetMachine();
   }
 
@@ -82,6 +82,47 @@ export abstract class ZxSpectrumBase {
     s.indexMode = mh.readByte(21);
     s.maskableInterruptModeEntered = mh.readBool(22);
     s.opCode = mh.readByte(23);
+
+    // --- Get CPU configuration data
+    s.baseClockFrequency = mh.readUint32(24);
+    s.clockMultiplier = mh.readByte(28);
+    s.supportsNextOperations = mh.readBool(29);
+    
+    // --- Get memory configuration data
+    s.numberOfRoms = mh.readByte(30);
+    s.romContentsAddress = mh.readUint32(31);
+    s.spectrum48RomIndex = mh.readByte(35);
+    s.contentionType = mh.readByte(36) as MemoryContentionType;
+    s.ramBanks = mh.readByte(37);
+    s.nextMemorySize = mh.readByte(38);
+
+    // --- Get screen frame configuration data
+    s.interruptTact = mh.readUint16(39);
+    s.verticalSyncLines = mh.readUint16(41);
+    s.nonVisibleBorderTopLines = mh.readUint16(43);
+    s.borderTopLines = mh.readUint16(45);
+    s.displayLines = mh.readUint16(47);
+    s.borderBottomLines = mh.readUint16(49);
+    s.nonVisibleBorderBottomLines = mh.readUint16(51);
+    s.horizontalBlankingTime = mh.readUint16(53);
+    s.borderLeftTime = mh.readUint16(55);
+    s.displayLineTime = mh.readUint16(57);
+    s.borderRightTime = mh.readUint16(59);
+    s.nonVisibleBorderRightTime = mh.readUint16(61);
+    s.pixelDataPrefetchTime = mh.readUint16(63);
+    s.attributeDataPrefetchTime = mh.readUint16(65);
+
+    // --- Get calculated frame attributes
+    s.screenLines = mh.readUint32(67);
+    s.firstDisplayLine = mh.readUint32(71);
+    s.borderLeftPixels = mh.readUint32(75);
+    s.borderRightPixels = mh.readUint32(79);
+    s.displayWidth = mh.readUint32(83);
+    s.screenWidth = mh.readUint32(87);
+    s.screenLineTime = mh.readUint32(91);
+    s.rasterLines = mh.readUint32(95);
+    s.firstDisplayPixelTact = mh.readUint32(99);
+    s.firstScreenPixelTact = mh.readUint32(103);
 
     // --- Done.
     return s;

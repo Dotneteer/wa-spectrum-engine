@@ -9,7 +9,7 @@ const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: CpuApi;
 let testMachine: TestZ80Machine;
 
-describe("N: Indexed bit ops 80-bf (ix)", () => {
+describe("Indexed bit ops 80-bf (ix)", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
         imports: { trace: (arg: number) => console.log(arg) }

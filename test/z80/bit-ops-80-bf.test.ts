@@ -10,7 +10,7 @@ let api: CpuApi;
 let testMachine: TestZ80Machine;
 
 
-describe("N: Bit ops 80-bf", () => {
+describe("Bit ops 80-bf", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
         imports: { trace: (arg: number) => console.log(arg) }

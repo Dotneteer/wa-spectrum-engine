@@ -11,8 +11,8 @@ export class ZxSpectrum48 extends ZxSpectrumBase {
    * @param api Machine API to access WA
    * @param type Machine type
    */
-  constructor(public api: MachineApi, public type: number) {
-    super(api, type);
+  constructor(public api: MachineApi) {
+    super(api, 0);
   }
 
   /**

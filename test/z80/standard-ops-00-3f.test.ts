@@ -20,7 +20,7 @@ class DaaSample {
   ) {}
 }
 
-describe("N: Standard ops 00-3f", () => {
+describe("Standard ops 00-3f", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
         imports: { trace: (arg: number) => console.log(arg) }
