@@ -25,11 +25,6 @@ const STATE_TRANSFER_BUFF = 0x1_0040;
 const TEST_INPUT_BUFF = 0x1_0100;
 
 /**
- * The start of the memory access log
- */
-const TEST_MEM_LOG_OFFS = 0x1_0200;
-
-/**
  * The start of the I/O access log
  */
 const TEST_IO_LOG_OFFS = 0x1_0600;

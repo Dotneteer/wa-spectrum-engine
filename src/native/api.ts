@@ -4,6 +4,7 @@ import { RunMode } from "../shared/RunMode";
  * Represents the CPU API
  */
 export interface CpuApi {
+  // --- Test Z80 machine methods
   memory: any;
   turnOnCpu(): void;
   resetCpu(): void;
@@ -17,4 +18,16 @@ export interface CpuApi {
   getTbBlueLogLength(): number;
   runTestCode(): void;
   restMachineType(): void;
+}
+
+/**
+ * Represents the Machine API
+ */
+export interface MachineApi extends CpuApi {
+  // --- ZX Spectrum machine methods
+  initZxSpectrum(type: number): void;
+  turnOnMachine(): void;
+  resetMachine(): void;
+  getMachineState(): void;
+  executeMachineCycle(): void;
 }
