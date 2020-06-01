@@ -26,6 +26,7 @@
   (export "initZxSpectrum" (func $initZxSpectrum))
   (export "turnOnMachine" (func $turnOnMachine))
   (export "resetMachine" (func $resetMachine))
+  (export "setUlaIssue" (func $setUlaIssue))
   (export "getMachineState" (func $getMachineState))
   (export "setExecutionOptions" (func $setExecutionOptions))
   (export "executeMachineCycle" (func $executeMachineCycle))
@@ -6864,7 +6865,31 @@
   (global $executionCompletionReason (mut i32) (i32.const 0x0000))
 
   ;; ==========================================================================
+  ;; Port device state
+
+  ;; Last value of bit 3 on port $FE
+  (global $portBit3LastValue (mut i32) (i32.const 0x0000))
+
+  ;; Last value of bit 4 on port $FE
+  (global $portBit4LastValue (mut i32) (i32.const 0x0000))
+
+  ;; Tacts value when last time bit 4 of $fe changed from 0 to 1
+  (global $portBit4ChangedFrom0Tacts (mut i32) (i32.const 0x0000))
+
+  ;; Frame count value when last time bit 4 of $fe changed from 0 to 1
+  (global $portBit4ChangedFrom0FrameCount (mut i32) (i32.const 0x0000))
+
+  ;; Tacts value when last time bit 4 of $fe changed from 1 to 0
+  (global $portBit4ChangedFrom1Tacts (mut i32) (i32.const 0x0000))
+
+  ;; Frame count value when last time bit 4 of $fe changed from 1 to 0
+  (global $portBit4ChangedFrom1FrameCount (mut i32) (i32.const 0x0000))
+
+  ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
+
+  ;; Start address of keyboard line status
+  (global $KEYBOARD_LINES i32 (i32.const 0x1_2c00))
 
   ;; Transfer area for the ZX Spectrum execution cycle options
   (global $EXEC_OPTIONS_BUFF i32 (i32.const 0x01_1800))
@@ -6894,6 +6919,15 @@
 
   ;; Resets the ZX Spectrum machine
   (func $resetMachine)
+
+  ;; Sets the ULA issue to use
+  (func $setUlaIssue (param $ula i32)
+    i32.const 0x02
+    i32.const 0x03
+    (i32.eq (get_local $ula) (i32.const 2))
+    select
+    set_global $ulaIssue
+  )
 
   ;; Writes the ZX Spectrum machine state to the transfer area
   (func $getMachineState
@@ -7066,6 +7100,42 @@
     i32.and
   )
 
+  ;; Gets the byte we would get when querying the I/O address with the
+  ;; specified byte as the highest 8 bits of the address line
+  ;; $line: The highest 8 bits of the address line
+  ;; Returns the status value to be received when querying the I/O
+  (func $getKeyLineStatus (param $line i32) (result i32)
+    (local $status i32)
+    (local $lineIndex i32)
+    ;; Init query loop
+    (i32.xor (get_local $line) (i32.const 0xff))
+    set_local $line
+    i32.const 0 set_local $status
+    i32.const 0 set_local $lineIndex
+
+    ;; Iterate through all lines
+    loop $lineLoop
+      (i32.gt_u (get_local $line) (i32.const 0))
+      if
+        (i32.and (get_local $line) (i32.const 0x01))
+        if
+          (i32.add (get_global $KEYBOARD_LINES) (get_local $lineIndex))
+          i32.load8_u
+          get_local $status
+          i32.or
+          set_local $status
+        end
+        ;; Update for next iteration
+        (i32.add (get_local $lineIndex) (i32.const 1))
+        set_local $lineIndex
+        (i32.shr_u (get_local $line) (i32.const 1))
+        set_local $line
+        br $lineLoop
+      end
+    end
+    get_local $status    
+  )
+
   ;; ==========================================================================
   ;; Helper functions to manage a ZX Spectrum machine
 
@@ -7093,6 +7163,15 @@
     (i32.store offset=0 (get_global $KEYBOARD_LINES) (i32.const 0))
     (i32.store offset=4 (get_global $KEYBOARD_LINES) (i32.const 0))
 
+    ;; Reset port state
+    i32.const 0 set_global $portBit3LastValue
+    i32.const 0 set_global $portBit4LastValue
+    i32.const 0 set_global $portBit4ChangedFrom0Tacts
+    i32.const 0 set_global $portBit4ChangedFrom0FrameCount
+    i32.const 0 set_global $portBit4ChangedFrom1Tacts
+    i32.const 0 set_global $portBit4ChangedFrom1FrameCount
+
+    ;; Invoke machine type specific setup
     (i32.add
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 6)
@@ -7229,6 +7308,14 @@
     (i32.store offset=142 (get_global $STATE_TRANSFER_BUFF))
     (i32.load offset=4 (get_global $KEYBOARD_LINES))
     (i32.store offset=146 (get_global $STATE_TRANSFER_BUFF))
+
+    ;; Port state
+    (i32.store8 offset=150 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
+    (i32.store8 offset=151 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
+    (i32.store offset=152 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
+    (i32.store offset=156 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0FrameCount))
+    (i32.store offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
+    (i32.store offset=164 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1FrameCount))
   )
 
   ;; Copies a segment of memory
@@ -7347,8 +7434,82 @@
     end
   )
 
-  ;; Start address of keyboard line status
-  (global $KEYBOARD_LINES i32 (i32.const 0x1_2c00))
+  ;; Tests if the machine is in tape load mode
+  (func $isInLoadMode (result i32)
+    ;; TODO implement this method
+    i32.const 0
+  )
+
+  ;; Handles the 0xfe port
+  (func $handlePortFE (param $addr i32) (result i32)
+    (local $portValue i32)
+    (local $bit4Sensed i32)
+    (local $chargeTime i32)
+    (local $refDelay i32)
+
+    ;; Scan keyboard line status
+    (call $getKeyLineStatus (i32.shr_u (get_local $addr) (i32.const 8)))
+    set_local $portValue
+
+    call $isInLoadMode
+    if
+      ;; TODO: Handle EAR bit from tape
+    else
+      ;; Handle analog EAR bit
+      get_global $portBit4LastValue
+      (i32.eq (tee_local $bit4Sensed) (i32.const 0))
+      if
+        ;; Changed later to 1 from 0 than to 0 from 1?
+        (i32.ge_u (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
+        (i32.gt_u (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+        i32.and
+        if
+          ;; ;; Yes, calculate charge time
+          ;; (i32.and
+          ;;   (i32.sub (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
+          ;;   (i32.const 0xff)
+          ;; )
+          ;; i32.const 24
+          ;; i32.shl ;; (upper 8 bits)
+          ;; (i32.and
+          ;;   (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+          ;;   (i32.const 0x00ffffff)
+          ;; )  ;; (upper 8 bits, lower 24 bits)
+          ;; i32.or
+
+          ;; ;; Calculate reference delay
+          ;; (i32.gt_u (tee_local $chargeTime) (i32.const 700))
+          ;; if (result i32)
+          ;;   i32.const 2800
+          ;; else
+          ;;   (i32.mul (i32.const 4) (get_local $chargeTime))
+          ;; end
+          ;; set_local $refDelay
+
+          ;; ;; Check for too much delay
+          ;; (i32.le_u 
+          ;;   (get_global $frameCount)
+          ;;   (i32.add (i32.const 1) (get_global $portBit4ChangedFrom1FrameCount))
+          ;; )
+          ;; if
+          ;;   ;; Delay may be short enough, calculate real delay
+          ;;   (i32.and
+          ;;     (i32.sub (get_global $frameCount) (get_global $portBit4ChangedFrom1FrameCount))
+          ;;     (i32.const 0xff)
+          ;;   )
+          ;;   i32.const 24
+          ;;   i32.shl ;; (upper 8 bits)
+          ;;   (i32.and
+          ;;     (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+          ;;     (i32.const 0x00ffffff)
+          ;;   )  ;; (upper 8 bits, lower 24 bits)
+          ;;   i32.or
+          ;; end
+        end
+      end
+    end
+    get_local $portValue
+  )
 
   ;; ==========================================================================
   ;; ZX Spectrum 48K ROM
@@ -7456,6 +7617,23 @@
 
   ;; Reads the memory of the ZX Spectrum 48 machine
   (func $readPortSp48 (param $addr i32) (result i32)
+    (call $applyIOContentionDelay (get_local $addr))
+    (i32.and (get_local $addr) (i32.const 0x0001))
+    if
+      ;; Handle the 0xfe port
+      i32.const 0xff
+      return
+    end
+
+    (i32.and (get_local $addr) (i32.const 0x00e0))
+    (i32.eq (i32.const 0))
+    if
+      ;; Handle the Kempston port
+      i32.const 0xff
+      return
+    end
+
+    ;; TODO: Implement floating port handling
     i32.const 0xff
   )
 

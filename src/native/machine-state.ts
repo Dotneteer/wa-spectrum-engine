@@ -68,7 +68,13 @@ export abstract class SpectrumMachineStateBase extends Z80CpuState {
   // --- Keyboard state
   keyboardLines: number[];
 
-  
+  // --- Port $fe state
+  portBit3LastValue: boolean;;
+  portBit4LastValue: boolean;
+  portBit4ChangedFrom0Tacts: number;
+  portBit4ChangedFrom0FrameCount: number;
+  portBit4ChangedFrom1Tacts: number;
+  portBit4ChangedFrom1FrameCount: number;
 }
 
 /**

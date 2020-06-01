@@ -27,6 +27,18 @@ describe("ZX Spectrum 48", () => {
     machine.reset();
   });
 
+  it("Default ULA issue to 3", () => {
+    const s = machine.getMachineState();
+    expect(s.ulaIssue).toBe(3);
+  });
+
+
+  it("Set ULA issue to 2", () => {
+    machine.setUlaIssue(2);
+    const s = machine.getMachineState();
+    expect(s.ulaIssue).toBe(2);
+  });
+
   it("Machine configured", () => {
     const s = machine.getMachineState();
     expect(s.baseClockFrequency).toBe(3_500_000);

@@ -42,6 +42,14 @@ export abstract class ZxSpectrumBase {
   }
 
   /**
+   * Sets the ULA issue used by the machine
+   * @param ula ULA issue of the machine
+   */
+  setUlaIssue(ula: number): void {
+    this.api.setUlaIssue(ula);
+  }
+
+  /**
    * Gets the current state of the ZX Spectrum machine
    */
   getMachineState(): SpectrumMachineState {
@@ -148,6 +156,14 @@ export abstract class ZxSpectrumBase {
     for (let i = 0; i < 8; i++) {
       s.keyboardLines[i] = mh.readByte(142 + i);
     }
+
+    // --- Get port state
+    s.portBit3LastValue = mh.readBool(150);
+    s.portBit4LastValue = mh.readBool(151);
+    s.portBit4ChangedFrom0Tacts = mh.readUint32(152);
+    s.portBit4ChangedFrom0FrameCount = mh.readUint32(156);
+    s.portBit4ChangedFrom1Tacts = mh.readUint32(160);
+    s.portBit4ChangedFrom1FrameCount = mh.readUint32(164);
 
     // --- Done.
     return s;

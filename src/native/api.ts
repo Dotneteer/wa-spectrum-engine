@@ -29,6 +29,7 @@ export interface MachineApi extends CpuApi {
   initZxSpectrum(type: number): void;
   turnOnMachine(): void;
   resetMachine(): void;
+  setUlaIssue(ula: number): void;
   getMachineState(): void;
   setExecutionOptions(): void;
   executeMachineCycle(): void;
