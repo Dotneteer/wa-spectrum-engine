@@ -78,8 +78,8 @@ export abstract class ZxSpectrumBase {
     mh = new MemoryHelper(this.api, STATE_TRANSFER_BUFF);
     s.tactsInFrame = mh.readUint32(0);
     s.allowExtendedSet = mh.readBool(4);
-    s.tactsH = mh.readUint32(5);
-    s.tactsL = mh.readUint32(9);
+    s.tactsL = mh.readUint32(5);
+    s.tactsH = mh.readUint32(9);
     s.stateFlags = mh.readByte(13);
     s.useGateArrayContention = mh.readBool(14);
     s.iff1 = mh.readBool(15);
@@ -136,20 +136,22 @@ export abstract class ZxSpectrumBase {
     // --- Get engine state
     s.ulaIssue = mh.readByte(107);
     s.lastRenderedUlaTact = mh.readUint32(108);
-    s.lastExecutionStartFrameCount = mh.readUint32(112);
-    s.lastExecutionStartFrameTacts = mh.readUint32(116);
-    s.frameCompleted = mh.readBool(120);
-    s.frameOverflow = mh.readUint32(121);
-    s.contentionAccummulated = mh.readUint32(125);
-    s.lastExecutionContentionValue = mh.readUint32(129);
-    s.emulationMode = mh.readByte(133) as EmulationMode;
-    s.debugStepMode = mh.readByte(134) as DebugStepMode;
-    s.fastTapeMode = mh.readBool(135);
-    s.terminationRom = mh.readByte(136);
-    s.terminationPoint = mh.readUint16(137);
-    s.fastVmMode = mh.readBool(139);
-    s.disableScreenRendering = mh.readBool(140);
-    s.executionCompletionReason = mh.readByte(141) as ExecutionCompletionReason;
+    s.lastExecutionStartFrameTactsL = mh.readUint32(112);
+    s.lastExecutionStartFrameTactsH = mh.readUint32(116);
+    s.lastFrameStartTactsL = mh.readUint32(120);
+    s.lastFrameStartTactsH = mh.readUint32(124);
+    s.frameCompleted = mh.readBool(128);
+    s.frameOverflow = mh.readUint32(129);
+    s.contentionAccummulated = mh.readUint32(133);
+    s.lastExecutionContentionValue = mh.readUint32(137);
+    s.emulationMode = mh.readByte(141) as EmulationMode;
+    s.debugStepMode = mh.readByte(142) as DebugStepMode;
+    s.fastTapeMode = mh.readBool(143);
+    s.terminationRom = mh.readByte(144);
+    s.terminationPoint = mh.readUint16(145);
+    s.fastVmMode = mh.readBool(147);
+    s.disableScreenRendering = mh.readBool(148);
+    s.executionCompletionReason = mh.readByte(149) as ExecutionCompletionReason;
 
     // --- Get keyboard state
     s.keyboardLines = [];

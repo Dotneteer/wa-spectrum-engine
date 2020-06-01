@@ -149,8 +149,8 @@ export class TestZ80Machine {
     mh = new MemoryHelper(this.cpuApi, STATE_TRANSFER_BUFF);
     s.tactsInFrame = mh.readUint32(0);
     s.allowExtendedSet = mh.readBool(4);
-    s.tactsH = mh.readUint32(5);
-    s.tactsL = mh.readUint32(9);
+    s.tactsL = mh.readUint32(5);
+    s.tactsH = mh.readUint32(9);
     s.stateFlags = mh.readByte(13);
     s.useGateArrayContention = mh.readBool(14);
     s.iff1 = mh.readBool(15);
@@ -193,8 +193,8 @@ export class TestZ80Machine {
     mh = new MemoryHelper(this.cpuApi, STATE_TRANSFER_BUFF);
     mh.writeUint32(0, s.tactsInFrame);
     mh.writeBool(4, s.allowExtendedSet);
-    mh.writeUint32(5, s.tactsH);
-    mh.writeUint32(9, s.tactsL);
+    mh.writeUint32(5, s.tactsL);
+    mh.writeUint32(9, s.tactsH);
     mh.writeByte(13, s.stateFlags);
     mh.writeBool(14, s.useGateArrayContention);
     mh.writeBool(15, s.iff1);

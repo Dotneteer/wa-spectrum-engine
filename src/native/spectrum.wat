@@ -93,8 +93,7 @@
   (global $allowExtendedSet (mut i32) (i32.const 0x00))  ;; Should allow extended operation set?
 
   ;; Mutable
-  (global $frameCount (mut i32) (i32.const 0x0000)) ;; Number of frames from start
-  (global $frameTacts (mut i32) (i32.const 0x0000)) ;; Number of tacts in the current frame
+  (global $tacts (mut i64) (i64.const 0x0000)) ;; CPU tacts since starting the cpu
   (global $stateFlags (mut i32) (i32.const 0x00)) ;; Z80 state flags
   (global $useGateArrayContention (mut i32) (i32.const 0x0000)) ;; Should use gate array contention?
   (global $iff1 (mut i32) (i32.const 0x00)) ;; Interrupt flip-flop #1
@@ -111,8 +110,7 @@
   (func $getCpuState
     (i32.store offset=0 (get_global $STATE_TRANSFER_BUFF) (get_global $tactsInFrame))
     (i32.store8 offset=4 (get_global $STATE_TRANSFER_BUFF) (get_global $allowExtendedSet))
-    (i32.store offset=5 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCount))
-    (i32.store offset=9 (get_global $STATE_TRANSFER_BUFF) (get_global $frameTacts))
+    (i64.store32 offset=5 (get_global $STATE_TRANSFER_BUFF) (get_global $tacts))
     (i32.store8 offset=13 (get_global $STATE_TRANSFER_BUFF) (get_global $stateFlags))
     (i32.store8 offset=14 (get_global $STATE_TRANSFER_BUFF) (get_global $useGateArrayContention))
     (i32.store8 offset=15 (get_global $STATE_TRANSFER_BUFF) (get_global $iff1))
@@ -130,8 +128,7 @@
   (func $updateCpuState
     (set_global $tactsInFrame (get_global $STATE_TRANSFER_BUFF) (i32.load offset=0))
     (set_global $allowExtendedSet (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=4))
-    (set_global $frameCount (get_global $STATE_TRANSFER_BUFF) (i32.load offset=5))
-    (set_global $frameTacts (get_global $STATE_TRANSFER_BUFF) (i32.load offset=9))
+    (set_global $tacts (get_global $STATE_TRANSFER_BUFF) (i64.load offset=5))
     (set_global $stateFlags (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=13))
     (set_global $useGateArrayContention (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=14))
     (set_global $iff1 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=15))
@@ -1385,15 +1382,8 @@
   ;; Increments the current frame tact with the specified value
   ;; $inc: Increment
   (func $incTacts (param $inc i32)
-    (i32.add (get_global $frameTacts) (get_local $inc))
-    set_global $frameTacts
-    (i32.ge_u (get_global $frameTacts) (get_global $tactsInFrame))
-    if
-      (i32.sub (get_global $frameTacts) (get_global $tactsInFrame))
-      set_global $frameTacts
-      (i32.add (get_global $frameCount) (i32.const 1))
-      set_global $frameCount
-    end
+    (i64.add (get_global $tacts) (i64.extend_u/i32 (get_local $inc)))
+    set_global $tacts
   )
 
   ;; ==========================================================================
@@ -1415,8 +1405,7 @@
     (i32.store16 offset=22 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
     (i32.store16 offset=24 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
     (i32.store16 offset=26 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
-    i32.const 0x0000 set_global $frameCount
-    i32.const 0x0000 set_global $frameTacts
+    i64.const 0x0000 set_global $tacts
     i32.const 0x0000 set_global $stateFlags
     i32.const 0x0000 set_global $useGateArrayContention
     i32.const 0x0000 set_global $iff1
@@ -1746,8 +1735,7 @@
     (call $setI (i32.const 0))
     (call $setR (i32.const 0))
     i32.const 0x0000 set_global $isInOpExecution
-    i32.const 0x0000 set_global $frameCount
-    i32.const 0x0000 set_global $frameTacts
+    i64.const 0x0000 set_global $tacts
   )
 
   ;; Executes the NMI request
@@ -6797,11 +6785,11 @@
   ;; The ULA issue of the engine
   (global $ulaIssue (mut i32) (i32.const 0x0000))
 
-  ;; CPU frame count value when last execution cycle started
-  (global $lastExecutionStartFrameCount (mut i32) (i32.const 0x0000))
+  ;; CPU tacts value when last execution cycle started
+  (global $lastExecutionStartTacts (mut i64) (i64.const 0x0000))
 
-  ;; CPU frame tacts value when last execution cycle started
-  (global $lastExecutionStartFrameTacts (mut i32) (i32.const 0x0000))
+  ;; CPU tacts value when the last frame started
+  (global $lastFrameStartTacts (mut i64) (i64.const 0x0000))
 
   ;; The last rendered ULA tact
   (global $lastRenderedUlaTact (mut i32) (i32.const 0x0000))
@@ -6874,16 +6862,10 @@
   (global $portBit4LastValue (mut i32) (i32.const 0x0000))
 
   ;; Tacts value when last time bit 4 of $fe changed from 0 to 1
-  (global $portBit4ChangedFrom0Tacts (mut i32) (i32.const 0x0000))
-
-  ;; Frame count value when last time bit 4 of $fe changed from 0 to 1
-  (global $portBit4ChangedFrom0FrameCount (mut i32) (i32.const 0x0000))
+  (global $portBit4ChangedFrom0Tacts (mut i64) (i64.const 0x0000))
 
   ;; Tacts value when last time bit 4 of $fe changed from 1 to 0
-  (global $portBit4ChangedFrom1Tacts (mut i32) (i32.const 0x0000))
-
-  ;; Frame count value when last time bit 4 of $fe changed from 1 to 0
-  (global $portBit4ChangedFrom1FrameCount (mut i32) (i32.const 0x0000))
+  (global $portBit4ChangedFrom1Tacts (mut i64) (i64.const 0x0000))
 
   ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
@@ -6955,12 +6937,12 @@
   ;; Executes the ZX Spectrum machine cycle
   (func $executeMachineCycle
     (local $executedInstructionCount i32)
+    (local $currentTact i32)
     (local $lastTact i32)
 
     ;; Initialize the execution cycle
     i32.const 0 set_global $executionCompletionReason
-    get_global $frameCount set_global $lastExecutionStartFrameCount
-    get_global $frameCount set_global $lastExecutionStartFrameTacts
+    get_global $tacts set_global $lastExecutionStartTacts
     get_global $contentionAccummulated set_global $lastExecutionContentionValue
 
     i32.const 0 set_local $executedInstructionCount
@@ -6969,6 +6951,8 @@
     get_global $frameCompleted
     if
       call $startNewFrame
+      (i64.sub (get_global $tacts) (i64.extend_u/i32 (get_global $frameOverflow)))
+      set_global $lastFrameStartTacts
       get_global $frameOverflow set_global $lastRenderedUlaTact
       i32.const 0 set_global $frameCompleted
     end
@@ -6991,8 +6975,17 @@
         call $checkForInterrupt
         call $executeCpuCycle
 
+        ;; Calculate the current frame tact
+        (i64.sub (get_global $tacts) (get_global $lastFrameStartTacts))
+        i32.wrap/i64 
+        get_global $clockMultiplier
+        i32.div_u
+        tee_local $currentTact
+
+        ;; Store it as the last tact to render
+        set_local $lastTact
+
         ;; Run screen rendering cycle
-        get_global $frameTacts set_local $lastTact
         (call $renderScreen 
           (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
           (get_local $lastTact)
@@ -7016,7 +7009,7 @@
         get_global $isInOpExecution
         br_if $frameCycle ;; Frame cannot be completed during instruction execution
 
-        (i32.gt_u (get_global $frameCount) (get_global $lastExecutionStartFrameCount))
+        (i32.gt_u (get_local $currentTact) (get_global $tactsInFrame))
         if
           ;; CPU clock moved to the next frame
           i32.const 1 set_global $frameCompleted
@@ -7028,7 +7021,8 @@
     end
 
     ;; The current screen rendering frame completed
-    get_global $frameTacts set_global $frameOverflow
+    (i64.rem_u (get_global $tacts) (i64.extend_u/i32 (get_global $tactsInFrame)))
+    i32.wrap/i64 set_global $frameOverflow
     call $completeFrame
     i32.const 5 set_global $executionCompletionReason ;; Reason: frame completed
   )
@@ -7143,8 +7137,7 @@
   (func $setupMachine 
     ;; Reset engine state variables
     i32.const 3 set_global $ulaIssue
-    i32.const 0 set_global $lastExecutionStartFrameCount
-    i32.const 0 set_global $lastExecutionStartFrameTacts
+    i64.const 0 set_global $lastExecutionStartTacts
     i32.const 0 set_global $lastRenderedUlaTact
     i32.const 0 set_global $frameCompleted
     i32.const 0 set_global $frameOverflow
@@ -7166,10 +7159,8 @@
     ;; Reset port state
     i32.const 0 set_global $portBit3LastValue
     i32.const 0 set_global $portBit4LastValue
-    i32.const 0 set_global $portBit4ChangedFrom0Tacts
-    i32.const 0 set_global $portBit4ChangedFrom0FrameCount
-    i32.const 0 set_global $portBit4ChangedFrom1Tacts
-    i32.const 0 set_global $portBit4ChangedFrom1FrameCount
+    i64.const 0 set_global $portBit4ChangedFrom0Tacts
+    i64.const 0 set_global $portBit4ChangedFrom1Tacts
 
     ;; Invoke machine type specific setup
     (i32.add
@@ -7288,34 +7279,32 @@
     ;; ZX Spectrum engine state
     (i32.store8 offset=107 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
     (i32.store offset=108 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
-    (i32.store offset=112 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartFrameCount))
-    (i32.store offset=116 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartFrameTacts))
-    (i32.store8 offset=120 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
-    (i32.store offset=121 (get_global $STATE_TRANSFER_BUFF) (get_global $frameOverflow))
-    (i32.store offset=125 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
-    (i32.store offset=129 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
-    (i32.store8 offset=133 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
-    (i32.store8 offset=134 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
-    (i32.store8 offset=135 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
-    (i32.store8 offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
-    (i32.store16 offset=137 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
-    (i32.store8 offset=139 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
-    (i32.store8 offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
-    (i32.store8 offset=141 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
+    (i64.store offset=112 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartTacts))
+    (i64.store offset=120 (get_global $STATE_TRANSFER_BUFF) (get_global $lastFrameStartTacts))
+    (i32.store8 offset=128 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
+    (i32.store offset=129 (get_global $STATE_TRANSFER_BUFF) (get_global $frameOverflow))
+    (i32.store offset=133 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
+    (i32.store offset=137 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
+    (i32.store8 offset=141 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
+    (i32.store8 offset=142 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
+    (i32.store8 offset=143 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
+    (i32.store8 offset=144 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
+    (i32.store16 offset=145 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
+    (i32.store8 offset=147 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
+    (i32.store8 offset=148 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
+    (i32.store8 offset=149 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
 
     ;; Keyboard lines
     (i32.load offset=0 (get_global $KEYBOARD_LINES))
-    (i32.store offset=142 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=150 (get_global $STATE_TRANSFER_BUFF))
     (i32.load offset=4 (get_global $KEYBOARD_LINES))
-    (i32.store offset=146 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=158 (get_global $STATE_TRANSFER_BUFF))
 
     ;; Port state
     (i32.store8 offset=150 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
     (i32.store8 offset=151 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
-    (i32.store offset=152 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
-    (i32.store offset=156 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0FrameCount))
-    (i32.store offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
-    (i32.store offset=164 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1FrameCount))
+    (i64.store offset=152 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
+    (i64.store offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
   )
 
   ;; Copies a segment of memory
@@ -7459,53 +7448,53 @@
       get_global $portBit4LastValue
       (i32.eq (tee_local $bit4Sensed) (i32.const 0))
       if
-        ;; Changed later to 1 from 0 than to 0 from 1?
-        (i32.ge_u (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
-        (i32.gt_u (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-        i32.and
-        if
-          ;; ;; Yes, calculate charge time
-          ;; (i32.and
-          ;;   (i32.sub (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
-          ;;   (i32.const 0xff)
-          ;; )
-          ;; i32.const 24
-          ;; i32.shl ;; (upper 8 bits)
-          ;; (i32.and
-          ;;   (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-          ;;   (i32.const 0x00ffffff)
-          ;; )  ;; (upper 8 bits, lower 24 bits)
-          ;; i32.or
+        ;; ;; Changed later to 1 from 0 than to 0 from 1?
+        ;; (i32.ge_u (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
+        ;; (i32.gt_u (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+        ;; i32.and
+        ;; if
+        ;;   ;; ;; Yes, calculate charge time
+        ;;   ;; (i32.and
+        ;;   ;;   (i32.sub (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
+        ;;   ;;   (i32.const 0xff)
+        ;;   ;; )
+        ;;   ;; i32.const 24
+        ;;   ;; i32.shl ;; (upper 8 bits)
+        ;;   ;; (i32.and
+        ;;   ;;   (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+        ;;   ;;   (i32.const 0x00ffffff)
+        ;;   ;; )  ;; (upper 8 bits, lower 24 bits)
+        ;;   ;; i32.or
 
-          ;; ;; Calculate reference delay
-          ;; (i32.gt_u (tee_local $chargeTime) (i32.const 700))
-          ;; if (result i32)
-          ;;   i32.const 2800
-          ;; else
-          ;;   (i32.mul (i32.const 4) (get_local $chargeTime))
-          ;; end
-          ;; set_local $refDelay
+        ;;   ;; ;; Calculate reference delay
+        ;;   ;; (i32.gt_u (tee_local $chargeTime) (i32.const 700))
+        ;;   ;; if (result i32)
+        ;;   ;;   i32.const 2800
+        ;;   ;; else
+        ;;   ;;   (i32.mul (i32.const 4) (get_local $chargeTime))
+        ;;   ;; end
+        ;;   ;; set_local $refDelay
 
-          ;; ;; Check for too much delay
-          ;; (i32.le_u 
-          ;;   (get_global $frameCount)
-          ;;   (i32.add (i32.const 1) (get_global $portBit4ChangedFrom1FrameCount))
-          ;; )
-          ;; if
-          ;;   ;; Delay may be short enough, calculate real delay
-          ;;   (i32.and
-          ;;     (i32.sub (get_global $frameCount) (get_global $portBit4ChangedFrom1FrameCount))
-          ;;     (i32.const 0xff)
-          ;;   )
-          ;;   i32.const 24
-          ;;   i32.shl ;; (upper 8 bits)
-          ;;   (i32.and
-          ;;     (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-          ;;     (i32.const 0x00ffffff)
-          ;;   )  ;; (upper 8 bits, lower 24 bits)
-          ;;   i32.or
-          ;; end
-        end
+        ;;   ;; ;; Check for too much delay
+        ;;   ;; (i32.le_u 
+        ;;   ;;   (get_global $frameCount)
+        ;;   ;;   (i32.add (i32.const 1) (get_global $portBit4ChangedFrom1FrameCount))
+        ;;   ;; )
+        ;;   ;; if
+        ;;   ;;   ;; Delay may be short enough, calculate real delay
+        ;;   ;;   (i32.and
+        ;;   ;;     (i32.sub (get_global $frameCount) (get_global $portBit4ChangedFrom1FrameCount))
+        ;;   ;;     (i32.const 0xff)
+        ;;   ;;   )
+        ;;   ;;   i32.const 24
+        ;;   ;;   i32.shl ;; (upper 8 bits)
+        ;;   ;;   (i32.and
+        ;;   ;;     (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+        ;;   ;;     (i32.const 0x00ffffff)
+        ;;   ;;   )  ;; (upper 8 bits, lower 24 bits)
+        ;;   ;;   i32.or
+        ;;   ;; end
+        ;; end
       end
     end
     get_local $portValue
