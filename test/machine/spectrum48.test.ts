@@ -3,14 +3,14 @@ import * as expect from "expect";
 import * as fs from "fs";
 import { MachineApi } from "../../src/native/api";
 import { ZxSpectrum48 } from "../../src/native/ZxSpectrum48";
-import { MemoryContentionType } from "../../src/native/machine-state";
+import { MemoryContentionType, ExecuteCycleOptions, EmulationMode, DebugStepMode, ExecutionCompletionReason } from "../../src/native/machine-state";
 import { MemoryHelper } from "../../src/native/memory-helpers";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: MachineApi;
 let machine: ZxSpectrum48;
 
-describe("Bit ops 00-3f", () => {
+describe("ZX Spectrum 48", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
         imports: { trace: (arg: number) => console.log(arg) }
@@ -23,7 +23,7 @@ describe("Bit ops 00-3f", () => {
     machine.reset();
   });
 
-  it("Reset works", () => {
+  it("Reset", () => {
     machine.reset();
   });
 
@@ -74,5 +74,31 @@ describe("Bit ops 00-3f", () => {
     expect(mh.readByte(0x3fff)).toBe(0x3c)
   });
 
+  it("ExecuteCycle", () => {
+    const options: ExecuteCycleOptions = {
+      emulationMode: EmulationMode.UntilUlaFrameEnds,
+      debugStepMode: DebugStepMode.StopAtBreakpoint,
+      fastTapeMode: false,
+      terminationRom: -1,
+      terminationPoint: -1,
+      fastVmMode: false,
+      disableScreenRendering: false
+    }
+
+    const start = Date.now().valueOf();
+    for (let i = 0; i < 1000; i++) {
+      machine.executeCycle(options);
+    }
+    console.log(Date.now().valueOf() - start);
+  });
+
+  it("Key status", () => {
+    for (let i = 0; i < 40; i++) {
+      machine.setKeyStatus(i, true);
+      expect(machine.getKeyStatus(i)).toBe(true);
+      machine.setKeyStatus(i, false);
+      expect(machine.getKeyStatus(i)).toBe(false);
+    }
+  });
 
 });

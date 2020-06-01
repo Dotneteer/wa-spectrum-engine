@@ -46,6 +46,29 @@ export abstract class SpectrumMachineStateBase extends Z80CpuState {
   firstDisplayPixelTact: number;
   firstScreenPixelTact: number;
   rasterLines: number;
+
+  // --- Engine state
+  ulaIssue: number;
+  lastExecutionStartFrameCount: number;
+  lastExecutionStartFrameTacts: number;
+  lastRenderedUlaTact: number;
+  frameCompleted: boolean;
+  frameOverflow: number;
+  contentionAccummulated: number;
+  lastExecutionContentionValue: number;
+  emulationMode: EmulationMode;
+  debugStepMode: DebugStepMode;
+  fastTapeMode: boolean;
+  terminationRom: number;
+  terminationPoint: number;
+  fastVmMode: boolean;
+  disableScreenRendering: boolean;
+  executionCompletionReason: number;
+
+  // --- Keyboard state
+  keyboardLines: number[];
+
+  
 }
 
 /**
@@ -85,3 +108,142 @@ export enum MemoryContentionType {
   Next,
 }
 
+/**
+ * This enumeration defines how the spectrum emulation mode
+ * should work
+ */
+export enum EmulationMode {
+  /**
+   * Run the virtual machine in debugger mode
+   */
+  Debugger = 0,
+
+  /**
+   * Run the VM until the CPU is halted
+   */
+  UntilHalt,
+
+  /**
+   * Run the CPU until the current CPU rendering frame ends
+   */
+  UntilCpuFrameEnds,
+
+  /**
+   * Run the CPU until the current ULA rendering frame ends
+   * by the ULA clock
+   */
+  UntilUlaFrameEnds,
+
+  /**
+   * Run the CPU until a specified value of the PC register is reached
+   */
+  UntilExecutionPoint,
+}
+
+/**
+ * The mode the execution cycle should run in debug mode
+ */
+export enum DebugStepMode {
+  /**
+   * Execution stops at the next breakpoint
+   */
+  StopAtBreakpoint,
+
+  /**
+   * Execution stops after the next instruction
+   */
+  StepInto,
+
+  /**
+   * Execution stops after the next instruction. If that should
+   * be a subroutine call, the execution stops after returning
+   * from the subroutine.
+   */
+  StepOver,
+
+  /**
+   * Execution stops after the first RET (unconditional or conditional)
+   * returns from the latest subroutine call.
+   */
+  StepOut,
+}
+
+/**
+ * This class provides options for the ExecuteCycle function.
+ */
+export class ExecuteCycleOptions {
+  /**
+   * The emulation mode to use
+   */
+  emulationMode: EmulationMode;
+
+  /**
+   * The debug mode to use
+   */
+  debugStepMode: DebugStepMode;
+
+  /**
+   * Indicates if fast tape mode is allowed
+   */
+  fastTapeMode: boolean;
+
+  /**
+   * The index of the ROM when a termination point is defined
+   */
+  terminationRom: number;
+
+  /**
+   * The value of the PC register to reach when EmulationMode is
+   * set to UntilExecutionPoint
+   */
+  terminationPoint: number;
+
+  /**
+   * This flag shows that the virtual machine should run in hidden mode
+   * (no screen, no sound, no delays)
+   */
+  fastVmMode: boolean;
+
+  /**
+   * This flag shows whether the virtual machine should render the screen.
+   * True, renders the screen; false, does not render the screen.
+   * This flag overrides the FastVmMode setting.
+   */
+  disableScreenRendering: boolean;
+}
+
+/**
+ * This enumeration tells the reason why the execution cycle
+ * of the SpectrumEngine completed.
+ */
+export enum ExecutionCompletionReason {
+  /**
+   * The machine is still executing
+   */
+  None = 0,
+
+  /**
+   * CPU reached the specified termination point
+   */
+  TerminationPointReached,
+
+  /**
+   * CPU reached any of the specified breakpoints
+   */
+  BreakpointReached,
+
+  /**
+   * CPU reached a HALT instrution
+   */
+  Halted,
+
+  /**
+   * The current CPU frame has been completed
+   */
+  CpuFrameCompleted,
+
+  /**
+   * The current screen rendering frame has been completed
+   */
+  UlaFrameCompleted,
+}

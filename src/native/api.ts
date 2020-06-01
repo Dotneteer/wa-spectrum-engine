@@ -1,4 +1,5 @@
 import { RunMode } from "../shared/RunMode";
+import { SpectrumKeyCode } from "./SpectrumKeyCode";
 
 /**
  * Represents the CPU API
@@ -29,5 +30,8 @@ export interface MachineApi extends CpuApi {
   turnOnMachine(): void;
   resetMachine(): void;
   getMachineState(): void;
+  setExecutionOptions(): void;
   executeMachineCycle(): void;
+  setKeyStatus(key: SpectrumKeyCode, isDown: boolean): void;
+  getKeyStatus(key: SpectrumKeyCode): number;
 }

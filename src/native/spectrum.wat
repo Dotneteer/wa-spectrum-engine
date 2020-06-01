@@ -27,7 +27,10 @@
   (export "turnOnMachine" (func $turnOnMachine))
   (export "resetMachine" (func $resetMachine))
   (export "getMachineState" (func $getMachineState))
+  (export "setExecutionOptions" (func $setExecutionOptions))
   (export "executeMachineCycle" (func $executeMachineCycle))
+  (export "setKeyStatus" (func $setKeyStatus))
+  (export "getKeyStatus" (func $getKeyStatus))
 
   ;; ==========================================================================
   ;; Function signatures
@@ -41,6 +44,7 @@
   (type $IndexedBitFunc (func (param $addr i32)))
   (type $BitOpFunc (func (param $a i32) (result i32)))
   (type $ActionFunc (func))
+  (type $ValueFunc (func (result i32)))
 
   ;; ==========================================================================
   ;; Memory map
@@ -65,6 +69,8 @@
   ;; 0x01_1700 (256 bytes): SRA flags table
   ;; 0x01_1800 (1024 bytes): ZX Spectrum execution cyle options
   ;; 0x01_1C00 (16384 bytes): ZX Spectrum 48 ROM
+  ;; 0x01_2C00 (256 bytes): Keyboard line status
+  ;; 0x01_2D00 Next free slot
 
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
@@ -457,17 +463,17 @@
   (global $MACHINE_TYPE (mut i32) (i32.const 0x00))
 
   ;; Number of functions per machine types
-  (global $MACHINE_FUNC_COUNT i32 (i32.const 12))
+  (global $MACHINE_FUNC_COUNT i32 (i32.const 20))
 
   ;; Jump table start indices
-  (global $STANDARD_JT i32 (i32.const 60))
-  (global $INDEXED_JT i32 (i32.const 316))
-  (global $EXTENDED_JT i32 (i32.const 572))
-  (global $BIT_JT i32 (i32.const 828))
-  (global $INDEXED_BIT_JT i32 (i32.const 1084))
-  (global $BOP_JT i32 (i32.const 1340))
+  (global $STANDARD_JT i32 (i32.const 100))
+  (global $INDEXED_JT i32 (i32.const 356))
+  (global $EXTENDED_JT i32 (i32.const 612))
+  (global $BIT_JT i32 (i32.const 868))
+  (global $INDEXED_BIT_JT i32 (i32.const 1124))
+  (global $BOP_JT i32 (i32.const 1380))
 
-  ;; 60: 5 machine types (12 function for each)
+  ;; 100: 5 machine types (12 function for each)
   ;; 256: Standard operations
   ;; 256: Indexed operations
   ;; 256: Extended operations
@@ -475,7 +481,7 @@
   ;; 256: Indexed bit operations
   ;; 8: ALU bit operations
 
-  (table $dispatch 1348 anyfunc)
+  (table $dispatch 1388 anyfunc)
 
   ;; Table of machine type functions
   ;; Function indexes
@@ -487,11 +493,13 @@
   ;; 5: Write TbBlue register value (func (param $addr i32)))
   ;; 6: Setup machine (func)
   ;; 7: Get machine state (func)
-  ;; 8-11: Unused
+  ;; 8: Start new frame (func)
+  ;; 9: Screen frame ended (func)
+  ;; 10-19: Unused
   (elem (i32.const 0)
     ;; Index 0: Machine type #0
-    $defaultRead
-    $defaultWrite
+    $readMemorySp48
+    $writememorySp48
     $defaultIoRead
     $defaultIoWrite
     $NOOP
@@ -504,7 +512,16 @@
     $NOOP
     $NOOP
 
-    ;; Index 12: Machine type #1
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+
+    ;; Index 20: Machine type #1
     $defaultRead
     $defaultWrite
     $defaultIoRead
@@ -519,7 +536,16 @@
     $NOOP
     $NOOP
 
-    ;; Index 24: Machine type #2
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+
+    ;; Index 40: Machine type #2
     $defaultRead
     $defaultWrite
     $defaultIoRead
@@ -534,7 +560,16 @@
     $NOOP
     $NOOP
 
-    ;; Index 36: Machine type #3
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+
+    ;; Index 60: Machine type #3
     $defaultRead
     $defaultWrite
     $defaultIoRead
@@ -549,7 +584,16 @@
     $NOOP
     $NOOP
 
-    ;; Index 48: Test Z80 CPU Machine (type #4)
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+
+    ;; Index 80: Test Z80 CPU Machine (type #4)
     $testMachineRead
     $testMachineWrite
     $testMachineIoRead
@@ -563,10 +607,19 @@
     $NOOP
     $NOOP
     $NOOP
-  )
+  
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+    $NOOP
+)
 
 ;; Table of standard instructions
-(elem (i32.const 60)
+(elem (i32.const 100)
     ;; 0x00-0x07
     $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca
     ;; 0x08-0x0f
@@ -634,7 +687,7 @@
   )
 
 ;; Table of indexed instructions
-(elem (i32.const 316)
+(elem (i32.const 356)
     ;; 0x00-0x07
     $NOOP     $LdQQNN   $LdBCiA   $IncQQ    $IncQ     $DecQ     $LdQN     $Rlca
     ;; 0x08-0x0f
@@ -702,7 +755,7 @@
   )
 
 ;; Table of extended instructions
-(elem (i32.const 572)
+(elem (i32.const 612)
     ;; 0x00-0x07
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x08-0x0f
@@ -770,7 +823,7 @@
   )
 
 ;; Table of bit instructions
-(elem (i32.const 828)
+(elem (i32.const 868)
     ;; 0x00-0x07
     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopQ     $BopHLi   $BopQ
     ;; 0x08-0x0f
@@ -838,7 +891,7 @@
   )
 
 ;; Table of indexed bit instructions
-(elem (i32.const 1084)
+(elem (i32.const 1124)
     ;; 0x00-0x07
     $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ    $XBopQ
     ;; 0x08-0x0f
@@ -906,7 +959,7 @@
   )
 
   ;; Table of bit operations
-  (elem (i32.const 1340)
+  (elem (i32.const 1380)
     $Rlc
     $Rrc
     $Rl
@@ -6743,6 +6796,12 @@
   ;; The ULA issue of the engine
   (global $ulaIssue (mut i32) (i32.const 0x0000))
 
+  ;; CPU frame count value when last execution cycle started
+  (global $lastExecutionStartFrameCount (mut i32) (i32.const 0x0000))
+
+  ;; CPU frame tacts value when last execution cycle started
+  (global $lastExecutionStartFrameTacts (mut i32) (i32.const 0x0000))
+
   ;; The last rendered ULA tact
   (global $lastRenderedUlaTact (mut i32) (i32.const 0x0000))
 
@@ -6795,6 +6854,15 @@
   ;; This flag overrides the $fastVmMode setting.
   (global $disableScreenRendering (mut i32) (i32.const 0x0000))
 
+  ;; The reason the execution cycle completed.
+  ;; 0: The machine is still executing
+  ;; 1: Termination point reached
+  ;; 2: Breakpoint reached
+  ;; 3: Halted
+  ;; 4: CPU frame completed
+  ;; 5: Screen rendering frame/ULA frame completed
+  (global $executionCompletionReason (mut i32) (i32.const 0x0000))
+
   ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
 
@@ -6839,14 +6907,192 @@
     call_indirect (type $ActionFunc)
   )
 
+  ;; Copies exeution options from the transfer area
+  (func $setExecutionOptions
+    (i32.load8_u offset=0 (get_global $STATE_TRANSFER_BUFF)) set_global $emulationMode
+    (i32.load8_u offset=1 (get_global $STATE_TRANSFER_BUFF)) set_global $debugStepMode
+    (i32.load8_u offset=2 (get_global $STATE_TRANSFER_BUFF)) set_global $fastTapeMode
+    (i32.load8_u offset=3 (get_global $STATE_TRANSFER_BUFF)) set_global $terminationRom
+    (i32.load16_u offset=4 (get_global $STATE_TRANSFER_BUFF)) set_global $terminationPoint
+    (i32.load8_u offset=6 (get_global $STATE_TRANSFER_BUFF)) set_global $fastVmMode
+    (i32.load8_u offset=7 (get_global $STATE_TRANSFER_BUFF)) set_global $disableScreenRendering
+  )
+
   ;; Executes the ZX Spectrum machine cycle
-  (func $executeMachineCycle)
+  (func $executeMachineCycle
+    (local $executedInstructionCount i32)
+    (local $lastTact i32)
+
+    ;; Initialize the execution cycle
+    i32.const 0 set_global $executionCompletionReason
+    get_global $frameCount set_global $lastExecutionStartFrameCount
+    get_global $frameCount set_global $lastExecutionStartFrameTacts
+    get_global $contentionAccummulated set_global $lastExecutionContentionValue
+
+    i32.const 0 set_local $executedInstructionCount
+
+    ;; Check if we're just about starting the next frame
+    get_global $frameCompleted
+    if
+      call $startNewFrame
+      get_global $frameOverflow set_global $lastRenderedUlaTact
+      i32.const 0 set_global $frameCompleted
+    end
+
+    ;; The physical frame cycle that goes on while CPU and ULA
+    ;; processes everything within a screen rendering frame
+    loop $frameCycle
+      (i32.eq (get_global $frameCompleted) (i32.const 0))
+      if
+        ;; Has the CPU completed executing the current instruction?
+        (i32.eq (get_global $isInOpExecution) (i32.const 0))
+        if
+          ;; The next instruction is about to be executed
+          (i32.add (get_local $executedInstructionCount) (i32.const 1))
+          set_local $executedInstructionCount
+
+          ;; TODO: Check various terminations
+        end
+
+        call $checkForInterrupt
+        call $executeCpuCycle
+
+        ;; Run screen rendering cycle
+        get_global $frameTacts set_local $lastTact
+        (call $renderScreen 
+          (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
+          (get_local $lastTact)
+        )
+        get_local $lastTact set_global $lastRenderedUlaTact
+
+        ;; Exit if if halted and execution mode is UntilHalted
+        (i32.eq (get_global $emulationMode) (i32.const 1))
+        if
+          (i32.and (get_global $stateFlags) (i32.const 0x08)) ;; HLT signal set?
+          if
+            i32.const 3 set_global $executionCompletionReason ;; Reason: halted
+            return
+          end
+        end     
+
+        ;; Notify the tape device to check tape hooks
+        call $checkTapeHooks
+
+        ;; Test frame completion
+        get_global $isInOpExecution
+        br_if $frameCycle ;; Frame cannot be completed during instruction execution
+
+        (i32.gt_u (get_global $frameCount) (get_global $lastExecutionStartFrameCount))
+        if
+          ;; CPU clock moved to the next frame
+          i32.const 1 set_global $frameCompleted
+        end
+
+        ;; continue
+        br $frameCycle
+      end
+    end
+
+    ;; The current screen rendering frame completed
+    get_global $frameTacts set_global $frameOverflow
+    call $completeFrame
+    i32.const 5 set_global $executionCompletionReason ;; Reason: frame completed
+  )
+
+  ;; Sets the status of the specified key
+  (func $setKeyStatus (param $keyCode i32) (param $isDown i32)
+    (local $line i32)
+    (local $mask i32)
+    ;; Ignore invalid key codes
+    (i32.gt_u (get_local $keyCode) (i32.const 39))
+    if return end
+
+    ;; Calculate line address
+    (i32.add 
+      (get_global $KEYBOARD_LINES)
+      (i32.div_u (get_local $keyCode) (i32.const 5))
+    )
+    set_local $line
+
+    ;; Calculate line mask
+    (i32.shl 
+      (i32.const 1)
+      (i32.rem_u (get_local $keyCode) (i32.const 5))
+    )
+    set_local $mask
+
+    get_local $isDown
+    if
+      ;; Key is down
+      get_local $line
+      (i32.load8_u (get_local $line))
+      get_local $mask
+      i32.or
+      i32.store8
+    else
+      get_local $line
+      (i32.load8_u (get_local $line))
+      get_local $mask
+      i32.const 0xff
+      i32.xor
+      i32.and
+      i32.store8
+    end
+  )
+
+  ;; Gets the status of the specified key
+  (func $getKeyStatus (param $keyCode i32) (result i32)
+    ;; Ignore invalid key codes
+    (i32.gt_u (get_local $keyCode) (i32.const 39))
+    if 
+      i32.const 0
+      return
+    end
+
+    ;; Get line value
+    (i32.add 
+      (get_global $KEYBOARD_LINES)
+      (i32.div_u (get_local $keyCode) (i32.const 5))
+    )
+    i32.load8_u
+
+    ;; Calculate line mask
+    (i32.shl 
+      (i32.const 1)
+      (i32.rem_u (get_local $keyCode) (i32.const 5))
+    )
+
+    ;; Return the result
+    i32.and
+  )
 
   ;; ==========================================================================
   ;; Helper functions to manage a ZX Spectrum machine
 
   ;; Sets up the ZX Spectrum machine
   (func $setupMachine 
+    ;; Reset engine state variables
+    i32.const 3 set_global $ulaIssue
+    i32.const 0 set_global $lastExecutionStartFrameCount
+    i32.const 0 set_global $lastExecutionStartFrameTacts
+    i32.const 0 set_global $lastRenderedUlaTact
+    i32.const 0 set_global $frameCompleted
+    i32.const 0 set_global $frameOverflow
+    i32.const 0 set_global $contentionAccummulated
+    i32.const 0 set_global $lastExecutionContentionValue
+    i32.const 0 set_global $emulationMode
+    i32.const 0 set_global $debugStepMode
+    i32.const 0 set_global $fastTapeMode
+    i32.const -1 set_global $terminationRom
+    i32.const -1 set_global $terminationPoint
+    i32.const 0 set_global $fastVmMode
+    i32.const 0 set_global $disableScreenRendering
+    i32.const 0 set_global $executionCompletionReason
+
+    ;; Reset keyboard line status
+    (i32.store offset=0 (get_global $KEYBOARD_LINES) (i32.const 0))
+    (i32.store offset=4 (get_global $KEYBOARD_LINES) (i32.const 0))
+
     (i32.add
       (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
       (i32.const 6)
@@ -6919,10 +7165,12 @@
 
   ;; Gets the ZX Spectrum 48 machine state
   (func $getCommonSpectrumMachineState
+    ;; CPU configuration
     (i32.store offset=24 (get_global $STATE_TRANSFER_BUFF) (get_global $baseClockFrequency))      
     (i32.store8 offset=28 (get_global $STATE_TRANSFER_BUFF) (get_global $clockMultiplier))      
     (i32.store8 offset=29 (get_global $STATE_TRANSFER_BUFF) (get_global $supportsNextOperation))      
 
+    ;; Memory configuration
     (i32.store8 offset=30 (get_global $STATE_TRANSFER_BUFF) (get_global $numberOfRoms))      
     (i32.store offset=31 (get_global $STATE_TRANSFER_BUFF) (get_global $romContentsAddress))      
     (i32.store8 offset=35 (get_global $STATE_TRANSFER_BUFF) (get_global $spectrum48RomIndex))      
@@ -6930,6 +7178,7 @@
     (i32.store8 offset=37 (get_global $STATE_TRANSFER_BUFF) (get_global $ramBanks))      
     (i32.store8 offset=38 (get_global $STATE_TRANSFER_BUFF) (get_global $nextMemorySize))
 
+    ;; Screen frame configuration
     (i32.store16 offset=39 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptTact))      
     (i32.store16 offset=41 (get_global $STATE_TRANSFER_BUFF) (get_global $verticalSyncLines))      
     (i32.store16 offset=43 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderTopLines))      
@@ -6945,6 +7194,7 @@
     (i32.store16 offset=63 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelDataPrefetchTime))      
     (i32.store16 offset=65 (get_global $STATE_TRANSFER_BUFF) (get_global $attributeDataPrefetchTime))      
 
+    ;; Calculated screen attributes
     (i32.store offset=67 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLines))      
     (i32.store offset=71 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayLine))      
     (i32.store offset=75 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftPixels))      
@@ -6954,7 +7204,31 @@
     (i32.store offset=91 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLineTime))      
     (i32.store offset=95 (get_global $STATE_TRANSFER_BUFF) (get_global $rasterLines))      
     (i32.store offset=99 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayPixelTact))      
-    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))      
+    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))
+
+    ;; ZX Spectrum engine state
+    (i32.store8 offset=107 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
+    (i32.store offset=108 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
+    (i32.store offset=112 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartFrameCount))
+    (i32.store offset=116 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartFrameTacts))
+    (i32.store8 offset=120 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
+    (i32.store offset=121 (get_global $STATE_TRANSFER_BUFF) (get_global $frameOverflow))
+    (i32.store offset=125 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
+    (i32.store offset=129 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
+    (i32.store8 offset=133 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
+    (i32.store8 offset=134 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
+    (i32.store8 offset=135 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
+    (i32.store8 offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
+    (i32.store16 offset=137 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
+    (i32.store8 offset=139 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
+    (i32.store8 offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
+    (i32.store8 offset=141 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
+
+    ;; Keyboard lines
+    (i32.load offset=0 (get_global $KEYBOARD_LINES))
+    (i32.store offset=142 (get_global $STATE_TRANSFER_BUFF))
+    (i32.load offset=4 (get_global $KEYBOARD_LINES))
+    (i32.store offset=146 (get_global $STATE_TRANSFER_BUFF))
   )
 
   ;; Copies a segment of memory
@@ -6986,6 +7260,95 @@
       end
     end
   )
+
+  ;; Starts a new frame
+  (func $startNewFrame
+      ;; TODO: Init a new frame
+      ;; Invoke machine type specific "New frame" function
+      (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 8)
+    )
+    call_indirect (type $ActionFunc)
+  )
+
+  ;; Executes the actions to respond a screen rendering frame completion
+  (func $completeFrame
+      ;; TODO: Complete
+      ;; Invoke machine type specific "Frame completed" function
+      (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 9)
+    )
+    call_indirect (type $ActionFunc)
+  )
+
+  ;; Checks and executes interrupt, it it's time
+  (func $checkForInterrupt)
+
+  ;; Renders the screen portions between the provided tacts
+  (func $renderScreen (param $fromTact i32) (param $toTact i32))
+
+  ;; Checks if tape device hook should be applied
+  (func $checkTapeHooks)
+
+  ;; Applies memory contention delay according to the current
+  ;; screen rendering tact
+  (func $applyContentionDelay
+    ;; TODO: Implement this method
+  )
+
+  ;; Applies I/O contention wait
+  ;; $addr: port address
+  (func $applyIOContentionDelay (param $addr i32)
+    (local $lowbit i32)
+
+    ;; Calculate the low bit value
+    (i32.and (get_local $addr) (i32.const 0x0001))
+    set_local $lowbit
+
+    ;; Check for contended range
+    (i32.eq
+      (i32.and (get_local $addr) (i32.const 0xc000))
+      (i32.const 0x4000)
+    )
+    if
+      ;; Contended address
+      get_local $lowbit
+      if
+        ;; Low bit set, C:1, C:1, C:1, C:1 
+        call $applyContentionDelay
+        (call $incTacts (i32.const 1))
+        call $applyContentionDelay
+        (call $incTacts (i32.const 1))
+        call $applyContentionDelay
+        (call $incTacts (i32.const 1))
+        call $applyContentionDelay
+        (call $incTacts (i32.const 1))
+      else
+        ;; Low bit reset, C:1, C:3
+        call $applyContentionDelay
+        (call $incTacts (i32.const 1))
+        call $applyContentionDelay
+        (call $incTacts (i32.const 3))
+      end
+    else
+      ;; Non-contended address
+      get_local $lowbit
+      if
+        ;; Low bit set, N:4
+        (call $incTacts (i32.const 4))
+      else
+        ;; Low bit reset, N:1, C:3
+        (call $incTacts (i32.const 1))
+        call $applyContentionDelay
+        (call $incTacts (i32.const 3))
+      end
+    end
+  )
+
+  ;; Start address of keyboard line status
+  (global $KEYBOARD_LINES i32 (i32.const 0x1_2c00))
 
   ;; ==========================================================================
   ;; ZX Spectrum 48K ROM
@@ -7061,6 +7424,42 @@
   ;; ==========================================================================
   ;; ZX Spectrum 48K functions
 
+  ;; Reads the memory of the ZX Spectrum 48 machine
+  (func $readMemorySp48 (param $addr i32) (result i32)
+    get_global $SP_MEM_OFFS
+    (i32.and (get_local $addr) (i32.const 0xffff))
+    i32.add
+    i32.load8_u ;; (memory value)
+
+    (i32.and (get_local $addr) (i32.const 0xc000))
+    (i32.eq (i32.const 0x4000))
+    if
+      call $applyContentionDelay
+    end
+  )
+
+  ;; Writes the memory of the ZX Spectrum 48 machine
+  (func $writememorySp48 (param $addr i32) (param $val i32)
+    (i32.and (get_local $addr) (i32.const 0xffff))
+    (i32.and (tee_local $addr) (i32.const 0xc000))
+    ;; Do not write to ROM
+    if return end
+
+    (i32.and (get_local $addr) (i32.const 0x4000))
+    if
+      call $applyContentionDelay
+    end
+    (i32.add (get_global $SP_MEM_OFFS) (get_local $addr))
+    get_local $val
+    i32.store8
+  )
+
+  ;; Reads the memory of the ZX Spectrum 48 machine
+  (func $readPortSp48 (param $addr i32) (result i32)
+    i32.const 0xff
+  )
+
+  ;; Sets up the ZX Spectrum 48 machine
   (func $setupSpectrum48
     ;; CPU configuration
     i32.const 3_500_000 set_global $baseClockFrequency

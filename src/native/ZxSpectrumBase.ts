@@ -1,6 +1,7 @@
 import { MachineApi } from "./api";
-import { SpectrumMachineState, MemoryContentionType } from "./machine-state";
+import { SpectrumMachineState, MemoryContentionType, EmulationMode, DebugStepMode, ExecutionCompletionReason, ExecuteCycleOptions, SpectrumMachineStateBase } from "./machine-state";
 import { MemoryHelper } from "./memory-helpers";
+import { SpectrumKeyCode } from "./SpectrumKeyCode";
 
 /**
  * Start of the register are in the memory
@@ -124,6 +125,30 @@ export abstract class ZxSpectrumBase {
     s.firstDisplayPixelTact = mh.readUint32(99);
     s.firstScreenPixelTact = mh.readUint32(103);
 
+    // --- Get engine state
+    s.ulaIssue = mh.readByte(107);
+    s.lastRenderedUlaTact = mh.readUint32(108);
+    s.lastExecutionStartFrameCount = mh.readUint32(112);
+    s.lastExecutionStartFrameTacts = mh.readUint32(116);
+    s.frameCompleted = mh.readBool(120);
+    s.frameOverflow = mh.readUint32(121);
+    s.contentionAccummulated = mh.readUint32(125);
+    s.lastExecutionContentionValue = mh.readUint32(129);
+    s.emulationMode = mh.readByte(133) as EmulationMode;
+    s.debugStepMode = mh.readByte(134) as DebugStepMode;
+    s.fastTapeMode = mh.readBool(135);
+    s.terminationRom = mh.readByte(136);
+    s.terminationPoint = mh.readUint16(137);
+    s.fastVmMode = mh.readBool(139);
+    s.disableScreenRendering = mh.readBool(140);
+    s.executionCompletionReason = mh.readByte(141) as ExecutionCompletionReason;
+
+    // --- Get keyboard state
+    s.keyboardLines = [];
+    for (let i = 0; i < 8; i++) {
+      s.keyboardLines[i] = mh.readByte(142 + i);
+    }
+
     // --- Done.
     return s;
   }
@@ -132,4 +157,42 @@ export abstract class ZxSpectrumBase {
    * Override this method to represent the appropriate machine state
    */
   abstract createMachineState(): SpectrumMachineState;
+
+  /**
+   * Executes the machine cycle
+   * @param options Execution options
+   */
+  executeCycle(options: ExecuteCycleOptions) {
+    // --- Copy execution options
+    const mh = new MemoryHelper(this.api, STATE_TRANSFER_BUFF);
+    mh.writeByte(0, options.emulationMode);
+    mh.writeByte(1, options.debugStepMode);
+    mh.writeBool(2, options.fastTapeMode);
+    mh.writeByte(3, options.terminationRom);
+    mh.writeUint16(4, options.terminationPoint);
+    mh.writeBool(6, options.fastVmMode);
+    mh.writeBool(7, options.disableScreenRendering);
+    this.api.setExecutionOptions();
+
+    // --- Run the cycle and retrieve state
+    this.api.executeMachineCycle();
+  }
+
+  /**
+   * Sets the status of the specified key
+   * @param key Key to set
+   * @param isDown Status value
+   */
+  setKeyStatus(key: SpectrumKeyCode, isDown: boolean): void {
+    this.api.setKeyStatus(key, isDown);
+  }
+
+  /**
+   * Gets the status of the specified key
+   * @param key Key to get
+   * @returns True, if key is pressed; otherwise, false
+   */
+  getKeyStatus(key: SpectrumKeyCode): boolean {
+    return this.api.getKeyStatus(key) !== 0;
+  }
 }
