@@ -162,10 +162,17 @@ export abstract class ZxSpectrumBase {
     // --- Get port state
     s.portBit3LastValue = mh.readBool(150);
     s.portBit4LastValue = mh.readBool(151);
-    s.portBit4ChangedFrom0Tacts = mh.readUint32(152);
-    s.portBit4ChangedFrom0FrameCount = mh.readUint32(156);
-    s.portBit4ChangedFrom1Tacts = mh.readUint32(160);
-    s.portBit4ChangedFrom1FrameCount = mh.readUint32(164);
+    s.portBit4ChangedFrom0TactsL = mh.readUint32(152);
+    s.portBit4ChangedFrom0TactsH = mh.readUint32(156);
+    s.portBit4ChangedFrom1TactsL = mh.readUint32(160);
+    s.portBit4ChangedFrom1TactsH = mh.readUint32(164);
+
+    // --- Get interrupt state
+    s.interruptRaised = mh.readBool(168);
+    s.interruptRevoked = mh.readBool(169);
+
+    // --- Get screen state
+    s.borderColor = mh.readByte(170);
 
     // --- Done.
     return s;
@@ -212,5 +219,26 @@ export abstract class ZxSpectrumBase {
    */
   getKeyStatus(key: SpectrumKeyCode): boolean {
     return this.api.getKeyStatus(key) !== 0;
+  }
+
+    /**
+   * Initializes the machine with the specified code
+   * @param runMode Machine run mode
+   * @param code Intial code
+   */
+  injectCode(code: number[], codeAddress = 0x8000, startAddress = 0x8000): void {
+    const mem = new Uint8Array(this.api.memory.buffer, 0, 0x1_0000);
+    for (let i = 0; i < code.length; i++) {
+      mem[codeAddress++] = code[i];
+    }
+
+    let ptr = codeAddress;
+    while (ptr < 0x10000) {
+      mem[ptr++] = 0;
+    }
+
+    // --- Init code execution
+    this.reset();
+    this.api.setPC(startAddress);
   }
 }

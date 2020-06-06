@@ -1,8 +1,8 @@
 (module
   (func $trace (import "imports" "trace") (param i32))
 
-  ;; We keep 512 KB of memory
-  (memory (export "memory") 8)
+  ;; We keep 1024 KB of memory
+  (memory (export "memory") 16)
 
   ;; ==========================================================================
   ;; CPU API
@@ -32,6 +32,9 @@
   (export "executeMachineCycle" (func $executeMachineCycle))
   (export "setKeyStatus" (func $setKeyStatus))
   (export "getKeyStatus" (func $getKeyStatus))
+  (export "setPC" (func $setPC))
+  (export "setInterruptTact" (func $setInterruptTact))
+  (export "checkForInterrupt" (func $checkForInterrupt))
 
   ;; ==========================================================================
   ;; Function signatures
@@ -71,7 +74,8 @@
   ;; 0x01_1800 (1024 bytes): ZX Spectrum execution cyle options
   ;; 0x01_1C00 (16384 bytes): ZX Spectrum 48 ROM
   ;; 0x01_2C00 (256 bytes): Keyboard line status
-  ;; 0x01_2D00 Next free slot
+  ;; 0x01_2D00 (0x6000 bytes): Rendering tact table
+  ;; 0x01_8D00 Next free slot
 
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
@@ -498,8 +502,8 @@
     ;; Index 0: Machine type #0
     $readMemorySp48
     $writememorySp48
-    $defaultIoRead
-    $defaultIoWrite
+    $readPortSp48
+    $writePortSp48
     $NOOP
     $NOOP
 
@@ -2733,7 +2737,7 @@
     call $setF
   )
 
-  ;; dec Q (0x06, 0x0e, 0x16, 0x1e, 0x26, 0x2e, 0x36, 0x3e)
+  ;; ld Q,N (0x06, 0x0e, 0x16, 0x1e, 0x26, 0x2e, 0x36, 0x3e)
   (func $LdQN
     (local $q i32)
 
@@ -2742,7 +2746,6 @@
       (i32.and (get_global $opCode) (i32.const 0x38))
       (i32.const 3)
     )
-    tee_local $q
 
     ;; Fetch data and store it
     call $readCodeMemory
@@ -6868,13 +6871,66 @@
   (global $portBit4ChangedFrom1Tacts (mut i64) (i64.const 0x0000))
 
   ;; ==========================================================================
+  ;; Interrupt device state
+
+  ;; Signs that an interrupt has been raised in the current frame.
+  (global $interruptRaised (mut i32) (i32.const 0x0000))
+
+  ;; Signs that the interrupt request has been revoked.
+  (global $interruptRevoked (mut i32) (i32.const 0x0000))
+
+  ;; ==========================================================================
+  ;; Screen device state
+
+  ;; The current border color
+  (global $borderColor (mut i32) (i32.const 0x0000))
+
+  ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
+
+  ;; Transfer area for the ZX Spectrum execution cycle options
+  (global $EXEC_OPTIONS_BUFF i32 (i32.const 0x01_1800))
 
   ;; Start address of keyboard line status
   (global $KEYBOARD_LINES i32 (i32.const 0x1_2c00))
 
-  ;; Transfer area for the ZX Spectrum execution cycle options
-  (global $EXEC_OPTIONS_BUFF i32 (i32.const 0x01_1800))
+  ;; Rendering tact table
+  ;; Each table entry has 5 bytes:
+  ;; Byte 0: 
+  ;;   Bit 0..3: Rendering phase
+  ;;     0x00: None. The ULA does not do any rendering.
+  ;;     0x01: Border. The ULA sets the border color to display the current pixel.
+  ;;     0x02: BorderFetchPixel. The ULA sets the border color to display the
+  ;;           current pixel. It prepares to display the fist pixel in the row
+  ;;           with pre-fetching the corresponding byte from the display memory.
+  ;;     0x03: BorderFetchPixelAttr. The ULA sets the border color to display the
+  ;;           current pixel. It has already fetched the 8 pixel bits to display.
+  ;;           It carries on preparing to display the fist pixel in the row with
+  ;;           pre-fetching the corresponding attribute byte from the display memory.
+  ;;     0x04: DisplayB1. The ULA displays the next two pixels of Byte1 sequentially
+  ;;           during a single Z80 clock cycle.
+  ;;     0x05: DisplayB2. The ULA displays the next two pixels of Byte2 sequentially
+  ;;           during a single Z80 clock cycle.
+  ;;     0x06: DisplayB1FetchB2. The ULA displays the next two pixels of Byte1
+  ;;           sequentially during a single Z80 clock cycle. It prepares to display
+  ;;           the pixels of the next byte in the row with pre-fetching the
+  ;;           corresponding byte from the display memory.
+  ;;     0x07: DisplayB1FetchA2. The ULA displays the next two pixels of Byte1
+  ;;           sequentially during a single Z80 clock cycle. It prepares to display
+  ;;           the pixels of the next byte in the row with pre-fetching the
+  ;;           corresponding attribute from the display memory.
+  ;;     0x08: DisplayB2FetchB1. The ULA displays the next two pixels of Byte2
+  ;;           sequentially during a single Z80 clock cycle. It prepares to display
+  ;;           the pixels of the next byte in the row with pre-fetching the
+  ;;           corresponding byte from the display memory.
+  ;;     0x09: DisplayB2FetchA1. The ULA displays the next two pixels of Byte2
+  ;;           sequentially during a single Z80 clock cycle. It prepares to display
+  ;;           the pixels of the next byte in the row with pre-fetching the
+  ;;           corresponding attribute from the display memory.
+  ;;   Bit 0..4: Tact contention value
+  ;; Byte 1..2: Pixel address
+  ;; Byte 3..4: Attribute address
+  (global $RENDERING_TACT_TABLE i32 (i32.const 0x01_2d00))
 
   ;; Initializes a ZX Spectrum machine with the specified type
   ;; $type: Machine type
@@ -6900,7 +6956,39 @@
   (func $turnOnMachine)
 
   ;; Resets the ZX Spectrum machine
-  (func $resetMachine)
+  (func $resetMachine
+    call $resetCpu
+
+    ;; Reset engine state variables
+    i64.const 0 set_global $lastExecutionStartTacts
+    i32.const 0 set_global $lastRenderedUlaTact
+    i32.const 0 set_global $frameCompleted
+    i32.const 0 set_global $frameOverflow
+    i32.const 0 set_global $contentionAccummulated
+    i32.const 0 set_global $lastExecutionContentionValue
+    i32.const 0 set_global $emulationMode
+    i32.const 0 set_global $debugStepMode
+    i32.const 0 set_global $fastTapeMode
+    i32.const -1 set_global $terminationRom
+    i32.const -1 set_global $terminationPoint
+    i32.const 0 set_global $fastVmMode
+    i32.const 0 set_global $disableScreenRendering
+    i32.const 0 set_global $executionCompletionReason
+
+    ;; Reset keyboard line status
+    (i32.store offset=0 (get_global $KEYBOARD_LINES) (i32.const 0))
+    (i32.store offset=4 (get_global $KEYBOARD_LINES) (i32.const 0))
+
+    ;; Reset port state
+    i32.const 0 set_global $portBit3LastValue
+    i32.const 0 set_global $portBit4LastValue
+    i64.const 0 set_global $portBit4ChangedFrom0Tacts
+    i64.const 0 set_global $portBit4ChangedFrom1Tacts
+
+    ;; Reset interrupt state
+    i32.const 0 set_global $interruptRaised
+    i32.const 0 set_global $interruptRevoked
+  )
 
   ;; Sets the ULA issue to use
   (func $setUlaIssue (param $ula i32)
@@ -6939,6 +7027,7 @@
     (local $executedInstructionCount i32)
     (local $currentTact i32)
     (local $lastTact i32)
+    (local $lastPC i32)
 
     ;; Initialize the execution cycle
     i32.const 0 set_global $executionCompletionReason
@@ -6972,17 +7061,18 @@
           ;; TODO: Check various terminations
         end
 
-        call $checkForInterrupt
-        call $executeCpuCycle
-
         ;; Calculate the current frame tact
         (i64.sub (get_global $tacts) (get_global $lastFrameStartTacts))
         i32.wrap/i64 
         get_global $clockMultiplier
         i32.div_u
-        tee_local $currentTact
+
+        ;; Take care of raising the interrupt
+        (call $checkForInterrupt (tee_local $currentTact))
+        call $executeCpuCycle
 
         ;; Store it as the last tact to render
+        get_local $currentTact
         set_local $lastTact
 
         ;; Run screen rendering cycle
@@ -7127,7 +7217,14 @@
         br $lineLoop
       end
     end
-    get_local $status    
+    get_local $status
+    i32.const 0xff
+    i32.xor
+  )
+
+  ;; Sets the interrupt tact for test purposes
+  (func $setInterruptTact (param $tact i32)
+    get_local $tact set_global $interruptTact
   )
 
   ;; ==========================================================================
@@ -7135,32 +7232,10 @@
 
   ;; Sets up the ZX Spectrum machine
   (func $setupMachine 
-    ;; Reset engine state variables
+    ;; Let's use ULA issue 3 by default
     i32.const 3 set_global $ulaIssue
-    i64.const 0 set_global $lastExecutionStartTacts
-    i32.const 0 set_global $lastRenderedUlaTact
-    i32.const 0 set_global $frameCompleted
-    i32.const 0 set_global $frameOverflow
-    i32.const 0 set_global $contentionAccummulated
-    i32.const 0 set_global $lastExecutionContentionValue
-    i32.const 0 set_global $emulationMode
-    i32.const 0 set_global $debugStepMode
-    i32.const 0 set_global $fastTapeMode
-    i32.const -1 set_global $terminationRom
-    i32.const -1 set_global $terminationPoint
-    i32.const 0 set_global $fastVmMode
-    i32.const 0 set_global $disableScreenRendering
-    i32.const 0 set_global $executionCompletionReason
 
-    ;; Reset keyboard line status
-    (i32.store offset=0 (get_global $KEYBOARD_LINES) (i32.const 0))
-    (i32.store offset=4 (get_global $KEYBOARD_LINES) (i32.const 0))
-
-    ;; Reset port state
-    i32.const 0 set_global $portBit3LastValue
-    i32.const 0 set_global $portBit4LastValue
-    i64.const 0 set_global $portBit4ChangedFrom0Tacts
-    i64.const 0 set_global $portBit4ChangedFrom1Tacts
+    call $resetMachine
 
     ;; Invoke machine type specific setup
     (i32.add
@@ -7305,6 +7380,13 @@
     (i32.store8 offset=151 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
     (i64.store offset=152 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
     (i64.store offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
+
+    ;; Interrupt state
+    (i32.store8 offset=168 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
+    (i32.store8 offset=169 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
+
+    ;; Screen state
+    (i32.store8 offset=170 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
   )
 
   ;; Copies a segment of memory
@@ -7360,7 +7442,118 @@
   )
 
   ;; Checks and executes interrupt, it it's time
-  (func $checkForInterrupt)
+  (func $checkForInterrupt (param $currentTact i32)
+    ;; We've already handled the interrupt
+    get_global $interruptRevoked
+    if return end
+
+    ;; Is it too early to raise the interrupt?
+    (i32.lt_u (get_local $currentTact) (get_global $interruptTact))
+    if return end
+
+    ;; Are we over the longest op after the interrupt tact?
+    (i32.gt_u 
+      (get_local $currentTact)
+      (i32.add (get_global $interruptTact) (i32.const 23)) ;; tacts of the longest op
+    )
+    if
+      ;; Let's revoke the INT signal
+      i32.const 1 set_global $interruptRevoked
+      (i32.and (get_global $stateFlags) (i32.const 0xfe))
+      set_global $stateFlags ;; Reset the interrupt signal
+      return
+    end
+
+    ;; The interrupt is raised, not revoked, but the CPU has not handled it yet
+    get_global $interruptRaised
+    if return end
+
+    ;; Do not raise interrupt when CPU blocks
+    get_global $isInterruptBlocked
+    if return end
+
+    ;; It is time to raise the interrupt
+    i32.const 1 set_global $interruptRaised
+    (i32.or (get_global $stateFlags) (i32.const 0x01))
+    set_global $stateFlags ;; Set the interrupt signal
+  )
+
+  ;; Initializes the table used for screen rendering
+  (func $initRenderingTactTable
+    (local $firstVisibleLine i32)
+    (local $lastVisibleLine i32)
+    (local $lastVisibleLineTact i32)
+    (local $lastDisplayLineTact i32)
+    (local $tact i32)
+    (local $line i32)
+    (local $tactInLine i32)
+    (local $phase i32)
+    (local $contentionDelay i32)
+    (local $pixelAddr i32)
+    (local $attrAddr i32)
+    (local $tablePointer i32)
+
+    ;; Calculate the first and last visible lines
+    (i32.add (get_global $verticalSyncLines) (get_global $nonVisibleBorderTopLines))
+    set_local $firstVisibleLine
+    (i32.sub (get_global $screenLines) (get_global $nonVisibleBorderBottomLines))
+    set_local $lastVisibleLine
+
+    ;; Calculate the last visible line and display tacts
+    (i32.sub 
+      (i32.sub (get_global $screenLineTime) (get_global $nonVisibleBorderRightTime))
+      (get_global $horizontalBlankingTime)
+    )
+    set_local $lastVisibleLineTact
+    (i32.add (get_global $borderLeftTime) (get_global $displayLineTime))
+    set_local $lastDisplayLineTact
+
+    ;; Init the loop over tacts
+    get_global $RENDERING_TACT_TABLE set_local $tablePointer
+    i32.const 0 set_local $tact
+    loop $tactLoop
+      (i32.lt_u (get_local $tact) (get_global $tactsInFrame))
+      if
+        ;; Init the current tact
+        i32.const 0 set_local $phase
+        i32.const 0 set_local $contentionDelay
+        i32.const 0 set_local $pixelAddr
+        i32.const 0 set_local $attrAddr
+
+        ;; Test, if the current tact is visible
+        i32.const 0 ;; TODO: test condition
+        if
+          ;; Yes, the tact is visible.
+          ;; Test, if it is in the display area
+          i32.const 0 ;; TODO test condition
+          if
+            ;; Yes, it is the display area
+          else
+            ;; No, it is the border area
+          end
+        end 
+
+        ;; Store the current item
+        (i32.store8 
+          (get_local $tablePointer)
+          (i32.or
+            (i32.shl (get_local $contentionDelay) (i32.const 4))
+            (get_local $phase)
+          )
+        )
+        (i32.store16 offset=1 (get_local $tablePointer) (get_local $pixelAddr))
+        (i32.store16 offset=3 (get_local $tablePointer) (get_local $attrAddr))
+
+        ;; Move to the next table item
+        (i32.add (get_local $tablePointer) (i32.const 5))
+        set_local $tablePointer
+
+        ;; Continue the loop
+        (i32.add (get_local $tact) (i32.const 1))
+        set_local $tact
+      end
+    end
+  )
 
   ;; Renders the screen portions between the provided tacts
   (func $renderScreen (param $fromTact i32) (param $toTact i32))
@@ -7429,76 +7622,127 @@
     i32.const 0
   )
 
-  ;; Handles the 0xfe port
-  (func $handlePortFE (param $addr i32) (result i32)
+  ;; Reads information from the 0xfe port
+  (func $readPort$FE (param $addr i32) (result i32)
     (local $portValue i32)
     (local $bit4Sensed i32)
     (local $chargeTime i32)
-    (local $refDelay i32)
+    (local $bit6Value i32)
+    (local $tmp i32)
 
     ;; Scan keyboard line status
     (call $getKeyLineStatus (i32.shr_u (get_local $addr) (i32.const 8)))
     set_local $portValue
 
     call $isInLoadMode
-    if
+    if (result i32)
       ;; TODO: Handle EAR bit from tape
+      get_local $portValue
     else
       ;; Handle analog EAR bit
       get_global $portBit4LastValue
       (i32.eq (tee_local $bit4Sensed) (i32.const 0))
       if
-        ;; ;; Changed later to 1 from 0 than to 0 from 1?
-        ;; (i32.ge_u (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
-        ;; (i32.gt_u (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-        ;; i32.and
-        ;; if
-        ;;   ;; ;; Yes, calculate charge time
-        ;;   ;; (i32.and
-        ;;   ;;   (i32.sub (get_global $portBit4ChangedFrom1FrameCount) (get_global $portBit4ChangedFrom0FrameCount))
-        ;;   ;;   (i32.const 0xff)
-        ;;   ;; )
-        ;;   ;; i32.const 24
-        ;;   ;; i32.shl ;; (upper 8 bits)
-        ;;   ;; (i32.and
-        ;;   ;;   (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-        ;;   ;;   (i32.const 0x00ffffff)
-        ;;   ;; )  ;; (upper 8 bits, lower 24 bits)
-        ;;   ;; i32.or
+        ;; Changed later to 1 from 0 than to 0 from 1?
+        (i64.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
+        i32.wrap/i64
+        (i32.gt_s (tee_local $chargeTime) (i32.const 0))
+        if 
+          ;; Yes, calculate charge time
+          (i32.gt_u (get_local $chargeTime) (i32.const 700))
+          if (result i32)
+            i32.const 2800
+          else
+            (i32.mul (i32.const 4) (get_local $chargeTime))
+          end
+          set_local $chargeTime
 
-        ;;   ;; ;; Calculate reference delay
-        ;;   ;; (i32.gt_u (tee_local $chargeTime) (i32.const 700))
-        ;;   ;; if (result i32)
-        ;;   ;;   i32.const 2800
-        ;;   ;; else
-        ;;   ;;   (i32.mul (i32.const 4) (get_local $chargeTime))
-        ;;   ;; end
-        ;;   ;; set_local $refDelay
+          ;; Calculate time ellapsed since last change from 1 to 0
+          (i64.sub (get_global $tacts) (get_global $portBit4ChangedFrom1Tacts))
+          ;; Less than charge time?
+          (i32.lt_u (i32.wrap/i64) (get_local $chargeTime))
+          i32.const 4
+          i32.shl
+          set_local $bit4Sensed
+        end
+      end
 
-        ;;   ;; ;; Check for too much delay
-        ;;   ;; (i32.le_u 
-        ;;   ;;   (get_global $frameCount)
-        ;;   ;;   (i32.add (i32.const 1) (get_global $portBit4ChangedFrom1FrameCount))
-        ;;   ;; )
-        ;;   ;; if
-        ;;   ;;   ;; Delay may be short enough, calculate real delay
-        ;;   ;;   (i32.and
-        ;;   ;;     (i32.sub (get_global $frameCount) (get_global $portBit4ChangedFrom1FrameCount))
-        ;;   ;;     (i32.const 0xff)
-        ;;   ;;   )
-        ;;   ;;   i32.const 24
-        ;;   ;;   i32.shl ;; (upper 8 bits)
-        ;;   ;;   (i32.and
-        ;;   ;;     (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-        ;;   ;;     (i32.const 0x00ffffff)
-        ;;   ;;   )  ;; (upper 8 bits, lower 24 bits)
-        ;;   ;;   i32.or
-        ;;   ;; end
-        ;; end
+      ;; Calculate bit 6 value
+      get_global $portBit3LastValue
+      if (result i32)
+        i32.const 0x40
+      else
+        i32.const 0x40
+        i32.const 0x00
+        get_local $bit4Sensed
+        select
+      end
+      set_local $bit6Value
+
+      ;; Check for ULA 3
+      (i32.eq (get_global $ulaIssue) (i32.const 3))
+      if
+        get_global $portBit3LastValue
+        if
+          (i32.eq (get_local $bit4Sensed) (i32.const 0))
+          if
+          i32.const 0
+          set_local $bit6Value
+          end
+        end
+      end
+
+      ;; Merge bit 6 with port value
+      (i32.and (get_local $portValue) (i32.const 0xbf))
+      get_local $bit6Value
+      i32.or
+    end
+  )
+
+  ;; Writes information to the 0xfe port
+  (func $writePort$FE (param $addr i32) (param $v i32)
+    (local $bit4 i32)
+
+    ;; Extract border color
+    (i32.and (get_local $v) (i32.const 0x07))
+    set_global $borderColor
+
+    ;; Let the beeper device process the EAR bit
+    (i32.and (get_local $v) (i32.const 0x10))
+    set_local $bit4
+    (call $processEarBit (i32.const 0) (get_local $bit4))
+
+    ;; Set the last value of bit3
+    (i32.and (get_local $v) (i32.const 0x08))
+    set_global $portBit3LastValue
+
+    ;; Have the tape device process the MIC bit
+    (call $processMicBit (get_global $portBit3LastValue))
+
+    ;; Manage bit 4 value
+    get_global $portBit4LastValue
+    if
+      ;; Bit 4 was 1, is it now 0?
+      (i32.eq (get_local $bit4) (i32.const 0))
+      if
+        get_global $tacts set_global $portBit4ChangedFrom1Tacts
+        i32.const 0 set_global $portBit4LastValue
+      end
+    else
+      ;; Bit 4 was 0, is it now 1?
+      get_local $bit4
+      if
+        get_global $tacts set_global $portBit4ChangedFrom0Tacts
+        i32.const 0x10 set_global $portBit4LastValue
       end
     end
-    get_local $portValue
   )
+
+  ;; This function processes the EAR bit (beeper device)
+  (func $processEarBit (param $fromTape i32) (param $earBit i32))
+
+  ;; This function processes the MIC bit (tape device)
+  (func $processMicBit (param $micBit i32))
 
   ;; ==========================================================================
   ;; ZX Spectrum 48K ROM
@@ -7590,12 +7834,14 @@
 
   ;; Writes the memory of the ZX Spectrum 48 machine
   (func $writememorySp48 (param $addr i32) (param $val i32)
-    (i32.and (get_local $addr) (i32.const 0xffff))
+    (local $memSegment i32)
+    (i32.and (get_local $addr) (i32.const 0xffff)) ;; ($addr)
     (i32.and (tee_local $addr) (i32.const 0xc000))
+    (i32.eq (tee_local $memSegment) (i32.const 0x0000))
     ;; Do not write to ROM
     if return end
 
-    (i32.and (get_local $addr) (i32.const 0x4000))
+    (i32.eq (get_local $memSegment) (i32.const 0x4000))
     if
       call $applyContentionDelay
     end
@@ -7604,13 +7850,16 @@
     i32.store8
   )
 
-  ;; Reads the memory of the ZX Spectrum 48 machine
+  ;; Reads a port of the ZX Spectrum 48 machine
+  ;; $addr: port address
+  ;; Returns: value read from port
   (func $readPortSp48 (param $addr i32) (result i32)
     (call $applyIOContentionDelay (get_local $addr))
     (i32.and (get_local $addr) (i32.const 0x0001))
+    (i32.eq (i32.const 0))
     if
       ;; Handle the 0xfe port
-      i32.const 0xff
+      (call $readPort$FE (get_local $addr))
       return
     end
 
@@ -7624,6 +7873,20 @@
 
     ;; TODO: Implement floating port handling
     i32.const 0xff
+  )
+
+  ;; Writes a port of the ZX Spectrum 48 machine
+  ;; $addr: port address
+  ;; $v: Port value
+  (func $writePortSp48 (param $addr i32) (param $v i32)
+    (call $applyIOContentionDelay (get_local $addr))
+    (i32.and (get_local $addr) (i32.const 0x0001))
+    (i32.eq (i32.const 0))
+    if
+      ;; Handle the 0xfe port
+      (call $writePort$FE (get_local $addr) (get_local $v))
+      return
+    end
   )
 
   ;; Sets up the ZX Spectrum 48 machine
@@ -7658,12 +7921,13 @@
     i32.const 1 set_global $attributeDataPrefetchTime
 
     call $calcScreenAttributes
+    call $initRenderingTactTable
 
     ;; Setup ROM
     (call $copyMemory 
       (get_global $SPECTRUM_48_ROM_INDEX)
       (get_global $SP_MEM_OFFS)
-      (i32.const 0x1_4000)
+      (i32.const 0x4000)
     )
   )
 

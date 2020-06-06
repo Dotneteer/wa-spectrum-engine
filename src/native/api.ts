@@ -19,6 +19,9 @@ export interface CpuApi {
   getTbBlueLogLength(): number;
   runTestCode(): void;
   restMachineType(): void;
+  setPC(pc: number): void;
+  setInterruptTact(tact: number): void;
+  checkForInterrupt(tact: number): void;
 }
 
 /**

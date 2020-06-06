@@ -3,7 +3,13 @@ import * as expect from "expect";
 import * as fs from "fs";
 import { MachineApi } from "../../src/native/api";
 import { ZxSpectrum48 } from "../../src/native/ZxSpectrum48";
-import { MemoryContentionType, ExecuteCycleOptions, EmulationMode, DebugStepMode, ExecutionCompletionReason } from "../../src/native/machine-state";
+import {
+  MemoryContentionType,
+  ExecuteCycleOptions,
+  EmulationMode,
+  DebugStepMode,
+  ExecutionCompletionReason,
+} from "../../src/native/machine-state";
 import { MemoryHelper } from "../../src/native/memory-helpers";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
@@ -13,7 +19,7 @@ let machine: ZxSpectrum48;
 describe("ZX Spectrum 48", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
-        imports: { trace: (arg: number) => console.log(arg) }
+      imports: { trace: (arg: number) => console.log(arg) },
     });
     api = (wasm.instance.exports as unknown) as MachineApi;
     machine = new ZxSpectrum48(api);
@@ -31,7 +37,6 @@ describe("ZX Spectrum 48", () => {
     const s = machine.getMachineState();
     expect(s.ulaIssue).toBe(3);
   });
-
 
   it("Set ULA issue to 2", () => {
     machine.setUlaIssue(2);
@@ -80,23 +85,16 @@ describe("ZX Spectrum 48", () => {
 
     // --- Test ROM setup
     const mh = new MemoryHelper(api, 0);
-    expect(mh.readByte(0x0000)).toBe(0xf3)
-    expect(mh.readByte(0x0001)).toBe(0xaf)
-    expect(mh.readByte(0x3ffe)).toBe(0x42)
-    expect(mh.readByte(0x3fff)).toBe(0x3c)
+    expect(mh.readByte(0x0000)).toBe(0xf3);
+    expect(mh.readByte(0x0001)).toBe(0xaf);
+    expect(mh.readByte(0x3ffe)).toBe(0x42);
+    expect(mh.readByte(0x3fff)).toBe(0x3c);
   });
 
   it("ExecuteCycle", () => {
-    const options: ExecuteCycleOptions = {
-      emulationMode: EmulationMode.UntilUlaFrameEnds,
-      debugStepMode: DebugStepMode.StopAtBreakpoint,
-      fastTapeMode: false,
-      terminationRom: -1,
-      terminationPoint: -1,
-      fastVmMode: false,
-      disableScreenRendering: false
-    }
-
+    const options: ExecuteCycleOptions = new ExecuteCycleOptions(
+      EmulationMode.UntilUlaFrameEnds
+    );
     const start = Date.now().valueOf();
     for (let i = 0; i < 1000; i++) {
       machine.executeCycle(options);
@@ -112,5 +110,4 @@ describe("ZX Spectrum 48", () => {
       expect(machine.getKeyStatus(i)).toBe(false);
     }
   });
-
 });
