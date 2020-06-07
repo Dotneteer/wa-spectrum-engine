@@ -51,7 +51,7 @@ describe("ZX Spectrum 48", () => {
     expect(s.supportsNextOperations).toBeFalsy();
 
     expect(s.numberOfRoms).toBe(1);
-    expect(s.romContentsAddress).toBe(0x01_1c00);
+    expect(s.romContentsAddress).toBe(0x01_1d00);
     expect(s.spectrum48RomIndex).toBe(0);
     expect(s.contentionType).toBe(MemoryContentionType.Ula);
     expect(s.nextMemorySize).toBe(0);
