@@ -19,34 +19,21 @@ describe("Z80 CPU register access", () => {
     api.turnOnCpu();
   });
 
-  it("Generate flags table", () => {
-    const sraFlags: number[] = [];
+  it("Generate paper table", () => {
+    const colors: number[] = [];
     for (let b = 0; b < 0x100; b++) {
-      let sraVal = b;
-      let cf = (sraVal & 0x01) !== 0 ? FlagsSetMask.C : 0;
-      sraVal = (sraVal >> 1) + (sraVal & 0x80);
-      let p = FlagsSetMask.PV;
-      for (let i = 0x80; i !== 0; i /= 2) {
-        if ((sraVal & i) !== 0) {
-          p ^= FlagsSetMask.PV;
-        }
-      }
-      let flags =
-        ((sraVal & (FlagsSetMask.S | FlagsSetMask.R5 | FlagsSetMask.R3)) | p | cf) &
-        0xff;
-      if ((sraVal & 0xff) === 0) {
-        flags |= FlagsSetMask.Z;
-      }
-      sraFlags[b] = flags & 0xff;
+      const paper = (b & 0x78) >> 3;
+      const ink = (b & 0x07) | ((b & 0x40) >> 3);
+      colors[b] = b & 0x80 ? paper : ink
     }
                         
-    console.log(sraFlags)
+    console.log(colors)
     let vals = "";
-    for (let i=0; i < sraFlags.length; i++) {
-      const val = sraFlags[i]
+    for (let i=0; i < colors.length; i++) {
+      const val = colors[i]
       vals += `\\${(val < 16 ? "0" : "") + val.toString(16)}`;
     }
-    let result = `(data (i32.const 0x1_1400) "${vals}")`
+    let result = `(data (i32.const 0x07_6000) "${vals}")`
     console.log(result);
   });
 });

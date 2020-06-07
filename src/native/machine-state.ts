@@ -84,6 +84,12 @@ export abstract class SpectrumMachineStateBase extends Z80CpuState {
 
   // --- Screen state
   borderColor: number;
+  flashPhase: boolean;
+  pixelByte1: number;
+  pixelByte2: number;
+  attrByte1: number;
+  attrByte2: number;
+  flashFrames: number;
 }
 
 /**

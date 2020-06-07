@@ -173,6 +173,12 @@ export abstract class ZxSpectrumBase {
 
     // --- Get screen state
     s.borderColor = mh.readByte(170);
+    s.flashPhase = mh.readBool(171);
+    s.pixelByte1 = mh.readByte(172);
+    s.pixelByte2 = mh.readByte(173);
+    s.attrByte1 = mh.readByte(174);
+    s.attrByte2 = mh.readByte(175);
+    s.flashFrames = mh.readByte(176);
 
     // --- Done.
     return s;
