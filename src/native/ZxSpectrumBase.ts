@@ -68,15 +68,17 @@ export abstract class ZxSpectrumBase {
     s._hl_ = mh.readUint16(14);
     s.i = mh.readByte(16);
     s.r = mh.readByte(17);
-    s.pc = mh.readUint16(18);
-    s.sp = mh.readUint16(20);
     s.ix = mh.readUint16(22);
     s.iy = mh.readUint16(24);
     s.wz = mh.readUint16(26);
 
     // --- Get state data
     mh = new MemoryHelper(this.api, STATE_TRANSFER_BUFF);
+
     s.af = mh.readUint16(0);
+    s.pc = mh.readUint16(18);
+    s.sp = mh.readUint16(20);
+
     s.tactsInFrame = mh.readUint32(28);
     s.allowExtendedSet = mh.readBool(32);
     s.tactsL = mh.readUint32(33);

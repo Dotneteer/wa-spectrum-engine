@@ -139,8 +139,6 @@ export class TestZ80Machine {
     s._hl_ = mh.readUint16(14);
     s.i = mh.readByte(16);
     s.r = mh.readByte(17);
-    s.pc = mh.readUint16(18);
-    s.sp = mh.readUint16(20);
     s.ix = mh.readUint16(22);
     s.iy = mh.readUint16(24);
     s.wz = mh.readUint16(26);
@@ -148,6 +146,10 @@ export class TestZ80Machine {
     // --- Get state data
     mh = new MemoryHelper(this.cpuApi, STATE_TRANSFER_BUFF);
     s.af = mh.readUint16(0)
+
+    s.pc = mh.readUint16(18);
+    s.sp = mh.readUint16(20);
+
     s.tactsInFrame = mh.readUint32(28);
     s.allowExtendedSet = mh.readBool(32);
     s.tactsL = mh.readUint32(33);
@@ -184,8 +186,6 @@ export class TestZ80Machine {
     mh.writeUint16(14, s._hl_);
     mh.writeByte(16, s.i);
     mh.writeByte(17, s.r);
-    mh.writeUint16(18, s.pc);
-    mh.writeUint16(20, s.sp);
     mh.writeUint16(22, s.ix);
     mh.writeUint16(24, s.iy);
     mh.writeUint16(26, s.wz);
@@ -193,6 +193,9 @@ export class TestZ80Machine {
     // --- Get state data
     mh = new MemoryHelper(this.cpuApi, STATE_TRANSFER_BUFF);
     mh.writeUint16(0, s.af);
+
+    mh.writeUint16(18, s.pc);
+    mh.writeUint16(20, s.sp);
 
     mh.writeUint32(28, s.tactsInFrame);
     mh.writeBool(32, s.allowExtendedSet);
