@@ -1792,7 +1792,9 @@
      ;; Test for HLT
     (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;) ))
     if
-      call $incPC
+      (set_global $PC 
+        (i32.and (i32.add (call $getPC) (i32.const 1)) (i32.const 0xffff)) 
+      )
       (i32.and (get_global $stateFlags) (i32.const 0xf7 (; ~HLT mask ;) ))
       set_global $stateFlags
     end
@@ -1813,7 +1815,9 @@
     ;; Test for HLT
     (i32.and (get_global $stateFlags) (i32.const 0x08 (; HLT signal ;) ))
     if
-      call $incPC
+      (set_global $PC 
+        (i32.and (i32.add (call $getPC) (i32.const 1)) (i32.const 0xffff)) 
+      )
       (i32.and (get_global $stateFlags) (i32.const 0xf7 (; ~HLT mask ;) ))
       set_global $stateFlags
     end
@@ -1919,24 +1923,10 @@
   ;; ==========================================================================
   ;; Instruction helpers
 
-  ;; Increments the value of PC
-  (func $incPC
-    (set_global $PC 
-      (i32.and (i32.add (call $getPC) (i32.const 1)) (i32.const 0xffff)) 
-    )
-  )
-
   ;; Decrements the value of SP
   (func $decSP
     (set_global $SP 
       (i32.and (i32.sub (call $getSP) (i32.const 1)) (i32.const 0xffff)) 
-    )
-  )
-
-  ;; Increments the value of SP
-  (func $incSP
-    (set_global $SP 
-      (i32.and (i32.add (call $getSP) (i32.const 1)) (i32.const 0xffff)) 
     )
   )
 
@@ -1958,10 +1948,14 @@
   (func $popValue (result i32)
     call $getSP
     call $readMemory
-    call $incSP
+    (set_global $SP 
+      (i32.and (i32.add (call $getSP) (i32.const 1)) (i32.const 0xffff)) 
+    )
     call $getSP
     call $readMemory
-    call $incSP
+    (set_global $SP 
+      (i32.and (i32.add (call $getSP) (i32.const 1)) (i32.const 0xffff)) 
+    )
     i32.const 8
     i32.shl
     i32.or
@@ -1971,7 +1965,9 @@
   (func $readCodeMemory (result i32)
     call $getPC
     call $readMemory ;; we'll return this value
-    call $incPC
+    (set_global $PC 
+      (i32.and (i32.add (call $getPC) (i32.const 1)) (i32.const 0xffff)) 
+    )
   )
 
   ;; Add two 16-bit values following the add hl,NN logic
@@ -3372,7 +3368,9 @@
 
   ;; inc sp (0x33)
   (func $IncSP
-    (call $setSP (i32.add (call $getSP) (i32.const 1)))
+    (set_global $SP 
+      (i32.and (i32.add (call $getSP) (i32.const 1)) (i32.const 0xffff)) 
+    )
     (call $incTacts (i32.const 2))
   )
 
