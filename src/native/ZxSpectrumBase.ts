@@ -58,7 +58,7 @@ export abstract class ZxSpectrumBase {
 
     // --- Get register data from the memory
     let mh = new MemoryHelper(this.api, REG_AREA_INDEX);
-    s.af = mh.readUint16(0);
+    //s.af = mh.readUint16(0);
     s.bc = mh.readUint16(2);
     s.de = mh.readUint16(4);
     s.hl = mh.readUint16(6);
@@ -76,6 +76,7 @@ export abstract class ZxSpectrumBase {
 
     // --- Get state data
     mh = new MemoryHelper(this.api, STATE_TRANSFER_BUFF);
+    s.af = mh.readUint16(0);
     s.tactsInFrame = mh.readUint32(28);
     s.allowExtendedSet = mh.readBool(32);
     s.tactsL = mh.readUint32(33);

@@ -129,7 +129,7 @@ export class TestZ80Machine {
 
     // --- Get register data from the memory
     let mh = new MemoryHelper(this.cpuApi, REG_AREA_INDEX);
-    s.af = mh.readUint16(0);
+    //s.af = mh.readUint16(0);
     s.bc = mh.readUint16(2);
     s.de = mh.readUint16(4);
     s.hl = mh.readUint16(6);
@@ -147,6 +147,7 @@ export class TestZ80Machine {
 
     // --- Get state data
     mh = new MemoryHelper(this.cpuApi, STATE_TRANSFER_BUFF);
+    s.af = mh.readUint16(0)
     s.tactsInFrame = mh.readUint32(28);
     s.allowExtendedSet = mh.readBool(32);
     s.tactsL = mh.readUint32(33);
@@ -173,7 +174,7 @@ export class TestZ80Machine {
    */
   set cpuState(s: Z80CpuState) {
     let mh = new MemoryHelper(this.cpuApi, REG_AREA_INDEX);
-    mh.writeUint16(0, s.af);
+    //mh.writeUint16(0, s.af);
     mh.writeUint16(2, s.bc);
     mh.writeUint16(4, s.de);
     mh.writeUint16(6, s.hl);
@@ -191,6 +192,8 @@ export class TestZ80Machine {
 
     // --- Get state data
     mh = new MemoryHelper(this.cpuApi, STATE_TRANSFER_BUFF);
+    mh.writeUint16(0, s.af);
+
     mh.writeUint32(28, s.tactsInFrame);
     mh.writeBool(32, s.allowExtendedSet);
     mh.writeUint32(33, s.tactsL);
