@@ -667,21 +667,21 @@
     ;; 0x38-0x3f
     $JrC      $AddHLSP  $LdANNi   $DecSP    $IncQ     $DecQ     $LdQN     $Ccf
     ;; 0x40-0x47
-    $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW
+    $NOOP     $LdBC     $LdBD     $LdBE     $LdBH     $LdBL     $LdQHLi   $LdBA     
     ;; 0x48-0x4f
-    $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW
+    $LdCB     $NOOP     $LdCD     $LdCE     $LdCH     $LdCL     $LdQHLi   $LdCA     
     ;; 0x50-0x57
-    $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQW     $LdQHLi   $LdQW
+    $LdDB     $LdDC     $NOOP     $LdDE     $LdDH     $LdDL     $LdQHLi   $LdDA     
     ;; 0x58-0x5f
-    $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQW     $LdQHLi   $LdQW
+    $LdEB     $LdEC     $LdED     $NOOP     $LdEH     $LdEL     $LdQHLi   $LdEA     
     ;; 0x60-0x67
-    $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQW     $LdQHLi   $LdQW
+    $LdHB     $LdHC     $LdHD     $LdHE     $NOOP     $LdHL     $LdQHLi   $LdHA     
     ;; 0x68-0x6f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $NOOP     $LdQHLi   $LdQW
+    $LdLB     $LdLC     $LdLD     $LdLE     $LdLH     $NOOP     $LdQHLi   $LdLA     
     ;; 0x70-0x77
-    $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ
+    $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $LdHLiQ   $Halt     $LdHLiQ   
     ;; 0x78-0x7f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQW     $LdQHLi   $NOOP
+    $LdAB     $LdAC     $LdAD     $LdAE     $LdAH     $LdAL     $LdQHLi   $NOOP     
     ;; 0x80-0x87
     $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAQ    $AddAHLi  $AddAQ
     ;; 0x88-0x8f
@@ -735,7 +735,7 @@
     ;; 0x38-0x3f
     $JrC      $AddIXSP  $LdANNi   $DecSP    $IncQ     $DecQ     $LdQN     $Ccf
     ;; 0x40-0x47
-    $NOOP     $LdQW     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW
+    $NOOP     $LdBC     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW
     ;; 0x48-0x4f
     $LdQW     $NOOP     $LdQW     $LdQW     $LdQXH    $LdQXL    $LdQIXi   $LdQW
     ;; 0x50-0x57
@@ -1056,6 +1056,16 @@
   ;; ==========================================================================
   ;; Z80 CPU registers access
 
+  ;; Gets the value of A
+  (func $getA (result i32)
+    get_global $A
+  )
+
+  ;; Sets the value of A
+  (func $setA (param $v i32)
+    get_local $v set_global $A
+  )
+  
   ;; Gets the value of AF
   (func $getAF (result i32)
     (i32.or 
@@ -3520,6 +3530,216 @@
     i32.xor
     i32.or
     (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; ld b,c (0x41)
+  (func $LdBC
+    (call $setB (call $getC))
+  )
+
+  ;; ld b,d (0x42)
+  (func $LdBD
+    (call $setB (call $getD))
+  )
+
+  ;; ld b,e (0x43)
+  (func $LdBE
+    (call $setB (call $getE))
+  )
+
+  ;; ld b,h (0x44)
+  (func $LdBH
+    (call $setB (call $getH))
+  )
+
+  ;; ld b,l (0x45)
+  (func $LdBL
+    (call $setB (call $getL))
+  )
+
+  ;; ld b,a (0x47)
+  (func $LdBA
+    (call $setB (call $getA))
+  )
+
+  ;; ld c,b (0x48)
+  (func $LdCB
+    (call $setC (call $getB))
+  )
+
+  ;; ld c,d (0x4a)
+  (func $LdCD
+    (call $setC (call $getD))
+  )
+
+  ;; ld c,e (0x4b)
+  (func $LdCE
+    (call $setC (call $getE))
+  )
+
+  ;; ld c,h (0x4c)
+  (func $LdCH
+    (call $setC (call $getH))
+  )
+
+  ;; ld c,l (0x4d)
+  (func $LdCL
+    (call $setC (call $getL))
+  )
+
+  ;; ld c,a (0x4f)
+  (func $LdCA
+    (call $setC (call $getA))
+  )
+
+  ;; ld d,b (0x50)
+  (func $LdDB
+    (call $setD (call $getB))
+  )
+
+  ;; ld d,c (0x51)
+  (func $LdDC
+    (call $setD (call $getC))
+  )
+
+  ;; ld d,e (0x53)
+  (func $LdDE
+    (call $setD (call $getE))
+  )
+
+  ;; ld d,h (0x54)
+  (func $LdDH
+    (call $setD (call $getH))
+  )
+
+  ;; ld d,l (0x55)
+  (func $LdDL
+    (call $setD (call $getL))
+  )
+
+  ;; ld d,a (0x57)
+  (func $LdDA
+    (call $setD (call $getA))
+  )
+
+  ;; ld e,b (0x58)
+  (func $LdEB
+    (call $setE (call $getB))
+  )
+
+  ;; ld e,c (0x59)
+  (func $LdEC
+    (call $setE (call $getC))
+  )
+
+  ;; ld e,d (0x5a)
+  (func $LdED
+    (call $setE (call $getD))
+  )
+
+  ;; ld e,h (0x5c)
+  (func $LdEH
+    (call $setE (call $getH))
+  )
+
+  ;; ld e,l (0x5d)
+  (func $LdEL
+    (call $setE (call $getL))
+  )
+
+  ;; ld e,a (0x5f)
+  (func $LdEA
+    (call $setE (call $getA))
+  )
+
+  ;; ld h,b (0x60)
+  (func $LdHB
+    (call $setH (call $getB))
+  )
+
+  ;; ld h,c (0x61)
+  (func $LdHC
+    (call $setH (call $getC))
+  )
+
+  ;; ld h,d (0x62)
+  (func $LdHD
+    (call $setH (call $getD))
+  )
+
+  ;; ld h,e (0x63)
+  (func $LdHE
+    (call $setH (call $getE))
+  )
+
+  ;; ld h,l (0x65)
+  (func $LdHL
+    (call $setH (call $getL))
+  )
+
+  ;; ld h,a (0x67)
+  (func $LdHA
+    (call $setH (call $getA))
+  )
+
+  ;; ld l,b (0x68)
+  (func $LdLB
+    (call $setL (call $getB))
+  )
+
+  ;; ld l,c (0x69)
+  (func $LdLC
+    (call $setL (call $getC))
+  )
+
+  ;; ld l,d (0x6a)
+  (func $LdLD
+    (call $setL (call $getD))
+  )
+
+  ;; ld l,e (0x6b)
+  (func $LdLE
+    (call $setL (call $getE))
+  )
+
+  ;; ld l,h (0x6c)
+  (func $LdLH
+    (call $setL (call $getH))
+  )
+
+  ;; ld l,a (0x6f)
+  (func $LdLA
+    (call $setL (call $getA))
+  )
+
+  ;; ld a,b (0x78)
+  (func $LdAB
+    (call $setA (call $getB))
+  )
+
+  ;; ld a,c (0x79)
+  (func $LdAC
+    (call $setA (call $getC))
+  )
+
+  ;; ld a,d (0x7a)
+  (func $LdAD
+    (call $setA (call $getD))
+  )
+
+  ;; ld a,e (0x7b)
+  (func $LdAE
+    (call $setA (call $getE))
+  )
+
+  ;; ld a,h (0x7c)
+  (func $LdAH
+    (call $setA (call $getH))
+  )
+
+  ;; ld a,l (0x7d)
+  (func $LdAL
+    (call $setA (call $getL))
   )
 
   ;; ld Q,W
