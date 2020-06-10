@@ -701,19 +701,19 @@
     ;; 0xc0-0xc7
     $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $AddAN    $RstN
     ;; 0xc8-0xcf
-    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN
+    $RetZ     $Ret      $JpZ      $SignCB   $CallZ    $CallNN   $AdcAN    $RstN
     ;; 0xd0-0xd7
     $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN
     ;; 0xd8-0xdf
-    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN
+    $RetC     $Exx      $JpC      $InAN     $CallC    $SignDD   $SbcAN    $RstN
     ;; 0xe0-0xe7
     $RetPo    $PopHL    $JpPo     $ExSPiHL  $CallPo   $PushHL   $AndAN    $RstN
     ;; 0xe8-0xef
-    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $NOOP     $XorAN    $RstN
+    $RetPe    $JpHL     $JpPe     $ExDEHL   $CallPe   $SignED   $XorAN    $RstN
     ;; 0xf0-0xf7
     $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN
     ;; 0xf8-0xff
-    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN
+    $RetM     $LdSPHL   $JpM      $Ei       $CallM    $SignFD   $CpAN     $RstN
   )
 
 ;; Table of indexed instructions
@@ -769,11 +769,11 @@
     ;; 0xc0-0xc7
     $RetNz    $PopBC    $JpNz     $Jp       $CallNz   $PushBC   $AddAN    $RstN
     ;; 0xc8-0xcf
-    $RetZ     $Ret      $JpZ      $NOOP     $CallZ    $CallNN   $AdcAN    $RstN
+    $RetZ     $Ret      $JpZ      $SignCB   $CallZ    $CallNN   $AdcAN    $RstN
     ;; 0xd0-0xd7
     $RetNc    $PopDE    $JpNc     $OutNA    $CallNc   $PushDE   $SubAN    $RstN
     ;; 0xd8-0xdf
-    $RetC     $Exx      $JpC      $InAN     $CallC    $NOOP     $SbcAN    $RstN
+    $RetC     $Exx      $JpC      $InAN     $CallC    $SignDD   $SbcAN    $RstN
     ;; 0xe0-0xe7
     $RetPo    $PopIX    $JpPo     $ExSPiIX  $CallPo   $PushIX   $AndAN    $RstN
     ;; 0xe8-0xef
@@ -781,7 +781,7 @@
     ;; 0xf0-0xf7
     $RetP     $PopAF    $JpP      $Di       $CallP    $PushAF   $OrAN     $RstN
     ;; 0xf8-0xff
-    $RetM     $LdSPIX   $JpM      $Ei       $CallM    $NOOP     $CpAN     $RstN
+    $RetM     $LdSPIX   $JpM      $Ei       $CallM    $SignFD   $CpAN     $RstN
   )
 
 ;; Table of extended instructions
@@ -1645,49 +1645,15 @@
     ;; Test for no prefix
     (i32.eq (get_global $prefixMode) (i32.const 0))
     if
-      ;; No prefix, test opcode prefixes
-      ;; Test for extended operations
-      (i32.eq (get_global $opCode) (i32.const 0xed))
-      if
-        i32.const 1 set_global $prefixMode
-        i32.const 1 set_global $isInOpExecution
-        i32.const 1 set_global $isInterruptBlocked
-        return
-      end
-
-      ;; Test for bit operations prefix
-      (i32.eq (get_global $opCode) (i32.const 0xcb))
-      if
-        i32.const 2 set_global $prefixMode
-        i32.const 1 set_global $isInOpExecution
-        i32.const 1 set_global $isInterruptBlocked
-        return
-      end
-
-      ;; Test for IY prefix
-      (i32.eq (get_global $opCode) (i32.const 0xfd))
-      if
-        i32.const 2 set_global $indexMode
-        i32.const 1 set_global $isInOpExecution
-        i32.const 1 set_global $isInterruptBlocked
-        return
-      end
-
-      ;; Test for IX prefix
-      (i32.eq (get_global $opCode) (i32.const 0xdd))
-      if
-        i32.const 1 set_global $indexMode
-        i32.const 1 set_global $isInOpExecution
-        i32.const 1 set_global $isInterruptBlocked
-        return
-      end
-
       ;; Execute the current operation
       i32.const 0 set_global $isInterruptBlocked
       call $processStandardOrIndexedOperations
-      i32.const 0 set_global $indexMode
-      i32.const 0 set_global $prefixMode
-      i32.const 0 set_global $isInOpExecution
+      (i32.eq (get_global $isInterruptBlocked) (i32.const 0))
+      if
+        i32.const 0 set_global $indexMode
+        i32.const 0 set_global $prefixMode
+        i32.const 0 set_global $isInOpExecution
+      end
       return
     end
 
@@ -4396,6 +4362,13 @@
     call $setPC
   )
 
+  ;; CB prefix
+  (func $SignCB
+    i32.const 2 set_global $prefixMode
+    i32.const 1 set_global $isInOpExecution
+    i32.const 1 set_global $isInterruptBlocked
+  )
+
   ;; call z (0xcc)
   (func $CallZ
     call $readAddrToWZ
@@ -4609,6 +4582,13 @@
     call $setPC
   )
 
+  ;; DD prefix
+  (func $SignDD
+    i32.const 1 set_global $indexMode
+    i32.const 1 set_global $isInOpExecution
+    i32.const 1 set_global $isInterruptBlocked
+  )
+
   ;;  sbc N (0xde)
   (func $SbcAN
     call $readCodeMemory
@@ -4783,6 +4763,13 @@
     call $setPC
   )
 
+  ;; ED prefix
+  (func  $SignED
+    i32.const 1 set_global $prefixMode
+    i32.const 1 set_global $isInOpExecution
+    i32.const 1 set_global $isInterruptBlocked
+  )
+  
   ;; xor a,N (0xee)
   (func $XorAN
     call $readCodeMemory
@@ -4907,6 +4894,13 @@
     call $pushValue
     call $getWZ
     call $setPC
+  )
+
+  ;; FD prefix
+  (func $SignFD
+    i32.const 2 set_global $indexMode
+    i32.const 1 set_global $isInOpExecution
+    i32.const 1 set_global $isInterruptBlocked
   )
 
   ;; call cp N (0xfe)
@@ -8113,23 +8107,21 @@
 
       ;; TODO: Check various terminations
 
-      ;; Store it as the last tact to render
-      get_local $currentUlaTact
-      set_local $lastTact
-
-      ;; Run screen rendering cycle
-      (call $renderScreen 
-        (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
-        (get_local $lastTact)
-      )
-      get_local $lastTact set_global $lastRenderedUlaTact
-
       ;; Exit if if halted and execution mode is UntilHalted
       (i32.eq (get_global $emulationMode) (i32.const 1))
       if
         (i32.and (get_global $stateFlags) (i32.const 0x08)) ;; HLT signal set?
         if
           i32.const 3 set_global $executionCompletionReason ;; Reason: halted
+
+          ;; Render the screen before exit
+          get_local $currentUlaTact
+          set_local $lastTact
+          (call $renderScreen 
+            (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
+            (get_local $lastTact)
+          )
+          get_local $lastTact set_global $lastRenderedUlaTact
           return
         end
       end     
@@ -8148,6 +8140,15 @@
     set_global $tacts
     (i32.add (get_global $frameCount) (i32.const 1))
     set_global $frameCount
+
+    ;; Render the screen before exit
+    get_local $currentUlaTact
+    set_local $lastTact
+    (call $renderScreen 
+      (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
+      (get_local $lastTact)
+    )
+    get_local $lastTact set_global $lastRenderedUlaTact
 
     ;; Sign frame completion
     call $completeFrame
