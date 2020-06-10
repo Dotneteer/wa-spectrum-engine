@@ -7828,20 +7828,14 @@
   ;; The ULA issue of the engine
   (global $ulaIssue (mut i32) (i32.const 0x0000))
 
-  ;; CPU tacts value when last execution cycle started
-  (global $lastExecutionStartTacts (mut i32) (i32.const 0x0000))
-
-  ;; CPU tacts value when the last frame started
-  (global $lastFrameStartTacts (mut i32) (i32.const 0x0000))
-
   ;; The last rendered ULA tact
   (global $lastRenderedUlaTact (mut i32) (i32.const 0x0000))
 
+  ;; Number of frames rendered
+  (global $frameCount (mut i32) (i32.const 0x0000))
+
   ;; Indicates that a screen frame has just completed
   (global $frameCompleted (mut i32) (i32.const 0x0000))
-
-  ;; Overflow from the previous frame, given in #of tacts
-  (global $frameOverflow (mut i32) (i32.const 0x0000))
 
   ;; Gets or sets the value of the contention accummulated since the start
   ;; of the machine
@@ -8018,10 +8012,9 @@
     call $resetCpu
 
     ;; Reset engine state variables
-    i32.const 0 set_global $lastExecutionStartTacts
     i32.const 0 set_global $lastRenderedUlaTact
+    i32.const 0 set_global $frameCount
     i32.const 0 set_global $frameCompleted
-    i32.const 0 set_global $frameOverflow
     i32.const 0 set_global $contentionAccummulated
     i32.const 0 set_global $lastExecutionContentionValue
     i32.const 0 set_global $emulationMode
@@ -8082,85 +8075,81 @@
 
   ;; Executes the ZX Spectrum machine cycle
   (func $executeMachineCycle
-    (local $currentTact i32)
+    (local $currentUlaTact i32)
     (local $lastTact i32)
 
     ;; Initialize the execution cycle
     i32.const 0 set_global $executionCompletionReason
-    get_global $tacts set_global $lastExecutionStartTacts
     get_global $contentionAccummulated set_global $lastExecutionContentionValue
 
-    ;; Check if we're just about starting the next frame
-    get_global $frameCompleted
-    if
-      call $startNewFrame
-      (i32.sub (get_global $tacts) (get_global $frameOverflow))
-      set_global $lastFrameStartTacts
-      get_global $frameOverflow set_global $lastRenderedUlaTact
-      i32.const 0 set_global $frameCompleted
-    end
 
     ;; The physical frame cycle that goes on while CPU and ULA
     ;; processes everything within a screen rendering frame
     loop $frameCycle
-      (i32.eq (get_global $frameCompleted) (i32.const 0))
+      ;; Check if we're just about starting the next frame
+      get_global $frameCompleted
       if
-        ;; Calculate the current frame tact
-        (i32.sub (get_global $tacts) (get_global $lastFrameStartTacts))
-        get_global $clockMultiplier
-        i32.div_u
-
-        ;; Take care of raising the interrupt
-        (call $checkForInterrupt (tee_local $currentTact))
-        call $executeCpuCycle
-
-        ;; Execute an entire instruction
-        loop $instructionLoop
-          get_global $isInOpExecution
-          if
-            call $executeCpuCycle
-            br $instructionLoop
-          end
-        end 
-
-        ;; TODO: Check various terminations
-
-        ;; Store it as the last tact to render
-        get_local $currentTact
-        set_local $lastTact
-
-        ;; Run screen rendering cycle
-        (call $renderScreen 
-          (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
-          (get_local $lastTact)
-        )
-        get_local $lastTact set_global $lastRenderedUlaTact
-
-        ;; Exit if if halted and execution mode is UntilHalted
-        (i32.eq (get_global $emulationMode) (i32.const 1))
-        if
-          (i32.and (get_global $stateFlags) (i32.const 0x08)) ;; HLT signal set?
-          if
-            i32.const 3 set_global $executionCompletionReason ;; Reason: halted
-            return
-          end
-        end     
-
-        ;; Notify the tape device to check tape hooks
-        call $checkTapeHooks
-
-        ;; Test frame completion
-        (i32.gt_u (get_local $currentTact) (get_global $tactsInFrame))
-        set_global $frameCompleted
-
-        ;; continue
-        br $frameCycle
+        call $startNewFrame
+        (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
+        set_global $lastRenderedUlaTact
+        i32.const 0 set_global $frameCompleted
       end
+
+      ;; Calculate the current frame tact
+      (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
+
+      ;; Take care of raising the interrupt
+      (call $checkForInterrupt (tee_local $currentUlaTact))
+      call $executeCpuCycle
+
+      ;; Execute an entire instruction
+      loop $instructionLoop
+        get_global $isInOpExecution
+        if
+          call $executeCpuCycle
+          br $instructionLoop
+        end
+      end 
+
+      ;; TODO: Check various terminations
+
+      ;; Store it as the last tact to render
+      get_local $currentUlaTact
+      set_local $lastTact
+
+      ;; Run screen rendering cycle
+      (call $renderScreen 
+        (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
+        (get_local $lastTact)
+      )
+      get_local $lastTact set_global $lastRenderedUlaTact
+
+      ;; Exit if if halted and execution mode is UntilHalted
+      (i32.eq (get_global $emulationMode) (i32.const 1))
+      if
+        (i32.and (get_global $stateFlags) (i32.const 0x08)) ;; HLT signal set?
+        if
+          i32.const 3 set_global $executionCompletionReason ;; Reason: halted
+          return
+        end
+      end     
+
+      ;; Notify the tape device to check tape hooks
+      call $checkTapeHooks
+
+      ;; Test frame completion
+      (i32.ge_u (get_local $currentUlaTact) (get_global $tactsInFrame))
+      set_global $frameCompleted
+      (br_if $frameCycle (i32.eq (get_global $frameCompleted) (i32.const 0)))
     end
 
     ;; The current screen rendering frame completed
-    (i32.rem_u (get_global $tacts) (get_global $tactsInFrame))
-    set_global $frameOverflow
+    (i32.sub (get_global $tacts) (get_global $tactsInFrame))
+    set_global $tacts
+    (i32.add (get_global $frameCount) (i32.const 1))
+    set_global $frameCount
+
+    ;; Sign frame completion
     call $completeFrame
     i32.const 5 set_global $executionCompletionReason ;; Reason: frame completed
   )
@@ -8412,45 +8401,43 @@
     ;; ZX Spectrum engine state
     (i32.store8 offset=131 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
     (i32.store offset=132 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
-    (i32.store offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartTacts))
-    (i32.store offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $lastFrameStartTacts))
-    (i32.store8 offset=144 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
-    (i32.store offset=145 (get_global $STATE_TRANSFER_BUFF) (get_global $frameOverflow))
-    (i32.store offset=149 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
-    (i32.store offset=153 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
-    (i32.store8 offset=157 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
-    (i32.store8 offset=158 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
-    (i32.store8 offset=159 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
-    (i32.store8 offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
-    (i32.store16 offset=161 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
-    (i32.store8 offset=163 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
-    (i32.store8 offset=164 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
-    (i32.store8 offset=165 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
+    (i32.store offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCount))
+    (i32.store8 offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
+    (i32.store offset=141 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
+    (i32.store offset=145 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
+    (i32.store8 offset=149 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
+    (i32.store8 offset=150 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
+    (i32.store8 offset=151 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
+    (i32.store8 offset=152 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
+    (i32.store16 offset=153 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
+    (i32.store8 offset=155 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
+    (i32.store8 offset=156 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
+    (i32.store8 offset=157 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
 
     ;; Keyboard lines
     (i32.load offset=0 (get_global $KEYBOARD_LINES))
-    (i32.store offset=166 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=158 (get_global $STATE_TRANSFER_BUFF))
     (i32.load offset=4 (get_global $KEYBOARD_LINES))
-    (i32.store offset=170 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=162 (get_global $STATE_TRANSFER_BUFF))
 
     ;; Port state
-    (i32.store8 offset=174 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
-    (i32.store8 offset=175 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
-    (i32.store offset=176 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
-    (i32.store offset=180 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
+    (i32.store8 offset=166 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
+    (i32.store8 offset=167 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
+    (i32.store offset=168 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
+    (i32.store offset=172 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
 
     ;; Interrupt state
-    (i32.store8 offset=184 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
-    (i32.store8 offset=185 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
+    (i32.store8 offset=176 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
+    (i32.store8 offset=177 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
 
     ;; Screen state
-    (i32.store8 offset=186 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
-    (i32.store8 offset=187 (get_global $STATE_TRANSFER_BUFF) (get_global $flashPhase))
-    (i32.store8 offset=188 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte1))
-    (i32.store8 offset=189 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte2))
-    (i32.store8 offset=190 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
-    (i32.store8 offset=191 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
-    (i32.store8 offset=192 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
+    (i32.store8 offset=178 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
+    (i32.store8 offset=179 (get_global $STATE_TRANSFER_BUFF) (get_global $flashPhase))
+    (i32.store8 offset=180 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte1))
+    (i32.store8 offset=181 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte2))
+    (i32.store8 offset=182 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
+    (i32.store8 offset=183 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
+    (i32.store8 offset=184 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
   )
 
   ;; Copies a segment of memory
@@ -8506,18 +8493,18 @@
   )
 
   ;; Checks and executes interrupt, it it's time
-  (func $checkForInterrupt (param $currentTact i32)
+  (func $checkForInterrupt (param $currentUlaTact i32)
     ;; We've already handled the interrupt
     get_global $interruptRevoked
     if return end
 
     ;; Is it too early to raise the interrupt?
-    (i32.lt_u (get_local $currentTact) (get_global $interruptTact))
+    (i32.lt_u (get_local $currentUlaTact) (get_global $interruptTact))
     if return end
 
     ;; Are we over the longest op after the interrupt tact?
     (i32.gt_u 
-      (get_local $currentTact)
+      (get_local $currentUlaTact)
       (i32.add (get_global $interruptTact) (i32.const 23)) ;; tacts of the longest op
     )
     if

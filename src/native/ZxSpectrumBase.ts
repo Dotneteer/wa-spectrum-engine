@@ -138,45 +138,43 @@ export abstract class ZxSpectrumBase {
     // --- Get engine state
     s.ulaIssue = mh.readByte(131);
     s.lastRenderedUlaTact = mh.readUint32(132);
-    s.lastExecutionStartFrameTacts = mh.readUint32(136);
-    s.lastFrameStartTacts = mh.readUint32(140);
-    s.frameCompleted = mh.readBool(144);
-    s.frameOverflow = mh.readUint32(145);
-    s.contentionAccummulated = mh.readUint32(149);
-    s.lastExecutionContentionValue = mh.readUint32(153);
-    s.emulationMode = mh.readByte(157) as EmulationMode;
-    s.debugStepMode = mh.readByte(158) as DebugStepMode;
-    s.fastTapeMode = mh.readBool(159);
-    s.terminationRom = mh.readByte(160);
-    s.terminationPoint = mh.readUint16(161);
-    s.fastVmMode = mh.readBool(163);
-    s.disableScreenRendering = mh.readBool(164);
-    s.executionCompletionReason = mh.readByte(165) as ExecutionCompletionReason;
+    s.frameCount = mh.readUint32(136);
+    s.frameCompleted = mh.readBool(140);
+    s.contentionAccummulated = mh.readUint32(141);
+    s.lastExecutionContentionValue = mh.readUint32(145);
+    s.emulationMode = mh.readByte(149) as EmulationMode;
+    s.debugStepMode = mh.readByte(150) as DebugStepMode;
+    s.fastTapeMode = mh.readBool(151);
+    s.terminationRom = mh.readByte(152);
+    s.terminationPoint = mh.readUint16(153);
+    s.fastVmMode = mh.readBool(155);
+    s.disableScreenRendering = mh.readBool(156);
+    s.executionCompletionReason = mh.readByte(157) as ExecutionCompletionReason;
 
     // --- Get keyboard state
     s.keyboardLines = [];
     for (let i = 0; i < 8; i++) {
-      s.keyboardLines[i] = mh.readByte(166 + i);
+      s.keyboardLines[i] = mh.readByte(158 + i);
     }
 
     // --- Get port state
-    s.portBit3LastValue = mh.readBool(174);
-    s.portBit4LastValue = mh.readBool(175);
-    s.portBit4ChangedFrom0Tacts = mh.readUint32(176);
-    s.portBit4ChangedFrom1Tacts = mh.readUint32(180);
+    s.portBit3LastValue = mh.readBool(166);
+    s.portBit4LastValue = mh.readBool(167);
+    s.portBit4ChangedFrom0Tacts = mh.readUint32(168);
+    s.portBit4ChangedFrom1Tacts = mh.readUint32(172);
 
     // --- Get interrupt state
-    s.interruptRaised = mh.readBool(184);
-    s.interruptRevoked = mh.readBool(185);
+    s.interruptRaised = mh.readBool(176);
+    s.interruptRevoked = mh.readBool(177);
 
     // --- Get screen state
-    s.borderColor = mh.readByte(186);
-    s.flashPhase = mh.readBool(187);
-    s.pixelByte1 = mh.readByte(188);
-    s.pixelByte2 = mh.readByte(189);
-    s.attrByte1 = mh.readByte(190);
-    s.attrByte2 = mh.readByte(191);
-    s.flashFrames = mh.readByte(1922);
+    s.borderColor = mh.readByte(178);
+    s.flashPhase = mh.readBool(179);
+    s.pixelByte1 = mh.readByte(180);
+    s.pixelByte2 = mh.readByte(181);
+    s.attrByte1 = mh.readByte(182);
+    s.attrByte2 = mh.readByte(183);
+    s.flashFrames = mh.readByte(184);
 
     // --- Done.
     return s;
