@@ -735,21 +735,21 @@
     ;; 0x38-0x3f
     $JrC      $AddIXSP  $LdANNi   $DecSP    $IncA     $DecA     $LdAN     $Ccf
     ;; 0x40-0x47
-    $NOOP     $LdBC     $LdBD     $LdBE     $LdBXH    $LdBXL    $LdQIXi   $LdBA
+    $NOOP     $LdBC     $LdBD     $LdBE     $LdBXH    $LdBXL    $LdBIXi   $LdBA
     ;; 0x48-0x4f
-    $LdCB     $NOOP     $LdCD     $LdCE     $LdCXH    $LdCXL    $LdQIXi   $LdCA
+    $LdCB     $NOOP     $LdCD     $LdCE     $LdCXH    $LdCXL    $LdCIXi   $LdCA
     ;; 0x50-0x57
-    $LdDB     $LdDC     $NOOP     $LdDE     $LdDXH    $LdDXL    $LdQIXi   $LdDA
+    $LdDB     $LdDC     $NOOP     $LdDE     $LdDXH    $LdDXL    $LdDIXi   $LdDA
     ;; 0x58-0x5f
-    $LdEB     $LdEC     $LdED     $NOOP     $LdEXH    $LdEXL    $LdQIXi   $LdEA
+    $LdEB     $LdEC     $LdED     $NOOP     $LdEXH    $LdEXL    $LdEIXi   $LdEA
     ;; 0x60-0x67
-    $LdXHB    $LdHC     $LdHD     $LdHE     $NOOP     $LdEXL    $LdQIXi   $LdHA
+    $LdXHB    $LdXHC    $LdXHD    $LdXHE    $NOOP     $LdXHXL   $LdHIXi   $LdXHA
     ;; 0x68-0x6f
-    $LdLB     $LdLC     $LdLD     $LdLE     $LdEXH    $NOOP     $LdQIXi   $LdLA
+    $LdXLB    $LdXLC    $LdXLD    $LdXLE    $LdXLXH   $NOOP     $LdLIXi   $LdXLA
     ;; 0x70-0x77
-    $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $LdIXiQ   $Halt     $LdIXiQ
+    $LdIXiB   $LdIXiC   $LdIXiD   $LdIXiE   $LdIXiH   $LdIXiL   $Halt     $LdIXiA
     ;; 0x78-0x7f
-    $LdQW     $LdQW     $LdQW     $LdQW     $LdAXH    $LdAXL    $LdQIXi   $NOOP
+    $LdAB     $LdAC     $LdAD     $LdAE     $LdAXH    $LdAXL    $LdAIXi   $NOOP
     ;; 0x80-0x87
     $AddAB    $AddAC    $AddAD    $AddAE    $AddAXH   $AddAXL   $AddAIXi  $AddAA
     ;; 0x88-0x8f
@@ -803,21 +803,21 @@
     ;; 0x38-0x3f
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x40-0x47
-    $InQC     $OutCQ    $SbcHLBC  $LdNNiBC  $Neg      $Retn     $ImN      $LdIA
+    $InBC     $OutCB    $SbcHLBC  $LdNNiBC  $Neg      $Retn     $ImN      $LdIA
     ;; 0x48-0x4f
-    $InQC     $OutCQ    $AdcHLBC  $LdBCNNi  $Neg      $Retn     $ImN      $LdRA
+    $InCC     $OutCC    $AdcHLBC  $LdBCNNi  $Neg      $Retn     $ImN      $LdRA
     ;; 0x50-0x57
-    $InQC     $OutCQ    $SbcHLDE  $LdNNiDE  $Neg      $Retn     $ImN      $LdAXr
+    $InDC     $OutCD    $SbcHLDE  $LdNNiDE  $Neg      $Retn     $ImN      $LdAXr
     ;; 0x58-0x5f
-    $InQC     $OutCQ    $AdcHLDE  $LdDENNi  $Neg      $Retn     $ImN      $LdAXr
+    $InEC     $OutCE    $AdcHLDE  $LdDENNi  $Neg      $Retn     $ImN      $LdAXr
     ;; 0x60-0x67
-    $InQC     $OutCQ    $SbcHLHL  $LdNNiHL  $Neg      $Retn     $ImN      $Rrd
+    $InHC     $OutCH    $SbcHLHL  $LdNNiHL  $Neg      $Retn     $ImN      $Rrd
     ;; 0x68-0x6f
-    $InQC     $OutCQ    $AdcHLHL  $LdHLNNi  $Neg      $Retn     $ImN      $Rld
+    $InLC     $OutCL    $AdcHLHL  $LdHLNNi  $Neg      $Retn     $ImN      $Rld
     ;; 0x70-0x77
-    $InQC     $OutCQ    $SbcHLSP  $LdNNiSP  $Neg      $Retn     $ImN      $NOOP
+    $In0C     $OutC0    $SbcHLSP  $LdNNiSP  $Neg      $Retn     $ImN      $NOOP
     ;; 0x78-0x7f
-    $InQC     $OutCQ    $AdcHLSP  $LdSPNNi  $Neg      $Retn     $ImN      $NOOP
+    $InAC     $OutCA    $AdcHLSP  $LdSPNNi  $Neg      $Retn     $ImN      $NOOP
     ;; 0x80-0x87
     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP     $NOOP
     ;; 0x88-0x8f
@@ -3921,46 +3921,6 @@
     (call $setA (call $readMemory (call $getHL)))
   )
 
-  ;; ld Q,W
-  ;; Q, W: B, C, D, E, H, L, A
-  (func $LdQW
-    ;; Get 8-bit Q reg index
-    (i32.shr_u 
-      (i32.and (get_global $opCode) (i32.const 0x38))
-      (i32.const 3)
-    )
-    (i32.and (get_global $opCode) (i32.const 0x07))
-    call $getReg8 
-    call $setReg8
-  )
-
-  ;; ld Q,(hl)
-  ;; Q: B, C, D, E, H, L, A
-  (func $LdQHLi
-    ;; Get 8-bit Q reg index
-    (i32.shr_u 
-      (i32.and (get_global $opCode) (i32.const 0x38))
-      (i32.const 3)
-    )
-
-    ;; Get data from memory and store it
-    call $getHL
-    call $readMemory
-    call $setReg8
-  )
-
-  ;; ld (hl),Q
-  ;; Q: B, C, D, E, H, L, A
-  (func $LdHLiQ
-    call $getHL
-    ;; Get 8-bit Q reg index
-    (i32.and (get_global $opCode) (i32.const 0x07))
-
-    ;; Get reg value and store it
-    call $getReg8
-    call $writeMemory
-  )
-
   ;; add a,b (0x80)
   (func $AddAB
     (call $AluAdd (call $getB) (i32.const 0))
@@ -5274,6 +5234,12 @@
     call $setB
   )
 
+  ;; ld b,(ix+d) (0x46)
+  (func $LdBIXi
+    (call $AdjustIXTact (call $getIndexedAddress))
+    (call $setB (call $readMemory))
+  )
+
   ;; ld c,xh (0x4c)
   (func $LdCXH
     (i32.shr_u (call $getIndexReg) (i32.const 8))
@@ -5284,6 +5250,12 @@
   (func $LdCXL
     (i32.and (call $getIndexReg) (i32.const 0xff))
     call $setC
+  )
+
+  ;; ld c,(ix+d) (0x4e)
+  (func $LdCIXi
+    (call $AdjustIXTact (call $getIndexedAddress))
+    (call $setC (call $readMemory))
   )
 
   ;; ld d,xh (0x54)
@@ -5298,6 +5270,12 @@
     call $setD
   )
 
+  ;; ld d,(ix+d) (0x56)
+  (func $LdDIXi
+    (call $AdjustIXTact (call $getIndexedAddress))
+    (call $setD (call $readMemory))
+  )
+
   ;; ld e,xh (0x5c)
   (func $LdEXH
     (i32.shr_u (call $getIndexReg) (i32.const 8))
@@ -5310,12 +5288,174 @@
     call $setE
   )
 
+  ;; ld e,(ix+d) (0x5e)
+  (func $LdEIXi
+    (call $AdjustIXTact (call $getIndexedAddress))
+    (call $setE (call $readMemory))
+  )
+
   ;; ld xh,b (0x60)
   (func $LdXHB
     (i32.and (call $getIndexReg) (i32.const 0x00ff))
     (i32.shl (call $getB) (i32.const 8))
     i32.or
     call $setIndexReg
+  )
+
+  ;; ld xh,c (0x61)
+  (func $LdXHC
+    (i32.and (call $getIndexReg) (i32.const 0x00ff))
+    (i32.shl (call $getC) (i32.const 8))
+    i32.or
+    call $setIndexReg
+  )
+
+  ;; ld xh,d (0x62)
+  (func $LdXHD
+    (i32.and (call $getIndexReg) (i32.const 0x00ff))
+    (i32.shl (call $getD) (i32.const 8))
+    i32.or
+    call $setIndexReg
+  )
+
+  ;; ld xh,e (0x63)
+  (func $LdXHE
+    (i32.and (call $getIndexReg) (i32.const 0x00ff))
+    (i32.shl (call $getE) (i32.const 8))
+    i32.or
+    call $setIndexReg
+  )
+
+  ;; ld xh,xl (0x65)
+  (func $LdXHXL
+    (i32.and (call $getIndexReg) (i32.const 0x00ff))
+    (i32.shl (call $getIndexReg) (i32.const 8))
+    i32.or
+    call $setIndexReg
+  )
+
+  ;; ld h,(ix+d) (0x66)
+  (func $LdHIXi
+    (call $AdjustIXTact (call $getIndexedAddress))
+    (call $setH (call $readMemory))
+  )
+
+  ;; ld xh,e (0x67)
+  (func $LdXHA
+    (i32.and (call $getIndexReg) (i32.const 0x00ff))
+    (i32.shl (call $getA) (i32.const 8))
+    i32.or
+    call $setIndexReg
+  )
+
+  ;; ld xl,b (0x68)
+  (func $LdXLB
+    (i32.or 
+      (i32.and (call $getIndexReg) (i32.const 0xff00))
+      (call $getB)
+    )
+    call $setIndexReg
+  )
+
+  ;; ld xl,c (0x69)
+  (func $LdXLC
+    (i32.or 
+      (i32.and (call $getIndexReg) (i32.const 0xff00))
+      (call $getC)
+    )
+    call $setIndexReg
+  )
+
+  ;; ld xl,d (0x6a)
+  (func $LdXLD
+    (i32.or 
+      (i32.and (call $getIndexReg) (i32.const 0xff00))
+      (call $getD)
+    )
+    call $setIndexReg
+  )
+
+  ;; ld xl,e (0x6b)
+  (func $LdXLE
+    (i32.or 
+      (i32.and (call $getIndexReg) (i32.const 0xff00))
+      (call $getE)
+    )
+    call $setIndexReg
+  )
+
+  ;; ld xl,xh (0x6c)
+  (func $LdXLXH
+    (local $xh i32)
+    (i32.and (call $getIndexReg) (i32.const 0xff00))
+    (i32.shr_u (tee_local $xh) (i32.const 8))
+    get_local $xh
+    i32.or
+    call $setIndexReg
+  )
+
+  ;; ld l,(ix+d) (0x6e)
+  (func $LdLIXi
+    (call $AdjustIXTact (call $getIndexedAddress))
+    (call $setL (call $readMemory))
+  )
+
+  ;; ld xl,a (0x6f)
+  (func $LdXLA
+    (i32.or 
+      (i32.and (call $getIndexReg) (i32.const 0xff00))
+      (call $getA)
+    )
+    call $setIndexReg
+  )
+
+  ;; ld (ix+d),b (0x70)
+  (func $LdIXiB
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getB))
+  )
+
+  ;; ld (ix+d),c (0x71)
+  (func $LdIXiC
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getC))
+  )
+
+  ;; ld (ix+d),d (0x72)
+  (func $LdIXiD
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getD))
+  )
+
+  ;; ld (ix+d),e (0x73)
+  (func $LdIXiE
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getE))
+  )
+
+  ;; ld (ix+d),h (0x74)
+  (func $LdIXiH
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getH))
+  )
+
+  ;; ld (ix+d),l (0x75)
+  (func $LdIXiL
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getL))
+  )
+
+  ;; ld (ix+d),b (0x77)
+  (func $LdIXiA
+    call $getIndexedAddress
+    call $AdjustIXTact
+    (call $writeMemory (call $getA))
   )
 
   ;; ld a,xh (0x7c)
@@ -5330,35 +5470,10 @@
     call $setA
   )
 
-  ;; ld Q,(ix+d)
-  ;; Q: B, C, D, E, H, L, A
-  (func $LdQIXi
-    ;; Get 8-bit Q reg index
-    (i32.shr_u 
-      (i32.and (get_global $opCode) (i32.const 0x38))
-      (i32.const 3)
-    )
-
-    ;; Get address
+  ;; ld b,(ix+d) (0x7e)
+  (func $LdAIXi
     (call $AdjustIXTact (call $getIndexedAddress))
-
-    ;; Get data from memory and store it
-    call $readMemory
-    call $setReg8
-  )
-
-  ;; ld (ix+d),Q
-  ;; Q: B, C, D, E, H, L, A
-  (func $LdIXiQ
-    call $getIndexedAddress
-    call $AdjustIXTact
-
-    ;; Get 8-bit Q reg index
-    (i32.and (get_global $opCode) (i32.const 0x07))
-
-    ;; Get reg value and store it
-    call $getReg8
-    call $writeMemory
+    (call $setA (call $readMemory))
   )
 
   ;; add a,xh (0x84)
@@ -5801,34 +5916,15 @@
     (call $incTacts (i32.const 2))
   )
 
-  ;; in Q,(c) (0x40)
-  (func $InQC
-    (local $q i32)
+  ;; in b,(c) (0x40)
+  (func $InBC
     (local $pval i32)
-    ;; WZ := BC +1
     (i32.add (call $getBC) (i32.const 1))
     call $setWZ
-
-    ;; Get reg index
-    (i32.and 
-      (i32.shr_u (get_global $opCode) (i32.const 3))
-      (i32.const 0x07)
-    )
-    set_local $q
-
-    ;; Read the port
-    call $getBC
-    call $readPort
-    set_local $pval
-
-    ;; Should store?
-    (i32.ne (get_local $q) (i32.const 6))
-    if
-      get_local $q
-      get_local $pval
-      call $setReg8
-    end
-
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setB
+    
     ;; Adjust flags
     (i32.add (get_global $LOG_FLAGS) (get_local $pval))
     i32.load8_u
@@ -5837,34 +5933,11 @@
     (set_global $F (i32.and (i32.const 0xff)))
   )
 
-  ;; out (c),Q (0x41)
-  (func $OutCQ
-    (local $q i32)
-    ;; WZ := BC +1
+  ;; out (c),b (0x41)
+  (func $OutCB
     (i32.add (call $getBC) (i32.const 1))
     call $setWZ
-
-    ;; Port number
-    call $getBC
-
-    ;; Get reg index
-    (i32.and 
-      (i32.shr_u (get_global $opCode) (i32.const 3))
-      (i32.const 0x07)
-    )
-    tee_local $q
-
-    ;; Should output?
-    i32.const 6
-    i32.eq
-    if (result i32)
-      i32.const 0
-    else
-      get_local $q
-      call $getReg8
-    end
-    
-    call $writePort
+    (call $writePort (call $getBC) (call $getB))
   )
 
   ;; sbc hl,bc (0x42)
@@ -5884,6 +5957,173 @@
     (call $writeMemory (call $getC))
     call $getWZ
     (call $writeMemory (call $getB))
+  )
+
+  ;; in c,(c) (0x48)
+  (func $InCC
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setC
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),c (0x49)
+  (func $OutCC
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (call $getC))
+  )
+
+  ;; in d,(c) (0x50)
+  (func $InDC
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setD
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),d (0x51)
+  (func $OutCD
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (call $getD))
+  )
+
+  ;; in e,(c) (0x58)
+  (func $InEC
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setE
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),e (0x59)
+  (func $OutCE
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (call $getE))
+  )
+
+  ;; in h,(c) (0x60)
+  (func $InHC
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setH
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),h (0x61)
+  (func $OutCH
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (call $getH))
+  )
+
+  ;; in l,(c) (0x68)
+  (func $InLC
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setL
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),l (0x69)
+  (func $OutCL
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (call $getL))
+  )
+
+  ;; in (c) (0x70)
+  (func $In0C
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    set_local $pval
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),0 (0x71)
+  (func $OutC0
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (i32.const 0))
+  )
+
+  ;; in a,(c) (0x78)
+  (func $InAC
+    (local $pval i32)
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $readPort (call $getBC))
+    tee_local $pval
+    call $setA
+    
+    ;; Adjust flags
+    (i32.add (get_global $LOG_FLAGS) (get_local $pval))
+    i32.load8_u
+    (i32.and (get_global $F) (i32.const 0x01))
+    i32.or
+    (set_global $F (i32.and (i32.const 0xff)))
+  )
+
+  ;; out (c),a (0x79)
+  (func $OutCA
+    (i32.add (call $getBC) (i32.const 1))
+    call $setWZ
+    (call $writePort (call $getBC) (call $getA))
   )
 
   ;; ld (NN),QQ 

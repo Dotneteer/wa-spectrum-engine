@@ -25,7 +25,7 @@ describe("Indexed ops (iy) 40-7f", () => {
 
   const reg8 = ["b", "c", "d", "e", "h", "l", "(hl)", "a"];
   for (let q = 0; q < 8; q++) {
-    if (q === 6) continue;
+    if (q >= 4 && q <= 6) continue;
     for (let w = 0; w < 8; w++) {
       if (w >= 4 && w <= 6) continue;
 
@@ -340,6 +340,182 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.stateFlags & Z80StateFlags.Halted).toBeTruthy();
     expect(s.pc).toBe(0x0001);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("60: ld yh,b", () => {
+    let s = testMachine.initCode([0xfd, 0x60]);
+    s.iy = 0xaaaa;
+    s.b = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0x55aa);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("61: ld yh,c", () => {
+    let s = testMachine.initCode([0xfd, 0x61]);
+    s.iy = 0xaaaa;
+    s.c = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0x55aa);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("62: ld yh,d", () => {
+    let s = testMachine.initCode([0xfd, 0x62]);
+    s.iy = 0xaaaa;
+    s.d = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0x55aa);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("63: ld yh,e", () => {
+    let s = testMachine.initCode([0xfd, 0x63]);
+    s.iy = 0xaaaa;
+    s.e = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0x55aa);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("64: ld yh,yh", () => {
+    let s = testMachine.initCode([0xfd, 0x64]);
+    s.iy = 0xaabb;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters();
+    testMachine.shouldKeepMemory();
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("65: ld yh,yl", () => {
+    let s = testMachine.initCode([0xfd, 0x65]);
+    s.iy = 0xaabb;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xbbbb);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("67: ld yh,a", () => {
+    let s = testMachine.initCode([0xfd, 0x67]);
+    s.iy = 0xaaaa;
+    s.a = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0x55aa);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("68: ld yl,b", () => {
+    let s = testMachine.initCode([0xfd, 0x68]);
+    s.iy = 0xaaaa;
+    s.b = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xaa55);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("69: ld yl,c", () => {
+    let s = testMachine.initCode([0xfd, 0x69]);
+    s.iy = 0xaaaa;
+    s.c = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xaa55);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("6a: ld yl,d", () => {
+    let s = testMachine.initCode([0xfd, 0x6a]);
+    s.iy = 0xaaaa;
+    s.d = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xaa55);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("6b: ld yl,e", () => {
+    let s = testMachine.initCode([0xfd, 0x6b]);
+    s.iy = 0xaaaa;
+    s.e = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xaa55);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("6c: ld yl,yh", () => {
+    let s = testMachine.initCode([0xfd, 0x6c]);
+    s.iy = 0xaabb;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xaaaa);
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("6d: ld yl,yl", () => {
+    let s = testMachine.initCode([0xfd, 0x6d]);
+    s.iy = 0xaabb;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters();
+    testMachine.shouldKeepMemory();
+    expect(s.pc).toBe(0x0002);
+    expect(s.tactsL).toBe(8);
+  });
+
+  it("6f: ld yl,a", () => {
+    let s = testMachine.initCode([0xfd, 0x6f]);
+    s.iy = 0xaaaa;
+    s.a = 0x55;
+    s = testMachine.run(s);
+
+    testMachine.shouldKeepRegisters("iy");
+    testMachine.shouldKeepMemory();
+    expect(s.iy).toBe(0xaa55);
+    expect(s.pc).toBe(0x0002);
     expect(s.tactsL).toBe(8);
   });
 });
