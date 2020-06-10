@@ -48,7 +48,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("c0: ret nz #2", () => {
@@ -75,7 +75,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("c1: pop bc", () => {
@@ -91,7 +91,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("c2: jp nz #1", () => {
@@ -116,7 +116,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("c2: jp nz #2", () => {
@@ -141,7 +141,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("c3: jp", () => {
@@ -165,7 +165,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0008);
-    expect(s.tactsL).toBe(28);
+    expect(s.tacts).toBe(28);
   });
 
   it("c4: call nz #1", () => {
@@ -191,7 +191,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("c4: call nz #2", () => {
@@ -217,7 +217,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("c5: push bc", () => {
@@ -233,7 +233,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("c6: add a,N", () => {
@@ -254,7 +254,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("c7: rst 00", () => {
@@ -278,7 +278,7 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 
   it("c8: ret z #1", () => {
@@ -305,7 +305,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("c8: ret z #2", () => {
@@ -332,7 +332,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("c9: ret", () => {
@@ -354,7 +354,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(38);
+    expect(s.tacts).toBe(38);
   });
 
   it("ca: jp z #1", () => {
@@ -379,7 +379,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("ca: jp z #2", () => {
@@ -404,7 +404,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("cc: call z #1", () => {
@@ -430,7 +430,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("cc: call z #2", () => {
@@ -456,7 +456,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("cd: call NN", () => {
@@ -481,7 +481,7 @@ describe("Standard ops c0-ff", () => {
 
     expect(s.a).toBe(0xa3);
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(45);
+    expect(s.tacts).toBe(45);
   });
 
   it("ce: adc a,N #1", () => {
@@ -503,7 +503,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("ce: adc a,N #2", () => {
@@ -525,7 +525,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("cf: rst 08", () => {
@@ -549,7 +549,7 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 
   it("d0: ret nc #1", () => {
@@ -576,7 +576,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("d0: ret nc #2", () => {
@@ -603,7 +603,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("d1: pop de", () => {
@@ -619,7 +619,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("d2: jp nc #1", () => {
@@ -644,7 +644,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("d2: jp nc #2", () => {
@@ -669,7 +669,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("d3: out (N),a", () => {
@@ -689,7 +689,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("d4: call nc #1", () => {
@@ -715,7 +715,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("d4: call nc #2", () => {
@@ -741,7 +741,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("d5: push de", () => {
@@ -757,7 +757,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("d6: sub N", () => {
@@ -779,7 +779,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("d7: rst 10", () => {
@@ -803,7 +803,7 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 
   it("d8: ret c #1", () => {
@@ -830,7 +830,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("d8: ret c #2", () => {
@@ -857,7 +857,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("d9: exx", () => {
@@ -881,7 +881,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(4);
+    expect(s.tacts).toBe(4);
   });
 
   it("da: jp c #1", () => {
@@ -906,7 +906,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("da: jp c #2", () => {
@@ -931,7 +931,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("db: in a,(N)", () => {
@@ -951,7 +951,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("dc: call c #1", () => {
@@ -977,7 +977,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("dc: call c #2", () => {
@@ -1003,7 +1003,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("de: sbc a,N #1", () => {
@@ -1025,7 +1025,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("de: sbc a,N #2", () => {
@@ -1047,7 +1047,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("df: rst 18", () => {
@@ -1071,7 +1071,7 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 
   it("e0: ret po #1", () => {
@@ -1098,7 +1098,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("e0: ret po #2", () => {
@@ -1125,7 +1125,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("e1: pop hl", () => {
@@ -1141,7 +1141,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("e2: jp po #1", () => {
@@ -1166,7 +1166,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("e2: jp po #2", () => {
@@ -1191,7 +1191,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("e4: call po #1", () => {
@@ -1217,7 +1217,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("e3: ex (sp),hl", () => {
@@ -1239,7 +1239,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("1000-1001");
 
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("e4: call po #2", () => {
@@ -1265,7 +1265,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("e5: push hl", () => {
@@ -1281,7 +1281,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("e6: and N", () => {
@@ -1303,7 +1303,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("e7: rst 20", () => {
@@ -1327,7 +1327,7 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 
   it("e8: ret pe #1", () => {
@@ -1354,7 +1354,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("e8: ret pe #2", () => {
@@ -1381,7 +1381,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("e9: jp (hl)", () => {
@@ -1395,7 +1395,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x1000);
-    expect(s.tactsL).toBe(4);
+    expect(s.tacts).toBe(4);
   });
 
   it("ea: jp pe #1", () => {
@@ -1420,7 +1420,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("ea: jp pe #2", () => {
@@ -1445,7 +1445,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("eb: ex de,hl", () => {
@@ -1462,7 +1462,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(4);
+    expect(s.tacts).toBe(4);
   });
 
   it("ec: call pe #1", () => {
@@ -1488,7 +1488,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("ec: call pe #2", () => {
@@ -1514,7 +1514,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("ee: xor N", () => {
@@ -1536,7 +1536,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("ef: rst 28", () => {
@@ -1560,7 +1560,7 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 
   it("f0: ret p #1", () => {
@@ -1587,7 +1587,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("f0: ret p #2", () => {
@@ -1614,7 +1614,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("f1: pop af", () => {
@@ -1630,7 +1630,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("f2: jp p #1", () => {
@@ -1655,7 +1655,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("f2: jp p #2", () => {
@@ -1680,7 +1680,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("f3: di", () => {
@@ -1695,7 +1695,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(4);
+    expect(s.tacts).toBe(4);
   });
 
   it("f4: call p #1", () => {
@@ -1721,7 +1721,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("f4: call p #2", () => {
@@ -1747,7 +1747,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("f5: push af", () => {
@@ -1763,7 +1763,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(21);
+    expect(s.tacts).toBe(21);
   });
 
   it("f6: or N", () => {
@@ -1785,7 +1785,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("f8: ret m #1", () => {
@@ -1812,7 +1812,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(43);
+    expect(s.tacts).toBe(43);
   });
 
   it("f8: ret m #2", () => {
@@ -1839,7 +1839,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("FFFE-FFFF");
 
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(54);
+    expect(s.tacts).toBe(54);
   });
 
   it("f9: ld sp,hl", () => {
@@ -1854,7 +1854,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(6);
+    expect(s.tacts).toBe(6);
   });
 
   it("fa: jp m #1", () => {
@@ -1879,7 +1879,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0009);
-    expect(s.tactsL).toBe(32);
+    expect(s.tacts).toBe(32);
   });
 
   it("fa: jp m #2", () => {
@@ -1904,7 +1904,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("fb: ei", () => {
@@ -1920,7 +1920,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(4);
+    expect(s.tacts).toBe(4);
   });
 
   it("fc: call m #1", () => {
@@ -1946,7 +1946,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(49);
+    expect(s.tacts).toBe(49);
   });
 
   it("fc: call m #2", () => {
@@ -1972,7 +1972,7 @@ describe("Standard ops c0-ff", () => {
     testMachine.shouldKeepMemory("fffe-ffff");
 
     expect(s.pc).toBe(0x0006);
-    expect(s.tactsL).toBe(25);
+    expect(s.tacts).toBe(25);
   });
 
   it("fe: cp N", () => {
@@ -1993,7 +1993,7 @@ describe("Standard ops c0-ff", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(7);
+    expect(s.tacts).toBe(7);
   });
 
   it("ff: rst 38", () => {
@@ -2017,6 +2017,6 @@ describe("Standard ops c0-ff", () => {
     expect(m[0xffff]).toBe(0x00);
     testMachine.shouldKeepRegisters("SP");
     testMachine.shouldKeepMemory("FFFE-FFFF");
-    expect(s.tactsL).toBe(18);
+    expect(s.tacts).toBe(18);
   });
 });

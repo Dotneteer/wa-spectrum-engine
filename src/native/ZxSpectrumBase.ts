@@ -58,7 +58,7 @@ export abstract class ZxSpectrumBase {
 
     // --- Get register data from the memory
     let mh = new MemoryHelper(this.api, REG_AREA_INDEX);
-    //s.af = mh.readUint16(0);
+
     s.bc = mh.readUint16(2);
     s.de = mh.readUint16(4);
     s.hl = mh.readUint16(6);
@@ -81,107 +81,102 @@ export abstract class ZxSpectrumBase {
 
     s.tactsInFrame = mh.readUint32(28);
     s.allowExtendedSet = mh.readBool(32);
-    s.tactsL = mh.readUint32(33);
-    s.tactsH = mh.readUint32(37);
-    s.stateFlags = mh.readByte(41);
-    s.useGateArrayContention = mh.readBool(42);
-    s.iff1 = mh.readBool(43);
-    s.iff2 = mh.readBool(44);
-    s.interruptMode = mh.readByte(45);
-    s.isInterruptBlocked = mh.readBool(46);
-    s.isInOpExecution = mh.readBool(47);
-    s.prefixMode = mh.readByte(48);
-    s.indexMode = mh.readByte(49);
-    s.maskableInterruptModeEntered = mh.readBool(50);
-    s.opCode = mh.readByte(51);
+    s.tacts = mh.readUint32(33);
+    s.stateFlags = mh.readByte(37);
+    s.useGateArrayContention = mh.readBool(38);
+    s.iff1 = mh.readBool(39);
+    s.iff2 = mh.readBool(40);
+    s.interruptMode = mh.readByte(41);
+    s.isInterruptBlocked = mh.readBool(42);
+    s.isInOpExecution = mh.readBool(43);
+    s.prefixMode = mh.readByte(44);
+    s.indexMode = mh.readByte(45);
+    s.maskableInterruptModeEntered = mh.readBool(46);
+    s.opCode = mh.readByte(47);
 
     // --- Get CPU configuration data
-    s.baseClockFrequency = mh.readUint32(52);
-    s.clockMultiplier = mh.readByte(56);
-    s.supportsNextOperations = mh.readBool(57);
+    s.baseClockFrequency = mh.readUint32(48);
+    s.clockMultiplier = mh.readByte(52);
+    s.supportsNextOperations = mh.readBool(53);
     
     // --- Get memory configuration data
-    s.numberOfRoms = mh.readByte(58);
-    s.romContentsAddress = mh.readUint32(59);
-    s.spectrum48RomIndex = mh.readByte(63);
-    s.contentionType = mh.readByte(64) as MemoryContentionType;
-    s.ramBanks = mh.readByte(65);
-    s.nextMemorySize = mh.readByte(66);
+    s.numberOfRoms = mh.readByte(54);
+    s.romContentsAddress = mh.readUint32(55);
+    s.spectrum48RomIndex = mh.readByte(59);
+    s.contentionType = mh.readByte(60) as MemoryContentionType;
+    s.ramBanks = mh.readByte(61);
+    s.nextMemorySize = mh.readByte(62);
 
     // --- Get screen frame configuration data
-    s.interruptTact = mh.readUint16(67);
-    s.verticalSyncLines = mh.readUint16(69);
-    s.nonVisibleBorderTopLines = mh.readUint16(71);
-    s.borderTopLines = mh.readUint16(73);
-    s.displayLines = mh.readUint16(75);
-    s.borderBottomLines = mh.readUint16(77);
-    s.nonVisibleBorderBottomLines = mh.readUint16(79);
-    s.horizontalBlankingTime = mh.readUint16(81);
-    s.borderLeftTime = mh.readUint16(83);
-    s.displayLineTime = mh.readUint16(85);
-    s.borderRightTime = mh.readUint16(87);
-    s.nonVisibleBorderRightTime = mh.readUint16(89);
-    s.pixelDataPrefetchTime = mh.readUint16(91);
-    s.attributeDataPrefetchTime = mh.readUint16(93);
+    s.interruptTact = mh.readUint16(63);
+    s.verticalSyncLines = mh.readUint16(65);
+    s.nonVisibleBorderTopLines = mh.readUint16(67);
+    s.borderTopLines = mh.readUint16(69);
+    s.displayLines = mh.readUint16(71);
+    s.borderBottomLines = mh.readUint16(73);
+    s.nonVisibleBorderBottomLines = mh.readUint16(75);
+    s.horizontalBlankingTime = mh.readUint16(77);
+    s.borderLeftTime = mh.readUint16(79);
+    s.displayLineTime = mh.readUint16(81);
+    s.borderRightTime = mh.readUint16(83);
+    s.nonVisibleBorderRightTime = mh.readUint16(85);
+    s.pixelDataPrefetchTime = mh.readUint16(87);
+    s.attributeDataPrefetchTime = mh.readUint16(89);
 
     // --- Get calculated frame attributes
-    s.screenLines = mh.readUint32(95);
-    s.firstDisplayLine = mh.readUint32(99);
-    s.borderLeftPixels = mh.readUint32(103);
-    s.borderRightPixels = mh.readUint32(107);
-    s.displayWidth = mh.readUint32(111);
-    s.screenWidth = mh.readUint32(115);
-    s.screenLineTime = mh.readUint32(119);
-    s.rasterLines = mh.readUint32(123);
-    s.firstDisplayPixelTact = mh.readUint32(127);
-    s.firstScreenPixelTact = mh.readUint32(131);
+    s.screenLines = mh.readUint32(91);
+    s.firstDisplayLine = mh.readUint32(95);
+    s.borderLeftPixels = mh.readUint32(99);
+    s.borderRightPixels = mh.readUint32(103);
+    s.displayWidth = mh.readUint32(107);
+    s.screenWidth = mh.readUint32(111);
+    s.screenLineTime = mh.readUint32(115);
+    s.rasterLines = mh.readUint32(119);
+    s.firstDisplayPixelTact = mh.readUint32(123);
+    s.firstScreenPixelTact = mh.readUint32(127);
 
     // --- Get engine state
-    s.ulaIssue = mh.readByte(135);
-    s.lastRenderedUlaTact = mh.readUint32(136);
-    s.lastExecutionStartFrameTactsL = mh.readUint32(140);
-    s.lastExecutionStartFrameTactsH = mh.readUint32(144);
-    s.lastFrameStartTactsL = mh.readUint32(148);
-    s.lastFrameStartTactsH = mh.readUint32(152);
-    s.frameCompleted = mh.readBool(156);
-    s.frameOverflow = mh.readUint32(157);
-    s.contentionAccummulated = mh.readUint32(161);
-    s.lastExecutionContentionValue = mh.readUint32(165);
-    s.emulationMode = mh.readByte(169) as EmulationMode;
-    s.debugStepMode = mh.readByte(170) as DebugStepMode;
-    s.fastTapeMode = mh.readBool(171);
-    s.terminationRom = mh.readByte(172);
-    s.terminationPoint = mh.readUint16(173);
-    s.fastVmMode = mh.readBool(175);
-    s.disableScreenRendering = mh.readBool(176);
-    s.executionCompletionReason = mh.readByte(177) as ExecutionCompletionReason;
+    s.ulaIssue = mh.readByte(131);
+    s.lastRenderedUlaTact = mh.readUint32(132);
+    s.lastExecutionStartFrameTacts = mh.readUint32(136);
+    s.lastFrameStartTacts = mh.readUint32(140);
+    s.frameCompleted = mh.readBool(144);
+    s.frameOverflow = mh.readUint32(145);
+    s.contentionAccummulated = mh.readUint32(149);
+    s.lastExecutionContentionValue = mh.readUint32(153);
+    s.emulationMode = mh.readByte(157) as EmulationMode;
+    s.debugStepMode = mh.readByte(158) as DebugStepMode;
+    s.fastTapeMode = mh.readBool(159);
+    s.terminationRom = mh.readByte(160);
+    s.terminationPoint = mh.readUint16(161);
+    s.fastVmMode = mh.readBool(163);
+    s.disableScreenRendering = mh.readBool(164);
+    s.executionCompletionReason = mh.readByte(165) as ExecutionCompletionReason;
 
     // --- Get keyboard state
     s.keyboardLines = [];
     for (let i = 0; i < 8; i++) {
-      s.keyboardLines[i] = mh.readByte(178 + i);
+      s.keyboardLines[i] = mh.readByte(166 + i);
     }
 
     // --- Get port state
-    s.portBit3LastValue = mh.readBool(186);
-    s.portBit4LastValue = mh.readBool(187);
-    s.portBit4ChangedFrom0TactsL = mh.readUint32(188);
-    s.portBit4ChangedFrom0TactsH = mh.readUint32(192);
-    s.portBit4ChangedFrom1TactsL = mh.readUint32(196);
-    s.portBit4ChangedFrom1TactsH = mh.readUint32(200);
+    s.portBit3LastValue = mh.readBool(174);
+    s.portBit4LastValue = mh.readBool(175);
+    s.portBit4ChangedFrom0Tacts = mh.readUint32(176);
+    s.portBit4ChangedFrom1Tacts = mh.readUint32(180);
 
     // --- Get interrupt state
-    s.interruptRaised = mh.readBool(204);
-    s.interruptRevoked = mh.readBool(205);
+    s.interruptRaised = mh.readBool(184);
+    s.interruptRevoked = mh.readBool(185);
 
     // --- Get screen state
-    s.borderColor = mh.readByte(206);
-    s.flashPhase = mh.readBool(207);
-    s.pixelByte1 = mh.readByte(208);
-    s.pixelByte2 = mh.readByte(209);
-    s.attrByte1 = mh.readByte(210);
-    s.attrByte2 = mh.readByte(211);
-    s.flashFrames = mh.readByte(212);
+    s.borderColor = mh.readByte(186);
+    s.flashPhase = mh.readBool(187);
+    s.pixelByte1 = mh.readByte(188);
+    s.pixelByte2 = mh.readByte(189);
+    s.attrByte1 = mh.readByte(190);
+    s.attrByte2 = mh.readByte(191);
+    s.flashFrames = mh.readByte(1922);
 
     // --- Done.
     return s;

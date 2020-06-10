@@ -108,7 +108,7 @@
   (global $allowExtendedSet (mut i32) (i32.const 0x00))  ;; Should allow extended operation set?
 
   ;; Mutable
-  (global $tacts (mut i64) (i64.const 0x0000)) ;; CPU tacts since starting the cpu
+  (global $tacts (mut i32) (i32.const 0x0000)) ;; CPU tacts since starting the cpu
   (global $stateFlags (mut i32) (i32.const 0x00)) ;; Z80 state flags
   (global $useGateArrayContention (mut i32) (i32.const 0x0000)) ;; Should use gate array contention?
   (global $iff1 (mut i32) (i32.const 0x00)) ;; Interrupt flip-flop #1
@@ -133,18 +133,18 @@
     ;; Other CPU state variables
     (i32.store offset=28 (get_global $STATE_TRANSFER_BUFF) (get_global $tactsInFrame))
     (i32.store8 offset=32 (get_global $STATE_TRANSFER_BUFF) (get_global $allowExtendedSet))
-    (i64.store32 offset=33 (get_global $STATE_TRANSFER_BUFF) (get_global $tacts))
-    (i32.store8 offset=41 (get_global $STATE_TRANSFER_BUFF) (get_global $stateFlags))
-    (i32.store8 offset=42 (get_global $STATE_TRANSFER_BUFF) (get_global $useGateArrayContention))
-    (i32.store8 offset=43 (get_global $STATE_TRANSFER_BUFF) (get_global $iff1))
-    (i32.store8 offset=44 (get_global $STATE_TRANSFER_BUFF) (get_global $iff2))
-    (i32.store8 offset=45 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptMode))
-    (i32.store8 offset=46 (get_global $STATE_TRANSFER_BUFF) (get_global $isInterruptBlocked))
-    (i32.store8 offset=47 (get_global $STATE_TRANSFER_BUFF) (get_global $isInOpExecution))
-    (i32.store8 offset=48 (get_global $STATE_TRANSFER_BUFF) (get_global $prefixMode))
-    (i32.store8 offset=49 (get_global $STATE_TRANSFER_BUFF) (get_global $indexMode))
-    (i32.store8 offset=50 (get_global $STATE_TRANSFER_BUFF) (get_global $maskableInterruptModeEntered))
-    (i32.store8 offset=51 (get_global $STATE_TRANSFER_BUFF) (get_global $opCode))
+    (i32.store offset=33 (get_global $STATE_TRANSFER_BUFF) (get_global $tacts))
+    (i32.store8 offset=37 (get_global $STATE_TRANSFER_BUFF) (get_global $stateFlags))
+    (i32.store8 offset=38 (get_global $STATE_TRANSFER_BUFF) (get_global $useGateArrayContention))
+    (i32.store8 offset=39 (get_global $STATE_TRANSFER_BUFF) (get_global $iff1))
+    (i32.store8 offset=40 (get_global $STATE_TRANSFER_BUFF) (get_global $iff2))
+    (i32.store8 offset=41 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptMode))
+    (i32.store8 offset=42 (get_global $STATE_TRANSFER_BUFF) (get_global $isInterruptBlocked))
+    (i32.store8 offset=43 (get_global $STATE_TRANSFER_BUFF) (get_global $isInOpExecution))
+    (i32.store8 offset=44 (get_global $STATE_TRANSFER_BUFF) (get_global $prefixMode))
+    (i32.store8 offset=45 (get_global $STATE_TRANSFER_BUFF) (get_global $indexMode))
+    (i32.store8 offset=46 (get_global $STATE_TRANSFER_BUFF) (get_global $maskableInterruptModeEntered))
+    (i32.store8 offset=47 (get_global $STATE_TRANSFER_BUFF) (get_global $opCode))
   )
 
   ;; Restores the CPU state from the transfer area
@@ -159,18 +159,18 @@
     ;; Other CPU state variables
     (set_global $tactsInFrame (get_global $STATE_TRANSFER_BUFF) (i32.load offset=28))
     (set_global $allowExtendedSet (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=32))
-    (set_global $tacts (get_global $STATE_TRANSFER_BUFF) (i64.load offset=33))
-    (set_global $stateFlags (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=41))
-    (set_global $useGateArrayContention (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=42))
-    (set_global $iff1 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=43))
-    (set_global $iff2 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=44))
-    (set_global $interruptMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=45))
-    (set_global $isInterruptBlocked (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=46))
-    (set_global $isInOpExecution (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=47))
-    (set_global $prefixMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=48))
-    (set_global $indexMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=49))
-    (set_global $maskableInterruptModeEntered (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=50))
-    (set_global $opCode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=51))
+    (set_global $tacts (get_global $STATE_TRANSFER_BUFF) (i32.load offset=33))
+    (set_global $stateFlags (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=37))
+    (set_global $useGateArrayContention (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=38))
+    (set_global $iff1 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=39))
+    (set_global $iff2 (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=40))
+    (set_global $interruptMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=41))
+    (set_global $isInterruptBlocked (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=42))
+    (set_global $isInOpExecution (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=43))
+    (set_global $prefixMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=44))
+    (set_global $indexMode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=45))
+    (set_global $maskableInterruptModeEntered (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=46))
+    (set_global $opCode (get_global $STATE_TRANSFER_BUFF) (i32.load8_u offset=47))
   )
 
   ;; ==========================================================================
@@ -1424,7 +1424,7 @@
   ;; Increments the current frame tact with the specified value
   ;; $inc: Increment
   (func $incTacts (param $inc i32)
-    (i64.add (get_global $tacts) (i64.extend_u/i32 (get_local $inc)))
+    (i32.add (get_global $tacts) (get_local $inc))
     set_global $tacts
   )
 
@@ -1451,7 +1451,7 @@
     (i32.store16 offset=22 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
     (i32.store16 offset=24 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
     (i32.store16 offset=26 (get_global $REG_AREA_INDEX) (i32.const 0xffff))
-    i64.const 0x0000 set_global $tacts
+    i32.const 0x0000 set_global $tacts
     i32.const 0x0000 set_global $stateFlags
     i32.const 0x0000 set_global $useGateArrayContention
     i32.const 0x0000 set_global $iff1
@@ -1794,7 +1794,7 @@
     (call $setI (i32.const 0))
     (call $setR (i32.const 0))
     i32.const 0x0000 set_global $isInOpExecution
-    i64.const 0x0000 set_global $tacts
+    i32.const 0x0000 set_global $tacts
   )
 
   ;; Executes the NMI request
@@ -7829,10 +7829,10 @@
   (global $ulaIssue (mut i32) (i32.const 0x0000))
 
   ;; CPU tacts value when last execution cycle started
-  (global $lastExecutionStartTacts (mut i64) (i64.const 0x0000))
+  (global $lastExecutionStartTacts (mut i32) (i32.const 0x0000))
 
   ;; CPU tacts value when the last frame started
-  (global $lastFrameStartTacts (mut i64) (i64.const 0x0000))
+  (global $lastFrameStartTacts (mut i32) (i32.const 0x0000))
 
   ;; The last rendered ULA tact
   (global $lastRenderedUlaTact (mut i32) (i32.const 0x0000))
@@ -7905,10 +7905,10 @@
   (global $portBit4LastValue (mut i32) (i32.const 0x0000))
 
   ;; Tacts value when last time bit 4 of $fe changed from 0 to 1
-  (global $portBit4ChangedFrom0Tacts (mut i64) (i64.const 0x0000))
+  (global $portBit4ChangedFrom0Tacts (mut i32) (i32.const 0x0000))
 
   ;; Tacts value when last time bit 4 of $fe changed from 1 to 0
-  (global $portBit4ChangedFrom1Tacts (mut i64) (i64.const 0x0000))
+  (global $portBit4ChangedFrom1Tacts (mut i32) (i32.const 0x0000))
 
   ;; ==========================================================================
   ;; Interrupt device state
@@ -8018,7 +8018,7 @@
     call $resetCpu
 
     ;; Reset engine state variables
-    i64.const 0 set_global $lastExecutionStartTacts
+    i32.const 0 set_global $lastExecutionStartTacts
     i32.const 0 set_global $lastRenderedUlaTact
     i32.const 0 set_global $frameCompleted
     i32.const 0 set_global $frameOverflow
@@ -8040,8 +8040,8 @@
     ;; Reset port state
     i32.const 0 set_global $portBit3LastValue
     i32.const 0 set_global $portBit4LastValue
-    i64.const 0 set_global $portBit4ChangedFrom0Tacts
-    i64.const 0 set_global $portBit4ChangedFrom1Tacts
+    i32.const 0 set_global $portBit4ChangedFrom0Tacts
+    i32.const 0 set_global $portBit4ChangedFrom1Tacts
 
     ;; Reset interrupt state
     i32.const 0 set_global $interruptRaised
@@ -8094,7 +8094,7 @@
     get_global $frameCompleted
     if
       call $startNewFrame
-      (i64.sub (get_global $tacts) (i64.extend_u/i32 (get_global $frameOverflow)))
+      (i32.sub (get_global $tacts) (get_global $frameOverflow))
       set_global $lastFrameStartTacts
       get_global $frameOverflow set_global $lastRenderedUlaTact
       i32.const 0 set_global $frameCompleted
@@ -8106,8 +8106,7 @@
       (i32.eq (get_global $frameCompleted) (i32.const 0))
       if
         ;; Calculate the current frame tact
-        (i64.sub (get_global $tacts) (get_global $lastFrameStartTacts))
-        i32.wrap/i64 
+        (i32.sub (get_global $tacts) (get_global $lastFrameStartTacts))
         get_global $clockMultiplier
         i32.div_u
 
@@ -8160,8 +8159,8 @@
     end
 
     ;; The current screen rendering frame completed
-    (i64.rem_u (get_global $tacts) (i64.extend_u/i32 (get_global $tactsInFrame)))
-    i32.wrap/i64 set_global $frameOverflow
+    (i32.rem_u (get_global $tacts) (get_global $tactsInFrame))
+    set_global $frameOverflow
     call $completeFrame
     i32.const 5 set_global $executionCompletionReason ;; Reason: frame completed
   )
@@ -8370,88 +8369,88 @@
   ;; Gets the ZX Spectrum 48 machine state
   (func $getCommonSpectrumMachineState
     ;; CPU configuration
-    (i32.store offset=52 (get_global $STATE_TRANSFER_BUFF) (get_global $baseClockFrequency))      
-    (i32.store8 offset=56 (get_global $STATE_TRANSFER_BUFF) (get_global $clockMultiplier))      
-    (i32.store8 offset=57 (get_global $STATE_TRANSFER_BUFF) (get_global $supportsNextOperation))      
+    (i32.store offset=48 (get_global $STATE_TRANSFER_BUFF) (get_global $baseClockFrequency))      
+    (i32.store8 offset=52 (get_global $STATE_TRANSFER_BUFF) (get_global $clockMultiplier))      
+    (i32.store8 offset=53 (get_global $STATE_TRANSFER_BUFF) (get_global $supportsNextOperation))      
 
     ;; Memory configuration
-    (i32.store8 offset=58 (get_global $STATE_TRANSFER_BUFF) (get_global $numberOfRoms))      
-    (i32.store offset=59 (get_global $STATE_TRANSFER_BUFF) (get_global $romContentsAddress))      
-    (i32.store8 offset=63 (get_global $STATE_TRANSFER_BUFF) (get_global $spectrum48RomIndex))      
-    (i32.store8 offset=64 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionType))      
-    (i32.store8 offset=65 (get_global $STATE_TRANSFER_BUFF) (get_global $ramBanks))      
-    (i32.store8 offset=66 (get_global $STATE_TRANSFER_BUFF) (get_global $nextMemorySize))
+    (i32.store8 offset=54 (get_global $STATE_TRANSFER_BUFF) (get_global $numberOfRoms))      
+    (i32.store offset=55 (get_global $STATE_TRANSFER_BUFF) (get_global $romContentsAddress))      
+    (i32.store8 offset=59 (get_global $STATE_TRANSFER_BUFF) (get_global $spectrum48RomIndex))      
+    (i32.store8 offset=60 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionType))      
+    (i32.store8 offset=61 (get_global $STATE_TRANSFER_BUFF) (get_global $ramBanks))      
+    (i32.store8 offset=62 (get_global $STATE_TRANSFER_BUFF) (get_global $nextMemorySize))
 
     ;; Screen frame configuration
-    (i32.store16 offset=67 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptTact))      
-    (i32.store16 offset=69 (get_global $STATE_TRANSFER_BUFF) (get_global $verticalSyncLines))      
-    (i32.store16 offset=71 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderTopLines))      
-    (i32.store16 offset=73 (get_global $STATE_TRANSFER_BUFF) (get_global $borderTopLines))      
-    (i32.store16 offset=75 (get_global $STATE_TRANSFER_BUFF) (get_global $displayLines))      
-    (i32.store16 offset=77 (get_global $STATE_TRANSFER_BUFF) (get_global $borderBottomLines))      
-    (i32.store16 offset=79 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderBottomLines))      
-    (i32.store16 offset=81 (get_global $STATE_TRANSFER_BUFF) (get_global $horizontalBlankingTime))      
-    (i32.store16 offset=83 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftTime))      
-    (i32.store16 offset=85 (get_global $STATE_TRANSFER_BUFF) (get_global $displayLineTime))      
-    (i32.store16 offset=87 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightTime))      
-    (i32.store16 offset=89 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderRightTime))      
-    (i32.store16 offset=91 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelDataPrefetchTime))      
-    (i32.store16 offset=93 (get_global $STATE_TRANSFER_BUFF) (get_global $attributeDataPrefetchTime))      
+    (i32.store16 offset=63 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptTact))      
+    (i32.store16 offset=65 (get_global $STATE_TRANSFER_BUFF) (get_global $verticalSyncLines))      
+    (i32.store16 offset=67 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderTopLines))      
+    (i32.store16 offset=69 (get_global $STATE_TRANSFER_BUFF) (get_global $borderTopLines))      
+    (i32.store16 offset=71 (get_global $STATE_TRANSFER_BUFF) (get_global $displayLines))      
+    (i32.store16 offset=73 (get_global $STATE_TRANSFER_BUFF) (get_global $borderBottomLines))      
+    (i32.store16 offset=75 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderBottomLines))      
+    (i32.store16 offset=77 (get_global $STATE_TRANSFER_BUFF) (get_global $horizontalBlankingTime))      
+    (i32.store16 offset=79 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftTime))      
+    (i32.store16 offset=81 (get_global $STATE_TRANSFER_BUFF) (get_global $displayLineTime))      
+    (i32.store16 offset=83 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightTime))      
+    (i32.store16 offset=85 (get_global $STATE_TRANSFER_BUFF) (get_global $nonVisibleBorderRightTime))      
+    (i32.store16 offset=87 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelDataPrefetchTime))      
+    (i32.store16 offset=89 (get_global $STATE_TRANSFER_BUFF) (get_global $attributeDataPrefetchTime))      
 
     ;; Calculated screen attributes
-    (i32.store offset=95 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLines))      
-    (i32.store offset=99 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayLine))      
-    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftPixels))      
-    (i32.store offset=107 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightPixels))      
-    (i32.store offset=111 (get_global $STATE_TRANSFER_BUFF) (get_global $displayWidth))      
-    (i32.store offset=115 (get_global $STATE_TRANSFER_BUFF) (get_global $screenWidth))      
-    (i32.store offset=119 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLineTime))      
-    (i32.store offset=123 (get_global $STATE_TRANSFER_BUFF) (get_global $rasterLines))      
-    (i32.store offset=127 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayPixelTact))      
-    (i32.store offset=131 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))
+    (i32.store offset=91 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLines))      
+    (i32.store offset=95 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayLine))      
+    (i32.store offset=99 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftPixels))      
+    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightPixels))      
+    (i32.store offset=107 (get_global $STATE_TRANSFER_BUFF) (get_global $displayWidth))      
+    (i32.store offset=111 (get_global $STATE_TRANSFER_BUFF) (get_global $screenWidth))      
+    (i32.store offset=115 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLineTime))      
+    (i32.store offset=119 (get_global $STATE_TRANSFER_BUFF) (get_global $rasterLines))      
+    (i32.store offset=123 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayPixelTact))      
+    (i32.store offset=127 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))
 
     ;; ZX Spectrum engine state
-    (i32.store8 offset=135 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
-    (i32.store offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
-    (i64.store offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartTacts))
-    (i64.store offset=148 (get_global $STATE_TRANSFER_BUFF) (get_global $lastFrameStartTacts))
-    (i32.store8 offset=156 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
-    (i32.store offset=157 (get_global $STATE_TRANSFER_BUFF) (get_global $frameOverflow))
-    (i32.store offset=161 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
-    (i32.store offset=165 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
-    (i32.store8 offset=169 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
-    (i32.store8 offset=170 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
-    (i32.store8 offset=171 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
-    (i32.store8 offset=172 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
-    (i32.store16 offset=173 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
-    (i32.store8 offset=175 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
-    (i32.store8 offset=176 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
-    (i32.store8 offset=177 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
+    (i32.store8 offset=131 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
+    (i32.store offset=132 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
+    (i32.store offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionStartTacts))
+    (i32.store offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $lastFrameStartTacts))
+    (i32.store8 offset=144 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
+    (i32.store offset=145 (get_global $STATE_TRANSFER_BUFF) (get_global $frameOverflow))
+    (i32.store offset=149 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
+    (i32.store offset=153 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
+    (i32.store8 offset=157 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
+    (i32.store8 offset=158 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
+    (i32.store8 offset=159 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
+    (i32.store8 offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
+    (i32.store16 offset=161 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
+    (i32.store8 offset=163 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
+    (i32.store8 offset=164 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
+    (i32.store8 offset=165 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
 
     ;; Keyboard lines
     (i32.load offset=0 (get_global $KEYBOARD_LINES))
-    (i32.store offset=178 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=166 (get_global $STATE_TRANSFER_BUFF))
     (i32.load offset=4 (get_global $KEYBOARD_LINES))
-    (i32.store offset=182 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=170 (get_global $STATE_TRANSFER_BUFF))
 
     ;; Port state
-    (i32.store8 offset=186 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
-    (i32.store8 offset=187 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
-    (i64.store offset=188 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
-    (i64.store offset=196 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
+    (i32.store8 offset=174 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
+    (i32.store8 offset=175 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
+    (i32.store offset=176 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
+    (i32.store offset=180 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
 
     ;; Interrupt state
-    (i32.store8 offset=204 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
-    (i32.store8 offset=205 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
+    (i32.store8 offset=184 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
+    (i32.store8 offset=185 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
 
     ;; Screen state
-    (i32.store8 offset=206 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
-    (i32.store8 offset=207 (get_global $STATE_TRANSFER_BUFF) (get_global $flashPhase))
-    (i32.store8 offset=208 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte1))
-    (i32.store8 offset=209 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte2))
-    (i32.store8 offset=210 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
-    (i32.store8 offset=211 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
-    (i32.store8 offset=212 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
+    (i32.store8 offset=186 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
+    (i32.store8 offset=187 (get_global $STATE_TRANSFER_BUFF) (get_global $flashPhase))
+    (i32.store8 offset=188 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte1))
+    (i32.store8 offset=189 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte2))
+    (i32.store8 offset=190 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
+    (i32.store8 offset=191 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
+    (i32.store8 offset=192 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
   )
 
   ;; Copies a segment of memory
@@ -9197,8 +9196,7 @@
       (i32.eq (tee_local $bit4Sensed) (i32.const 0))
       if
         ;; Changed later to 1 from 0 than to 0 from 1?
-        (i64.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
-        i32.wrap/i64
+        (i32.sub (get_global $portBit4ChangedFrom1Tacts) (get_global $portBit4ChangedFrom0Tacts))
         (i32.gt_s (tee_local $chargeTime) (i32.const 0))
         if 
           ;; Yes, calculate charge time
@@ -9211,9 +9209,9 @@
           set_local $chargeTime
 
           ;; Calculate time ellapsed since last change from 1 to 0
-          (i64.sub (get_global $tacts) (get_global $portBit4ChangedFrom1Tacts))
+          (i32.sub (get_global $tacts) (get_global $portBit4ChangedFrom1Tacts))
           ;; Less than charge time?
-          (i32.lt_u (i32.wrap/i64) (get_local $chargeTime))
+          (i32.lt_u (get_local $chargeTime))
           i32.const 4
           i32.shl
           set_local $bit4Sensed

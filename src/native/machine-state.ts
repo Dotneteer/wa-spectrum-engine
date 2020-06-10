@@ -49,10 +49,8 @@ export abstract class SpectrumMachineStateBase extends Z80CpuState {
 
   // --- Engine state
   ulaIssue: number;
-  lastExecutionStartFrameTactsL: number;
-  lastExecutionStartFrameTactsH: number;
-  lastFrameStartTactsL: number;
-  lastFrameStartTactsH: number;
+  lastExecutionStartFrameTacts: number;
+  lastFrameStartTacts: number;
   lastRenderedUlaTact: number;
   frameCompleted: boolean;
   frameOverflow: number;
@@ -73,10 +71,8 @@ export abstract class SpectrumMachineStateBase extends Z80CpuState {
   // --- Port $fe state
   portBit3LastValue: boolean;;
   portBit4LastValue: boolean;
-  portBit4ChangedFrom0TactsL: number;
-  portBit4ChangedFrom0TactsH: number;
-  portBit4ChangedFrom1TactsL: number;
-  portBit4ChangedFrom1TactsH: number;
+  portBit4ChangedFrom0Tacts: number;
+  portBit4ChangedFrom1Tacts: number;
 
   // --- InterruptState
   interruptRaised: boolean;

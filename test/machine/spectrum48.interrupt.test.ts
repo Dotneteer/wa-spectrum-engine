@@ -48,7 +48,7 @@ describe("ZX Spectrum 48 - Interrupt", () => {
     machine.executeCycle(new ExecuteCycleOptions(EmulationMode.UntilHalt));
     const s = machine.getMachineState();
     expect(s.pc).toBe(0x800f);
-    expect(s.tactsL).toBeGreaterThanOrEqual(66599);
+    expect(s.tacts).toBeGreaterThanOrEqual(66599);
   });
 
   it("Enabled interrupt is raised", () => {
@@ -75,7 +75,7 @@ describe("ZX Spectrum 48 - Interrupt", () => {
     machine.executeCycle(new ExecuteCycleOptions(EmulationMode.UntilHalt));
     s = machine.getMachineState();
     expect(s.pc).toBe(0x800f);
-    expect(s.tactsL).toBeGreaterThanOrEqual(67553);
+    expect(s.tacts).toBeGreaterThanOrEqual(67553);
   });
 
   it("Interrupt not raised too early", () => {

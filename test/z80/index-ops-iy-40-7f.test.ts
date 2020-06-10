@@ -84,7 +84,7 @@ describe("Indexed ops (iy) 40-7f", () => {
         testMachine.shouldKeepMemory();
         expect(l).toBe(0x46);
         expect(s.pc).toBe(0x0002);
-        expect(s.tactsL).toBe(8);
+        expect(s.tacts).toBe(8);
       });
     }
   }
@@ -125,7 +125,7 @@ describe("Indexed ops (iy) 40-7f", () => {
       testMachine.shouldKeepMemory();
       expect(l).toBe(0x46);
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -164,7 +164,7 @@ describe("Indexed ops (iy) 40-7f", () => {
       testMachine.shouldKeepMemory();
       expect(l).toBe(0x46);
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -206,7 +206,7 @@ describe("Indexed ops (iy) 40-7f", () => {
       testMachine.shouldKeepMemory();
       expect(l).toBe(0x46);
       expect(s.pc).toBe(0x0003);
-      expect(s.tactsL).toBe(19);
+      expect(s.tacts).toBe(19);
     });
   }
 
@@ -248,7 +248,7 @@ describe("Indexed ops (iy) 40-7f", () => {
       testMachine.shouldKeepMemory();
       expect(l).toBe(0x46);
       expect(s.pc).toBe(0x0003);
-      expect(s.tactsL).toBe(19);
+      expect(s.tacts).toBe(19);
     });
   }
 
@@ -288,7 +288,7 @@ describe("Indexed ops (iy) 40-7f", () => {
       testMachine.shouldKeepMemory("1052");
       expect(m[0x1052]).toBe(0x46);
       expect(s.pc).toBe(0x0003);
-      expect(s.tactsL).toBe(19);
+      expect(s.tacts).toBe(19);
     });
   }
 
@@ -328,7 +328,7 @@ describe("Indexed ops (iy) 40-7f", () => {
       testMachine.shouldKeepMemory("0ffe");
       expect(m[0x0ffe]).toBe(0x46);
       expect(s.pc).toBe(0x0003);
-      expect(s.tactsL).toBe(19);
+      expect(s.tacts).toBe(19);
     });
   }
 
@@ -340,7 +340,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.stateFlags & Z80StateFlags.Halted).toBeTruthy();
     expect(s.pc).toBe(0x0001);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("60: ld yh,b", () => {
@@ -353,7 +353,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x55aa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("61: ld yh,c", () => {
@@ -366,7 +366,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x55aa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("62: ld yh,d", () => {
@@ -379,7 +379,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x55aa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("63: ld yh,e", () => {
@@ -392,7 +392,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x55aa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("64: ld yh,yh", () => {
@@ -403,7 +403,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("65: ld yh,yl", () => {
@@ -415,7 +415,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xbbbb);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("67: ld yh,a", () => {
@@ -428,7 +428,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x55aa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("68: ld yl,b", () => {
@@ -441,7 +441,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xaa55);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("69: ld yl,c", () => {
@@ -454,7 +454,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xaa55);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("6a: ld yl,d", () => {
@@ -467,7 +467,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xaa55);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("6b: ld yl,e", () => {
@@ -480,7 +480,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xaa55);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("6c: ld yl,yh", () => {
@@ -492,7 +492,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xaaaa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("6d: ld yl,yl", () => {
@@ -503,7 +503,7 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("6f: ld yl,a", () => {
@@ -516,6 +516,6 @@ describe("Indexed ops (iy) 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xaa55);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 });

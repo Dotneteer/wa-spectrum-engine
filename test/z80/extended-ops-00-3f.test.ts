@@ -30,7 +30,7 @@ describe("Extended ops 00-3f", () => {
       testMachine.shouldKeepRegisters();
       testMachine.shouldKeepMemory();
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -44,7 +44,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("AF");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("23: swapnip need extset", () => {
@@ -53,7 +53,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("24: mirror", () => {
@@ -66,7 +66,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("AF");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("24: mirror need extset", () => {
@@ -75,7 +75,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("25: nop", () => {
@@ -84,7 +84,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("26: nop", () => {
@@ -93,7 +93,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("27: test N", () => {
@@ -106,7 +106,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("F");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("27: test N need extset", () => {
@@ -115,7 +115,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("28: bsla de,b #1", () => {
@@ -129,7 +129,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("28: bsla de,b #2", () => {
@@ -143,7 +143,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("28: bsla de,b #3", () => {
@@ -157,7 +157,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("28: bsla de,b need extset", () => {
@@ -166,7 +166,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("29: bsra de,b #1", () => {
@@ -180,7 +180,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("29: bsra de,b #2", () => {
@@ -194,7 +194,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("29: bsra de,b #3", () => {
@@ -208,7 +208,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("29: bsra de,b need extset", () => {
@@ -217,7 +217,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2a: bsrl de,b #1", () => {
@@ -231,7 +231,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2a: bsrl de,b #2", () => {
@@ -245,7 +245,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2a: bsrl de,b #3", () => {
@@ -259,7 +259,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2a: bsrl de,b need extset", () => {
@@ -268,7 +268,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2b: bsrf de,b #1", () => {
@@ -282,7 +282,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2b: bsrf de,b #2", () => {
@@ -296,7 +296,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2b: bsrf de,b #3", () => {
@@ -310,7 +310,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2b: bsrf de,b #4", () => {
@@ -324,7 +324,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2b: bsrf de,b need extset", () => {
@@ -333,7 +333,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: brlc de,b #1", () => {
@@ -347,7 +347,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: brlc de,b #2", () => {
@@ -361,7 +361,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: bsrf de,b #3", () => {
@@ -375,7 +375,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: brlc de,b #4", () => {
@@ -389,7 +389,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: brlc de,b need extset", () => {
@@ -398,7 +398,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   for (let i = 0x2d; i <= 0x2f; i++) {
@@ -410,7 +410,7 @@ describe("Extended ops 00-3f", () => {
       testMachine.shouldKeepRegisters();
       testMachine.shouldKeepMemory();
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -425,7 +425,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("30: mul #2", () => {
@@ -439,7 +439,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("30: mul need extset", () => {
@@ -448,7 +448,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("31: add hl,a #1", () => {
@@ -462,7 +462,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("HL");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("31: add hl,a #2", () => {
@@ -476,7 +476,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("HL");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("31: add hl,a need extset", () => {
@@ -485,7 +485,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("32: add de,a #1", () => {
@@ -499,7 +499,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("32: add de,a #2", () => {
@@ -513,7 +513,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("32: add de,a need extset", () => {
@@ -522,7 +522,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("33: add bc,a #1", () => {
@@ -536,7 +536,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("BC");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("33: add bc,a #2", () => {
@@ -550,7 +550,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("BC");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("33: add bc,a need extset", () => {
@@ -559,7 +559,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("34: add hl,NN #1", () => {
@@ -572,7 +572,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("HL");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("34: add hl,NN #2", () => {
@@ -585,7 +585,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("HL");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
 
@@ -595,7 +595,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("35: add de,NN #1", () => {
@@ -608,7 +608,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("35: add de,NN #2", () => {
@@ -621,7 +621,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("DE");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
 
@@ -631,7 +631,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("36: add bc,NN #1", () => {
@@ -644,7 +644,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("BC");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("36: add bc,NN #2", () => {
@@ -657,7 +657,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters("BC");
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
 
@@ -667,7 +667,7 @@ describe("Extended ops 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   for (let i = 0x37; i <= 0x3f; i++) {
@@ -679,7 +679,7 @@ describe("Extended ops 00-3f", () => {
       testMachine.shouldKeepRegisters();
       testMachine.shouldKeepMemory();
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 });

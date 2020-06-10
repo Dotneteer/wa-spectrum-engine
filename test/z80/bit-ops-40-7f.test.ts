@@ -45,7 +45,7 @@ describe("Bit ops 40-7f", () => {
         testMachine.shouldKeepMemory();
 
         expect(s.pc).toBe(0x0002);
-        expect(s.tactsL).toBe(8);
+        expect(s.tacts).toBe(8);
       });
 
       it(`${opCode.toString(16)}: bit ${n},${reg8[q]} #2`, () => {
@@ -69,7 +69,7 @@ describe("Bit ops 40-7f", () => {
         testMachine.shouldKeepMemory();
 
         expect(s.pc).toBe(0x0002);
-        expect(s.tactsL).toBe(8);
+        expect(s.tacts).toBe(8);
       });
     }
   }
@@ -96,7 +96,7 @@ describe("Bit ops 40-7f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(12);
+      expect(s.tacts).toBe(12);
     });
 
     it(`${opCode.toString(16)}: bit ${n},(hl) #2`, () => {
@@ -122,7 +122,7 @@ describe("Bit ops 40-7f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(12);
+      expect(s.tacts).toBe(12);
     });
   }
 });

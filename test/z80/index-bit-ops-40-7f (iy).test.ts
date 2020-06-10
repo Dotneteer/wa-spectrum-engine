@@ -49,7 +49,7 @@ describe("Indexed bit ops 40-7f (iy)", () => {
         testMachine.shouldKeepMemory();
 
         expect(s.pc).toBe(0x0004);
-        expect(s.tactsL).toBe(20);
+        expect(s.tacts).toBe(20);
       });
 
       it(`${opCode.toString(16)}: bit ${n},(iy+D) #2`, () => {
@@ -78,7 +78,7 @@ describe("Indexed bit ops 40-7f (iy)", () => {
         testMachine.shouldKeepMemory();
 
         expect(s.pc).toBe(0x0004);
-        expect(s.tactsL).toBe(20);
+        expect(s.tacts).toBe(20);
       });
     }
   }

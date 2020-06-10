@@ -40,7 +40,7 @@ describe("Bit ops c0-ff", () => {
         testMachine.shouldKeepMemory();
 
         expect(s.pc).toBe(0x0002);
-        expect(s.tactsL).toBe(8);
+        expect(s.tacts).toBe(8);
       });
 
       it(`${opCode.toString(16)}: set ${n},${reg8[q]} #2`, () => {
@@ -55,7 +55,7 @@ describe("Bit ops c0-ff", () => {
         testMachine.shouldKeepMemory();
 
         expect(s.pc).toBe(0x0002);
-        expect(s.tactsL).toBe(8);
+        expect(s.tacts).toBe(8);
       });
     }
   }
@@ -77,7 +77,7 @@ describe("Bit ops c0-ff", () => {
       testMachine.shouldKeepMemory("1000");
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(15);
+      expect(s.tacts).toBe(15);
     });
 
     it(`${opCode.toString(16)}: set ${n},(hl) #2`, () => {
@@ -95,7 +95,7 @@ describe("Bit ops c0-ff", () => {
       testMachine.shouldKeepMemory("1000");
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(15);
+      expect(s.tacts).toBe(15);
     });
   }
 });

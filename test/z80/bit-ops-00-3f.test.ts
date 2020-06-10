@@ -44,7 +44,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`0${q}: rlc ${reg8[q]} #2`, () => {
@@ -65,7 +65,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`0${q}: rlc ${reg8[q]} #3`, () => {
@@ -86,7 +86,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`0${q}: rlc ${reg8[q]} #4`, () => {
@@ -107,7 +107,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -132,7 +132,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("06: rlc (hl) #2", () => {
@@ -156,7 +156,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("06: rlc (hl) #3", () => {
@@ -180,7 +180,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("06: rlc (hl) #4", () => {
@@ -204,7 +204,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -228,7 +228,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`0${q.toString(16)}: rrc ${reg8[q]} #2`, () => {
@@ -249,7 +249,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`0${q}: rrc ${reg8[q]} #3`, () => {
@@ -270,7 +270,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`0${q}: rrc ${reg8[q]} #4`, () => {
@@ -291,7 +291,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -316,7 +316,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("0e: rrc (hl) #2", () => {
@@ -340,7 +340,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("0e: rrc (hl) #3", () => {
@@ -364,7 +364,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("0e: rlc (hl) #4", () => {
@@ -388,7 +388,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -412,7 +412,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: rl ${reg8[q]} #2`, () => {
@@ -433,7 +433,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q}: rl ${reg8[q]} #3`, () => {
@@ -454,7 +454,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q}: rl ${reg8[q]} #4`, () => {
@@ -475,7 +475,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -500,7 +500,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("16: rl (hl) #2", () => {
@@ -524,7 +524,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("16: rl (hl) #3", () => {
@@ -548,7 +548,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("16: rl (hl) #4", () => {
@@ -572,7 +572,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -596,7 +596,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: rr ${reg8[q]} #2`, () => {
@@ -617,7 +617,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q}: rr ${reg8[q]} #3`, () => {
@@ -638,7 +638,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q}: rr ${reg8[q]} #4`, () => {
@@ -659,7 +659,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -684,7 +684,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("1e: rr (hl) #2", () => {
@@ -708,7 +708,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("1e: rr (hl) #3", () => {
@@ -732,7 +732,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("1e: rlc (hl) #4", () => {
@@ -756,7 +756,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -780,7 +780,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: sla ${reg8[q]} #2`, () => {
@@ -801,7 +801,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: sla ${reg8[q]} #3`, () => {
@@ -822,7 +822,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: sla ${reg8[q]} #4`, () => {
@@ -843,7 +843,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -868,7 +868,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("26: sla (hl) #2", () => {
@@ -892,7 +892,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("26: sla (hl) #3", () => {
@@ -916,7 +916,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("26: sla (hl) #4", () => {
@@ -940,7 +940,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -964,7 +964,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: sra ${reg8[q]} #2`, () => {
@@ -985,7 +985,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString()}: sra ${reg8[q]} #3`, () => {
@@ -1006,7 +1006,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1031,7 +1031,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("2e: sra (hl) #2", () => {
@@ -1055,7 +1055,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("2e: sra (hl) #3", () => {
@@ -1079,7 +1079,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -1103,7 +1103,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: sll ${reg8[q]} #2`, () => {
@@ -1124,7 +1124,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString()}: sll ${reg8[q]} #3`, () => {
@@ -1145,7 +1145,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1170,7 +1170,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("36: sll (hl) #2", () => {
@@ -1194,7 +1194,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("36: sra (hl) #3", () => {
@@ -1218,7 +1218,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   for (let q = 0; q <= 7; q++) {
@@ -1242,7 +1242,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString(16)}: srl ${reg8[q]} #2`, () => {
@@ -1263,7 +1263,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
 
     it(`${q.toString()}: srl ${reg8[q]} #3`, () => {
@@ -1284,7 +1284,7 @@ describe("Bit ops 00-3f", () => {
       testMachine.shouldKeepMemory();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1309,7 +1309,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("3e: srl (hl) #2", () => {
@@ -1333,7 +1333,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("3e: srl (hl) #3", () => {
@@ -1357,7 +1357,7 @@ describe("Bit ops 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
 
