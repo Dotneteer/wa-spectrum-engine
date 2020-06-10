@@ -53,7 +53,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rlc (ix+D)${
@@ -84,7 +84,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rlc (ix+D)${
@@ -115,7 +115,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rlc (ix+D)${
@@ -146,7 +146,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rlc (ix+D)${
@@ -177,7 +177,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -211,7 +211,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rrc (ix+D)${
@@ -242,7 +242,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rrc (ix+D)${
@@ -273,7 +273,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rrc (ix+D)${
@@ -304,7 +304,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -338,7 +338,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rl (ix+D)${
@@ -369,7 +369,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rl (ix+D)${
@@ -400,7 +400,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rl (ix+D)${
@@ -431,7 +431,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -465,7 +465,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rr (ix+D)${
@@ -496,7 +496,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rr (ix+D)${
@@ -527,7 +527,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: rr (ix+D)${
@@ -558,7 +558,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -592,7 +592,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sla (ix+D)${
@@ -623,7 +623,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sla (ix+D)${
@@ -654,7 +654,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sla (ix+D)${
@@ -685,7 +685,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -719,7 +719,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sra (ix+D)${
@@ -750,7 +750,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sra (ix+D)${
@@ -781,7 +781,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -815,7 +815,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sll (ix+D)${
@@ -846,7 +846,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sll (ix+D)${
@@ -877,7 +877,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: sll (ix+D)${
@@ -908,7 +908,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 
@@ -942,7 +942,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: srl (ix+D)${
@@ -973,7 +973,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("0ffe");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
 
     it(`0${q.toString(16)}: srl (ix+D)${
@@ -1004,7 +1004,7 @@ describe("Indexed bit ops 00-3f (ix)", () => {
       testMachine.shouldKeepMemory("1032");
 
       expect(s.pc).toBe(0x0004);
-      expect(s.tactsL).toBe(23);
+      expect(s.tacts).toBe(23);
     });
   }
 });

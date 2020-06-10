@@ -30,7 +30,7 @@ describe("Extended ops c0-ff", () => {
       testMachine.shouldKeepRegisters();
       testMachine.shouldKeepMemory();
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 });

@@ -273,8 +273,7 @@ export class Z80CpuState {
 
   tactsInFrame: number;
   allowExtendedSet: boolean;
-  tactsL: number;
-  tactsH: number;
+  tacts: number;
   stateFlags: Z80StateFlags;
   useGateArrayContention: boolean;
   iff1: boolean;

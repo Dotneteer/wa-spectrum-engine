@@ -71,7 +71,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -118,7 +118,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -173,7 +173,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -225,7 +225,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -246,7 +246,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("84: add a,xh #2", () => {
@@ -266,7 +266,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("84: add a,xh #3", () => {
@@ -286,7 +286,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("84: add a,xh #4", () => {
@@ -307,7 +307,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("85: add a,xl #1", () => {
@@ -327,7 +327,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("85: add a,xl #2", () => {
@@ -347,7 +347,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("85: add a,xl #3", () => {
@@ -367,7 +367,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("85: add a,xl #4", () => {
@@ -388,7 +388,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("86: add a,(ix+D) #1", () => {
@@ -410,7 +410,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("86: add a,(ix+D) #2", () => {
@@ -432,7 +432,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("86: add a,(ix+D) #3", () => {
@@ -454,7 +454,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("86: add a,(ix+D) #4", () => {
@@ -476,7 +476,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -527,7 +527,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -575,7 +575,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -631,7 +631,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -683,7 +683,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -705,7 +705,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8c: adc a,xh #2", () => {
@@ -726,7 +726,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8c: adc a,xh #3", () => {
@@ -747,7 +747,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8c: adc a,xh #4", () => {
@@ -769,7 +769,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8d: adc a,xl #1", () => {
@@ -790,7 +790,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8d: adc a,xl #2", () => {
@@ -811,7 +811,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8d: adc a,xl #3", () => {
@@ -832,7 +832,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8d: adc a,xl #4", () => {
@@ -854,7 +854,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("8e: adc a,(ix+D) #1", () => {
@@ -877,7 +877,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("8e: adc a,(ix+D) #2", () => {
@@ -900,7 +900,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("8e: adc a,(ix+D) #3", () => {
@@ -923,7 +923,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("8e: adc a,(ix+D) #4", () => {
@@ -946,7 +946,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -998,7 +998,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1053,7 +1053,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1101,7 +1101,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1157,7 +1157,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1214,7 +1214,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1236,7 +1236,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("94: sub xh #2", () => {
@@ -1257,7 +1257,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("94: sub xh #3", () => {
@@ -1278,7 +1278,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("94: sub xh #4", () => {
@@ -1299,7 +1299,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("94: sub xh #5", () => {
@@ -1320,7 +1320,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("95: sub xl #1", () => {
@@ -1341,7 +1341,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("95: sub xl #2", () => {
@@ -1362,7 +1362,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("95: sub xl #3", () => {
@@ -1383,7 +1383,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("95: sub xl #4", () => {
@@ -1404,7 +1404,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("95: sub xl #5", () => {
@@ -1425,7 +1425,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("96: sub (ix+D) #1", () => {
@@ -1448,7 +1448,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("96: sub (ix+D) #2", () => {
@@ -1471,7 +1471,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("96: sub (ix+D) #3", () => {
@@ -1494,7 +1494,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("96: sub (ix+D) #4", () => {
@@ -1517,7 +1517,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("96: sub (ix+D) #5", () => {
@@ -1540,7 +1540,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -1594,7 +1594,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1648,7 +1648,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1704,7 +1704,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1756,7 +1756,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1810,7 +1810,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -1832,7 +1832,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9c: sbc xh #2", () => {
@@ -1853,7 +1853,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9c: sbc xh #3", () => {
@@ -1874,7 +1874,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9c: sbc xh #4", () => {
@@ -1895,7 +1895,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9c: sbc xh #5", () => {
@@ -1916,7 +1916,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9d: sbc xl #1", () => {
@@ -1937,7 +1937,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9d: sbc xl #2", () => {
@@ -1958,7 +1958,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9d: sbc xl #3", () => {
@@ -1979,7 +1979,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9d: sbc xh #4", () => {
@@ -2000,7 +2000,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9d: sbc xl #5", () => {
@@ -2021,7 +2021,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("9e: sbc a,(ix+D) #1", () => {
@@ -2044,7 +2044,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("9e: sbc a,(ix+D) #2", () => {
@@ -2067,7 +2067,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("9e: sbc a,(ix+D) #3", () => {
@@ -2090,7 +2090,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("9e: sbc a,(ix+D) #4", () => {
@@ -2113,7 +2113,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("9e: sbc a,(ix+D) #5", () => {
@@ -2136,7 +2136,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -2188,7 +2188,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.C).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2241,7 +2241,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.C).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2294,7 +2294,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2346,7 +2346,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2368,7 +2368,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a4: and xh #2", () => {
@@ -2389,7 +2389,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a4: and xh #3", () => {
@@ -2410,7 +2410,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a4: and xh #4", () => {
@@ -2431,7 +2431,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a5: and xl #1", () => {
@@ -2452,7 +2452,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a5: and xl #2", () => {
@@ -2473,7 +2473,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a5: and xl #3", () => {
@@ -2494,7 +2494,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a5: and xl #4", () => {
@@ -2515,7 +2515,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("a6: and (ix+D) #1", () => {
@@ -2537,7 +2537,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("a6: and (ix+D) #2", () => {
@@ -2559,7 +2559,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("a6: and (ix+D) #3", () => {
@@ -2581,7 +2581,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("a6: and (ix+D) #4", () => {
@@ -2603,7 +2603,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -2656,7 +2656,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.C).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2711,7 +2711,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.C).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2759,7 +2759,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2813,7 +2813,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -2835,7 +2835,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ac: xor xh #2", () => {
@@ -2856,7 +2856,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ac: xor xh #3", () => {
@@ -2877,7 +2877,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ac: and xh #4", () => {
@@ -2898,7 +2898,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ad: xor xl #1", () => {
@@ -2919,7 +2919,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ad: xor xl #2", () => {
@@ -2940,7 +2940,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ad: xor xl #3", () => {
@@ -2961,7 +2961,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ad: and xl #4", () => {
@@ -2982,7 +2982,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("ae: xor (ix+D) #1", () => {
@@ -3004,7 +3004,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("ae: and (ix+D) #2", () => {
@@ -3026,7 +3026,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("ae: and (ix+D) #3", () => {
@@ -3048,7 +3048,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("ae: and (ix+D) #4", () => {
@@ -3070,7 +3070,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -3121,7 +3121,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.C).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3175,7 +3175,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.C).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3223,7 +3223,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3275,7 +3275,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeFalsy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3297,7 +3297,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.C).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b4: or xh #2", () => {
@@ -3318,7 +3318,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b4: and xh #3", () => {
@@ -3339,7 +3339,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b4: and xh #4", () => {
@@ -3360,7 +3360,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b5: or xl #1", () => {
@@ -3381,7 +3381,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.C).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b5: or xl #2", () => {
@@ -3402,7 +3402,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b5: and xl #3", () => {
@@ -3423,7 +3423,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b5: and xl #4", () => {
@@ -3444,7 +3444,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("b6: or (ix+D) #1", () => {
@@ -3466,7 +3466,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.C).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("b6: or (ix+D) #2", () => {
@@ -3488,7 +3488,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("b6: and (ix+D) #3", () => {
@@ -3510,7 +3510,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("b6: and (ix+D) #4", () => {
@@ -3532,7 +3532,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeFalsy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   for (let q = 0; q < 8; q++) {
@@ -3582,7 +3582,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3635,7 +3635,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3682,7 +3682,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3736,7 +3736,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3791,7 +3791,7 @@ describe("Indexed ops (ix) 80-bf", () => {
       expect(s.f & FlagsSetMask.N).toBeTruthy();
 
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   }
 
@@ -3812,7 +3812,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bc: cp xh #2", () => {
@@ -3832,7 +3832,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bc: cp xh #3", () => {
@@ -3852,7 +3852,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bc: cp xh #4", () => {
@@ -3872,7 +3872,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bc: cp xh #5", () => {
@@ -3892,7 +3892,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bd: cp xl #1", () => {
@@ -3912,7 +3912,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bd: cp xl #2", () => {
@@ -3932,7 +3932,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bd: cp xl #3", () => {
@@ -3952,7 +3952,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bd: cp xl #4", () => {
@@ -3972,7 +3972,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("bd: cp xl #5", () => {
@@ -3992,7 +3992,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("be: cp (ix+D) #1", () => {
@@ -4013,7 +4013,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("be: cp (ix+D) #2", () => {
@@ -4034,7 +4034,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("be: cp (ix+D) #3", () => {
@@ -4055,7 +4055,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("be: cp (ix+D) #4", () => {
@@ -4076,7 +4076,7 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("be: cp (ix+D) #5", () => {
@@ -4097,6 +4097,6 @@ describe("Indexed ops (ix) 80-bf", () => {
     expect(s.f & FlagsSetMask.N).toBeTruthy();
 
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 });

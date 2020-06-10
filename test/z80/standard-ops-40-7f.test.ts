@@ -84,7 +84,7 @@ describe("Standard ops 40-7f", () => {
         testMachine.shouldKeepMemory();
         expect(l).toBe(0x46);
         expect(s.pc).toBe(0x0001);
-        expect(s.tactsL).toBe(4);
+        expect(s.tacts).toBe(4);
       });
     }
   }
@@ -127,7 +127,7 @@ describe("Standard ops 40-7f", () => {
       testMachine.shouldKeepMemory();
       expect(l).toBe(0x46);
       expect(s.pc).toBe(0x0001);
-      expect(s.tactsL).toBe(7);
+      expect(s.tacts).toBe(7);
     });
   }
 
@@ -167,7 +167,7 @@ describe("Standard ops 40-7f", () => {
         expect(m[0x1000]).toBe(0x46);
       }
       expect(s.pc).toBe(0x0001);
-      expect(s.tactsL).toBe(7);
+      expect(s.tacts).toBe(7);
     });
   }
 
@@ -179,6 +179,6 @@ describe("Standard ops 40-7f", () => {
     testMachine.shouldKeepMemory();
     expect(s.stateFlags & Z80StateFlags.Halted).toBeTruthy();
     expect(s.pc).toBe(0x0000);
-    expect(s.tactsL).toBe(4);
+    expect(s.tacts).toBe(4);
   });
 });

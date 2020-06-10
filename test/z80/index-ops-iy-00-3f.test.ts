@@ -41,7 +41,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("01: ld bc,NN", () => {
@@ -53,7 +53,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.bc).toBe(0xac12);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(14);
+    expect(s.tacts).toBe(14);
   });
 
   it("02: ld (bc),a", () => {
@@ -68,7 +68,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
     expect(m[0x1000]).toBe(0xcc);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("03: inc bc #1", () => {
@@ -81,7 +81,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.bc).toBe(0x1001);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("03: inc bc #2", () => {
@@ -94,7 +94,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.bc).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("04: inc b #1", () => {
@@ -110,7 +110,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("04: inc b #2", () => {
@@ -126,7 +126,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.b).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("04: inc b #3", () => {
@@ -143,7 +143,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.b).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("04: inc b #4", () => {
@@ -159,7 +159,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.b).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("05: dec b #1", () => {
@@ -175,7 +175,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("05: dec b #2", () => {
@@ -192,7 +192,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("05: dec b #3", () => {
@@ -211,7 +211,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("05: dec b #4", () => {
@@ -228,7 +228,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("06: ld b,N", () => {
@@ -239,7 +239,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.b).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("07: rlca #1", () => {
@@ -258,7 +258,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.C).toBeFalsy();
     expect(s.a).toBe(0xe2);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("07: rlca #2", () => {
@@ -277,7 +277,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.C).toBeTruthy();
     expect(s.a).toBe(0x01);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("08: ex af,af'", () => {
@@ -291,7 +291,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s._af_).toBe(0x71aa);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("09: add iy,bc #1", () => {
@@ -312,7 +312,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x2336);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("09: add iy,bc #2", () => {
@@ -333,7 +333,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x0336);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("0a: ld a,(bc)", () => {
@@ -348,7 +348,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x4c);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("0b: dec bc #1", () => {
@@ -361,7 +361,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.bc).toBe(0x0fff);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("0b: dec bc #2", () => {
@@ -374,7 +374,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.bc).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("0c: inc c #1", () => {
@@ -390,7 +390,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.c).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0c: inc c #2", () => {
@@ -406,7 +406,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.c).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0c: inc c #3", () => {
@@ -423,7 +423,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.c).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0c: inc c #4", () => {
@@ -439,7 +439,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.c).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0d: dec c #1", () => {
@@ -455,7 +455,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.c).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0d: dec c #2", () => {
@@ -472,7 +472,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.c).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0d: dec c #3", () => {
@@ -491,7 +491,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.c).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0d: dec c #4", () => {
@@ -508,7 +508,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.c).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0e: ld c,N", () => {
@@ -519,7 +519,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.c).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("0f: rrca #1", () => {
@@ -539,7 +539,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x38);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("0f: rrca #2", () => {
@@ -559,7 +559,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0xb8);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("10: djnz #1", () => {
@@ -572,7 +572,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x00);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(12);
+    expect(s.tacts).toBe(12);
   });
 
   it("10: djnz #2", () => {
@@ -585,7 +585,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.b).toBe(0x01);
     expect(s.pc).toBe(0x0005);
-    expect(s.tactsL).toBe(17);
+    expect(s.tacts).toBe(17);
   });
 
   it("11: ld de,NN", () => {
@@ -597,7 +597,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.de).toBe(0xac12);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(14);
+    expect(s.tacts).toBe(14);
   });
 
   it("12: ld (de),a", () => {
@@ -612,7 +612,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
     expect(m[0x1000]).toBe(0xcc);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("13: inc de #1", () => {
@@ -625,7 +625,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.de).toBe(0x1001);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("13: inc de #2", () => {
@@ -638,7 +638,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.de).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("14: inc d #1", () => {
@@ -654,7 +654,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.d).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("14: inc d #2", () => {
@@ -670,7 +670,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.d).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("14: inc d #3", () => {
@@ -687,7 +687,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.d).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("14: inc d #4", () => {
@@ -703,7 +703,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.d).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("15: dec d #1", () => {
@@ -719,7 +719,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.d).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("15: dec d #2", () => {
@@ -736,7 +736,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.d).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("15: dec d #3", () => {
@@ -755,7 +755,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.d).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("15: dec d #4", () => {
@@ -772,7 +772,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.d).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("16: ld d,N", () => {
@@ -783,7 +783,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.d).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("17: rla #1", () => {
@@ -804,7 +804,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x02);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("17: rla #2", () => {
@@ -825,7 +825,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x41);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("18: jr e ", () => {
@@ -836,7 +836,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
 
     expect(s.pc).toBe(0x00023);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("19: add iy,de #1", () => {
@@ -857,7 +857,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x2336);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("19: add iy,de #2", () => {
@@ -878,7 +878,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x0336);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
 
@@ -894,7 +894,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x4c);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("1b: dec de #1", () => {
@@ -907,7 +907,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.de).toBe(0x0fff);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("1b: dec de #2", () => {
@@ -920,7 +920,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.de).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("1c: inc e #1", () => {
@@ -936,7 +936,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.e).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1c: inc e #2", () => {
@@ -952,7 +952,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.e).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1c: inc e #3", () => {
@@ -969,7 +969,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.e).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1c: inc e #4", () => {
@@ -985,7 +985,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.e).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1d: dec e #1", () => {
@@ -1001,7 +1001,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.e).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1d: dec e #2", () => {
@@ -1018,7 +1018,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.e).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1d: dec e #3", () => {
@@ -1037,7 +1037,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.e).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1d: dec e #4", () => {
@@ -1054,7 +1054,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.e).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1e: ld e,N", () => {
@@ -1065,7 +1065,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.e).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("1f: rra #1", () => {
@@ -1086,7 +1086,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x40);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("1f: rra #2", () => {
@@ -1107,7 +1107,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x90);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("20: jr nz #1", () => {
@@ -1118,7 +1118,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("20: jr nz #2", () => {
@@ -1129,7 +1129,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0007);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("21: ld iy,NN", () => {
@@ -1140,7 +1140,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0xac12);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(14);
+    expect(s.tacts).toBe(14);
   });
 
   it("22: ld (NN),iy", () => {
@@ -1155,7 +1155,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(m[0x1000]).toBe(0x26);
     expect(m[0x1001]).toBe(0xa9);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(20);
+    expect(s.tacts).toBe(20);
   });
 
   it("23: inc iy #1", () => {
@@ -1168,7 +1168,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x1001);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("23: inc iy #2", () => {
@@ -1182,7 +1182,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("24: inc yh #1", () => {
@@ -1198,7 +1198,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yh).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("24: inc yh #2", () => {
@@ -1214,7 +1214,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.yh).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("24: inc yh #3", () => {
@@ -1231,7 +1231,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.yh).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("24: inc yh #4", () => {
@@ -1247,7 +1247,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.yh).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("25: dec yh #1", () => {
@@ -1263,7 +1263,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yh).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("25: dec yh #2", () => {
@@ -1280,7 +1280,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yh).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("25: dec yh #3", () => {
@@ -1299,7 +1299,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yh).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("25: dec yh #4", () => {
@@ -1316,7 +1316,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yh).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("26: ld h,N", () => {
@@ -1327,7 +1327,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.yh).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   const daaSamples = [
@@ -1358,7 +1358,7 @@ describe("Indexed ops (iy) 00-3f", () => {
       testMachine.shouldKeepMemory();
       expect(s.af).toBe(sm.af);
       expect(s.pc).toBe(0x0002);
-      expect(s.tactsL).toBe(8);
+      expect(s.tacts).toBe(8);
     });
   });
 
@@ -1370,7 +1370,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("28: jr z #2", () => {
@@ -1381,7 +1381,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0007);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("29: add iy,iy #1", () => {
@@ -1401,7 +1401,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x2000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("29: add iy,iy #2", () => {
@@ -1421,7 +1421,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x0468);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("2a: ld iy,(NN)", () => {
@@ -1435,7 +1435,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x1234);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(20);
+    expect(s.tacts).toBe(20);
   });
 
   it("2b: dec iy #1", () => {
@@ -1448,7 +1448,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x0fff);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("2b: dec iy #2", () => {
@@ -1461,7 +1461,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.iy).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("2c: inc yl #1", () => {
@@ -1477,7 +1477,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yl).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: inc yl #2", () => {
@@ -1493,7 +1493,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.yl).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: inc yl #3", () => {
@@ -1510,7 +1510,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.yl).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2c: inc yl #4", () => {
@@ -1526,7 +1526,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.yl).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2d: dec yl #1", () => {
@@ -1542,7 +1542,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yl).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2d: dec yl #2", () => {
@@ -1559,7 +1559,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yl).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2d: dec yl #3", () => {
@@ -1578,7 +1578,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yl).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2d: dec yl #4", () => {
@@ -1595,7 +1595,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.yl).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("2e: ld yl,N", () => {
@@ -1606,7 +1606,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.yl).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("2f: cpl", () => {
@@ -1623,7 +1623,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x7e);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("30: jr nc #1", () => {
@@ -1634,7 +1634,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("30: jr nc #2", () => {
@@ -1645,7 +1645,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0007);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("31: ld sp,NN", () => {
@@ -1657,7 +1657,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.sp).toBe(0xac12);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(14);
+    expect(s.tacts).toBe(14);
   });
 
   it("32: ld (NN),a", () => {
@@ -1670,7 +1670,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("1000");
     expect(m[0x1000]).toBe(0x4c);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(17);
+    expect(s.tacts).toBe(17);
   });
 
   it("33: inc sp #1", () => {
@@ -1683,7 +1683,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.sp).toBe(0x1001);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("33: inc sp #2", () => {
@@ -1697,7 +1697,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.sp).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("34: inc (iy+D) #1", () => {
@@ -1712,7 +1712,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("1052");
     expect(m[0x1052]).toBe(0x24);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(23);
+    expect(s.tacts).toBe(23);
   });
 
   it("34: inc (iy+D) #2", () => {
@@ -1727,7 +1727,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("0ffe");
     expect(m[0x0ffe]).toBe(0x24);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(23);
+    expect(s.tacts).toBe(23);
   });
 
   it("35: dec (iy+D) #1", () => {
@@ -1742,7 +1742,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("1052");
     expect(m[0x1052]).toBe(0x22);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(23);
+    expect(s.tacts).toBe(23);
   });
 
   it("35: dec (iy+D) #2", () => {
@@ -1757,7 +1757,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("0ffe");
     expect(m[0x0ffe]).toBe(0x22);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(23);
+    expect(s.tacts).toBe(23);
   });
 
   it("36: ld (iy+D),N #1", () => {
@@ -1770,7 +1770,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("1052");
     expect(m[0x1052]).toBe(0x23);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("36: ld (iy+D),N #2", () => {
@@ -1783,7 +1783,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory("0ffe");
     expect(m[0x0ffe]).toBe(0x23);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(19);
+    expect(s.tacts).toBe(19);
   });
 
   it("37: scf", () => {
@@ -1795,7 +1795,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.f & FlagsSetMask.C).toBeTruthy();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("38: jr c #1", () => {
@@ -1806,7 +1806,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("38: jr c #2", () => {
@@ -1817,7 +1817,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepRegisters();
     testMachine.shouldKeepMemory();
     expect(s.pc).toBe(0x0007);
-    expect(s.tactsL).toBe(16);
+    expect(s.tacts).toBe(16);
   });
 
   it("39: add iy,sp #1", () => {
@@ -1838,7 +1838,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x2336);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("39: add iy,sp #2", () => {
@@ -1859,7 +1859,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.iy).toBe(0x0336);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(15);
+    expect(s.tacts).toBe(15);
   });
 
   it("3a: ld a,(NN)", () => {
@@ -1873,7 +1873,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x4c);
     expect(s.pc).toBe(0x0004);
-    expect(s.tactsL).toBe(17);
+    expect(s.tacts).toBe(17);
   });
 
 
@@ -1887,7 +1887,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.sp).toBe(0x0fff);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("3b: dec sp #2", () => {
@@ -1900,7 +1900,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.sp).toBe(0x0000);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(10);
+    expect(s.tacts).toBe(10);
   });
 
   it("3c: inc a #1", () => {
@@ -1916,7 +1916,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x44);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3c: inc a #2", () => {
@@ -1932,7 +1932,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.Z).not.toBe(0);
     expect(s.a).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3c: inc a #3", () => {
@@ -1949,7 +1949,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.PV).not.toBe(0);
     expect(s.a).toBe(0x80);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3c: inc a #4", () => {
@@ -1965,7 +1965,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     expect(s.f & FlagsSetMask.H).not.toBe(0);
     expect(s.a).toBe(0x30);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3d: dec a #1", () => {
@@ -1981,7 +1981,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x42);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3d: dec a #2", () => {
@@ -1998,7 +1998,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x00);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3d: dec a #3", () => {
@@ -2017,7 +2017,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x7f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3d: dec a #4", () => {
@@ -2034,7 +2034,7 @@ describe("Indexed ops (iy) 00-3f", () => {
 
     expect(s.a).toBe(0x1f);
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3e: ld a,N", () => {
@@ -2045,7 +2045,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.a).toBe(0x26);
     expect(s.pc).toBe(0x0003);
-    expect(s.tactsL).toBe(11);
+    expect(s.tacts).toBe(11);
   });
 
   it("3f: ccf #1", () => {
@@ -2057,7 +2057,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.f & FlagsSetMask.C).toBeTruthy();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
   it("3f: ccf #2", () => {
@@ -2069,7 +2069,7 @@ describe("Indexed ops (iy) 00-3f", () => {
     testMachine.shouldKeepMemory();
     expect(s.f & FlagsSetMask.C).toBeFalsy();
     expect(s.pc).toBe(0x0002);
-    expect(s.tactsL).toBe(8);
+    expect(s.tacts).toBe(8);
   });
 
 });

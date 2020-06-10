@@ -152,19 +152,18 @@ export class TestZ80Machine {
 
     s.tactsInFrame = mh.readUint32(28);
     s.allowExtendedSet = mh.readBool(32);
-    s.tactsL = mh.readUint32(33);
-    s.tactsH = mh.readUint32(37);
-    s.stateFlags = mh.readByte(41);
-    s.useGateArrayContention = mh.readBool(42);
-    s.iff1 = mh.readBool(43);
-    s.iff2 = mh.readBool(44);
-    s.interruptMode = mh.readByte(45);
-    s.isInterruptBlocked = mh.readBool(46);
-    s.isInOpExecution = mh.readBool(47);
-    s.prefixMode = mh.readByte(48);
-    s.indexMode = mh.readByte(49);
-    s.maskableInterruptModeEntered = mh.readBool(50);
-    s.opCode = mh.readByte(51);
+    s.tacts = mh.readUint32(33);
+    s.stateFlags = mh.readByte(37);
+    s.useGateArrayContention = mh.readBool(38);
+    s.iff1 = mh.readBool(39);
+    s.iff2 = mh.readBool(40);
+    s.interruptMode = mh.readByte(41);
+    s.isInterruptBlocked = mh.readBool(42);
+    s.isInOpExecution = mh.readBool(43);
+    s.prefixMode = mh.readByte(44);
+    s.indexMode = mh.readByte(45);
+    s.maskableInterruptModeEntered = mh.readBool(46);
+    s.opCode = mh.readByte(47);
 
     // --- Done.
     return s;
@@ -199,19 +198,18 @@ export class TestZ80Machine {
 
     mh.writeUint32(28, s.tactsInFrame);
     mh.writeBool(32, s.allowExtendedSet);
-    mh.writeUint32(33, s.tactsL);
-    mh.writeUint32(37, s.tactsH);
-    mh.writeByte(41, s.stateFlags);
-    mh.writeBool(42, s.useGateArrayContention);
-    mh.writeBool(43, s.iff1);
-    mh.writeBool(44, s.iff2);
-    mh.writeByte(45, s.interruptMode);
-    mh.writeBool(46, s.isInterruptBlocked);
-    mh.writeBool(47, s.isInOpExecution);
-    mh.writeByte(48, s.prefixMode);
-    mh.writeByte(49, s.indexMode);
-    mh.writeBool(50, s.maskableInterruptModeEntered);
-    mh.writeByte(51, s.opCode);
+    mh.writeUint32(33, s.tacts);
+    mh.writeByte(37, s.stateFlags);
+    mh.writeBool(38, s.useGateArrayContention);
+    mh.writeBool(39, s.iff1);
+    mh.writeBool(40, s.iff2);
+    mh.writeByte(41, s.interruptMode);
+    mh.writeBool(42, s.isInterruptBlocked);
+    mh.writeBool(43, s.isInOpExecution);
+    mh.writeByte(44, s.prefixMode);
+    mh.writeByte(45, s.indexMode);
+    mh.writeBool(56, s.maskableInterruptModeEntered);
+    mh.writeByte(47, s.opCode);
 
     // --- Pass data to webAssembly
     this.cpuApi.updateCpuState();
