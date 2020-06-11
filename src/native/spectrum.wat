@@ -7931,6 +7931,12 @@
   ;; Number of flash frames
   (global $flashFrames (mut i32) (i32.const 0x0000))
 
+  ;; Pointer to the next tact in the rendering table
+  (global $renderingTablePtr (mut i32) (i32.const 0x0000))
+
+  ;; Pointer to the next pixel in the rendering buffet
+  (global $pixelBufferPtr (mut i32) (i32.const 0x0000))
+
   ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
 
@@ -8008,7 +8014,8 @@
     ;; Reset engine state variables
     i32.const 0 set_global $lastRenderedUlaTact
     i32.const 0 set_global $frameCount
-    i32.const 0 set_global $frameCompleted
+    i32.const 0 set_global $tacts
+    i32.const 1 set_global $frameCompleted
     i32.const 0 set_global $contentionAccummulated
     i32.const 0 set_global $lastExecutionContentionValue
     i32.const 0 set_global $emulationMode
@@ -8083,10 +8090,23 @@
       ;; Check if we're just about starting the next frame
       get_global $frameCompleted
       if
-        call $startNewFrame
+        ;; Reset frame information
         (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
         set_global $lastRenderedUlaTact
+
+        ;; Reset pointers used for screen rendering
+        get_global $RENDERING_TACT_TABLE
+        (i32.mul 
+          (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
+          (i32.const 5)
+        )
+        i32.add
+        set_global $renderingTablePtr
+        
+        get_global $PIXEL_RENDERING_BUFFER set_global $pixelBufferPtr
+
         i32.const 0 set_global $frameCompleted
+        call $startNewFrame
       end
 
       ;; Calculate the current frame tact
@@ -8107,21 +8127,20 @@
 
       ;; TODO: Check various terminations
 
+      ;; Render the screen before
+      get_local $currentUlaTact
+      set_local $lastTact
+      (call $renderScreen 
+        (get_local $lastTact)
+      )
+      get_local $lastTact set_global $lastRenderedUlaTact
+
       ;; Exit if if halted and execution mode is UntilHalted
       (i32.eq (get_global $emulationMode) (i32.const 1))
       if
         (i32.and (get_global $stateFlags) (i32.const 0x08)) ;; HLT signal set?
         if
           i32.const 3 set_global $executionCompletionReason ;; Reason: halted
-
-          ;; Render the screen before exit
-          get_local $currentUlaTact
-          set_local $lastTact
-          (call $renderScreen 
-            (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
-            (get_local $lastTact)
-          )
-          get_local $lastTact set_global $lastRenderedUlaTact
           return
         end
       end     
@@ -8138,17 +8157,9 @@
     ;; The current screen rendering frame completed
     (i32.sub (get_global $tacts) (get_global $tactsInFrame))
     set_global $tacts
+
     (i32.add (get_global $frameCount) (i32.const 1))
     set_global $frameCount
-
-    ;; Render the screen before exit
-    get_local $currentUlaTact
-    set_local $lastTact
-    (call $renderScreen 
-      (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
-      (get_local $lastTact)
-    )
-    get_local $lastTact set_global $lastRenderedUlaTact
 
     ;; Sign frame completion
     call $completeFrame
@@ -8849,6 +8860,26 @@
         br $tactLoop
       end
     end
+
+    ;; Add extra (non-rendering) tacts to protect frame overflow
+    i32.const 100 set_local $line
+    loop $trailLoop
+      get_local $line
+      if
+        (i32.store8 (get_local $tablePointer) (i32.const 0)) ;; "None" rendering phase
+        (i32.store16 offset=1 (get_local $tablePointer) (i32.const 0))
+        (i32.store16 offset=3 (get_local $tablePointer) (i32.const 0))
+
+        ;; Move to the next table item
+        (i32.add (get_local $tablePointer) (i32.const 5))
+        set_local $tablePointer
+
+        ;; Decrement counter
+        (i32.sub (get_local $line) (i32.const 1))
+        set_local $line
+        br $trailLoop
+      end
+    end
   )
 
   ;; Calculates pixel address
@@ -8918,45 +8949,28 @@
     i32.add
   )
 
-  ;; Renders the screen portions between the provided tacts
-  (func $renderScreen (param $fromTact i32) (param $toTact i32)
+  ;; Renders the next screen portion
+  ;; $toTact: last tact to render
+  (func $renderScreen (param $toTact i32)
     (local $tact i32)
-    (local $renderingTablePtr i32)
     (local $phase i32)
     (local $pixelAddr i32)
     (local $attrAddr i32)
-    (local $pixelBufferPtr i32)
 
-    ;; Round the range to fit in the frame
-    (i32.rem_u (get_local $fromTact) (get_global $tactsInFrame))
-    tee_local $fromTact
+    (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
     set_local $tact
-    (i32.rem_u (get_local $toTact) (get_global $tactsInFrame))
-    set_local $toTact
-
-    ;; Calculate initial values of table pointers
-    (i32.add 
-      (get_global $RENDERING_TACT_TABLE)
-      (i32.mul (get_local $tact) (i32.const 5))
-    )
-    set_local $renderingTablePtr
-    (i32.add 
-      (get_global $PIXEL_RENDERING_BUFFER)
-      (i32.shl (get_local $tact) (i32.const 1))
-    )
-    set_local $pixelBufferPtr
 
     ;; Iterate through tacts
     loop $tactLoop
       (i32.le_u (get_local $tact) (get_local $toTact))
       if
         ;; Decompose the rendering tact entry
-        (i32.load16_u offset=1 (get_local $renderingTablePtr))
+        (i32.load16_u offset=1 (get_global $renderingTablePtr))
         set_local $pixelAddr
-        (i32.load16_u offset=3 (get_local $renderingTablePtr))
+        (i32.load16_u offset=3 (get_global $renderingTablePtr))
         set_local $attrAddr
         (i32.and
-          (i32.load8_u offset=0 (get_local $renderingTablePtr))
+          (i32.load8_u offset=0 (get_global $renderingTablePtr))
           (i32.const 0x0f)
         )
 
@@ -8967,8 +8981,8 @@
           (i32.and (get_local $phase) (i32.const 0x04))
           if
             ;; Store border pixels
-            (i32.store8 offset=0 (get_local $pixelBufferPtr) (get_global $borderColor))
-            (i32.store8 offset=1 (get_local $pixelBufferPtr) (get_global $borderColor))
+            (i32.store8 offset=0 (get_global $pixelBufferPtr) (get_global $borderColor))
+            (i32.store8 offset=1 (get_global $pixelBufferPtr) (get_global $borderColor))
 
             ;; Fetch border byte?
             (i32.and (get_local $phase) (i32.const 0x01))
@@ -8989,13 +9003,13 @@
             (i32.and (get_local $phase) (i32.const 0x08))
             if
               ;; Process Byte1 pixels
-              get_local $pixelBufferPtr
+              get_global $pixelBufferPtr
               (call $getAttrColor
                 (i32.and (get_global $pixelByte1) (i32.const 0x80))
                 (get_global $attrByte1)
               )
               i32.store8 offset=0
-              get_local $pixelBufferPtr
+              get_global $pixelBufferPtr
               (call $getAttrColor
                 (i32.and (get_global $pixelByte1) (i32.const 0x40))
                 (get_global $attrByte1)
@@ -9020,13 +9034,13 @@
               end
             else
               ;; Process Byte2 pixels
-              get_local $pixelBufferPtr
+              get_global $pixelBufferPtr
               (call $getAttrColor
                 (i32.and (get_global $pixelByte2) (i32.const 0x80))
                 (get_global $attrByte2)
               )
               i32.store8 offset=0
-              get_local $pixelBufferPtr
+              get_global $pixelBufferPtr
               (call $getAttrColor
                 (i32.and (get_global $pixelByte2) (i32.const 0x40))
                 (get_global $attrByte2)
@@ -9052,13 +9066,13 @@
           end
 
           ;; Move to the next pixel in the buffer
-          (i32.add (get_local $pixelBufferPtr) (i32.const 2))
-          set_local $pixelBufferPtr
+          (i32.add (get_global $pixelBufferPtr) (i32.const 2))
+          set_global $pixelBufferPtr
         end
 
         ;; Move to the next rendering tact
-          (i32.add (get_local $renderingTablePtr) (i32.const 5))
-          set_local $renderingTablePtr
+        (i32.add (get_global $renderingTablePtr) (i32.const 5))
+        set_global $renderingTablePtr
 
         ;; Increment loop counter
         (i32.add (get_local $tact) (i32.const 1))
