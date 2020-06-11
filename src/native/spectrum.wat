@@ -75,12 +75,13 @@
   ;; 0x01_1D00 (16384 bytes): ZX Spectrum 48 ROM
   ;; 0x01_5D00 (256 bytes): Keyboard line status
   ;; 0x01_5E00 (0x6_0000 bytes): Rendering tact table
-  ;; 0x07_5E00 (256 bytes): Paper color bytes (flash off)
-  ;; 0x07_5F00 (256 bytes): Ink color bytes (flash off)
-  ;; 0x07_6000 (256 bytes): Paper color bytes (flash on)
-  ;; 0x07_6100 (256 bytes): Ink color bytes (flash on)
-  ;; 0x07_6200 (0x2_8000 bytes): Pixel rendering buffer
-  ;; 0x09_E200 Next free slot
+  ;; 0x07_5E00 (0x1_4000 bytes): Contention value table
+  ;; 0x07_7200 (256 bytes): Paper color bytes (flash off)
+  ;; 0x07_7300 (256 bytes): Ink color bytes (flash off)
+  ;; 0x07_7400 (256 bytes): Paper color bytes (flash on)
+  ;; 0x07_7500 (256 bytes): Ink color bytes (flash on)
+  ;; 0x07_7600 (0x2_8000 bytes): Pixel rendering buffer
+  ;; 0x09_F600 Next free slot
 
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
@@ -417,6 +418,9 @@
   ;; $suppCont: Suppress memory contention flag
   (func $testMachineIoWrite (param $addr i32) (param $v i32)
     (local $logAddr i32)
+    ;; Default delay
+
+    (call $incTacts (i32.const 4))
 
     ;; Calculate the address in the I/O log
     (i32.add (get_global $TEST_IO_LOG_OFFS)
@@ -1503,7 +1507,7 @@
   ;; $addr: 16-bit memory address
   ;; $v: 8-bit value to write
   (func $defaultIoWrite (param $addr i32) (param $v i32)
-    ;; This function in intentionally empty
+    (call $incTacts (i32.const 4))
   )
 
   ;; Reads the specified memory location of the current machine type
@@ -1577,19 +1581,11 @@
       (i32.const 4)
     )
     call_indirect (type $PortWriteFunc)
-    (call $incTacts (i32.const 4))
   )
 
   ;; Writes the specified TBBLUE index of the current machine type
   ;; $idx: 8-bit index register value
   (func $writeTbBlueIndex (param $idx i32)
-    i32.const 0x243b
-    get_local $idx
-    (i32.add
-      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
-      (i32.const 4)
-    )
-    call_indirect (type $PortWriteFunc)
     (call $incTacts (i32.const 3))
 
     ;; Allow to write the log
@@ -1604,13 +1600,6 @@
   ;; Writes the specified TBBLUE value of the current machine type
   ;; $idx: 8-bit index register value
   (func $writeTbBlueValue (param $idx i32)
-    i32.const 0x253b
-    get_local $idx
-    (i32.add
-      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
-      (i32.const 4)
-    )
-    call_indirect (type $PortWriteFunc)
     (call $incTacts (i32.const 3))
 
     get_local $idx
@@ -7984,6 +7973,9 @@
   ;; Byte 3..4: Attribute address
   (global $RENDERING_TACT_TABLE i32 (i32.const 0x01_5E00))
 
+  ;; Rendering tact contention values
+  (global $CONTENTION_TABLE i32 (i32.const 0x07_5E00))
+
   ;; Initializes a ZX Spectrum machine with the specified type
   ;; $type: Machine type
   ;;   0: ZX Spectrum 48K
@@ -8077,7 +8069,6 @@
   ;; Executes the ZX Spectrum machine cycle
   (func $executeMachineCycle
     (local $currentUlaTact i32)
-    (local $lastTact i32)
 
     ;; Initialize the execution cycle
     i32.const 0 set_global $executionCompletionReason
@@ -8095,14 +8086,11 @@
         set_global $lastRenderedUlaTact
 
         ;; Reset pointers used for screen rendering
-        get_global $RENDERING_TACT_TABLE
-        (i32.mul 
-          (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
-          (i32.const 5)
+        (i32.add
+          (get_global $RENDERING_TACT_TABLE)
+          (i32.mul (get_global $lastRenderedUlaTact) (i32.const 5))
         )
-        i32.add
         set_global $renderingTablePtr
-        
         get_global $PIXEL_RENDERING_BUFFER set_global $pixelBufferPtr
 
         i32.const 0 set_global $frameCompleted
@@ -8127,13 +8115,8 @@
 
       ;; TODO: Check various terminations
 
-      ;; Render the screen before
-      get_local $currentUlaTact
-      set_local $lastTact
-      (call $renderScreen 
-        (get_local $lastTact)
-      )
-      get_local $lastTact set_global $lastRenderedUlaTact
+      ;; Render the screen
+      (call $renderScreen (get_local $currentUlaTact))
 
       ;; Exit if if halted and execution mode is UntilHalted
       (i32.eq (get_global $emulationMode) (i32.const 1))
@@ -8155,7 +8138,10 @@
     end
 
     ;; The current screen rendering frame completed
-    (i32.sub (get_global $tacts) (get_global $tactsInFrame))
+    (i32.sub 
+      (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
+      (get_global $tactsInFrame)
+    )
     set_global $tacts
 
     (i32.add (get_global $frameCount) (i32.const 1))
@@ -8545,23 +8531,23 @@
   ;; Screen device routines
 
   ;; Table of paper colors (flash off)
-  (global $PAPER_COLORS_OFF_TABLE i32 (i32.const 0x07_5E00))
-  (data (i32.const 0x07_5E00) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
+  (global $PAPER_COLORS_OFF_TABLE i32 (i32.const 0x07_7200))
+  (data (i32.const 0x07_7200) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
 
   ;; Table of ink colors (flash off)
-  (global $INK_COLORS_OFF_TABLE i32 (i32.const 0x07_5F00))
-  (data (i32.const 0x07_5F00) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
+  (global $INK_COLORS_OFF_TABLE i32 (i32.const 0x07_7300))
+  (data (i32.const 0x07_7300) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
 
   ;; Table of paper colors (flash on)
-  (global $PAPER_COLORS_ON_TABLE i32 (i32.const 0x07_6000))
-  (data (i32.const 0x07_6000) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
+  (global $PAPER_COLORS_ON_TABLE i32 (i32.const 0x07_7400))
+  (data (i32.const 0x07_7400) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
 
   ;; Table of ink colors (flash on)
-  (global $INK_COLORS_ON_TABLE i32 (i32.const 0x07_6100))
-  (data (i32.const 0x07_6100) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
+  (global $INK_COLORS_ON_TABLE i32 (i32.const 0x07_7500))
+  (data (i32.const 0x07_7500) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
 
   ;; The buffer for the rendered pixels
-  (global $PIXEL_RENDERING_BUFFER i32 (i32.const 0x07_6200))
+  (global $PIXEL_RENDERING_BUFFER i32 (i32.const 0x07_7600))
 
   ;; Initializes the table used for screen rendering
   (func $initRenderingTactTable
@@ -8579,6 +8565,7 @@
     (local $pixelAddr i32)
     (local $attrAddr i32)
     (local $tablePointer i32)
+    (local $contentionPtr i32)
     (local $pixelTact i32)
 
     ;; Calculate the first and last visible lines
@@ -8604,6 +8591,7 @@
 
     ;; Init the loop over tacts
     get_global $RENDERING_TACT_TABLE set_local $tablePointer
+    get_global $CONTENTION_TABLE set_local $contentionPtr
     i32.const 0 set_local $tact
     loop $tactLoop
       (i32.lt_u (get_local $tact) (get_global $tactsInFrame))
@@ -8839,19 +8827,16 @@
         end 
 
         ;; Store the current item
-        (i32.store8 
-          (get_local $tablePointer)
-          (i32.or
-            (i32.shl (get_local $contentionDelay) (i32.const 5))
-            (get_local $phase)
-          )
-        )
+        (i32.store8 (get_local $tablePointer) (get_local $phase))
         (i32.store16 offset=1 (get_local $tablePointer) (get_local $pixelAddr))
         (i32.store16 offset=3 (get_local $tablePointer) (get_local $attrAddr))
+        (i32.store8 (get_local $contentionPtr) (get_local $contentionDelay))
 
         ;; Move to the next table item
         (i32.add (get_local $tablePointer) (i32.const 5))
         set_local $tablePointer
+        (i32.add (get_local $contentionPtr) (i32.const 1))
+        set_local $contentionPtr
 
         ;; Continue the loop
         (i32.add (get_local $tact) (i32.const 1))
@@ -8954,8 +8939,6 @@
   (func $renderScreen (param $toTact i32)
     (local $tact i32)
     (local $phase i32)
-    (local $pixelAddr i32)
-    (local $attrAddr i32)
 
     (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
     set_local $tact
@@ -8964,15 +8947,8 @@
     loop $tactLoop
       (i32.le_u (get_local $tact) (get_local $toTact))
       if
-        ;; Decompose the rendering tact entry
-        (i32.load16_u offset=1 (get_global $renderingTablePtr))
-        set_local $pixelAddr
-        (i32.load16_u offset=3 (get_global $renderingTablePtr))
-        set_local $attrAddr
-        (i32.and
-          (i32.load8_u offset=0 (get_global $renderingTablePtr))
-          (i32.const 0x0f)
-        )
+        ;; Obtain rendering phase information
+        (i32.load8_u offset=0 (get_global $renderingTablePtr))
 
         ;; Process the current rendering tact
         (i32.gt_u (tee_local $phase) (i32.const 0))
@@ -8988,13 +8964,13 @@
             (i32.and (get_local $phase) (i32.const 0x01))
             if
               ;; Fetch pixel byte 1
-              (call $readMemoryNc (get_local $pixelAddr))
+              (call $readMemoryNc (i32.load16_u offset=1 (get_global $renderingTablePtr)))
               set_global $pixelByte1
             else
               (i32.and (get_local $phase) (i32.const 0x02))
               if
                 ;; Fetch attr byte 1
-                (call $readMemoryNc (get_local $attrAddr))
+                (call $readMemoryNc (i32.load16_u offset=3 (get_global $renderingTablePtr)))
                 set_global $attrByte1
               end
             end
@@ -9022,13 +8998,13 @@
               (i32.and (get_local $phase) (i32.const 0x01))
               if
                 ;; Fetch pixel byte 2
-                (call $readMemoryNc (get_local $pixelAddr))
+                (call $readMemoryNc (i32.load16_u offset=1 (get_global $renderingTablePtr)))
                 set_global $pixelByte2
               else
                 (i32.and (get_local $phase) (i32.const 0x02))
                 if
                   ;; Fetch attr byte 2
-                  (call $readMemoryNc (get_local $attrAddr))
+                  (call $readMemoryNc (i32.load16_u offset=3 (get_global $renderingTablePtr)))
                   set_global $attrByte2
             end
               end
@@ -9052,13 +9028,13 @@
               (i32.and (get_local $phase) (i32.const 0x01))
               if
                 ;; Fetch pixel byte 1
-                (call $readMemoryNc (get_local $pixelAddr))
+                (call $readMemoryNc (i32.load16_u offset=1 (get_global $renderingTablePtr)))
                 set_global $pixelByte1
               else
                 (i32.and (get_local $phase) (i32.const 0x02))
                 if
                   ;; Fetch attr byte 1
-                  (call $readMemoryNc (get_local $attrAddr))
+                  (call $readMemoryNc (i32.load16_u offset=3 (get_global $renderingTablePtr)))
                   set_global $attrByte1
                 end
               end
@@ -9081,6 +9057,7 @@
         ;; continue
         br $tactLoop
       end
+      get_local $tact set_global $lastRenderedUlaTact
     end
   )
 
@@ -9118,7 +9095,12 @@
   ;; Applies memory contention delay according to the current
   ;; screen rendering tact
   (func $applyContentionDelay
-    ;; TODO: Implement this method
+    (i32.add
+      (get_global $CONTENTION_TABLE) 
+      (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
+    )
+    i32.load8_u
+    call $incTacts
   )
 
   ;; Applies I/O contention wait

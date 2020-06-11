@@ -127,14 +127,6 @@ describe("Extended ops 80-bf", () => {
     expect(tbLog[1].isIndex).toBe(false);
     expect(tbLog[1].data).toBe(0x23);
 
-    expect(ioLog.length).toBe(2)
-    expect(ioLog[0].address).toBe(0x243b)
-    expect(ioLog[0].value).toBe(0x07)
-    expect(ioLog[0].isOutput).toBe(true)
-    expect(ioLog[1].address).toBe(0x253b)
-    expect(ioLog[1].value).toBe(0x23)
-    expect(ioLog[1].isOutput).toBe(true)
-
     expect(s.pc).toBe(0x0004);
     expect(s.tacts).toBe(20);
   });
