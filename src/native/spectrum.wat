@@ -8091,8 +8091,8 @@
           (i32.mul (get_global $lastRenderedUlaTact) (i32.const 5))
         )
         set_global $renderingTablePtr
-        get_global $PIXEL_RENDERING_BUFFER set_global $pixelBufferPtr
 
+        get_global $PIXEL_RENDERING_BUFFER set_global $pixelBufferPtr
         i32.const 0 set_global $frameCompleted
         call $startNewFrame
       end
@@ -8295,7 +8295,7 @@
     set_global $firstDisplayLine
 
     (i32.sub
-      (i32.add (get_global $firstDisplayLine) (get_global $displayLineTime))
+      (i32.add (get_global $firstDisplayLine) (get_global $displayLines))
       (i32.const 1)
     )
     set_global $lastDisplayLine
@@ -8593,6 +8593,7 @@
     get_global $RENDERING_TACT_TABLE set_local $tablePointer
     get_global $CONTENTION_TABLE set_local $contentionPtr
     i32.const 0 set_local $tact
+
     loop $tactLoop
       (i32.lt_u (get_local $tact) (get_global $tactsInFrame))
       if
@@ -8602,12 +8603,18 @@
         i32.const 0 set_local $pixelAddr
         i32.const 0 set_local $attrAddr
 
+        ;; Calculate line and tact in line
+        (i32.div_u (get_local $tact) (get_global $screenLineTime))
+        set_local $line
+        (i32.rem_u (get_local $tact) (get_global $screenLineTime))
+        set_local $tactInLine
+
         ;; Test, if the current tact is visible
         (i32.ge_u (get_local $line) (get_local $firstVisibleLine))
         if (result i32)
           (i32.lt_u (get_local $line) (get_local $lastVisibleLine))
           if (result i32)
-            (i32.lt_u (get_local $tactInLine) (get_local $lastVisibleLineTact))
+            (i32.lt_u (get_local $tactInLine) (get_local $lastDisplayLineTact))
           else
             i32.const 0
           end
@@ -8778,7 +8785,7 @@
             end
           else
             ;; No, it is the border area
-            i32.const 1 set_local $phase
+            i32.const 0x04 set_local $phase
 
             ;; Is it left or right border?
             (i32.ge_u (get_local $line) (get_global $firstDisplayLine))
@@ -8786,8 +8793,6 @@
               (i32.le_u (get_local $line) (get_global $lastDisplayLine))
               if
                 ;; Yes, it is left or right border
-                i32.const 0x04 set_local $phase ;; Border
-
                 ;; Is it pixel data prefetch time?
                 (i32.eq (get_local $tactInLine) (get_local $borderPixelFetchTact))
                 if
@@ -8940,7 +8945,7 @@
     (local $tact i32)
     (local $phase i32)
 
-    (i32.add (get_global $lastRenderedUlaTact) (i32.const 1))
+    get_global $lastRenderedUlaTact
     set_local $tact
 
     ;; Iterate through tacts
@@ -8956,6 +8961,11 @@
           ;; Test for border procesing
           (i32.and (get_local $phase) (i32.const 0x04))
           if
+            get_local $tact
+            call $trace
+            get_global $pixelBufferPtr
+            call $trace
+
             ;; Store border pixels
             (i32.store8 offset=0 (get_global $pixelBufferPtr) (get_global $borderColor))
             (i32.store8 offset=1 (get_global $pixelBufferPtr) (get_global $borderColor))
