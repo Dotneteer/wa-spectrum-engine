@@ -76,12 +76,12 @@
   ;; 0x01_5D00 (256 bytes): Keyboard line status
   ;; 0x01_5E00 (0x6_0000 bytes): Rendering tact table
   ;; 0x07_5E00 (0x1_4000 bytes): Contention value table
-  ;; 0x07_7200 (256 bytes): Paper color bytes (flash off)
-  ;; 0x07_7300 (256 bytes): Ink color bytes (flash off)
-  ;; 0x07_7400 (256 bytes): Paper color bytes (flash on)
-  ;; 0x07_7500 (256 bytes): Ink color bytes (flash on)
-  ;; 0x07_7600 (0x2_8000 bytes): Pixel rendering buffer
-  ;; 0x09_F600 Next free slot
+  ;; 0x08_9E00 (256 bytes): Paper color bytes (flash off)
+  ;; 0x08_9F00 (256 bytes): Ink color bytes (flash off)
+  ;; 0x08_A000 (256 bytes): Paper color bytes (flash on)
+  ;; 0x08_A100 (256 bytes): Ink color bytes (flash on)
+  ;; 0x08_A200 (0x2_8000 bytes): Pixel rendering buffer
+  ;; 0x0B_2200 Next free slot
 
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
@@ -1530,7 +1530,6 @@
       (i32.const 1)
     )
     call_indirect (type $MemReadFunc)
-    (call $incTacts (i32.const 3))
   )
 
   ;; Reads the specified memory location of the current machine type
@@ -8386,56 +8385,57 @@
 
     ;; Calculated screen attributes
     (i32.store offset=91 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLines))      
-    (i32.store offset=95 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayLine))      
-    (i32.store offset=99 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftPixels))      
-    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightPixels))      
-    (i32.store offset=107 (get_global $STATE_TRANSFER_BUFF) (get_global $displayWidth))      
-    (i32.store offset=111 (get_global $STATE_TRANSFER_BUFF) (get_global $screenWidth))      
-    (i32.store offset=115 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLineTime))      
-    (i32.store offset=119 (get_global $STATE_TRANSFER_BUFF) (get_global $rasterLines))      
-    (i32.store offset=123 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayPixelTact))      
-    (i32.store offset=127 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))
+    (i32.store offset=95 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayLine))
+    (i32.store offset=99 (get_global $STATE_TRANSFER_BUFF) (get_global $lastDisplayLine))
+    (i32.store offset=103 (get_global $STATE_TRANSFER_BUFF) (get_global $borderLeftPixels))      
+    (i32.store offset=107 (get_global $STATE_TRANSFER_BUFF) (get_global $borderRightPixels))      
+    (i32.store offset=111 (get_global $STATE_TRANSFER_BUFF) (get_global $displayWidth))      
+    (i32.store offset=115 (get_global $STATE_TRANSFER_BUFF) (get_global $screenWidth))      
+    (i32.store offset=119 (get_global $STATE_TRANSFER_BUFF) (get_global $screenLineTime))      
+    (i32.store offset=123 (get_global $STATE_TRANSFER_BUFF) (get_global $rasterLines))      
+    (i32.store offset=127 (get_global $STATE_TRANSFER_BUFF) (get_global $firstDisplayPixelTact))      
+    (i32.store offset=131 (get_global $STATE_TRANSFER_BUFF) (get_global $firstScreenPixelTact))
 
     ;; ZX Spectrum engine state
-    (i32.store8 offset=131 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
-    (i32.store offset=132 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
-    (i32.store offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCount))
-    (i32.store8 offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
-    (i32.store offset=141 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
-    (i32.store offset=145 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
-    (i32.store8 offset=149 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
-    (i32.store8 offset=150 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
-    (i32.store8 offset=151 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
-    (i32.store8 offset=152 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
-    (i32.store16 offset=153 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
-    (i32.store8 offset=155 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
-    (i32.store8 offset=156 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
-    (i32.store8 offset=157 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
+    (i32.store8 offset=135 (get_global $STATE_TRANSFER_BUFF) (get_global $ulaIssue))
+    (i32.store offset=136 (get_global $STATE_TRANSFER_BUFF) (get_global $lastRenderedUlaTact))
+    (i32.store offset=140 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCount))
+    (i32.store8 offset=144 (get_global $STATE_TRANSFER_BUFF) (get_global $frameCompleted))
+    (i32.store offset=145 (get_global $STATE_TRANSFER_BUFF) (get_global $contentionAccummulated))
+    (i32.store offset=149 (get_global $STATE_TRANSFER_BUFF) (get_global $lastExecutionContentionValue))
+    (i32.store8 offset=153 (get_global $STATE_TRANSFER_BUFF) (get_global $emulationMode))
+    (i32.store8 offset=154 (get_global $STATE_TRANSFER_BUFF) (get_global $debugStepMode))
+    (i32.store8 offset=155 (get_global $STATE_TRANSFER_BUFF) (get_global $fastTapeMode))
+    (i32.store8 offset=156 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationRom))
+    (i32.store16 offset=157 (get_global $STATE_TRANSFER_BUFF) (get_global $terminationPoint))
+    (i32.store8 offset=159 (get_global $STATE_TRANSFER_BUFF) (get_global $fastVmMode))
+    (i32.store8 offset=160 (get_global $STATE_TRANSFER_BUFF) (get_global $disableScreenRendering))
+    (i32.store8 offset=161 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
 
     ;; Keyboard lines
     (i32.load offset=0 (get_global $KEYBOARD_LINES))
-    (i32.store offset=158 (get_global $STATE_TRANSFER_BUFF))
-    (i32.load offset=4 (get_global $KEYBOARD_LINES))
     (i32.store offset=162 (get_global $STATE_TRANSFER_BUFF))
+    (i32.load offset=4 (get_global $KEYBOARD_LINES))
+    (i32.store offset=166 (get_global $STATE_TRANSFER_BUFF))
 
     ;; Port state
-    (i32.store8 offset=166 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
-    (i32.store8 offset=167 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
-    (i32.store offset=168 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
-    (i32.store offset=172 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
+    (i32.store8 offset=170 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))
+    (i32.store8 offset=171 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4LastValue))
+    (i32.store offset=172 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom0Tacts))
+    (i32.store offset=176 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit4ChangedFrom1Tacts))
 
     ;; Interrupt state
-    (i32.store8 offset=176 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
-    (i32.store8 offset=177 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
+    (i32.store8 offset=180 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRaised))
+    (i32.store8 offset=181 (get_global $STATE_TRANSFER_BUFF) (get_global $interruptRevoked))
 
     ;; Screen state
-    (i32.store8 offset=178 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
-    (i32.store8 offset=179 (get_global $STATE_TRANSFER_BUFF) (get_global $flashPhase))
-    (i32.store8 offset=180 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte1))
-    (i32.store8 offset=181 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte2))
-    (i32.store8 offset=182 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
-    (i32.store8 offset=183 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
-    (i32.store8 offset=184 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
+    (i32.store8 offset=182 (get_global $STATE_TRANSFER_BUFF) (get_global $borderColor))
+    (i32.store8 offset=183 (get_global $STATE_TRANSFER_BUFF) (get_global $flashPhase))
+    (i32.store8 offset=184 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte1))
+    (i32.store8 offset=185 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelByte2))
+    (i32.store8 offset=186 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
+    (i32.store8 offset=187 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
+    (i32.store8 offset=188 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
   )
 
   ;; Copies a segment of memory
@@ -8531,23 +8531,23 @@
   ;; Screen device routines
 
   ;; Table of paper colors (flash off)
-  (global $PAPER_COLORS_OFF_TABLE i32 (i32.const 0x07_7200))
-  (data (i32.const 0x07_7200) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
+  (global $PAPER_COLORS_OFF_TABLE i32 (i32.const 0x08_9E00))
+  (data (i32.const 0x08_9E00) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
 
   ;; Table of ink colors (flash off)
-  (global $INK_COLORS_OFF_TABLE i32 (i32.const 0x07_7300))
-  (data (i32.const 0x07_7300) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
+  (global $INK_COLORS_OFF_TABLE i32 (i32.const 0x08_9F00))
+  (data (i32.const 0x08_9F00) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
 
   ;; Table of paper colors (flash on)
-  (global $PAPER_COLORS_ON_TABLE i32 (i32.const 0x07_7400))
-  (data (i32.const 0x07_7400) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
+  (global $PAPER_COLORS_ON_TABLE i32 (i32.const 0x08_A000))
+  (data (i32.const 0x08_A000) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
 
   ;; Table of ink colors (flash on)
-  (global $INK_COLORS_ON_TABLE i32 (i32.const 0x07_7500))
-  (data (i32.const 0x07_7500) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
+  (global $INK_COLORS_ON_TABLE i32 (i32.const 0x08_A1E00))
+  (data (i32.const 0x08_A100) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
 
   ;; The buffer for the rendered pixels
-  (global $PIXEL_RENDERING_BUFFER i32 (i32.const 0x07_7600))
+  (global $PIXEL_RENDERING_BUFFER i32 (i32.const 0x08_A200))
 
   ;; Initializes the table used for screen rendering
   (func $initRenderingTactTable
@@ -8571,7 +8571,7 @@
     ;; Calculate the first and last visible lines
     (i32.add (get_global $verticalSyncLines) (get_global $nonVisibleBorderTopLines))
     set_local $firstVisibleLine
-    (i32.sub (get_global $screenLines) (get_global $nonVisibleBorderBottomLines))
+    (i32.sub (get_global $rasterLines) (get_global $nonVisibleBorderBottomLines))
     set_local $lastVisibleLine
 
     ;; Calculate the last visible line and display tacts
@@ -8614,7 +8614,7 @@
         if (result i32)
           (i32.lt_u (get_local $line) (get_local $lastVisibleLine))
           if (result i32)
-            (i32.lt_u (get_local $tactInLine) (get_local $lastDisplayLineTact))
+            (i32.lt_u (get_local $tactInLine) (get_local $lastVisibleLineTact))
           else
             i32.const 0
           end
@@ -8632,7 +8632,7 @@
             if (result i32)
               (i32.ge_u (get_local $tactInLine) (get_global $borderLeftTime))
               if (result i32)
-                (i32.lt_u (get_local $tactInLine) (get_local $lastVisibleLineTact))
+                (i32.lt_u (get_local $tactInLine) (get_local $lastDisplayLineTact))
               else
                 i32.const 0
               end
@@ -8944,6 +8944,7 @@
   (func $renderScreen (param $toTact i32)
     (local $tact i32)
     (local $phase i32)
+    (local $tmp i32)
 
     get_global $lastRenderedUlaTact
     set_local $tact
@@ -8954,18 +8955,13 @@
       if
         ;; Obtain rendering phase information
         (i32.load8_u offset=0 (get_global $renderingTablePtr))
-
-        ;; Process the current rendering tact
+        
+        ;;Process the current rendering tact
         (i32.gt_u (tee_local $phase) (i32.const 0))
         if
           ;; Test for border procesing
           (i32.and (get_local $phase) (i32.const 0x04))
           if
-            get_local $tact
-            call $trace
-            get_global $pixelBufferPtr
-            call $trace
-
             ;; Store border pixels
             (i32.store8 offset=0 (get_global $pixelBufferPtr) (get_global $borderColor))
             (i32.store8 offset=1 (get_global $pixelBufferPtr) (get_global $borderColor))
@@ -8996,12 +8992,14 @@
               )
               i32.store8 offset=0
               get_global $pixelBufferPtr
+
               (call $getAttrColor
                 (i32.and (get_global $pixelByte1) (i32.const 0x40))
                 (get_global $attrByte1)
               )
               i32.store8 offset=1
               (i32.shl (get_global $pixelByte1) (i32.const 2))
+              (i32.and (i32.const 0xff))
               set_global $pixelByte1
 
               ;; Fetch pixel byte?
@@ -9016,7 +9014,7 @@
                   ;; Fetch attr byte 2
                   (call $readMemoryNc (i32.load16_u offset=3 (get_global $renderingTablePtr)))
                   set_global $attrByte2
-            end
+                end
               end
             else
               ;; Process Byte2 pixels
@@ -9033,7 +9031,9 @@
               )
               i32.store8 offset=1
               (i32.shl (get_global $pixelByte2) (i32.const 2))
+              (i32.and (i32.const 0xff))
               set_global $pixelByte2
+
               ;; Fetch pixel byte?
               (i32.and (get_local $phase) (i32.const 0x01))
               if
