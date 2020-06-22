@@ -35,6 +35,7 @@
   (export "setPC" (func $setPC))
   (export "setInterruptTact" (func $setInterruptTact))
   (export "checkForInterrupt" (func $checkForInterrupt))
+  (export "setBeeperSampleRate" (func $setBeeperSampleRate))
 
   ;; ==========================================================================
   ;; Function signatures
@@ -81,7 +82,8 @@
   ;; 0x08_A000 (256 bytes): Paper color bytes (flash on)
   ;; 0x08_A100 (256 bytes): Ink color bytes (flash on)
   ;; 0x08_A200 (0x2_8000 bytes): Pixel rendering buffer
-  ;; 0x0B_2200 Next free slot
+  ;; 0x0B_2200 (0x2000 bytes): Beeper sample rendering buffer
+  ;; 0x0B_4200 Next free slot
 
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
@@ -7926,6 +7928,34 @@
   (global $pixelBufferPtr (mut i32) (i32.const 0x0000))
 
   ;; ==========================================================================
+  ;; Beeper device state
+
+  ;; Sample rate of the beeper audio
+  (global $beeperSampleRate (mut i32) (i32.const 0x0000))
+
+  ;; Sample length (lower) in CPU clock tacts
+  (global $beeperSampleLength (mut i32) (i32.const 0x0000))
+
+  ;; Lower gate for sample length
+  (global $beeperLowerGate (mut i32) (i32.const 0x0000))
+
+  ;; Upper gate for sample length
+  (global $beeperUpperGate (mut i32) (i32.const 0x0000))
+
+  ;; Current beeper gate value
+  (global $beeperGateValue (mut i32) (i32.const 0x0000))
+
+  ;; Tact value of the last sample
+  (global $beeperNextSampleTact (mut i32) (i32.const 0x0000))
+
+  ;; Last EAR bit value
+  (global $beeperLastEarBit (mut i32) (i32.const 0x0000))
+
+  ;; Count of samples in this frame
+  (global $beeperSampleCount (mut i32) (i32.const 0x0000))
+
+
+  ;; ==========================================================================
   ;; Public functions to manage a ZX Spectrum machine
 
   ;; Transfer area for the ZX Spectrum execution cycle options
@@ -8031,7 +8061,12 @@
     ;; Reset interrupt state
     i32.const 0 set_global $interruptRaised
     i32.const 0 set_global $interruptRevoked
-  )
+
+    ;; Reset beeper state
+    i32.const 0 set_global $beeperGateValue
+    i32.const 0 set_global $beeperNextSampleTact
+    i32.const 0 set_global $beeperLastEarBit
+   )
 
   ;; Sets the ULA issue to use
   (func $setUlaIssue (param $ula i32)
@@ -8093,6 +8128,11 @@
 
         get_global $PIXEL_RENDERING_BUFFER set_global $pixelBufferPtr
         i32.const 0 set_global $frameCompleted
+
+        ;; Reset beeper frame state and create samples
+        i32.const 0 set_global $beeperSampleCount
+        call $createEarBitSamples
+
         call $startNewFrame
       end
 
@@ -8137,9 +8177,23 @@
     end
 
     ;; The current screen rendering frame completed
+    ;; Create the missing beeper samples
+    call $createEarBitSamples
+
+    ;; Prepare for the next beeper sample rate
+    (i32.ge_u (get_global $beeperNextSampleTact) (get_global $tacts))
+    if
+      (i32.sub 
+        (get_global $beeperNextSampleTact)
+        (i32.mul (get_global $tactsInFrame) (get_global $clockMultiplier))
+      )
+      set_global $beeperNextSampleTact
+    end
+
+    ;; Adjust tacts
     (i32.sub 
-      (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
-      (get_global $tactsInFrame)
+      (get_global $tacts)
+      (i32.mul (get_global $tactsInFrame) (get_global $clockMultiplier))
     )
     set_global $tacts
 
@@ -8436,6 +8490,18 @@
     (i32.store8 offset=186 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte1))
     (i32.store8 offset=187 (get_global $STATE_TRANSFER_BUFF) (get_global $attrByte2))
     (i32.store8 offset=188 (get_global $STATE_TRANSFER_BUFF) (get_global $flashFrames))
+    (i32.store offset=189 (get_global $STATE_TRANSFER_BUFF) (get_global $renderingTablePtr))
+    (i32.store offset=193 (get_global $STATE_TRANSFER_BUFF) (get_global $pixelBufferPtr))
+
+    ;; Beeper state
+    (i32.store offset=197 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperSampleRate))
+    (i32.store offset=201 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperSampleLength))
+    (i32.store offset=205 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperLowerGate))
+    (i32.store offset=209 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperUpperGate))
+    (i32.store offset=213 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperGateValue))
+    (i32.store offset=217 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperNextSampleTact))
+    (i32.store8 offset=221 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperLastEarBit))
+    (i32.store offset=222 (get_global $STATE_TRANSFER_BUFF) (get_global $beeperSampleCount))
   )
 
   ;; Copies a segment of memory
@@ -9099,6 +9165,45 @@
   (func $setPixels (param $pixelAddr i32) (param $pixel1Color i32) (param $pixel2Color i32)
   )
 
+  ;; ==========================================================================
+  ;; Beeper device routines
+
+  ;; The buffer for beeper samples
+  (global $BEEPER_SAMPLE_BUFFER i32 (i32.const 0x0B_2200))
+
+  ;; Sets the specified beeper sample rate
+  ;; $rate: New beeper sample rate
+  (func $setBeeperSampleRate (param $rate i32)
+    (local $sampleLength f32)
+    get_local $rate set_global $beeperSampleRate
+
+    ;; Calculate the sample length
+    (f32.div
+      (f32.convert_u/i32 (i32.mul (get_global $baseClockFrequency) (get_global $clockMultiplier)))
+      (f32.convert_u/i32 (get_local $rate))
+    )
+    tee_local $sampleLength
+    i32.trunc_u/f32
+    set_global $beeperSampleLength
+
+    ;; Calculate the gate values for the sample length
+    (f32.mul 
+      (f32.sub 
+        (get_local $sampleLength) 
+        (f32.convert_u/i32 (get_global $beeperSampleLength))
+      )
+      (f32.const 100_000)
+    )
+    i32.trunc_u/f32
+    set_global $beeperLowerGate
+    i32.const 100_000 set_global $beeperUpperGate
+    (i32.shr_u
+      (i32.add (get_global $beeperLowerGate) (get_global $beeperUpperGate))
+      (i32.const 1)
+    )
+    set_global $beeperGateValue
+  )
+
   ;; Checks if tape device hook should be applied
   (func $checkTapeHooks)
 
@@ -9255,7 +9360,7 @@
     ;; Let the beeper device process the EAR bit
     (i32.and (get_local $v) (i32.const 0x10))
     set_local $bit4
-    (call $processEarBit (i32.const 0) (get_local $bit4))
+    (call $processEarBit (get_local $bit4))
 
     ;; Set the last value of bit3
     (i32.and (get_local $v) (i32.const 0x08))
@@ -9284,7 +9389,57 @@
   )
 
   ;; This function processes the EAR bit (beeper device)
-  (func $processEarBit (param $fromTape i32) (param $earBit i32))
+  (func $processEarBit (param $earBit i32)
+    call $createEarBitSamples
+    get_local $earBit set_global $beeperLastEarBit
+  )
+
+  ;; Creates EAR bit samples until the current CPU tact
+  (func $createEarBitSamples
+    ;; Process only if enough time spent from last sample
+    (i32.lt_s
+      (i32.mul
+        (i32.sub (get_global $tacts) (get_global $beeperNextSampleTact))
+        (i32.const 2)
+      )
+      (get_global $beeperSampleLength)
+    )
+    if return end
+
+    loop $earBitLoop
+      (i32.le_u (get_global $beeperNextSampleTact) (get_global $tacts))
+      if
+        ;; Store the next sample
+        (i32.add (get_global $BEEPER_SAMPLE_BUFFER) (get_global $beeperSampleCount))
+        i32.const 1
+        i32.const 0
+        get_global $beeperLastEarBit
+        select
+        i32.store8 
+
+        ;; Adjust sample count
+        (i32.add (get_global $beeperSampleCount) (i32.const 1))
+        set_global $beeperSampleCount
+
+        ;; Calculate the next beeper sample tact
+        (i32.add (get_global $beeperGateValue) (get_global $beeperLowerGate))
+        set_global $beeperGateValue
+        (i32.add (get_global $beeperNextSampleTact) (get_global $beeperSampleLength))
+        set_global $beeperNextSampleTact
+
+        (i32.ge_u (get_global $beeperGateValue) (get_global $beeperUpperGate))
+        if
+          ;; Shift the next sample 
+          (i32.add (get_global $beeperNextSampleTact) (i32.const 1))
+          set_global $beeperNextSampleTact
+
+          (i32.sub (get_global $beeperGateValue) (get_global $beeperUpperGate))
+          set_global $beeperGateValue
+        end
+        br $earBitLoop
+      end
+    end
+  )
 
   ;; This function processes the MIC bit (tape device)
   (func $processMicBit (param $micBit i32))

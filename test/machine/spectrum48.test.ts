@@ -7,8 +7,6 @@ import {
   MemoryContentionType,
   ExecuteCycleOptions,
   EmulationMode,
-  DebugStepMode,
-  ExecutionCompletionReason,
 } from "../../src/native/machine-state";
 import { MemoryHelper } from "../../src/native/memory-helpers";
 
@@ -96,7 +94,7 @@ describe("ZX Spectrum 48", () => {
       EmulationMode.UntilUlaFrameEnds
     );
     const start = Date.now().valueOf();
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000; i++) {
       machine.executeCycle(options);
     }
     console.log(Date.now().valueOf() - start);

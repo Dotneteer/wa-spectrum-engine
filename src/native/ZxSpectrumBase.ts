@@ -50,6 +50,14 @@ export abstract class ZxSpectrumBase {
   }
 
   /**
+   * Sets the beeper's sample rate
+   * @param rate Sample rate
+   */
+  setBeeperSampleRate(rate: number): void {
+    this.api.setBeeperSampleRate(rate);
+  }
+
+  /**
    * Gets the current state of the ZX Spectrum machine
    */
   getMachineState(): SpectrumMachineState {
@@ -176,6 +184,18 @@ export abstract class ZxSpectrumBase {
     s.attrByte1 = mh.readByte(186);
     s.attrByte2 = mh.readByte(187);
     s.flashFrames = mh.readByte(188);
+    s.renderingTablePtr = mh.readUint32(189);
+    s.pixelBufferPtr = mh.readUint32(193);
+
+    // --- Get beeper state
+    s.beeperSampleRate = mh.readUint32(197);
+    s.beeperSampleLength = mh.readUint32(201);
+    s.beeperLowerGate = mh.readUint32(205);
+    s.beeperUpperGate = mh.readUint32(209);
+    s.beeperGateValue = mh.readUint32(213);
+    s.beeperNextSampleTact = mh.readUint32(217);
+    s.beeperLastEarBit = mh.readBool(221);
+    s.beeperSampleCount = mh.readUint32(222);
 
     // --- Done.
     return s;

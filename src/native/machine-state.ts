@@ -84,6 +84,18 @@ export abstract class SpectrumMachineStateBase extends Z80CpuState {
   attrByte1: number;
   attrByte2: number;
   flashFrames: number;
+  renderingTablePtr: number;
+  pixelBufferPtr: number;
+
+  // --- Beeper state
+  beeperSampleRate: number;
+  beeperSampleLength: number;
+  beeperLowerGate: number;
+  beeperUpperGate: number;
+  beeperGateValue: number;
+  beeperNextSampleTact: number;
+  beeperLastEarBit: boolean;
+  beeperSampleCount: number;
 }
 
 /**
