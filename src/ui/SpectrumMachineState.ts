@@ -1,6 +1,6 @@
 import { UiBinaryReader } from "./UiBinaryReader";
-import { OpIndexMode, OpPrefixMode, Z80StateFlags } from "../shared/cpu-enums";
-import { ExecutionCompletionReason } from "../shared/ExecutionCompletionReason";
+import { OpIndexMode, OpPrefixMode, Z80StateFlags } from "../native/cpu-helpers";
+import { ExecutionCompletionReason } from "../native/machine-state";
 
 /**
  * This type represents all ZX Spectrum machine states

@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { CpuApi } from "../../src/native/api";
 import { TestZ80Machine } from "../../src/native/TestZ80Machine";
 import { Z80StateFlags } from "../../src/native/cpu-helpers";
-import { RunMode } from "../../src/shared/RunMode";
+import { RunMode } from "../../src/native/RunMode";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: CpuApi;

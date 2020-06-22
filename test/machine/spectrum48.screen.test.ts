@@ -8,7 +8,6 @@ import {
   EmulationMode,
 } from "../../src/native/machine-state";
 import { MemoryHelper } from "../../src/native/memory-helpers";
-import { Hmac } from "crypto";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: MachineApi;

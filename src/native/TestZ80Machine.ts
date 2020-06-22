@@ -7,7 +7,7 @@ import {
 } from "./cpu-helpers";
 import { CpuApi } from "./api";
 import { MemoryHelper } from "./memory-helpers";
-import { RunMode } from "../shared/RunMode";
+import { RunMode } from "./RunMode";
 
 /**
  * Start of the register are in the memory

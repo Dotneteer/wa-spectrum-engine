@@ -1,4 +1,4 @@
-import { RunMode } from "../shared/RunMode";
+import { RunMode } from "./RunMode";
 import { SpectrumKeyCode } from "./SpectrumKeyCode";
 
 /**

@@ -1,8 +1,6 @@
 import "mocha";
-import * as expect from "expect";
 import * as fs from "fs";
 import { CpuApi } from "../../src/native/api";
-import { Z80StateFlags, FlagsSetMask } from "../../src/native/cpu-helpers";
 
 const buffer = fs.readFileSync("./build/spectrum.wasm");
 let api: CpuApi;
