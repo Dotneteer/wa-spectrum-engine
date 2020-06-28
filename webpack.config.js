@@ -2,6 +2,7 @@ const lodash = require("lodash");
 const path = require("path");
 
 const CopyPkgJsonPlugin = require("copy-pkg-json-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -50,6 +51,13 @@ const commonConfig = {
           },
         ],
       },
+      {
+        test: /\.(jpg|png|svg|ico|icns)$/,
+        loader: "file-loader",
+        options: {
+          name: "[path][name].[ext]",
+        },
+      },
     ],
   },
 };
@@ -66,6 +74,9 @@ mainConfig.plugins = [
       scripts: { start: "electron ./main.bundle.js" },
       postinstall: "electron-builder install-app-deps",
     },
+  }),
+  new CopyPlugin({
+    patterns: [{ from: "./src/main/icons/*.*", to: "icons", flatten: true }],
   }),
 ];
 

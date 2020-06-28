@@ -7,11 +7,6 @@ import {
 } from "./utils/electron-utils";
 import {
   BrowserWindow,
-  MenuItemConstructorOptions,
-  Menu,
-  ipcMain,
-  IpcMainEvent,
-  MenuItem
 } from "electron";
 
 /**
@@ -76,15 +71,15 @@ export class AppWindow {
         devTools: process.env.NODE_ENV === "production" ? false : true,
         nodeIntegration: true
       },
-      acceptFirstMouse: true
+      acceptFirstMouse: true,
+      icon: path.join(__dirname, "icons/spectnet-logo.png")
     };
 
     // --- Additional options depending on the host platform
     if (__DARWIN__) {
       windowOptions.titleBarStyle = "hidden";
     } else if (__WIN32__) {
-      // TODO: Set it to false when menu proxy is ready
-      windowOptions.frame = false;
+      windowOptions.frame = true;
     } else if (__LINUX__) {
       windowOptions.icon = path.join(__dirname, "static", "icon-logo.png");
     }
