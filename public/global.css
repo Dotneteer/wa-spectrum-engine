@@ -11,7 +11,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: var(--shell-canvas-background-color);
+  background-color: 0;
 
   min-width: 100px;
   min-height: 300px;

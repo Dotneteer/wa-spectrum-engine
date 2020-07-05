@@ -1,4 +1,7 @@
 <script>
+  import Toolbar from "./controls/Toolbar.svelte"
+  import Statusbar from "./controls/Statusbar.svelte"
+
   import { onDestroy } from "svelte";
   import { themeStore } from "./stores/theme-store";
 
@@ -46,7 +49,8 @@
 </style>
 
 <main style={themeStyle} class={themeClass} tabindex="0">
+  <Toolbar></Toolbar>
   <div class="main-panel">
-    <h1>Hello!</h1>
   </div>
+  <Statusbar></Statusbar>
 </main>

@@ -3,10 +3,14 @@ import {
   __DARWIN__,
   __WIN32__,
   __LINUX__,
-  __DEV__
+  __DEV__,
 } from "./utils/electron-utils";
 import {
   BrowserWindow,
+  app,
+  Menu,
+  MenuItemConstructorOptions,
+  MenuItem,
 } from "electron";
 
 /**
@@ -51,7 +55,7 @@ export class AppWindow {
     // --- Restore the last window state
     const savedWindowState = windowStateKeeper({
       defaultWidth: MIN_WIDTH,
-      defaultHeight: MIN_HEIGHT
+      defaultHeight: MIN_HEIGHT,
     });
 
     // --- Prepare the configuration options for the app window
@@ -69,10 +73,10 @@ export class AppWindow {
       webPreferences: {
         webSecurity: false,
         devTools: process.env.NODE_ENV === "production" ? false : true,
-        nodeIntegration: true
+        nodeIntegration: true,
       },
       acceptFirstMouse: true,
-      icon: path.join(__dirname, "icons/spectnet-logo.png")
+      icon: path.join(__dirname, "icons/spectnet-logo.png"),
     };
 
     // --- Additional options depending on the host platform
@@ -158,5 +162,73 @@ export class AppWindow {
 
     // --- Load the main file
     this._window.loadFile(path.join(__dirname, "index.html"));
+  }
+
+  setupMenu(): void {
+    const template: (MenuItemConstructorOptions | MenuItem)[] = [];
+    if (__DARWIN__) {
+      template.push({
+        label: app.name,
+        submenu: [
+          { role: "about" },
+          { type: "separator" },
+          { role: "services" },
+          { type: "separator" },
+          { role: "hide" },
+          { role: "hideOthers" },
+          { role: "unhide" },
+          { type: "separator" },
+          { role: "quit" },
+        ],
+      });
+    }
+    template.push(
+      {
+        label: "File",
+        submenu: [__DARWIN__ ? { role: "close" } : { role: "quit" }],
+      },
+
+      {
+        label: "View",
+        submenu: [
+          { role: "reload" },
+          { role: "forceReload" },
+          { role: "toggleDevTools" },
+          { type: "separator" },
+          { role: "resetZoom" },
+          { role: "zoomIn" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      }
+    );
+    if (__DARWIN__) {
+      template.push({
+        label: "Window",
+        submenu: [
+          { role: "minimize" },
+          { role: "zoom" },
+          { type: "separator" },
+          { role: "front" },
+          { type: "separator" },
+          { role: "window" },
+        ],
+      });
+    }
+    template.push({
+      role: "help",
+      submenu: [
+        {
+          label: "Learn More",
+          click: async () => {
+            const { shell } = require("electron");
+            await shell.openExternal("https://electronjs.org");
+          },
+        },
+      ],
+    });
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
   }
 }
