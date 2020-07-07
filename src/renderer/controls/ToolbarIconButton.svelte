@@ -27,8 +27,12 @@
   // --- Is the button enabled?
   export let enable = true;
 
+  // --- Is the button selected?
+  export let selected = false;
+
   // ==========================================================================
   // Component logic
+
   const dispatch = createEventDispatcher();
 
   // --- Signs that the mouse is down on this button
@@ -37,21 +41,29 @@
 
   $: currentSize = isMouseDown ? highlightSize : size;
   $: fillColor = enable ? fill : "--toolbar-button-disabled-fill";
-  $: buttonClass = "button" + (enable ? "" : " disabled");
+  $: buttonClass =
+    "button " + (selected ? "selected" : "") + (enable ? "" : " disabled");
 </script>
 
 <style>
   .button {
     display: flex;
-    width: 28px;
-    margin: 0px 4px;
+    width: 30px;
+    height: 30px;
+    padding: 4px 4px;
+    margin: 0px 0px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border: 1px solid transparent
   }
 
   .disabled {
     cursor: default;
+  }
+
+  .selected {
+    border: 1px solid #007acc;
   }
 </style>
 

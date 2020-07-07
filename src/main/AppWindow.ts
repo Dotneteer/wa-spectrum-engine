@@ -12,6 +12,16 @@ import {
   MenuItemConstructorOptions,
   MenuItem,
 } from "electron";
+import { mainProcessStore } from "./mainProcessStore";
+import {
+  appGotFocusAction,
+  appLostFocusAction,
+} from "../../src/shared/state/redux-app-focus";
+import {
+  restoreAppWindowAction,
+  maximizeAppWindowAction,
+  minimizeAppWindowAction,
+} from "../../src/shared/state/redux-window-state";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -92,10 +102,10 @@ export class AppWindow {
 
     // --- Set up main window events
     this._window.on("focus", () => {
-      // TODO: Handle focus event
+      mainProcessStore.dispatch(appGotFocusAction());
     });
     this._window.on("blur", () => {
-      // TODO: Handle blur event
+      mainProcessStore.dispatch(appLostFocusAction());
     });
     this.window.on("enter-full-screen", () => {
       // TODO: Implement this
@@ -107,25 +117,25 @@ export class AppWindow {
     // we might be maximized. This works because electron will emit a 'maximized'
     // event after 'leave-full-screen' if the state prior to full-screen was maximized.
     this.window.on("leave-full-screen", () => {
-      // TODO: Handle this event
+      mainProcessStore.dispatch(restoreAppWindowAction());
     });
     this.window.on("maximize", () => {
-      // TODO: Handle this event
+      mainProcessStore.dispatch(maximizeAppWindowAction());
     });
     this.window.on("minimize", () => {
-      // TODO: Handle this event
+      mainProcessStore.dispatch(minimizeAppWindowAction());
     });
     this.window.on("unmaximize", () => {
-      // TODO: Handle this event
+      mainProcessStore.dispatch(restoreAppWindowAction());
     });
     this.window.on("restore", () => {
-      // TODO: Handle this event
+      mainProcessStore.dispatch(restoreAppWindowAction());
     });
     this.window.on("hide", () => {
       // TODO: Implement this
     });
     this.window.on("show", () => {
-      // TODO: Handle this event
+      mainProcessStore.dispatch(restoreAppWindowAction());
     });
 
     // --- Allow the `electron-windows-state` package to follow and save the

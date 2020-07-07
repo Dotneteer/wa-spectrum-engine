@@ -1,12 +1,17 @@
 <script>
-  import Toolbar from "./controls/Toolbar.svelte"
-  import Statusbar from "./controls/Statusbar.svelte"
+  import Toolbar from "./controls/Toolbar.svelte";
+  import Statusbar from "./controls/Statusbar.svelte";
+  import SplitContainer from "./controls/SplitContainer.svelte";
+  import EmulatorPanel from "./controls/EmulatorPanel.svelte";
+  import KeyboardPanel from "./controls/KeyboardPanel.svelte";
 
   import { onDestroy } from "svelte";
   import { themeStore } from "./stores/theme-store";
+  import { createRendererProcessStateAware } from "./rendererProcessStore";
 
   import { darkTheme } from "./themes/dark-theme";
 
+  // --- Manage themes and theme changes
   let themeStyle = "";
   let themeClass = "";
 
@@ -23,6 +28,14 @@
 
   themeStore.registerTheme(darkTheme);
   themeStore.setTheme("dark");
+
+  // --- Manage application state changes
+  let keyboardVisible = false;
+  const stateAware = createRendererProcessStateAware();
+  stateAware.onStateChanged.on(state => {
+    keyboardVisible = state.keyboardVisible;
+    console.log(`Keyboard visible: ${keyboardVisible}`)
+  });
 </script>
 
 <style>
@@ -40,7 +53,7 @@
 
   .main-panel {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
     height: 100%;
@@ -49,8 +62,12 @@
 </style>
 
 <main style={themeStyle} class={themeClass} tabindex="0">
-  <Toolbar></Toolbar>
+  <Toolbar />
   <div class="main-panel">
+    <SplitContainer direction="vertical">
+      <EmulatorPanel />
+      <KeyboardPanel visible={keyboardVisible} />
+    </SplitContainer>
   </div>
-  <Statusbar></Statusbar>
+  <Statusbar />
 </main>
