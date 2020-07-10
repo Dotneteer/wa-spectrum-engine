@@ -1,20 +1,21 @@
 <script>
+  // ==========================================================================
+  // This copmonent represents the entire application
+  // Responsibilities:
+  // * Managing themes and theme changes
   import Toolbar from "./controls/Toolbar.svelte";
   import Statusbar from "./controls/Statusbar.svelte";
-  import SplitContainer from "./controls/SplitContainer.svelte";
-  import EmulatorPanel from "./controls/EmulatorPanel.svelte";
-  import KeyboardPanel from "./controls/KeyboardPanel.svelte";
+  import MainCanvas from "./controls/MainCanvas.svelte";
 
   import { onDestroy } from "svelte";
   import { themeStore } from "./stores/theme-store";
-  import { createRendererProcessStateAware } from "./rendererProcessStore";
-
   import { darkTheme } from "./themes/dark-theme";
 
   // --- Manage themes and theme changes
   let themeStyle = "";
   let themeClass = "";
 
+  // -- Respond to theme changes
   const unsubscribe = themeStore.subscribe(theme => {
     let styleValue = "";
     for (const key in theme.properties) {
@@ -24,18 +25,12 @@
     themeClass = `${theme.name}-theme`;
   });
 
+  // --- Cleanup subscriptions
   onDestroy(unsubscribe);
 
+  // --- Start with the dark theme
   themeStore.registerTheme(darkTheme);
   themeStore.setTheme("dark");
-
-  // --- Manage application state changes
-  let keyboardVisible = false;
-  const stateAware = createRendererProcessStateAware();
-  stateAware.onStateChanged.on(state => {
-    keyboardVisible = state.keyboardVisible;
-    console.log(`Keyboard visible: ${keyboardVisible}`)
-  });
 </script>
 
 <style>
@@ -63,11 +58,6 @@
 
 <main style={themeStyle} class={themeClass} tabindex="0">
   <Toolbar />
-  <div class="main-panel">
-    <SplitContainer direction="vertical">
-      <EmulatorPanel />
-      <KeyboardPanel visible={keyboardVisible} />
-    </SplitContainer>
-  </div>
+  <MainCanvas />
   <Statusbar />
 </main>

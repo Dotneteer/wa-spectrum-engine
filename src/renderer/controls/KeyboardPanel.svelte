@@ -1,5 +1,7 @@
 <script>
   export let visible = true;
+  export let initialHeight;
+  export let sizedHeight;
 </script>
 
 <style>
@@ -17,6 +19,8 @@
 </style>
 
 {#if visible}
-  <div class="keyboard-panel">
+  <div class="keyboard-panel"
+    data-initial-size={initialHeight}
+    bind:clientHeight={sizedHeight}>
   </div>
 {/if}

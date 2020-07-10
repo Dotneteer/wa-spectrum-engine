@@ -10,7 +10,7 @@
   // Component parameters
 
   // --- Normal button size
-  export let size = 24;
+  export let size = 22;
 
   // --- Highlighted (button down) button isze
   export let highlightSize = 28;
@@ -48,8 +48,8 @@
 <style>
   .button {
     display: flex;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
     padding: 4px 4px;
     margin: 0px 0px;
     align-items: center;
@@ -73,6 +73,7 @@
   on:mousedown={ev => {
     if (!enable) return;
     isMouseDown = ev.button === 0;
+    console.log("MouseDown")
   }}
   on:mouseleave={() => {
     if (!enable) return;

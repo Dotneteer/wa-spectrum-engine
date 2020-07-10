@@ -1,5 +1,8 @@
 <script>
-  import ToolbarIconButton from "./ToolbarIconButton.svelte";
+  // ==========================================================================
+  // The singleton toolbar of the application
+
+import ToolbarIconButton from "./ToolbarIconButton.svelte";
   import ToolbarSeparator from "./ToolbarSeparator.svelte";
 
   import { themeStore } from "../stores/theme-store";
@@ -17,7 +20,7 @@
   // --- Respond to the event when app focus changes
   const stateAware = createRendererProcessStateAware();
   stateAware.onStateChanged.on(state => {
-    keyboardDisplayed = !state.keyboardVisible;
+    keyboardDisplayed = state.keyboardVisible;
     calculateColors(state.appHasFocus);
   });
 
@@ -69,10 +72,10 @@
   <ToolbarIconButton
     iconName="keyboard"
     title="Toggle keyboard"
+    highlightSize="32"
     selected={keyboardDisplayed}
     on:clicked={() => {
-      keyboardDisplayed = !keyboardDisplayed;
-      stateAware.dispatch(keyboardDisplayed ? keyboardShowAction() : keyboardHideAction());
+      stateAware.dispatch(keyboardDisplayed ? keyboardHideAction() : keyboardShowAction());
     }} />
   <ToolbarSeparator />
   <ToolbarIconButton
