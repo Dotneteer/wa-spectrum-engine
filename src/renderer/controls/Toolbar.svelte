@@ -2,6 +2,7 @@
   // ==========================================================================
   // The singleton toolbar of the application
 
+  import { onMount } from "svelte";
   import ToolbarIconButton from "./ToolbarIconButton.svelte";
   import ToolbarSeparator from "./ToolbarSeparator.svelte";
 
@@ -11,17 +12,24 @@
     keyboardShowAction,
     keyboardHideAction
   } from "../../shared/state/redux-keyboard-state";
+  import { getSpectrumEngine } from "../spectrum-loader";
 
   // --- We change Titlebar colors as the app focus changes
   let backgroundColor;
   let keyboardDisplayed;
   calculateColors(true); // --- Default: the app has the focus
 
+  let spectrum;
+
   // --- Respond to the event when app focus changes
   const stateAware = createRendererProcessStateAware();
   stateAware.onStateChanged.on(state => {
     keyboardDisplayed = state.keyboardPanelState.visible;
     calculateColors(state.appHasFocus);
+  });
+
+  onMount(async () => {
+    spectrum = await getSpectrumEngine();
   });
 
   // --- Calculate colors according to focus state

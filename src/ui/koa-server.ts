@@ -1,9 +1,10 @@
 import * as Koa from "koa";
 import * as KoaRouter from "koa-router";
-import * as path from "path";
-import * as fs from "fs";
 
-export function startServer() {
+/**
+ * Starts the koa server that listens in the background
+ */
+export function startKoaServer() {
   const app = new Koa();
   const router = new KoaRouter();
 

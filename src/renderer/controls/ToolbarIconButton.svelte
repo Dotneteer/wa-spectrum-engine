@@ -73,7 +73,6 @@
   on:mousedown={ev => {
     if (!enable) return;
     isMouseDown = ev.button === 0;
-    console.log("MouseDown")
   }}
   on:mouseleave={() => {
     if (!enable) return;

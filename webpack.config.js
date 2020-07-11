@@ -45,7 +45,7 @@ const commonConfig = {
       },
       {
         test: /\.(scss|css)$/,
-        use: ["style-loader", "css-loader"]
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(jpg|png|svg|ico|icns)$/,
@@ -72,7 +72,10 @@ mainConfig.plugins = [
     },
   }),
   new CopyPlugin({
-    patterns: [{ from: "./public/assets/*.png", to: "icons", flatten: true }],
+    patterns: [
+      { from: "./public/assets/*.png", to: "icons", flatten: true },
+      { from: "./build/*.wasm", to: "wasm", flatten: true },
+    ],
   }),
 ];
 

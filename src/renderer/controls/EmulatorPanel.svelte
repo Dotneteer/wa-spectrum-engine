@@ -2,12 +2,13 @@
   import { onMount } from "svelte";
   import { createRendererProcessStateAware } from "../rendererProcessStore";
   import { emulatorSetZoomAction } from "../../shared/state/redux-emulator-state";
-  import { queryScreenSize } from "../../shared/messaging/message-senders"
+  import { getSpectrumEngine } from "../spectrum-loader";
 
   const stateAware = createRendererProcessStateAware("emulatorPanelState");
+  let spectrum;
 
-  let width = 500;
-  let height = 100;
+  let width = 0;
+  let height = 0;
 
   let canvasWidth;
   let canvasHeight;
@@ -20,10 +21,9 @@
   let emulatorStyle;
 
   onMount(async () => {
-    console.log(`Screen size: `)
-    const response = await queryScreenSize();
-    width = response.width;
-    height = response.height;
+    spectrum = await getSpectrumEngine();
+    width = spectrum.screenWidth;
+    height = spectrum.screenHeight;
     calculateDimensions(clientWidth, clientHeight, width, height);
   });
   $: {

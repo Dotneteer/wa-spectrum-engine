@@ -1,4 +1,7 @@
 import * as path from "path";
+import * as fs from "fs";
+import * as electronLocalShortcut from "electron-localshortcut";
+
 import {
   __DARWIN__,
   __WIN32__,
@@ -31,6 +34,10 @@ import {
   MAIN_MESSAGING_CHANNEL,
 } from "../../src/shared/utils/channel-ids";
 import { processRendererMessage } from "./mainMessageProcessor";
+import { ZxSpectrumBase } from "../../src/native/ZxSpectrumBase";
+import { ZxSpectrum48 } from "../../src/native/ZxSpectrum48";
+import { MachineApi } from "../../src/native/api";
+import { SpectrumEngine } from "../renderer/spectrum/SpectrumEngine";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -48,13 +55,16 @@ const MIN_HEIGHT = 660;
  * at the main process side.
  */
 export class AppWindow {
+  // --- The associated BrowserWindow instance
+  private _window: BrowserWindow | null;
+
+  // ==========================================================================
+  // Static members
+
   /**
    * Now, we allow only a singleton instance
    */
   static instance: AppWindow;
-
-  // --- The associated BrowserWindow instance
-  private _window: BrowserWindow | null;
 
   // ==========================================================================
   // Lifecycle methods
@@ -111,9 +121,11 @@ export class AppWindow {
 
     // --- Set up main window events
     this._window.on("focus", () => {
+      electronLocalShortcut.register(this._window, ['CommandOrControl+R','CommandOrControl+Shift+R', 'F5'], () => {})
       mainProcessStore.dispatch(appGotFocusAction());
     });
     this._window.on("blur", () => {
+      electronLocalShortcut.unregisterAll(this._window);
       mainProcessStore.dispatch(appLostFocusAction());
     });
     this.window.on("enter-full-screen", () => {
@@ -225,8 +237,6 @@ export class AppWindow {
       {
         label: "View",
         submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
           { role: "toggleDevTools" },
           { type: "separator" },
           { role: "resetZoom" },
