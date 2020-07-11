@@ -11,6 +11,9 @@ import {
   Menu,
   MenuItemConstructorOptions,
   MenuItem,
+  ipcMain,
+  IpcMainEvent,
+  webContents,
 } from "electron";
 import { mainProcessStore } from "./mainProcessStore";
 import {
@@ -22,6 +25,12 @@ import {
   maximizeAppWindowAction,
   minimizeAppWindowAction,
 } from "../../src/shared/state/redux-window-state";
+import { RendererMessage } from "../shared/messaging/message-types";
+import {
+  RENDERER_MESSAGING_CHANNEL,
+  MAIN_MESSAGING_CHANNEL,
+} from "../../src/shared/utils/channel-ids";
+import { processRendererMessage } from "./mainMessageProcessor";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -141,6 +150,21 @@ export class AppWindow {
     // --- Allow the `electron-windows-state` package to follow and save the
     // --- app window's state
     savedWindowState.manage(this._window);
+
+    // --- Set up message processing
+    ipcMain.on(
+      RENDERER_MESSAGING_CHANNEL,
+      (_ev: IpcMainEvent, message: RendererMessage) => {
+        const response = processRendererMessage(message);
+        response.correlationId = message.correlationId
+        const allWebContents = webContents.getAllWebContents();
+        const pageContenst = webContents.length === 1
+          ? allWebContents[0]
+          : webContents.fromId(1);
+        if (!pageContenst) return;
+        pageContenst.send(MAIN_MESSAGING_CHANNEL, response);
+      }
+    );
   }
 
   /**

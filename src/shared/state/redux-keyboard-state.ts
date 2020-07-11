@@ -1,4 +1,5 @@
 import { SpectNetAction, createAction } from "./redux-core";
+import { KeyboardPanelState } from "./AppState";
 
 export const keyboardShowAction = createAction("KEYBOARD_SHOW");
 export const keyboardHideAction = createAction("KEYBOARD_HIDE");
@@ -9,14 +10,16 @@ export const keyboardHideAction = createAction("KEYBOARD_HIDE");
  * @param action Action executed
  */
 export function keyboardStateReducer(
-  state: boolean = false,
+  state: KeyboardPanelState = {
+    visible: false
+  },
   { type }: SpectNetAction
-): boolean {
+): KeyboardPanelState {
   switch (type) {
     case "KEYBOARD_SHOW":
-      return true;
+      return { ...state, visible: true };
     case "KEYBOARD_HIDE":
-      return false;
+      return { ...state, visible: false };
   }
   return state;
 }

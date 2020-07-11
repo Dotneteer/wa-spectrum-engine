@@ -2,7 +2,7 @@
   // ==========================================================================
   // The singleton toolbar of the application
 
-import ToolbarIconButton from "./ToolbarIconButton.svelte";
+  import ToolbarIconButton from "./ToolbarIconButton.svelte";
   import ToolbarSeparator from "./ToolbarSeparator.svelte";
 
   import { themeStore } from "../stores/theme-store";
@@ -20,7 +20,7 @@ import ToolbarIconButton from "./ToolbarIconButton.svelte";
   // --- Respond to the event when app focus changes
   const stateAware = createRendererProcessStateAware();
   stateAware.onStateChanged.on(state => {
-    keyboardDisplayed = state.keyboardVisible;
+    keyboardDisplayed = state.keyboardPanelState.visible;
     calculateColors(state.appHasFocus);
   });
 

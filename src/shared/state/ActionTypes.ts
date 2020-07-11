@@ -13,6 +13,10 @@ export interface ActionTypes {
   KEYBOARD_SHOW: null;
   KEYBOARD_HIDE: null;
 
+  // --- Emulator panel actions
+  EMULATOR_SET_ZOOM: null;
+  EMULATOR_SET_SIZE: null;
+
   // --- Main window state actions
   MAXIMIZE_APP_WINDOW: null;
   MINIMIZE_APP_WINDOW: null;

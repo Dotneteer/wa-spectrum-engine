@@ -6,9 +6,9 @@
   import { createRendererProcessStateAware } from "../rendererProcessStore";
 
   let keyboardVisible = false;
-  const stateAware = createRendererProcessStateAware();
+  const stateAware = createRendererProcessStateAware("keyboardPanelState");
   stateAware.onStateChanged.on(state => {
-    keyboardVisible = state.keyboardVisible;
+    keyboardVisible = state.visible;
   });
 
   let keyboardHeight;

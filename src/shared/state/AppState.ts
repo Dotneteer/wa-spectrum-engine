@@ -1,17 +1,25 @@
-import { WindowState } from "./redux-window-state";
-
 /**
  * Represents the state of the application
  */
 export interface AppState {
-  /**
-   * Does the app has the focus?
-   */
   appHasFocus?: boolean;
+  keyboardPanelState?: KeyboardPanelState;
+  emulatorPanelState?: EmulatorPanelState;
+}
 
-  /**
-   * Is the keyboard panel visible?
-   */
-  keyboardVisible?: boolean;
+/**
+ * Represents the state of the keyboard panel
+ */
+export interface KeyboardPanelState {
+  visible?: boolean;
+}
+
+/**
+ * Represents the state of the emulator panel
+ */
+export interface EmulatorPanelState {
+  width?: number;
+  height?: number;
+  zoom?: number;
 }
 
