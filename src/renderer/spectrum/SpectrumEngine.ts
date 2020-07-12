@@ -8,6 +8,8 @@ import {
   ExecuteCycleOptions,
   ExecutionCompletionReason,
   SpectrumMachineState,
+  EmulationMode,
+  DebugStepMode,
 } from "../../native/machine-state";
 
 /**
@@ -149,10 +151,24 @@ export class SpectrumEngine {
   }
 
   /**
+   * Starts the virtual machine and keeps it running
+   */
+  start(): void {
+    this.run(new ExecuteCycleOptions())
+  }
+
+  /**
+   * Starts the virtual machine in debugging mode
+   */
+  startDebugging(): void {
+    this.run(new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StopAtBreakpoint));
+  }
+
+  /**
    * Starts the virtual machine with the specified exeution options
    * @param options Execution options
    */
-  start(options: ExecuteCycleOptions): void {
+  run(options: ExecuteCycleOptions): void {
     if (this.executionState === ExecutionState.Running) {
       return;
     }
@@ -167,6 +183,7 @@ export class SpectrumEngine {
 
     // --- Execute a single cycle
     this.executionState = ExecutionState.Running;
+    this._cancelled = false;
     this._completionTask = this.executeCycle(this, options);
   }
 
@@ -193,6 +210,7 @@ export class SpectrumEngine {
     this._isFirstPause = this._isFirstStart;
 
     // --- Cancel the current execution cycle
+    this._cancelled = true;
     await this._completionTask;
     this.executionState = ExecutionState.Paused;
   }
@@ -213,6 +231,7 @@ export class SpectrumEngine {
       default:
         // --- Initiate stop
         this.executionState = ExecutionState.Stopping;
+        this._cancelled = true;
         await this._completionTask;
         this.executionState = ExecutionState.Stopped;
         break;

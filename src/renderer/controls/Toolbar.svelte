@@ -20,6 +20,7 @@
   calculateColors(true); // --- Default: the app has the focus
 
   let spectrum;
+  let executionState = 0;
 
   // --- Respond to the event when app focus changes
   const stateAware = createRendererProcessStateAware();
@@ -30,6 +31,7 @@
 
   onMount(async () => {
     spectrum = await getSpectrumEngine();
+    spectrum.executionStateChanged.on(({ newState }) => executionState = newState);
   });
 
   // --- Calculate colors according to focus state
@@ -57,25 +59,55 @@
 </style>
 
 <div class="toolbar" style="background-color:{backgroundColor}">
-  <ToolbarIconButton iconName="play" fill="lightgreen" title="Start" />
-  <ToolbarIconButton iconName="pause" fill="lightblue" title="Stop" />
-  <ToolbarIconButton iconName="stop" fill="orangered" title="Pause" />
+  <ToolbarIconButton
+    iconName="play"
+    fill="lightgreen"
+    title="Start"
+    enable={executionState === 0 || executionState === 3 || executionState === 5}
+    on:clicked={() => spectrum.start()} />
+  <ToolbarIconButton
+    iconName="pause"
+    fill="lightblue"
+    title="Stop"
+    enable={executionState === 1}
+    on:clicked={async () => spectrum.pause()} />
+  <ToolbarIconButton
+    iconName="stop"
+    fill="orangered"
+    title="Pause"
+    enable={executionState === 1 || executionState === 3} 
+    on:clicked={async() => spectrum.stop() }/>
   <ToolbarIconButton
     iconName="restart"
     fill="lightgreen"
     title="Reset"
     size="22"
-    highlightSize="26" />
+    highlightSize="26"
+    enable={executionState === 1 || executionState === 3} />
   <ToolbarSeparator />
   <ToolbarIconButton
     iconName="debug"
     fill="lightgreen"
     title="Debug"
     size="20"
-    highlightSize="24" />
-  <ToolbarIconButton iconName="step-into" fill="lightblue" title="Step into" />
-  <ToolbarIconButton iconName="step-over" fill="lightblue" title="Step over" />
-  <ToolbarIconButton iconName="step-out" fill="lightblue" title="Step out" />
+    highlightSize="24"
+    enable={executionState === 0 || executionState === 3 || executionState === 5} 
+    on:clicked={() => spectrum.startDebugging()} />
+  <ToolbarIconButton
+    iconName="step-into"
+    fill="lightblue"
+    title="Step into"
+    enable={executionState === 3} />
+  <ToolbarIconButton
+    iconName="step-over"
+    fill="lightblue"
+    title="Step over"
+    enable={executionState === 3} />
+  <ToolbarIconButton
+    iconName="step-out"
+    fill="lightblue"
+    title="Step out"
+    enable={executionState === 3} />
   <ToolbarSeparator />
   <ToolbarIconButton
     iconName="keyboard"

@@ -6,6 +6,7 @@
 
   const stateAware = createRendererProcessStateAware("emulatorPanelState");
   let spectrum;
+  let frameCount = 0;
 
   let width = 0;
   let height = 0;
@@ -22,14 +23,31 @@
 
   onMount(async () => {
     spectrum = await getSpectrumEngine();
+    spectrum.screenRefreshed.on(onScreenRefreshed);
     width = spectrum.screenWidth;
     height = spectrum.screenHeight;
     calculateDimensions(clientWidth, clientHeight, width, height);
+    configureScreen();
   });
+
+  // --- Respond to panel size changes
   $: {
     calculateDimensions(clientWidth, clientHeight, width, height);
   }
 
+  let imageBuffer;
+  let imageBuffer8;
+  let pixelData;
+
+  // --- Configures the screen
+  function configureScreen() {
+    const dataLen = width * height * 4;
+    imageBuffer = new ArrayBuffer(dataLen);
+    imageBuffer8 = new Uint8Array(imageBuffer);
+    pixelData = new Uint32Array(imageBuffer);
+  }
+
+  // --- Calculates screen dimensions
   function calculateDimensions(clientWidth, clientHeight, width, height) {
     const widthRatio = Math.floor(clientWidth / width);
     if (widthRatio < 1) widthRatio = 1;
@@ -40,6 +58,50 @@
     canvasWidth = width * ratio;
     canvasHeight = height * ratio;
     emulatorStyle = `width:${canvasWidth}px; height:${canvasHeight}px`;
+
+    if (!shadowScreen || !screen) return;
+    shadowScreen.width = width;
+    shadowScreen.height = height;
+    const shadowCtx = shadowScreen.getContext("2d");
+    if (shadowCtx) {
+      shadowCtx.canvas.width = width;
+      shadowCtx.canvas.height = height;
+    }
+    const screenCtx = screen.getContext("2d");
+    if (screenCtx) {
+      screenCtx.canvas.width = width * ratio;
+      screenCtx.canvas.height = height * ratio;
+    }
+  }
+
+  function onScreenRefreshed() {
+    frameCount++;
+    displayScreenData();
+  }
+
+  function displayScreenData() {
+    const shadowCtx = shadowScreen.getContext("2d");
+    if (!shadowCtx) return;
+    const shadowImageData = shadowCtx.getImageData(
+      0,
+      0,
+      shadowScreen.width,
+      shadowScreen.height
+    );
+    const screenCtx = screen.getContext("2d");
+    let j = 0;
+
+    for (let i = 0; i < width * height; i++) {
+      const val = frameCount & 0xff;
+      let code = 0xff000000 | (val << 16) | (val << 8) | val;
+      pixelData[j++] = code;
+    }
+    shadowImageData.data.set(imageBuffer8);
+    shadowCtx.putImageData(shadowImageData, 0, 0);
+    if (screenCtx) {
+      screenCtx.imageSmoothingEnabled = false;
+      screenCtx.drawImage(shadowScreen, 0, 0, screen.width, screen.height);
+    }
   }
 </script>
 

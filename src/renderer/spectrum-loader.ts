@@ -5,14 +5,22 @@ import { ZxSpectrum48 } from "../../src/native/ZxSpectrum48";
 /**
  * Store the ZX Spectrum engine instance
  */
-let _spectrumEngine: SpectrumEngine | null;
+let _spectrumEngine: SpectrumEngine | null = null;
+
+/**
+ * Async loader
+ */
+let _loader: Promise<void> | null = null;
 
 /**
  * Get the initialized ZX Spectrum engine
  */
 export async function getSpectrumEngine(): Promise<SpectrumEngine> {
   if (!_spectrumEngine) {
-    await loadSpectrumEngine();
+    if (!_loader) {
+      _loader = loadSpectrumEngine();
+    }
+    await _loader;
   }
   return _spectrumEngine;
 }
