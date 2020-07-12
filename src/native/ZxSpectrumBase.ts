@@ -1,7 +1,16 @@
 import { MachineApi } from "./api";
-import { SpectrumMachineState, MemoryContentionType, EmulationMode, DebugStepMode, ExecutionCompletionReason, ExecuteCycleOptions, SpectrumMachineStateBase } from "./machine-state";
+import {
+  SpectrumMachineState,
+  MemoryContentionType,
+  EmulationMode,
+  DebugStepMode,
+  ExecutionCompletionReason,
+  ExecuteCycleOptions,
+  SpectrumMachineStateBase,
+} from "./machine-state";
 import { MemoryHelper } from "./memory-helpers";
 import { SpectrumKeyCode } from "./SpectrumKeyCode";
+import { stat } from "fs";
 
 /**
  * Start of the register are in the memory
@@ -12,6 +21,11 @@ const REG_AREA_INDEX = 0x1_0000;
  * Start of the CPU state transfer area in the memory
  */
 const STATE_TRANSFER_BUFF = 0x1_0040;
+
+/**
+ * Buffer of the colorized screen
+ */
+const COLORIZED_BUFF = 0x0b_4200;
 
 /**
  * This class is intended to be the base class of all ZX Spectrum
@@ -106,7 +120,7 @@ export abstract class ZxSpectrumBase {
     s.baseClockFrequency = mh.readUint32(48);
     s.clockMultiplier = mh.readByte(52);
     s.supportsNextOperations = mh.readBool(53);
-    
+
     // --- Get memory configuration data
     s.numberOfRoms = mh.readByte(54);
     s.romContentsAddress = mh.readUint32(55);
@@ -244,12 +258,16 @@ export abstract class ZxSpectrumBase {
     return this.api.getKeyStatus(key) !== 0;
   }
 
-    /**
+  /**
    * Initializes the machine with the specified code
    * @param runMode Machine run mode
    * @param code Intial code
    */
-  injectCode(code: number[], codeAddress = 0x8000, startAddress = 0x8000): void {
+  injectCode(
+    code: number[],
+    codeAddress = 0x8000,
+    startAddress = 0x8000
+  ): void {
     const mem = new Uint8Array(this.api.memory.buffer, 0, 0x1_0000);
     for (let i = 0; i < code.length; i++) {
       mem[codeAddress++] = code[i];
@@ -263,5 +281,21 @@ export abstract class ZxSpectrumBase {
     // --- Init code execution
     this.reset();
     this.api.setPC(startAddress);
+  }
+
+  /**
+   * Gets the screen data of the ZX Spectrum machine
+   */
+  getScreenData(): Uint32Array {
+    const state = this.getMachineState();
+    const buffer = this.api.memory.buffer as ArrayBuffer;
+    const length = state.screenLines * state.screenWidth;
+    const screenData = new Uint32Array(
+      buffer.slice(
+        COLORIZED_BUFF,
+        COLORIZED_BUFF + 4*length
+      )
+    );
+    return screenData;
   }
 }

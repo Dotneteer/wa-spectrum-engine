@@ -2,7 +2,7 @@
   (func $trace (import "imports" "trace") (param i32))
 
   ;; We keep 1024 KB of memory
-  (memory (export "memory") 16)
+  (memory (export "memory") 24)
 
   ;; ==========================================================================
   ;; CPU API
@@ -36,6 +36,7 @@
   (export "setInterruptTact" (func $setInterruptTact))
   (export "checkForInterrupt" (func $checkForInterrupt))
   (export "setBeeperSampleRate" (func $setBeeperSampleRate))
+  (export "colorize" (func $colorize))
 
   ;; ==========================================================================
   ;; Function signatures
@@ -83,8 +84,9 @@
   ;; 0x08_A100 (256 bytes): Ink color bytes (flash on)
   ;; 0x08_A200 (0x2_8000 bytes): Pixel rendering buffer
   ;; 0x0B_2200 (0x2000 bytes): Beeper sample rendering buffer
-  ;; 0x0B_4200 Next free slot
-
+  ;; 0x0B_4200 (0xA_0000 bytes): Buffer for pixel colorization
+  ;; 0x15_4200 ZX Spectrum 48 palette
+  ;; 0x15_4300 Next free slot
   ;; The offset of the first byte of the ZX Spectrum 48 memory
   ;; Block lenght: 0x1_0000
   (global $SP_MEM_OFFS i32 (i32.const 0))
@@ -531,7 +533,8 @@
   ;; 8: Get machine state (func)
   ;; 9: Start new frame (func)
   ;; 10: Screen frame ended (func)
-  ;; 11-19: Unused
+  ;; 11: Colorize (func)
+  ;; 12-19: Unused
   (elem (i32.const 0)
     ;; Index 0: Machine type #0
     $readMemorySp48
@@ -546,7 +549,7 @@
     $getSpectrum48MachineState
     $NOOP
     $NOOP
-    $NOOP
+    $colorizeSp48
     $NOOP
 
     $NOOP
@@ -4492,15 +4495,6 @@
   ;; exx (0xd9)
   (func $Exx
     (local $tmp i32)
-    call $getAF
-    set_local $tmp
-    get_global $REG_AREA_INDEX
-    i32.load16_u offset=8
-    (set_global $A (i32.and (i32.const 0xff)))
-    get_global $REG_AREA_INDEX
-    get_local $tmp
-    i32.store16 offset=8
-
     call $getBC
     set_local $tmp
     get_global $REG_AREA_INDEX
@@ -7661,6 +7655,7 @@
     get_local $addr
     call $readMemory
     
+
     (i32.shl 
       (i32.const 1)
       (i32.shr_u
@@ -8119,6 +8114,10 @@
         (i32.div_u (get_global $tacts) (get_global $clockMultiplier))
         set_global $lastRenderedUlaTact
 
+        ;; Reset interrupt information
+        i32.const 0 set_global $interruptRevoked
+        i32.const 0 set_global $interruptRaised
+
         ;; Reset pointers used for screen rendering
         (i32.add
           (get_global $RENDERING_TACT_TABLE)
@@ -8143,11 +8142,40 @@
       (call $checkForInterrupt (tee_local $currentUlaTact))
       call $executeCpuCycle
 
+      call $getPC
+      i32.const 0x0c22
+      i32.eq
+      if
+        i32.const 444444
+        call $trace
+        call $getPC
+        call $trace
+        call $getDE
+        call $trace
+        call $getA
+        call $trace
+      end
+
       ;; Execute an entire instruction
       loop $instructionLoop
         get_global $isInOpExecution
         if
           call $executeCpuCycle
+
+          call $getPC
+          i32.const 0x0c22
+          i32.eq
+          if
+            i32.const 444444
+            call $trace
+            call $getPC
+            call $trace
+            call $getDE
+            call $trace
+            call $getA
+            call $trace
+          end
+
           br $instructionLoop
         end
       end 
@@ -8556,6 +8584,15 @@
     call_indirect (type $ActionFunc)
   )
 
+  ;; Colorizes the data in pixel buffer
+  (func $colorize
+    (i32.add
+      (i32.mul (get_global $MACHINE_TYPE) (get_global $MACHINE_FUNC_COUNT))
+      (i32.const 11)
+    )
+    call_indirect (type $ActionFunc)
+  )
+
   ;; Checks and executes interrupt, it it's time
   (func $checkForInterrupt (param $currentUlaTact i32)
     ;; We've already handled the interrupt
@@ -8609,11 +8646,18 @@
   (data (i32.const 0x08_A000) "\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f")
 
   ;; Table of ink colors (flash on)
-  (global $INK_COLORS_ON_TABLE i32 (i32.const 0x08_A1E00))
+  (global $INK_COLORS_ON_TABLE i32 (i32.const 0x08_A100))
   (data (i32.const 0x08_A100) "\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\08\09\0a\0b\0c\0d\0e\0f\00\00\00\00\00\00\00\00\01\01\01\01\01\01\01\01\02\02\02\02\02\02\02\02\03\03\03\03\03\03\03\03\04\04\04\04\04\04\04\04\05\05\05\05\05\05\05\05\06\06\06\06\06\06\06\06\07\07\07\07\07\07\07\07\08\08\08\08\08\08\08\08\09\09\09\09\09\09\09\09\0a\0a\0a\0a\0a\0a\0a\0a\0b\0b\0b\0b\0b\0b\0b\0b\0c\0c\0c\0c\0c\0c\0c\0c\0d\0d\0d\0d\0d\0d\0d\0d\0e\0e\0e\0e\0e\0e\0e\0e\0f\0f\0f\0f\0f\0f\0f\0f")
 
   ;; The buffer for the rendered pixels
   (global $PIXEL_RENDERING_BUFFER i32 (i32.const 0x08_A200))
+
+  ;; The buffer for the colorized pixels
+  (global $COLORIZATION_BUFFER i32 (i32.const 0x0B_4200))
+
+  ;; Table of ZX Spectrum color palette
+  (global $SPECTRUM_PALETTE i32 (i32.const 0x15_4200))
+  (data (i32.const 0x15_4200) "\00\00\00\ff\00\00\aa\ff\aa\00\00\ff\aa\00\aa\ff\00\aa\00\ff\00\aa\aa\ff\aa\aa\00\ff\aa\aa\aa\ff\00\00\00\ff\00\00\ff\ff\ff\00\00\ff\ff\00\ff\ff\00\ff\00\ff\00\ff\ff\ff\ff\ff\00\ff\ff\ff\ff\ff")
 
   ;; Initializes the table used for screen rendering
   (func $initRenderingTactTable
@@ -9641,5 +9685,50 @@
 
   ;; Gets the ZX Spectrum 48 machine state
   (func $getSpectrum48MachineState
+  )
+
+  ;; Colotizes the pixel data of ZX Spectrum 48
+  (func $colorizeSp48
+    (local $sourcePtr i32)
+    (local $destPtr i32)
+    (local $counter i32)
+
+    ;; Calculate the counter
+    (i32.mul (get_global $screenLines) (get_global $screenWidth))
+    set_local $counter
+
+    ;; Reset the pointers
+    get_global $PIXEL_RENDERING_BUFFER set_local $sourcePtr
+    get_global $COLORIZATION_BUFFER set_local $destPtr
+
+    loop $colorizeLoop
+      get_local $counter
+      if
+        get_local $destPtr ;; [destPtr]
+        get_global $SPECTRUM_PALETTE ;; [destPtr, palette]
+
+        ;; Get the pixel information
+        get_local $sourcePtr
+        i32.load8_u
+        (i32.and (i32.const 0x0f))
+        (i32.shl (i32.const 2)) ;; [destPtr, palette, pixelPalOffset]
+        i32.add  ;; [destPtr, paletteAddr]
+        i32.load ;; [destPtr, color]
+        i32.store
+
+        ;; Increment pointers
+        (i32.add (get_local $sourcePtr) (i32.const 1))
+        set_local $sourcePtr
+        (i32.add (get_local $destPtr) (i32.const 4))
+        set_local $destPtr
+
+        ;; Decrement counter
+        (i32.sub (get_local $counter) (i32.const 1))
+        set_local $counter
+
+        ;; Next loop
+        br $colorizeLoop
+      end
+    end
   )
 )

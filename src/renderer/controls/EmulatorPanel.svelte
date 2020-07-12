@@ -77,6 +77,8 @@
   function onScreenRefreshed() {
     frameCount++;
     displayScreenData();
+    const state = spectrum.spectrum.getMachineState();
+    //console.log(`pc: ${state.pc}, hl: ${state.hl}`);
   }
 
   function displayScreenData() {
@@ -91,10 +93,9 @@
     const screenCtx = screen.getContext("2d");
     let j = 0;
 
+    const screenData = spectrum.getScreenData();
     for (let i = 0; i < width * height; i++) {
-      const val = frameCount & 0xff;
-      let code = 0xff000000 | (val << 16) | (val << 8) | val;
-      pixelData[j++] = code;
+      pixelData[j++] = screenData[i];
     }
     shadowImageData.data.set(imageBuffer8);
     shadowCtx.putImageData(shadowImageData, 0, 0);

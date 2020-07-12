@@ -15,6 +15,7 @@ let machine: ZxSpectrum48;
 
 const PIXEL_BUFFER = 0x08_A200;
 const RENDERING_TABLE = 0x01_5e00;
+const COLORIZE_BUFFER = 0x0B_4200;
 
 describe("ZX Spectrum 48 - Screen", () => {
   before(async () => {
@@ -520,6 +521,91 @@ describe("ZX Spectrum 48 - Screen", () => {
   it("Display rendering table", () => {
     displayRenderingTable();
   });
+
+  it("Colorize border + empty pixels", () => {
+    machine.api.initZxSpectrum(0);
+    machine.injectCode([
+      0xf3, // DI
+      0x3e,
+      0x05, // LD A,$05
+      0xd3,
+      0xfe, // OUT ($FE),A
+      0x01,
+      0x75,
+      0x0a, // LD BC,$0A75
+      0x0b, // DECLB: DEC BC
+      0x78, // LD A,B
+      0xb1, // OR C
+      0x20,
+      0xfb, // JR NZ,DECLB
+      0x76, // HALT
+    ]);
+
+    fillPixelBuffer(0xff);
+    machine.executeCycle(new ExecuteCycleOptions(EmulationMode.UntilHalt));
+    machine.api.colorize();
+    const s = machine.getMachineState();
+    expect(s.pc).toBe(0x800d);
+    expect(s.tacts).toBe(69633);
+    expect(s.frameCompleted).toBe(false);
+    expect(s.borderColor).toBe(0x05);
+    const mh = new MemoryHelper(api, COLORIZE_BUFFER);
+
+    // --- Border pixels should be 0x05
+    let sum = 0;
+    for (let row = 0; row < 48; row++) {
+      for (let col = 0; col < s.screenWidth; col++) {
+        const pixel = mh.readUint32((row * s.screenWidth + col) * 4);
+        if (pixel === (0xffaaaa00 - 0x100000000)) {
+          sum++;
+        }
+      }
+    }
+    console.log(sum);
+    // expect(sum).toBe(0x05 * s.screenWidth * 48);
+
+    // // --- The left border of row 48 should be set to 0x05
+    // sum = 0;
+    // for (let col = 0; col < 48; col++) {
+    //   const pixel = mh.readByte(48 * s.screenWidth + col);
+    //   sum += pixel;
+    // }
+    // expect(sum).toBe(0x05 * 48);
+
+    // // --- Display rows should have a border value of 0x05 and a pixel value of 0x00
+    // for (let row = 48; row < 48 + 192; row++) {
+    //   sum = 0x00;
+    //   for (let col = 0; col < s.borderLeftPixels; col++) {
+    //     const pixel = mh.readByte(row * s.screenWidth + col);
+    //     sum += pixel;
+    //   }
+    //   expect(sum).toBe(0x05 * s.borderLeftPixels);
+
+    //   sum = 0x00;
+    //   for (let col = s.borderLeftPixels; col < s.screenWidth - s.borderRightPixels; col++) {
+    //     const pixel = mh.readByte(row * s.screenWidth + col);
+    //     sum += pixel;
+    //   }
+    //   expect(sum).toBe(0x00);
+
+    //   sum = 0x00;
+    //   for (let col = s.screenWidth - s.borderRightPixels; col < s.screenWidth;  col++) {
+    //     const pixel = mh.readByte(row * s.screenWidth + col);
+    //     sum += pixel;
+    //   }
+    //   expect(sum).toBe(0x05 * s.borderRightPixels);
+    // }
+
+    // sum = 0;
+    // for (let row = 48 + 192 ; row < s.screenLines; row++) {
+    //   for (let col = 0; col < s.screenWidth; col++) {
+    //     const pixel = mh.readByte(row * s.screenWidth + col);
+    //     sum += pixel;
+    //   }
+    // }
+    // expect(sum).toBe(0x05 * s.screenWidth * (s.screenLines - 192 - 48));
+  });
+
 });
 
 /**

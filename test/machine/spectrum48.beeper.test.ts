@@ -15,7 +15,7 @@ let machine: ZxSpectrum48;
 
 const BEEPER_SAMPLE_BUFFER = 0x0b_2200;
 
-describe("ZX Spectrum 48 - Screen", () => {
+describe("ZX Spectrum 48 - Beeper", () => {
   before(async () => {
     const wasm = await WebAssembly.instantiate(buffer, {
       imports: { trace: (arg: number) => console.log(arg) },

@@ -150,6 +150,10 @@ export class SpectrumEngine {
     return this._completionTask;
   }
 
+  getScreenData(): Uint32Array {
+    return this.spectrum.getScreenData();
+  }
+
   /**
    * Starts the virtual machine and keeps it running
    */
@@ -275,6 +279,7 @@ export class SpectrumEngine {
 
       // --- At this point we have not completed the execution yet
       // --- Initiate the refresh of the screen
+      machine.spectrum.api.colorize();
       machine._screenRefreshed.fire();
       // TODO: Manage audio
       //   machine._vmBeeperSamplesEmitted.fire(
