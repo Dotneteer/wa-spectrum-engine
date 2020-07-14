@@ -2687,7 +2687,7 @@
     set_local $tmp
     get_global $REG_AREA_INDEX
     i32.load16_u offset=8
-    (set_global $A (i32.and (i32.const 0xff)))
+    call $setAF
     get_global $REG_AREA_INDEX
     get_local $tmp
     i32.store16 offset=8
@@ -8117,7 +8117,7 @@
       call $executeCpuCycle
 
       call $getPC
-      i32.const 0x0b26
+      i32.const 0x12a9
       i32.eq
       if
         i32.const 444444
@@ -8139,7 +8139,7 @@
           call $executeCpuCycle
 
           call $getPC
-          i32.const 0x0b26
+          i32.const 0x12a9
           i32.eq
           if
             i32.const 444444
