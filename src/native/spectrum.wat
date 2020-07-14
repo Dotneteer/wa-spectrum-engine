@@ -2434,71 +2434,53 @@
   ;; Executes ALU 8-add compare; sets F
   ;; $arg: other argument
   (func $AluCp (param $arg i32)
-    (local $a i32)
     (local $res i32)
-    (local $pv i32)
-    ;; Subtract values (-carry) and store in A
+    (local $signed i32)
+
+    ;; Subtract values
     get_global $A
-    tee_local $a
     get_local $arg
     i32.sub
     set_local $res
 
-    ;; Put Z on stack
-    i32.const 0x00 ;; NZ
-    i32.const 0x40 ;; Z
-    (i32.and (get_local $res) (i32.const 0xff))
-    select         ;; Z
+    ;; Signed substract
+    (i32.shl (get_global $A) (i32.const 24))
+    (i32.shr_s (i32.const 24))
+    (i32.shl (get_local $arg) (i32.const 24))
+    (i32.shr_s (i32.const 24))
+    i32.sub
+    set_local $signed
 
-    ;; Get S from result
-    get_local $res
-    i32.const 0x80
-    i32.and        ;; Z, S
-
-    ;; Get R5 and R3 from $arg
-    get_local $arg
-    i32.const 0x28
-    i32.and
-
-    ;; Get C flag
-    get_local $res
-    i32.const 0x100
-    i32.and
-    i32.const 8
-    i32.shr_u      ;; Z, S|R5|R3, C
+    ;; Calculate N flag (set)
+    i32.const 0x02 ;; [N]
 
     ;; Calculate H flag
-    i32.const 0x10
-    i32.const 0x00
-    (i32.and (get_local $a) (i32.const 0x0f))
+    (i32.and (get_global $A) (i32.const 0x0f))
     (i32.and (get_local $arg) (i32.const 0x0f))
     i32.sub
-    i32.const 0x10
-    i32.and
-    select        ;; Z, S|R5|R3, C, H
+    (i32.and (i32.const 0x10)) ;; [N, H] 
 
-    ;; <i32>$a - <i32>$arg - C
-    (i32.shr_s
-      (i32.shl (get_local $a) (i32.const 24))
-      (i32.const 24)
-    )
-    tee_local $pv
-    (i32.shr_s
-      (i32.shl (get_local $arg) (i32.const 24))
-      (i32.const 24)
-    )
-    i32.sub
-    tee_local $pv
+    ;; Keep S, R3, and R5 from result
+    (i32.and (get_local $res) (i32.const 0xa8)) ;; [N, H, S|R3|R5]
 
-    ;; Calculate PV flag
-    i32.const 0x80
-    i32.ge_s
+    ;; Calculate Z flag
+    i32.const 0x00
+    i32.const 0x40
+    (i32.and (get_local $res) (i32.const 0xff))
+    select ;; [N, H, S|R3|R5, Z]
+
+    ;; Calculate C
+    i32.const 0x01
+    i32.const 0x00
+    (i32.and (get_local $res) (i32.const 0x10000))
+    select ;; [N, H, S|R3|R5, Z, C]
+
+    ;; Calculate PV
+    (i32.ge_s (get_local $signed) (i32.const 0x80))
     if (result i32)
       i32.const 0x04
     else
-      get_local $pv
-      i32.const -0x81
-      i32.le_s
+      (i32.le_s (get_local $signed) (i32.const -0x81))
       if (result i32)
         i32.const 0x04
       else
@@ -2506,15 +2488,11 @@
       end
     end
 
-    ;; Merge flags
+    ;; Merge flags and store them
     i32.or
     i32.or
     i32.or
     i32.or
-    i32.or
-
-    ;; Set N
-    i32.const 0x02 ;; N flag mask
     i32.or
     (set_global $F (i32.and (i32.const 0xff)))
   )
@@ -4125,7 +4103,7 @@
 
   ;; and a (0xa7)
   (func $AndAA
-    (call $AluAnd (call $getB))
+    (call $AluAnd (call $getA))
   )
 
   ;; xor b (0xa8)
@@ -7654,8 +7632,6 @@
     get_local $addr
     get_local $addr
     call $readMemory
-    
-
     (i32.shl 
       (i32.const 1)
       (i32.shr_u
@@ -7666,11 +7642,9 @@
     i32.or
     tee_local $res
     call $writeMemory
-    
     get_global $useGateArrayContention
     if
       (call $incTacts (i32.const 1))
-      
     else
       (call $memoryDelay (call $getHL))
       (call $incTacts (i32.const 1))
@@ -8143,16 +8117,18 @@
       call $executeCpuCycle
 
       call $getPC
-      i32.const 0x0c22
+      i32.const 0x0b26
       i32.eq
       if
         i32.const 444444
         call $trace
-        call $getPC
+        call $getAF
+        call $trace
+        call $getBC
         call $trace
         call $getDE
         call $trace
-        call $getA
+        call $getHL
         call $trace
       end
 
@@ -8163,16 +8139,18 @@
           call $executeCpuCycle
 
           call $getPC
-          i32.const 0x0c22
+          i32.const 0x0b26
           i32.eq
           if
             i32.const 444444
             call $trace
-            call $getPC
+            call $getAF
+            call $trace
+            call $getBC
             call $trace
             call $getDE
             call $trace
-            call $getA
+            call $getHL
             call $trace
           end
 
