@@ -108,7 +108,8 @@
 
   ;; State transfer buffer (length: 0xc0)
   (global $STATE_TRANSFER_BUFF i32 (i32.const 0x1_0040))
-;; Once-set
+
+  ;; Once-set
   (global $tactsInFrame (mut i32) (i32.const 1_000_000)) ;; Number of tacts within a frame
   (global $allowExtendedSet (mut i32) (i32.const 0x00))  ;; Should allow extended operation set?
 
@@ -8102,6 +8103,14 @@
         get_global $PIXEL_RENDERING_BUFFER set_global $pixelBufferPtr
         i32.const 0 set_global $frameCompleted
 
+        ;; Calculate flash phase
+        (i32.rem_u (get_global $frameCount) (get_global $flashFrames))
+        i32.eqz
+        if
+          (i32.xor (get_global $flashPhase) (i32.const 0x01))
+          set_global $flashPhase
+        end
+
         ;; Reset beeper frame state and create samples
         i32.const 0 set_global $beeperSampleCount
         call $createEarBitSamples
@@ -8215,6 +8224,7 @@
   (func $setKeyStatus (param $keyCode i32) (param $isDown i32)
     (local $line i32)
     (local $mask i32)
+
     ;; Ignore invalid key codes
     (i32.gt_u (get_local $keyCode) (i32.const 39))
     if return end
@@ -8473,10 +8483,8 @@
     (i32.store8 offset=161 (get_global $STATE_TRANSFER_BUFF) (get_global $executionCompletionReason))
 
     ;; Keyboard lines
-    (i32.load offset=0 (get_global $KEYBOARD_LINES))
-    (i32.store offset=162 (get_global $STATE_TRANSFER_BUFF))
-    (i32.load offset=4 (get_global $KEYBOARD_LINES))
-    (i32.store offset=166 (get_global $STATE_TRANSFER_BUFF))
+    (i32.store offset=162 (get_global $STATE_TRANSFER_BUFF) (i32.load offset=0 (get_global $KEYBOARD_LINES)))
+    (i32.store offset=166 (get_global $STATE_TRANSFER_BUFF) (i32.load offset=4 (get_global $KEYBOARD_LINES)))
 
     ;; Port state
     (i32.store8 offset=170 (get_global $STATE_TRANSFER_BUFF) (get_global $portBit3LastValue))

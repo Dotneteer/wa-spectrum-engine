@@ -3,6 +3,7 @@
   import { createRendererProcessStateAware } from "../rendererProcessStore";
   import { emulatorSetZoomAction } from "../../shared/state/redux-emulator-state";
   import { getSpectrumEngine } from "../spectrum-loader";
+  import { pcKeyNames, currentKeyMappings } from "../spectrum/KeyMapping";
 
   const stateAware = createRendererProcessStateAware("emulatorPanelState");
   let spectrum;
@@ -28,6 +29,7 @@
     height = spectrum.screenHeight;
     calculateDimensions(clientWidth, clientHeight, width, height);
     configureScreen();
+    configureSound();
   });
 
   // --- Respond to panel size changes
@@ -39,7 +41,6 @@
   let imageBuffer8;
   let pixelData;
 
-  // --- Configures the screen
   function configureScreen() {
     const dataLen = width * height * 4;
     imageBuffer = new ArrayBuffer(dataLen);
@@ -47,11 +48,17 @@
     pixelData = new Uint32Array(imageBuffer);
   }
 
-  // --- Calculates screen dimensions
+  function configureSound() {
+    const audioCtx = new AudioContext();
+    const sampleRate = audioCtx.sampleRate;
+    audioCtx.close();
+    spectrum.setAudioSampleRate(sampleRate);
+  }
+
   function calculateDimensions(clientWidth, clientHeight, width, height) {
-    const widthRatio = Math.floor(clientWidth / width);
+    let widthRatio = Math.floor(clientWidth / width);
     if (widthRatio < 1) widthRatio = 1;
-    const heightRatio = Math.floor(clientHeight / height);
+    let heightRatio = Math.floor(clientHeight / height);
     if (heightRatio < 1) heightRatio = 1;
     const ratio = Math.min(widthRatio, heightRatio);
     stateAware.dispatch(emulatorSetZoomAction(ratio)());
@@ -77,8 +84,6 @@
   function onScreenRefreshed() {
     frameCount++;
     displayScreenData();
-    const state = spectrum.spectrum.getMachineState();
-    //console.log(`pc: ${state.pc}, hl: ${state.hl}`);
   }
 
   function displayScreenData() {
@@ -102,6 +107,20 @@
     if (screenCtx) {
       screenCtx.imageSmoothingEnabled = false;
       screenCtx.drawImage(shadowScreen, 0, 0, screen.width, screen.height);
+    }
+  }
+
+  function handleKey(e, status) {
+    console.log(`key: ${e.code}`);
+    const key = pcKeyNames.get(e.code);
+    if (!key) return;
+    const mapping = currentKeyMappings.get(key);
+    if (mapping) {
+      console.log(`mapping: ${JSON.stringify(mapping)}`);
+      spectrum.setKeyStatus(mapping.zxPrimary, status);  
+      if (mapping.zxSecondary) {
+        spectrum.setKeyStatus(mapping.zxSecondary, status);  
+      }
     }
   }
 </script>
@@ -128,7 +147,16 @@
   }
 </style>
 
-<div class="emulator-panel" bind:clientWidth bind:clientHeight>
+<svelte:window
+  on:keydown={e => {
+    handleKey(e, true);
+    //console.log(`keydown: ${e.code}`);
+  }}
+  on:keyup={e => {
+    handleKey(e, false);
+    //console.log(`keyup: ${e.code}`);
+  }} />
+<div tabindex="-1" class="emulator-panel" bind:clientWidth bind:clientHeight>
   <div class="emulator-screen" style={emulatorStyle}>
     <canvas bind:this={screen} />
     <canvas bind:this={shadowScreen} style="display:none" />

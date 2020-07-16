@@ -11,6 +11,7 @@ import {
   EmulationMode,
   DebugStepMode,
 } from "../../native/machine-state";
+import { SpectrumKeyCode } from "../../native/SpectrumKeyCode";
 
 /**
  * This class represents the engine of the ZX Spectrum,
@@ -148,6 +149,22 @@ export class SpectrumEngine {
    */
   get completionTask(): Promise<void> | undefined {
     return this._completionTask;
+  }
+
+  getMachineState(): SpectrumMachineState {
+    return this.spectrum.getMachineState();
+  }
+
+  setKeyStatus(key: SpectrumKeyCode, isDown: boolean): void {
+    this.spectrum.setKeyStatus(key, isDown);
+  }
+
+  /**
+   * Sets the audio sample rate to use with sound devices
+   * @param rate Audio sampe rate to use
+   */
+  setAudioSampleRate(rate: number): void {
+    this.spectrum.setBeeperSampleRate(rate);
   }
 
   getScreenData(): Uint32Array {
