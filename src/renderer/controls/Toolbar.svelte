@@ -47,6 +47,7 @@
   .toolbar {
     display: flex;
     flex-shrink: 0;
+    flex-grow: 0;
     height: 40px;
     width: 100%;
     padding: 0px 4px;

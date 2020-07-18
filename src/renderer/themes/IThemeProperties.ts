@@ -18,5 +18,11 @@ export interface IThemeProperties {
   "--emulator-background-color": string;
 
   "--keyboard-background-color": string;
-
+  "--key-background-color": string;
+  "--key-main-color": string;
+  "--key-keyboard-color": string;
+  "--key-symbol-color": string;
+  "--key-above-color": string;
+  "--key-below-color": string;
+  "--key-highlight-color": string;
 }

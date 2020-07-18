@@ -351,7 +351,7 @@ function Split(
     clientOffset = "offsetTop";
   }
 
-  const floatingGutter = getOption(options, "floatingGutter", false);
+  const floatingGutter = getOption(options, "floatingGutter", true);
   const gutterStyle = getOption(options, "gutterStyle", (dim: Dimension, gutterSize: number) => ({
     [dim]: `${gutterSize}px`,
     position: floatingGutter ? "absolute" : undefined,

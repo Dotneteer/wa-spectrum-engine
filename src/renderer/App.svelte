@@ -43,18 +43,10 @@
     flex-direction: column;
     height: 100%;
     flex-shrink: 0;
+    flex-grow: 0;
     user-select: none;
     background-color: var(--shell-canvas-background-color);
     outline: none;
-  }
-
-  .main-panel {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    flex-shrink: 1;
-    height: 100%;
-    width: 100%;
   }
 </style>
 

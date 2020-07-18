@@ -6,13 +6,18 @@
   import { createRendererProcessStateAware } from "../rendererProcessStore";
 
   let keyboardVisible = false;
+  let delayIsOver = true;
   const stateAware = createRendererProcessStateAware("keyboardPanelState");
-  stateAware.onStateChanged.on(state => {
+  stateAware.onStateChanged.on(async state => {
+    delayIsOver = false;
     keyboardVisible = state.visible;
+    await new Promise(r => setTimeout(r, 10));
+    delayIsOver = true;
   });
 
   let keyboardHeight;
   let initialHeight;
+  let splitterIsMoving = false;
 </script>
 
 <style>
@@ -21,7 +26,6 @@
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
-    height: 100%;
     width: 100%;
   }
 </style>
@@ -30,10 +34,15 @@
   <SplitContainer
     direction="vertical"
     refreshTag={keyboardVisible}
-    on:moved={() => (initialHeight = keyboardHeight)}>
+    minimumSize={200}
+    bind:isMoving={splitterIsMoving}
+    on:moved={async () => {
+      initialHeight = keyboardHeight;
+    }}>
     <EmulatorPanel />
     {#if keyboardVisible}
       <KeyboardPanel
+        showPanel={delayIsOver}
         visible={keyboardVisible}
         {initialHeight}
         bind:sizedHeight={keyboardHeight} />

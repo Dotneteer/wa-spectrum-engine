@@ -12,6 +12,7 @@ import {
   DebugStepMode,
 } from "../../native/machine-state";
 import { SpectrumKeyCode } from "../../native/SpectrumKeyCode";
+import { EmulatedKeyStroke } from "./spectrum-keys";
 
 /**
  * This class represents the engine of the ZX Spectrum,
@@ -34,6 +35,9 @@ export class SpectrumEngine {
 
   // --- The last loaded machine state
   private _loadedState: SpectrumMachineState;
+
+  // --- Keyboard emulation
+  private _keyStrokeQueue: EmulatedKeyStroke[] = [];
 
   /**
    * Initializes the engine with the specified ZX Spectrum instance
@@ -151,10 +155,18 @@ export class SpectrumEngine {
     return this._completionTask;
   }
 
+  /**
+   * Gets the state of the ZX Spectrum machine
+   */
   getMachineState(): SpectrumMachineState {
     return this.spectrum.getMachineState();
   }
 
+  /**
+   * Sets the status of the specified ZX Spectrum key
+   * @param key Code of the key
+   * @param isDown Pressed/released status of the key
+   */
   setKeyStatus(key: SpectrumKeyCode, isDown: boolean): void {
     this.spectrum.setKeyStatus(key, isDown);
   }
@@ -167,22 +179,51 @@ export class SpectrumEngine {
     this.spectrum.setBeeperSampleRate(rate);
   }
 
+  /**
+   * Gets the screen pixels data to display
+   */
   getScreenData(): Uint32Array {
     return this.spectrum.getScreenData();
+  }
+
+  /**
+   * Puts a keystroke into the queue of emulated keystrokes
+   * @param startFrame Start frame when the key is pressed
+   * @param frames End frame when the key is released
+   * @param primary Primary key
+   * @param secodary Optional secondary key
+   */
+  queueKeyStroke(
+    startFrame: number,
+    frames: number,
+    primaryKey: SpectrumKeyCode,
+    secondaryKey?: SpectrumKeyCode
+  ): void {
+    this._keyStrokeQueue.push({
+      startFrame,
+      endFrame: startFrame + frames,
+      primaryKey,
+      secondaryKey
+    })
   }
 
   /**
    * Starts the virtual machine and keeps it running
    */
   start(): void {
-    this.run(new ExecuteCycleOptions())
+    this.run(new ExecuteCycleOptions());
   }
 
   /**
    * Starts the virtual machine in debugging mode
    */
   startDebugging(): void {
-    this.run(new ExecuteCycleOptions(EmulationMode.Debugger, DebugStepMode.StopAtBreakpoint));
+    this.run(
+      new ExecuteCycleOptions(
+        EmulationMode.Debugger,
+        DebugStepMode.StopAtBreakpoint
+      )
+    );
   }
 
   /**
@@ -294,6 +335,9 @@ export class SpectrumEngine {
         return;
       }
 
+      // --- Handle key strokes
+      this.emulateKeyStroke(resultState.frameCount);
+
       // --- At this point we have not completed the execution yet
       // --- Initiate the refresh of the screen
       machine.spectrum.api.colorize();
@@ -326,6 +370,33 @@ export class SpectrumEngine {
           }, milliseconds);
         });
       }
+    }
+  }
+
+  /**
+   * Emulates the next keystroke waiting in the queue
+   * @param frame Current screen frame
+   */
+  emulateKeyStroke(frame: number): void {
+    if (this._keyStrokeQueue.length === 0) return;
+    const nextKey = this._keyStrokeQueue[0];
+    if (nextKey.startFrame > frame) return;
+
+    // --- Handle the active key in the queue
+    if (nextKey.endFrame <= frame) {
+      // --- Release the key
+      this.setKeyStatus(nextKey.primaryKey, false);
+      if (nextKey.secondaryKey) {
+        this.setKeyStatus(nextKey.secondaryKey, false);
+      }
+      this._keyStrokeQueue.shift();
+      return;
+    }
+
+    // --- Press the key
+    this.setKeyStatus(nextKey.primaryKey, true);
+    if (nextKey.secondaryKey) {
+      this.setKeyStatus(nextKey.secondaryKey, true);
     }
   }
 }

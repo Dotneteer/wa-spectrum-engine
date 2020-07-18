@@ -30,6 +30,12 @@
   // --- get changed.
   export let refreshTag;
 
+  // --- Signs if the splitter is moving
+  export let isMoving = false;
+
+  // --- The minimum size of panels
+  export let minimumSize = 200;
+
   // ==========================================================================
   // Internal variables
   // --- Reference to the host element
@@ -85,7 +91,7 @@
     const sizes = calculateInitialSizes(
       direction,
       hostElement,
-      100,
+      minimumSize,
       children,
       isInitial
     );
@@ -93,12 +99,16 @@
     Split(children, {
       sizes,
       gutterSize,
+      minSize: minimumSize,
       direction,
       floatingGutter: true,
-      onDragStart: () => {
-          // ...
+      onDrag: () => {
+        isMoving = true;
       },
-      onDragEnd: () => raiseSplitterMoved(hostElement)
+      onDragEnd: () => {
+        raiseSplitterMoved(hostElement);
+        isMoving = false;
+      }
     });
   }
 

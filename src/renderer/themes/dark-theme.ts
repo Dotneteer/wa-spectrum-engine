@@ -15,6 +15,15 @@ export const darkTheme: ITheme = {
     "--statusbar-background-color": "#007acc",
 
     "--emulator-background-color": "#808080",
-    "--keyboard-background-color": "#404040",
+    "--keyboard-background-color": "#202020",
+
+    "--key-background-color": "#808080",
+    "--key-main-color": "white",
+    "--key-keyboard-color": "white",
+    "--key-symbol-color": "#c00000",
+    "--key-above-color": "#00a000",
+    "--key-below-color": "#d02000",
+ 
+    "--key-highlight-color": "#0048c0"
   },
 };
