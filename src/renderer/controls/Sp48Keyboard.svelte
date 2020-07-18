@@ -1,7 +1,8 @@
 <script>
   import { onMount } from "svelte";
-
   import Sp48Key from "./Sp48Key.svelte";
+
+  import { getSpectrumEngine } from "../spectrum-loader";
 
   export let clientWidth;
   export let clientHeight;
@@ -12,8 +13,11 @@
   let row1Shift;
   let row2Shift;
 
+  let spectrum;
+
   onMount(async () => {
     calculateDimensions(clientWidth, clientHeight, defaultWidth, defaultHeight);
+    spectrum = await getSpectrumEngine();
   });
 
   // --- Respond to panel size changes
@@ -31,7 +35,72 @@
   }
 
   function handleKey(e) {
-    console.log(e.detail);
+    if (spectrum.getKeyQueueLength() > 0) return;
+    const ev = e.detail;
+    const state = spectrum.getMachineState();
+    console.log(ev);
+    switch (ev.keyCategory) {
+      case "main":
+        spectrum.queueKeyStroke(
+          state.frameCount,
+          2,
+          ev.code,
+          ev.button === 0 ? undefined : 0 /* CShift */
+        );
+        break;
+      case "symbol":
+        spectrum.queueKeyStroke(state.frameCount, 2, ev.code, 36 /* SShift */);
+        break;
+      case "above":
+        spectrum.queueKeyStroke(
+          state.frameCount,
+          2,
+          0 /* CShift */,
+          36 /* SShift */
+        );
+        spectrum.queueKeyStroke(
+          state.frameCount + 3,
+          2,
+          ev.code,
+          ev.button === 0 ? undefined : 0 /* CShift */
+        );
+        break;
+      case "below":
+        spectrum.queueKeyStroke(
+          state.frameCount,
+          2,
+          0 /* CShift */,
+          36 /* SShift */
+        );
+        spectrum.queueKeyStroke(
+          state.frameCount + 3,
+          2,
+          ev.code,
+          36 /* SShift */
+        );
+        break;
+      case "topNum":
+        spectrum.queueKeyStroke(
+          state.frameCount + 3,
+          2,
+          ev.code, 0);
+        break;
+      case "glyph":
+        if (spectrum.getCursorMode() & 0x02 !== 0) return;
+        spectrum.queueKeyStroke(
+          state.frameCount,
+          2,
+          21 /* N9 */, 0 /* CShift */);
+        spectrum.queueKeyStroke(
+          state.frameCount + 3,
+          2,
+          ev.code, ev.button === 0 ? undefined : 0 /* CShift */);
+        spectrum.queueKeyStroke(
+          state.frameCount + 6,
+          2,
+          21 /* N9 */, 0 /* CShift */);
+        break;
+    }
   }
 </script>
 

@@ -171,7 +171,7 @@
       {cursor}
       on:mouseenter={() => (mouseOverAbove = true)}
       on:mouseleave={() => (mouseOverAbove = false)}
-      on:mousedown={e => raiseClicked(e, code, "above")}>
+      on:mousedown={e => raiseClicked(e, code, topNum ? "topNum" : "above")}>
       {above}
     </text>
   {/if}
@@ -246,7 +246,7 @@
       {cursor}
       on:mouseenter={() => (mouseOverTopNum = true)}
       on:mouseleave={() => (mouseOverTopNum = false)}
-      on:mousedown={e => raiseClicked(e, code, "topNum")}>
+      on:mousedown={e => raiseClicked(e, code, "above")}>
       {topNum}
     </text>
   {/if}

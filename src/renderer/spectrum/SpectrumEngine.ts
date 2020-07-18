@@ -159,7 +159,7 @@ export class SpectrumEngine {
    * Gets the state of the ZX Spectrum machine
    */
   getMachineState(): SpectrumMachineState {
-    return this.spectrum.getMachineState();
+    return this._loadedState;
   }
 
   /**
@@ -322,7 +322,7 @@ export class SpectrumEngine {
       // --- Check for user cancellation
       if (this._cancelled) return;
 
-      const resultState = machine.spectrum.getMachineState();
+      const resultState = this._loadedState = machine.spectrum.getMachineState();
       const reason = resultState.executionCompletionReason;
       if (reason !== ExecutionCompletionReason.UlaFrameCompleted) {
         // --- No more frame to execute
@@ -386,7 +386,7 @@ export class SpectrumEngine {
     if (nextKey.endFrame <= frame) {
       // --- Release the key
       this.setKeyStatus(nextKey.primaryKey, false);
-      if (nextKey.secondaryKey) {
+      if (nextKey.secondaryKey !== undefined) {
         this.setKeyStatus(nextKey.secondaryKey, false);
       }
       this._keyStrokeQueue.shift();
@@ -395,8 +395,22 @@ export class SpectrumEngine {
 
     // --- Press the key
     this.setKeyStatus(nextKey.primaryKey, true);
-    if (nextKey.secondaryKey) {
+    if (nextKey.secondaryKey !== undefined) {
       this.setKeyStatus(nextKey.secondaryKey, true);
     }
+  }
+
+  /**
+   * Gets the cursor mode of ZX Spectrum
+   */
+  getCursorMode(): number {
+    return this.spectrum.api.getCursorMode();
+  }
+
+  /**
+   * Gets the length of the keyboard queue
+   */
+  getKeyQueueLength(): number {
+    return this._keyStrokeQueue.length;
   }
 }

@@ -37,6 +37,7 @@
   (export "checkForInterrupt" (func $checkForInterrupt))
   (export "setBeeperSampleRate" (func $setBeeperSampleRate))
   (export "colorize" (func $colorize))
+  (export "getCursorMode" (func $getCursorMode))
 
   ;; ==========================================================================
   ;; Function signatures
@@ -9473,6 +9474,13 @@
 
   ;; This function processes the MIC bit (tape device)
   (func $processMicBit (param $micBit i32))
+
+  ;; Gets the current cursor mode
+  (func $getCursorMode (result i32)
+    ;; Get the value of the MODE ZX Spectrum system variable
+    (i32.add (get_global $SP_MEM_OFFS) (i32.const 0x5c41))
+    i32.load8_u
+  )
 
   ;; ==========================================================================
   ;; ZX Spectrum 48K ROM
